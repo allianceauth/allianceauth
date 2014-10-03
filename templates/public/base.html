@@ -32,7 +32,11 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Logout</a></li>
+              {% if user.is_authenticated %}
+                    <li><a href="/logoutuser/">Logout</a></li>
+                {% else %}
+                    <li><a href="/loginuser/">Login</a></li>
+              {% endif %}
           </ul>
         </div>
       </div>
@@ -40,6 +44,8 @@
 
     <div class="container-fluid">
       <div class="row">
+              
+        {% if user.is_authenticated %}  
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">Overview</a></li>
@@ -49,10 +55,10 @@
             <li><a href="#">Help</a></li>
           </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% endif %}
+          
           {% block content %}
           {% endblock content %}
-      </div>
     </div>
 
     <!-- Bootstrap core JavaScript

@@ -1,0 +1,34 @@
+{% extends "public/base.html" %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Register Page{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+    <div class="row-fluid">
+        <div class="center-block" style="center">
+            <p>
+                <form action="/register/" method="POST">
+                {% csrf_token %}
+                <h2 class="form-signin-heading">Register Account</h2>
+                <p>
+                    Username:<br/>
+                    {{form.username.errors}}
+                    {{form.username}}<br/> Email:<br/>
+                    {{form.email.errors}}
+                    {{form.email}}<br/> Password:<br/>
+                    {{form.password.errors}}
+                    {{form.password}}<br/>Api ID: <br/>
+                    {{form.api_id.errors}}
+                    {{form.api_id}}<br/>Api Key: <br/>
+                    {{form.api_key.errors}}
+                    {{form.api_key}}<br/>
+                </p>
+            <input type="submit" value="submit" />
+            </form>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

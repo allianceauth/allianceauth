@@ -1,0 +1,26 @@
+from django.http import Http404,HttpResponseRedirect
+from django.shortcuts import render_to_response, render
+from django.template import RequestContext
+from authentication.models import AllianceUserManager
+from forms import RegistrationForm
+
+# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            userManager = AllianceUserManager()
+            userManager.create_user_withapi(
+                form.cleaned_data['username'],
+                form.cleaned_data['email'],
+                form.cleaned_data['password'],
+                form.cleaned_data['api_id'],
+                form.cleaned_data['api_key']
+            )
+
+            return HttpResponseRedirect("/")
+    else:
+        form = RegistrationForm()
+
+    return render_to_response('public/register.html',{'form':form}, context_instance=RequestContext(request))
