@@ -14,6 +14,7 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+    <link href="{% static 'css/updatecards.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock extra_css %}
   </head>
 
@@ -28,7 +29,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{% block allianceName %} The 99 Percent {% endblock allianceName %}</a>
+          <a class="navbar-brand" href="#">{{ ALLIANCE_NAME }}</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -48,9 +49,9 @@
         {% if user.is_authenticated %}  
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview</a></li>
-            <li><a href="#">Character</a></li>
-            <li><a href="#">Api Keys</a></li>
+            <li><a href="/">Overview</a></li>
+            <li><a href="/characters">Characters</a></li>
+            <li><a href="/apimanagment">Api Keys</a></li>
             <li><a href="#">Applications</a></li>
             <li><a href="#">Help</a></li>
           </ul>

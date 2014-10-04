@@ -52,7 +52,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_evolution',
     'authentication',
+    'portal',
+    'registration',
+    'evespecific',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,7 +71,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'allianceauth.urls'
 
 WSGI_APPLICATION = 'allianceauth.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -96,9 +99,24 @@ USE_L10N = True
 
 USE_TZ = True
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+    'util.context_processors.alliance_id',
+    'util.context_processors.alliance_name'
+)
+
 ########## USER CONFIGURATION
 AUTH_USER_MODEL = 'authentication.AllianceUser'
 ########## END USER CONFIGURATION
+
+LOGIN_URL = '/loginuser/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -112,3 +130,7 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+
+# ALLIANCE INFO
+ALLIANCE_ID = 99001336
+ALLIANCE_NAME = 'The 99 Percent'

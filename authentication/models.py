@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
-
 # Todo Add a check to make sure the email / username has not been used before
 
 class AllianceUserManager(BaseUserManager):
@@ -40,8 +39,8 @@ class AllianceUserManager(BaseUserManager):
         user.set_username(username)
         user.set_email(email)
         user.set_password(password)
-        user.set_api_id(api_id)
-        user.set_api_key(api_key)
+        user.api_id = api_id
+        user.api_key = api_key
         user.save(using=self._db)
         return user
     
@@ -66,6 +65,7 @@ class AllianceUser(AbstractBaseUser):
     is_banned = models.BooleanField(default = False)
     api_id = models.CharField(max_length = 254)
     api_key = models.CharField(max_length = 254)
+    
     objects = AllianceUserManager()
 
     USERNAME_FIELD = 'username'
