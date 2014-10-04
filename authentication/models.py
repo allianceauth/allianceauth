@@ -54,6 +54,11 @@ class AllianceUserManager(BaseUserManager):
         user.is_moderator = True
         user.save(using=self._db)
         return user
+    
+    def update_user_main_character(self,character_id, user_id):
+        user = AllianceUser.objects.get(id=user_id)
+        user.main_char_id = character_id
+        user.save(update_fields=['main_char_id'])
 
 # The icv user
 class AllianceUser(AbstractBaseUser):
@@ -65,6 +70,7 @@ class AllianceUser(AbstractBaseUser):
     is_banned = models.BooleanField(default = False)
     api_id = models.CharField(max_length = 254)
     api_key = models.CharField(max_length = 254)
+    main_char_id = models.IntegerField(default = 0)
     
     objects = AllianceUserManager()
 

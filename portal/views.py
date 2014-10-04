@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from forms import UpdateKeyForm
-from evespecific.managers import EveCharacterManager
 
+from evespecific.managers import EveCharacterManager
+from authentication.models import AllianceUserManager
 # Create your views here.
 @login_required
 def index(request):
@@ -16,6 +17,15 @@ def characters_view(request):
     
     render_items = {'characters':characterManager.get_characters_by_owner_id(request.user.id)}
     return render_to_response('public/characters.html', render_items, context_instance=RequestContext(request))
+
+@login_required
+def main_character_change(request, id):
+    userManager = AllianceUserManager()
+    characterManager = EveCharacterManager()
+    if characterManager.check_if_character_owned_by_user(id,request.user.id) == True:
+        userManager.update_user_main_character(id,request.user.id)
+        return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/characters")
 
 @login_required
 def apikeymanagment_view(request):
