@@ -27,11 +27,15 @@ class EveCharacterManager():
     def get_characters_by_owner_id(self, owner_id):
         return EveCharacter.objects.all().filter(allianceuser_owner=owner_id)
     
+    def get_character_by_id(self, char_id):
+        if EveCharacter.objects.filter(character_id = char_id).exists():
+            return EveCharacter.objects.get(character_id=char_id)
+        
+        return None
+    
     def check_if_character_owned_by_user(self, char_id, user_id):
         character = EveCharacter.objects.get(character_id = char_id)
-        print char_id
-        print user_id
-        print character.allianceuser_owner
+
         if character.allianceuser_owner.id == user_id:
             return True
         

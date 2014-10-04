@@ -59,6 +59,9 @@ class AllianceUserManager(BaseUserManager):
         user = AllianceUser.objects.get(id=user_id)
         user.main_char_id = character_id
         user.save(update_fields=['main_char_id'])
+        
+    def check_if_user_exist(self, user_id):
+        return AllianceUser.objects.filter(id=user_id).exists()
 
 # The icv user
 class AllianceUser(AbstractBaseUser):

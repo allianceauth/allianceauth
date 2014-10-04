@@ -83,6 +83,15 @@ DATABASES = {
         'PASSWORD': 'allianceauth',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+    },
+    
+    'phpbb3': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_forum',
+        'USER': 'allianceauth',
+        'PASSWORD': 'allianceauth',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 

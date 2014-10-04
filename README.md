@@ -9,9 +9,11 @@ Requirments:
     python-mysql-connector
     python-mysqld
     django-evolution
+    python-passlib
+    bcrypt
     
 Services Interaction:
-    Vanilla forums
+    Mysql Forums
     Mumble
     Prosody (jabber)
     
