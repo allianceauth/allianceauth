@@ -1,0 +1,33 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Something something here{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <p> ONE API KEY ONLY ONE SERIOUSLY ONE! BECUASE ONE</p>
+    <div class="row-fluid">
+        <div class="center-block" style="center">
+            <p>
+                <form action="/apikeymanagment/" method="POST">
+                    {% csrf_token %}
+                    <h2 class="form-signin-heading">Update Api:</h2>
+                    <p>
+                        API_ID:<br/>
+                        {{form.api_id.errors}}
+                        {{form.api_id}}<br/>API_KEY:<br/>
+                        {{form.api_key.errors}}
+                        {{form.api_key}}<br/>
+                    </p>
+                    <input type="submit" value="submit" class="btn btn-default"/>
+                    <button type="button" class="btn btn-primary">Refresh</button>
+                </form>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

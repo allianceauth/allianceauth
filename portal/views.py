@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-
+from forms import UpdateKeyForm
 from evespecific.managers import EveCharacterManager
 
 # Create your views here.
@@ -19,5 +19,13 @@ def characters_view(request):
 
 @login_required
 def apikeymanagment_view(request):
-    render_items = {}
-    return render_to_response('public/apikeymanagment.html', render_items, context_instance=RequestContext(request))
+    if request.method == 'POST':
+        form = UpdateKeyForm(request.POST)
+
+        if form.is_valid():
+
+            return HttpResponseRedirect("/")
+    else:
+        form = UpdateKeyForm(initial={'api_id':request.user.api_id,'api_key':request.user.api_key})
+
+    return render_to_response('public/apikeymanagment.html', {'form':form}, context_instance=RequestContext(request))
