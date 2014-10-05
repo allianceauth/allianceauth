@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'allianceauth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'allianceauth',
+        'NAME': 'alliance_auth',
         'USER': 'allianceauth',
         'PASSWORD': 'allianceauth',
         'HOST': '127.0.0.1',
@@ -88,6 +88,15 @@ DATABASES = {
     'phpbb3': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_forum',
+        'USER': 'allianceauth',
+        'PASSWORD': 'allianceauth',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    },
+
+    'mumble': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_mumble',
         'USER': 'allianceauth',
         'PASSWORD': 'allianceauth',
         'HOST': '127.0.0.1',
@@ -142,8 +151,11 @@ STATIC_URL = '/static/'
 
 # ALLIANCE INFO
 ALLIANCE_ID = 0
-ALLIANCE_NAME = 'Some alliance here'
+ALLIANCE_NAME = 'somealliance'
 
 # Jabber Prosody Info
 OPENFIRE_ADDRESS = "http://domain.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
+OPENFIRE_SECRET_KEY = "secretkey"
+
+# Mumble settings
+MUMBLE_SERVER_ID = 1

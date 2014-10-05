@@ -1,17 +1,23 @@
-import hashlib
 import random
 from passlib.apps import phpbb3_context
-from django.conf import settings
-from django.db import connections, transaction
+from django.db import connections
+
 
 class Phpbb3Manager():
     
-    SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, user_password, user_email, group_id , user_permissions, user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    SQL_DIS_USER = r"DELETE FROM phpbb_user_groups where user_id = (SELECT user_id FROM phpbb_users WHERE username = %s)"
+    SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
+                   r"user_password, user_email, group_id , user_permissions, " \
+                   r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+    SQL_DIS_USER = r"DELETE FROM phpbb_user_groups where user_id = " \
+                   r"(SELECT user_id FROM phpbb_users WHERE username = %s)"
+
     SQL_CHECK_USER = r"SELECT user_id from phpbb_users WHERE username = %s"
 
     SQL_ADD_USER_GROUP = r"INSERT INTO phpbb_user_group (group_id, user_id, user_pending) VALUES (%s, %s, %s)"
+
     SQL_GET_GROUP = r"SELECT group_id from phpbb_groups WHERE group_name = %s"
+
     SQL_ADD_GROUP = r"INSERT INTO phpbb_groups (group_name) VALUES (%s)"
     
     def __init__(self):

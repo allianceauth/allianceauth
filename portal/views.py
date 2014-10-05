@@ -1,13 +1,15 @@
-from django.shortcuts import render
 from django.shortcuts import render_to_response, HttpResponseRedirect
+
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+
 from forms import UpdateKeyForm
 
 from evespecific.managers import EveCharacterManager
 from authentication.models import AllianceUserManager
-from util.phpbb3_manager import Phpbb3Manager
-from util.jabber_manager import JabberManager
+from services.phpbb3_manager import Phpbb3Manager
+from services.jabber_manager import JabberManager
+from services.mumble_manager import MumbleManager
 
 # Create your views here.
 @login_required
@@ -77,3 +79,18 @@ def activate_jabber(request):
     
     return HttpResponseRedirect("/")
 
+@login_required
+def activate_mumble(request):
+    userManager = AllianceUserManager()
+    characterManager = EveCharacterManager()
+    mumbleManager = MumbleManager()
+
+    if userManager.check_if_user_exist(request.user.id):
+        characterManager = EveCharacterManager()
+        character = characterManager.get_character_by_id(request.user.main_char_id)
+
+        mumbleManager.create_user(character.character_name, "test")
+
+        return HttpResponseRedirect("/applications/")
+
+    return HttpResponseRedirect("/")

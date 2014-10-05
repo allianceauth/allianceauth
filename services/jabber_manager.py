@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.db import connections, transaction
 from openfire import UserService
+
 
 class JabberManager():
     
@@ -15,15 +15,15 @@ class JabberManager():
         
     def delete_user(self, username):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-        api.delete_user(username, password)
+        api.delete_user(username)
         
     def lock_user(self, username):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-        api.lock_user(username, password)
+        api.lock_user(username)
         
     def unlock_user(self, username):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-        api.unlock_user(username, password)
+        api.unlock_user(username)
         
     def update_user_pass(self, username, password):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
