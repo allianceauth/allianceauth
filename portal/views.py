@@ -7,6 +7,7 @@ from forms import UpdateKeyForm
 from evespecific.managers import EveCharacterManager
 from authentication.models import AllianceUserManager
 from util.phpbb3_manager import Phpbb3Manager
+from util.jabber_manager import JabberManager
 
 # Create your views here.
 @login_required
@@ -60,5 +61,19 @@ def activate_forum(request):
             forumManager.add_user(character.character_name, "test", request.user.email, ['REGISTERED'])
             return HttpResponseRedirect("/applications/")
 
+    return HttpResponseRedirect("/")
+
+@login_required
+def activate_jabber(request):
+    userManager = AllianceUserManager()
+    jabberManager = JabberManager()
+    if userManager.check_if_user_exist(request.user.id):
+        characterManager = EveCharacterManager()
+        character = characterManager.get_character_by_id(request.user.main_char_id)
+    
+        jabberManager.add_user(character.character_name,"test")
+    
+        return HttpResponseRedirect("/applications/")
+    
     return HttpResponseRedirect("/")
 

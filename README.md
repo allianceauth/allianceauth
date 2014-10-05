@@ -3,6 +3,7 @@ allianceauth
 
 Note: THIS WAS RUSHED! IT DOES NOT FOLLOW GOOD CODING STANDARDS
 Note2: Most importantly though it works.... 
+Note3: Jabber uses inband registration. In prosody whitelist the auth server
 
 Requirments:
     django 1.7
@@ -10,12 +11,13 @@ Requirments:
     python-mysqld
     django-evolution
     python-passlib
+    python-openfire
     bcrypt
     
 Services Interaction:
-    Mysql Forums
-    Mumble
-    Prosody (jabber)
+    Phpbb3   (Forums)
+    Mumble   (Voice)
+    Openfire (Jabber)
     
     
 

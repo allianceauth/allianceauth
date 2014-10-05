@@ -141,5 +141,9 @@ STATICFILES_DIRS = (
 STATIC_URL = '/static/'
 
 # ALLIANCE INFO
-ALLIANCE_ID = 99001336
-ALLIANCE_NAME = 'The 99 Percent'
+ALLIANCE_ID = 0
+ALLIANCE_NAME = 'Some alliance here'
+
+# Jabber Prosody Info
+OPENFIRE_ADDRESS = "http://domain.com:9090/"
+OPENFIRE_SECRET_KEY = "somekey"
