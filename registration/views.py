@@ -28,4 +28,4 @@ def register(request):
     else:
         form = RegistrationForm()
 
-    return render_to_response('public/register.html',{'form':form}, context_instance=RequestContext(request))
+    return render_to_response('public/register.html', {'form': form}, context_instance=RequestContext(request))
