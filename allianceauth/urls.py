@@ -20,8 +20,9 @@ urlpatterns = patterns('',
     url(r'^logout_user/', 'authentication.views.logout_user', name='auth_logout_user'),
 
     # None views
-    url(r'^main_character_change/(\d+)/$', 'portal.views.main_character_change', name='auth_main_character_change'),
+    url(r'^main_character_change/(\w+)/$', 'portal.views.main_character_change', name='auth_main_character_change'),
     url(r'^activate_forum/$', 'portal.views.activate_forum', name='auth_activate_forum'),
     url(r'^activate_jabber/$', 'portal.views.activate_jabber', name='auth_activate_jabber'),
     url(r'^activate_mumble/$', 'portal.views.activate_mumble', name='auth_activate_mumble'),
+    url(r'^delete_api_pair/(\w+)/$', 'portal.views.api_key_removal', name='auth_api_key_removal')
 )

@@ -1,4 +1,5 @@
 {% extends "public/base.html" %}
+{% load bootstrap %}
 {% load staticfiles %}
 
 {% block title %}Alliance Auth{% endblock %}
@@ -8,25 +9,34 @@
 
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-    <p> ONE API KEY ONLY ONE SERIOUSLY ONE! BECUASE ONE</p>
-    <div class="row-fluid">
-        <div class="center-block" style="center">
-            <p>
-                <form action="{% url 'auth_api_key_management' %}" method="POST">
-                    {% csrf_token %}
-                    <h2 class="form-signin-heading">Update Api:</h2>
-                    <p>
-                        API_ID:<br/>
-                        {{form.api_id.errors}}
-                        {{form.api_id}}<br/>API_KEY:<br/>
-                        {{form.api_key.errors}}
-                        {{form.api_key}}<br/>
-                    </p>
-                    <input type="submit" value="submit" class="btn btn-default"/>
-                    <button type="button" class="btn btn-primary">Refresh</button>
-                </form>
-            </p>
-        </div>
+    <div class="row">
+        <h1 class="page-header text-center">API Key Management</h1>
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">API ID</th>
+                <th class="text-center">API Key</th>
+                <th class="text-center">Action</th>
+            </tr>
+            {% for pair in apikeypairs %}
+            <tr>
+                <td class="text-center">{{ pair.api_id }}</td>
+                <td class="text-center">{{ pair.api_key }}</td>
+                <td class="text-center">
+                <a href="/delete_api_pair/{{ pair.api_id }}">
+                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_forum' %}">
+                    <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span></button>
+                </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+         <form class="form-signin" role="form" action="{% url 'auth_api_key_management' %}" method="POST">
+            {% csrf_token %}
+            {{ form|bootstrap_horizontal }}
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Create Key</button>
+        </form>
     </div>
 </div>
 

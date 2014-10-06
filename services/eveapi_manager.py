@@ -24,11 +24,9 @@ class EveApiManager():
     def get_corporation_ticker_from_id(self, corp_id):
         ticker = ""
         try:
-            print corp_id
             api = evelink.api.API()
             corp = evelink.corp.Corp(api)
             response = corp.corporation_sheet(corp_id)
-            print response
             ticker = response[0]['ticker']
         except evelink.api.APIError as error:
             print error

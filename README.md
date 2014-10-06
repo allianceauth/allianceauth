@@ -6,12 +6,15 @@ Note2: Most importantly though it works....
 
 Requirments:
     django 1.6.1
+    django-evolution
+    django-bootstrap-form
+    
     python-mysql-connector
     python-mysqld
-    django-evolution
     python-passlib
     python-evelink
     python-openfire
+    
     bcrypt
     
 Services Interaction:

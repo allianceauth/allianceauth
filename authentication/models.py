@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser
 
 class AllianceUserManager(BaseUserManager):
 
-    def create_user(self, username, email , password=None):
+    def create_user(self, username, email, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -20,27 +20,6 @@ class AllianceUserManager(BaseUserManager):
         user.set_username(username)
         user.set_email(email)
         user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user_withapi(self, username, email, password, api_id, api_key):
-        """
-        Creates and saves a User with the given email, date of
-        birth and password.
-        """
-        
-        if not username:
-            raise ValueError('Users must have a username')
-
-        if not email:
-            raise ValueError('Users must have an email address')
-
-        user = AllianceUser()
-        user.set_username(username)
-        user.set_email(email)
-        user.set_password(password)
-        user.api_id = api_id
-        user.api_key = api_key
         user.save(using=self._db)
         return user
     
@@ -95,8 +74,6 @@ class AllianceUser(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_moderator = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
-    api_id = models.CharField(max_length=254)
-    api_key = models.CharField(max_length=254)
     main_char_id = models.IntegerField(default=0)
 
     # Login information stuff

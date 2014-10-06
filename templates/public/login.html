@@ -1,26 +1,24 @@
 {% extends "public/base.html" %}
-
+{% load bootstrap %}
 {% block title %}Alliance Auth{% endblock %}
 
 {% block page_title %}Login Page{% endblock page_title %}
 
 {% block content %}
-<div class="container">
-    <div class="row-fluid">
-        <div class="center-block" style="center">
-            <p>
-              {% if error %}
-                    <div class="alert alert-danger" role="alert">Username/Password Invalid</div>
-              {% endif %}
-              <form class="form-signin" role="form" action="{% url 'auth_login_user' %}" method="POST">
-                {% csrf_token %}
-                <h2 class="form-signin-heading">Please sign in</h2>
-                  {{form.as_p}}
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-              </form>
-              <p><a href="{% url 'auth_register' %}">Register Here</a>
-            </p>
-        </div>
-    </div>
+<div class="row">
+<div class="col-md-4"></div>
+<div class="col-md-4">
+    {% if error %}
+    <div class="alert alert-danger" role="alert">Username/Password Invalid</div>
+    {% endif %}
+    <form class="form-signin" role="form" action="{% url 'auth_login_user' %}" method="POST">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        {{form|bootstrap}}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+    <p><a href="{% url 'auth_register' %}">Register Here</a></p>
 </div>
+</div>
+
 {% endblock content %}

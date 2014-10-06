@@ -11,4 +11,11 @@ class EveCharacter(models.Model):
     corporation_ticker = models.CharField(max_length=254)
     alliance_id = models.CharField(max_length=254)
     alliance_name = models.CharField(max_length=254)
-    allianceuser_owner = models.ForeignKey(AllianceUser)
+    api_id = models.CharField(max_length=254)
+    user = models.ForeignKey(AllianceUser)
+
+
+class EveApiKeyPair(models.Model):
+    api_id = models.CharField(max_length=254)
+    api_key = models.CharField(max_length=254)
+    user = models.ForeignKey(AllianceUser)

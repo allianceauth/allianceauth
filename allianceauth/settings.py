@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_evolution',
+    'bootstrapform',
     'authentication',
     'portal',
     'registration',
@@ -154,8 +155,8 @@ ALLIANCE_ID = 0
 ALLIANCE_NAME = ''
 
 # Jabber Prosody Info
-OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somesecretkey"
+OPENFIRE_ADDRESS = "http://something.com:9090/"
+OPENFIRE_SECRET_KEY = "somekey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1
