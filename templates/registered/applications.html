@@ -8,12 +8,62 @@
 
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-    <h3> Really dumb right now</h3>
-    <p> Click button to add user to services</p>
-    <a href="{% url 'auth_activate_forum' %}"><button type="button" class="btn btn-default">Activate Forum</button></a>
-    <a href="{% url 'auth_activate_jabber' %}"><button type="button" class="btn btn-default">Activate Jabber</button></a>
-    <a href="{% url 'auth_activate_mumble' %}"><button type="button" class="btn btn-default">Activate Jabber</button></a>
-
+    <h1 class="page-header text-center">Available Applications</h1>
+    <table class="table table-bordered">
+        <tr>
+            <th class="text-center">Application</th>
+            <th class="text-center">Username</th>
+            <th class="text-center">Password</th>
+            <th class="text-center">Action</th>
+        </tr>
+        <tr>
+            <td class="text-center">Forums</td>
+            <td class="text-center">{{ user.forum_username }}</td>
+            <td class="text-center">{{ user.forum_password }}</td>
+            <td class="text-center">
+                <a href="{% url 'auth_activate_forum' %}">
+                    <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_forum' %}">
+                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_forum' %}">
+                    <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span></button>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">Jabber</td>
+            <td class="text-center">{{ user.jabber_username }}</td>
+            <td class="text-center">{{ user.jabber_password }}</td>
+            <td class="text-center">
+                <a href="{% url 'auth_activate_jabber' %}">
+                    <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_jabber' %}">
+                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_jabber' %}">
+                    <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span></button>
+                </a>
+            </td>
+        <tr>
+            <td class="text-center">Mumble</td>
+            <td class="text-center">{{ user.mumble_username }}</td>
+            <td class="text-center">{{ user.mumble_password }}</td>
+            <td class="text-center">
+                <a href="{% url 'auth_activate_mumble' %}">
+                    <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_mumble' %}">
+                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                </a>
+                <a href="{% url 'auth_activate_mumble' %}">
+                    <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span></button>
+                </a>
+            </td>
+        </tr>
+    </table>
 </div>
 
 {% endblock content %}

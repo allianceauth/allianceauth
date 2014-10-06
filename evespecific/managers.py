@@ -1,4 +1,5 @@
 from models import EveCharacter
+from services.eveapi_manager import EveApiManager
 
 
 class EveCharacterManager():
@@ -7,7 +8,7 @@ class EveCharacterManager():
         pass
     
     def create_character(self, character_id, character_name, corporation_id,
-                         corporation_name,  alliance_id,
+                         corporation_name,  corporation_ticker, alliance_id,
                          alliance_name, allianceuser_owner):
         
         eve_char = EveCharacter();
@@ -15,6 +16,7 @@ class EveCharacterManager():
         eve_char.character_name = character_name
         eve_char.corporation_id = corporation_id
         eve_char.corporation_name = corporation_name
+        eve_char.corporation_ticker = corporation_ticker
         eve_char.alliance_id = alliance_id
         eve_char.alliance_name = alliance_name
         eve_char.allianceuser_owner = allianceuser_owner
@@ -22,12 +24,17 @@ class EveCharacterManager():
         eve_char.save()
 
     def create_characters_from_list(self, chars, owner):
+        evemanager = EveApiManager()
+
         for char in chars.result:
             if not self.check_if_character_exist(chars.result[char]['name']):
                 self.create_character(chars.result[char]['id'],
                                       chars.result[char]['name'],
-                                      chars.result[char]['corp']['id'], chars.result[char]['corp']['name'],
-                                      chars.result[char]['alliance']['id'], chars.result[char]['alliance']['name'],
+                                      chars.result[char]['corp']['id'],
+                                      chars.result[char]['corp']['name'],
+                                      evemanager.get_corporation_ticker_from_id(chars.result[char]['corp']['id']),
+                                      chars.result[char]['alliance']['id'],
+                                      chars.result[char]['alliance']['name'],
                                       owner)
 
     def check_if_character_exist(self, char_name):

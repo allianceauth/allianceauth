@@ -28,7 +28,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'auth_dashboard' %}">{{ ALLIANCE_NAME }}</a>
+          <img src="https://image.eveonline.com/Alliance/{{ ALLIANCE_ID }}_64.png" alt="" class="navbar-brand">
+          <a class="navbar-brand" href="{% url 'auth_dashboard' %}">
+              {{ ALLIANCE_NAME }}
+          </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">

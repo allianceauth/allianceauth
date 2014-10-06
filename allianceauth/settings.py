@@ -151,11 +151,11 @@ STATIC_URL = '/static/'
 
 # ALLIANCE INFO
 ALLIANCE_ID = 0
-ALLIANCE_NAME = 'AllianceName'
+ALLIANCE_NAME = ''
 
 # Jabber Prosody Info
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
+OPENFIRE_SECRET_KEY = "somesecretkey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

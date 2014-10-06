@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
-# Todo Add a check to make sure the email / username has not been used before
+
 
 class AllianceUserManager(BaseUserManager):
 
@@ -66,18 +66,47 @@ class AllianceUserManager(BaseUserManager):
     def check_if_user_exist_by_name(self, user_name):
         return AllianceUser.objects.filter(username=user_name).exists()
 
+    def update_user_form_info(self, username, password, user_id):
+        if AllianceUser.objects.filter(id=user_id).exists():
+            user = AllianceUser.objects.get(id=user_id)
+            user.forum_username = username
+            user.forum_password = password
+            user.save(update_fields=['forum_username', 'forum_password'])
+
+    def update_user_jabber_info(self, username, password, user_id):
+        if AllianceUser.objects.filter(id=user_id).exists():
+            user = AllianceUser.objects.get(id=user_id)
+            user.jabber_username = username
+            user.jabber_password = password
+            user.save(update_fields=['jabber_username', 'jabber_password'])
+
+    def update_user_mumble_info(self, username, password, user_id):
+        if AllianceUser.objects.filter(id=user_id).exists():
+            user = AllianceUser.objects.get(id=user_id)
+            user.mumble_username = username
+            user.mumble_password = password
+            user.save(update_fields=['mumble_username', 'mumble_password'])
+
 
 class AllianceUser(AbstractBaseUser):
-    username = models.CharField(max_length = 40,unique=True)
-    email = models.EmailField(max_length=255,unique=True)
+    username = models.CharField(max_length=40, unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_moderator = models.BooleanField(default = False)
-    is_banned = models.BooleanField(default = False)
-    api_id = models.CharField(max_length = 254)
-    api_key = models.CharField(max_length = 254)
-    main_char_id = models.IntegerField(default = 0)
-    
+    is_moderator = models.BooleanField(default=False)
+    is_banned = models.BooleanField(default=False)
+    api_id = models.CharField(max_length=254)
+    api_key = models.CharField(max_length=254)
+    main_char_id = models.IntegerField(default=0)
+
+    # Login information stuff
+    forum_username = models.CharField(max_length=64)
+    forum_password = models.CharField(max_length=64)
+    jabber_username = models.CharField(max_length=64)
+    jabber_password = models.CharField(max_length=64)
+    mumble_username = models.CharField(max_length=64)
+    mumble_password = models.CharField(max_length=64)
+
     objects = AllianceUserManager()
 
     USERNAME_FIELD = 'username'
