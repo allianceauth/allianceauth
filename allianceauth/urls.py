@@ -4,18 +4,24 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'allianceauth.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-    url(r'^$', 'portal.views.index', name='index'),
-    url(r'^characters/', 'portal.views.characters_view', name='characters'),
-    url(r'^apikeymanagment/', 'portal.views.apikeymanagment_view', name='apimanagment'),
-    url(r'^maincharacterchange/(\d+)/$', 'portal.views.main_character_change', name='main_character_change'),
-    url(r'^applications/', 'portal.views.applications_view', name='applications'),
-    url(r'^activateforum/$', 'portal.views.activate_forum', name='activateforum'),
-    url(r'^activatejabber/$', 'portal.views.activate_jabber', name='activatejabber'),
-    url(r'^activatemumble/$', 'portal.views.activate_mumble', name='activatemumble'),
-    url(r'^loginuser/','authentication.views.login_user', name='loginuser'),
-    url(r'^logoutuser/','authentication.views.logout_user', name='logoutuser'),
-    url(r'^register/', 'registration.views.register', name='register'),
+
+    # Main Views
+    url(r'^$', 'portal.views.index_view', name='auth_index'),
+    url(r'^dashboard/$', 'portal.views.dashboard_view', name='auth_dashboard'),
+    url(r'^characters/', 'portal.views.characters_view', name='auth_characters'),
+    url(r'^api_key_management/', 'portal.views.api_key_management_view', name='auth_api_key_management'),
+    url(r'^applications/', 'portal.views.applications_view', name='auth_applications'),
+
+    # Register
+    url(r'^register/', 'registration.views.register', name='auth_register'),
+
+    # Authentication
+    url(r'^login_user/', 'authentication.views.login_user', name='auth_login_user'),
+    url(r'^logout_user/', 'authentication.views.logout_user', name='auth_logout_user'),
+
+    # None views
+    url(r'^main_character_change/(\d+)/$', 'portal.views.main_character_change', name='auth_main_character_change'),
+    url(r'^activate_forum/$', 'portal.views.activate_forum', name='auth_activate_forum'),
+    url(r'^activate_jabber/$', 'portal.views.activate_jabber', name='auth_activate_jabber'),
+    url(r'^activate_mumble/$', 'portal.views.activate_mumble', name='auth_activate_mumble'),
 )

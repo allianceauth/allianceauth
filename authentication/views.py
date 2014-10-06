@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
-from django.views.decorators.csrf import csrf_exempt
 from django.template import RequestContext
 from forms import LoginForm
+
 
 # Create your views here.
 def login_user(request):
@@ -15,11 +15,14 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect("/")
+                    return HttpResponseRedirect("/dashboard")
+
+            return render_to_response('public/login.html', {'form': form, 'error': True},
+                                      context_instance=RequestContext(request))
     else:
         form = LoginForm()
 
-    return render_to_response('public/login.html',{'form':form}, context_instance=RequestContext(request))
+    return render_to_response('public/login.html', {'form': form}, context_instance=RequestContext(request))
 
 
 def logout_user(request):

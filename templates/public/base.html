@@ -1,5 +1,4 @@
 {% load staticfiles %}
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -29,16 +28,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{{ ALLIANCE_NAME }}</a>
+          <a class="navbar-brand" href="{% url 'auth_dashboard' %}">{{ ALLIANCE_NAME }}</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
-                    <li><a href="/logoutuser/">Logout</a></li>
+                    <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
                 {% else %}
-                    <li><a href="/loginuser/">Login</a></li>
+                    <li><a href="{% url 'auth_login_user' %}">Login</a></li>
               {% endif %}
           </ul>
+         </div>
         </div>
       </div>
     </div>
@@ -49,10 +49,10 @@
         {% if user.is_authenticated %}  
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><a href="/">Overview</a></li>
-            <li><a href="/characters">Characters</a></li>
-            <li><a href="/apikeymanagment">Api Keys</a></li>
-            <li><a href="/applications">Applications</a></li>
+            <li><a href="{% url 'auth_dashboard' %}">Overview</a></li>
+            <li><a href="{% url 'auth_characters' %}">Characters</a></li>
+            <li><a href="{% url 'auth_api_key_management' %}">Api Keys</a></li>
+            <li><a href="{% url 'auth_applications' %}">Applications</a></li>
             <li><a href="#">Help</a></li>
           </ul>
         </div>
@@ -60,6 +60,7 @@
           
           {% block content %}
           {% endblock content %}
+        </div>
     </div>
 
     <!-- Bootstrap core JavaScript

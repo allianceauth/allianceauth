@@ -9,7 +9,10 @@
     <div class="row-fluid">
         <div class="center-block" style="center">
             <p>
-                <form action="/register/" method="POST">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">Username Already Registered</div>
+                {% endif %}
+                <form action="{% url 'auth_register' %}" method="POST">
                 {% csrf_token %}
                 <h2 class="form-signin-heading">Register Account</h2>
                 <p>

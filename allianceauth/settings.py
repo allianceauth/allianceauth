@@ -134,7 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 AUTH_USER_MODEL = 'authentication.AllianceUser'
 ########## END USER CONFIGURATION
 
-LOGIN_URL = '/loginuser/'
+LOGIN_URL = '/login_user/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -151,11 +151,11 @@ STATIC_URL = '/static/'
 
 # ALLIANCE INFO
 ALLIANCE_ID = 0
-ALLIANCE_NAME = 'somealliance'
+ALLIANCE_NAME = 'AllianceName'
 
 # Jabber Prosody Info
-OPENFIRE_ADDRESS = "http://domain.com:9090/"
-OPENFIRE_SECRET_KEY = "secretkey"
+OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
+OPENFIRE_SECRET_KEY = "somekey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

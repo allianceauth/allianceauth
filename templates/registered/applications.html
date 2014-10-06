@@ -10,9 +10,9 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <h3> Really dumb right now</h3>
     <p> Click button to add user to services</p>
-    <a href="/activateforum/"><button type="button" class="btn btn-default">Activate Forum</button></a>
-    <a href="/activatejabber/"><button type="button" class="btn btn-default">Activate Jabber</button></a>
-    <a href="/activatemumble/"><button type="button" class="btn btn-default">Activate Jabber</button></a>
+    <a href="{% url 'auth_activate_forum' %}"><button type="button" class="btn btn-default">Activate Forum</button></a>
+    <a href="{% url 'auth_activate_jabber' %}"><button type="button" class="btn btn-default">Activate Jabber</button></a>
+    <a href="{% url 'auth_activate_mumble' %}"><button type="button" class="btn btn-default">Activate Jabber</button></a>
 
 </div>
 

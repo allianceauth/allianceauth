@@ -12,7 +12,7 @@
     <div class="row-fluid">
         <div class="center-block" style="center">
             <p>
-                <form action="/apikeymanagment/" method="POST">
+                <form action="{% url 'auth_api_key_management' %}" method="POST">
                     {% csrf_token %}
                     <h2 class="form-signin-heading">Update Api:</h2>
                     <p>

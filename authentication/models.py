@@ -55,15 +55,18 @@ class AllianceUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def update_user_main_character(self,character_id, user_id):
+    def update_user_main_character(self, character_id, user_id):
         user = AllianceUser.objects.get(id=user_id)
         user.main_char_id = character_id
         user.save(update_fields=['main_char_id'])
         
-    def check_if_user_exist(self, user_id):
+    def check_if_user_exist_by_id(self, user_id):
         return AllianceUser.objects.filter(id=user_id).exists()
 
-# The icv user
+    def check_if_user_exist_by_name(self, user_name):
+        return AllianceUser.objects.filter(username=user_name).exists()
+
+
 class AllianceUser(AbstractBaseUser):
     username = models.CharField(max_length = 40,unique=True)
     email = models.EmailField(max_length=255,unique=True)
