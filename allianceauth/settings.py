@@ -151,12 +151,12 @@ STATICFILES_DIRS = (
 STATIC_URL = '/static/'
 
 # ALLIANCE INFO
-ALLIANCE_ID = 0
-ALLIANCE_NAME = ''
+ALLIANCE_ID = 'someid'
+ALLIANCE_NAME = 'somealliancename'
 
 # Jabber Prosody Info
-OPENFIRE_ADDRESS = "http://something.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
+OPENFIRE_ADDRESS = "http://someaddres.com:9090/"
+OPENFIRE_SECRET_KEY = "somesecretkey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

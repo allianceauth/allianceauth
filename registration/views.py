@@ -24,12 +24,6 @@ def register(request):
                     form.cleaned_data['password']
                 )
 
-                # Create api key object
-                evemanager.create_api_keypair(form.cleaned_data['api_id'], form.cleaned_data['api_key'], user)
-
-                # Populate character data
-                characters = api.get_characters_from_api(form.cleaned_data['api_id'], form.cleaned_data['api_key'])
-                evemanager.create_characters_from_list(characters, user, form.cleaned_data['api_id'])
                 return HttpResponseRedirect("/dashboard")
 
             else:

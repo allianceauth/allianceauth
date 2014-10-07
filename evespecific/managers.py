@@ -67,23 +67,29 @@ class EveManager():
                 if char.user.id == user_id:
                     char.delete()
 
-
     def check_if_character_exist(self, char_name):
         return EveCharacter.objects.filter(character_name=char_name).exists()
 
-    def get_characters_by_owner_id(self, user_id):
-        return EveCharacter.objects.all().filter(user_id=user_id)
-    
+    def get_characters_by_owner_id(self, user):
+        if EveCharacter.objects.filter(user=user).exists():
+            return EveCharacter.objects.all().filter(user=user)
+
+        return None
+
     def get_character_by_id(self, char_id):
-        if EveCharacter.objects.filter(character_id = char_id).exists():
+        if EveCharacter.objects.filter(character_id=char_id).exists():
             return EveCharacter.objects.get(character_id=char_id)
         
         return None
-    
-    def check_if_character_owned_by_user(self, char_id, user_id):
-        character = EveCharacter.objects.get(character_id = char_id)
 
-        if character.allianceuser_owner.id == user_id:
+    def get_charater_alliance_id_by_id(self, char_id):
+        if EveCharacter.objects.filter(character_id=char_id).exists():
+            return EveCharacter.objects.get(character_id=char_id).alliance_id
+
+    def check_if_character_owned_by_user(self, char_id, user):
+        character = EveCharacter.objects.get(character_id=char_id)
+
+        if character.user.id == user.id:
             return True
         
         return False

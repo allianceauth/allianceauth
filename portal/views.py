@@ -1,7 +1,9 @@
 from django.shortcuts import render_to_response, HttpResponseRedirect
-
+from django.conf import settings
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import Permission
 
 from services.eveapi_manager import EveApiManager
 from evespecific.managers import EveManager
@@ -58,9 +60,20 @@ def api_key_management_view(request):
 @login_required
 def api_key_removal(request, api_id):
     evemanager = EveManager()
+    usermanager = AllianceUserManager()
+    # Check if our users main id is in the to be deleted characters
+    characters = evemanager.get_characters_by_owner_id(request.user.id)
+    if characters is not None:
+        for character in characters:
+            if character.character_id == request.user.main_char_id:
+                # TODO: Remove servies also
+                usermanager.update_user_main_character("", request.user.id)
+
     evemanager.delete_api_key_pair(api_id, request.user.id)
     evemanager.delete_characters_by_api_id(api_id, request.user.id)
+
     return HttpResponseRedirect("/api_key_management/")
+
 
 @login_required
 def applications_view(request):
@@ -68,16 +81,24 @@ def applications_view(request):
 
 
 @login_required
-def main_character_change(request, id):
-    userManager = AllianceUserManager()
-    characterManager = EveManager()
-    if characterManager.check_if_character_owned_by_user(id,request.user.id) == True:
-        userManager.update_user_main_character(id,request.user.id)
-        return HttpResponseRedirect("/")
+def main_character_change(request, char_id):
+    usermanager = AllianceUserManager()
+    charactermanager = EveManager()
+    if charactermanager.check_if_character_owned_by_user(char_id, request.user):
+        usermanager.update_user_main_character(char_id, request.user.id)
+        # Check if character is in the alliance
+        if charactermanager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
+            usermanager.add_alliance_member_permission(request.user.id)
+        else:
+            #TODO: disable serivces
+            usermanager.remove_alliance_member_permission(request.user.id)
+
+        return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
 
 
 @login_required
+@permission_required('auth.alliance_member')
 def activate_forum(request):
     userManager = AllianceUserManager()
     forumManager = Phpbb3Manager()
@@ -95,6 +116,7 @@ def activate_forum(request):
 
 
 @login_required
+@permission_required('auth.alliance_member')
 def activate_jabber(request):
     userManager = AllianceUserManager()
     jabberManager = JabberManager()
@@ -110,6 +132,7 @@ def activate_jabber(request):
 
 
 @login_required
+@permission_required('auth.alliance_member')
 def activate_mumble(request):
     userManager = AllianceUserManager()
     characterManager = EveManager()

@@ -10,6 +10,10 @@
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="row">
+        {% if apikeypairs %}
+        {% else %}
+            <div class="alert alert-danger" role="alert">No api keys found</div>
+        {% endif %}
         <h1 class="page-header text-center">API Key Management</h1>
         <table class="table table-bordered">
             <tr>
@@ -35,7 +39,8 @@
          <form class="form-signin" role="form" action="{% url 'auth_api_key_management' %}" method="POST">
             {% csrf_token %}
             {{ form|bootstrap_horizontal }}
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Create Key</button>
+             <br/>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Add Key</button>
         </form>
     </div>
 </div>

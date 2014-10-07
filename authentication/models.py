@@ -1,6 +1,10 @@
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin
 
 
 class AllianceUserManager(BaseUserManager):
@@ -66,15 +70,34 @@ class AllianceUserManager(BaseUserManager):
             user.mumble_password = password
             user.save(update_fields=['mumble_username', 'mumble_password'])
 
+    def add_alliance_member_permission(self, user_id):
+        ct = ContentType.objects.get_for_model(AllianceUser)
+        permission, created = Permission.objects.get_or_create(codename='alliance_member',
+                                                      content_type=ct, name='Alliance Member')
 
-class AllianceUser(AbstractBaseUser):
+        if AllianceUser.objects.filter(id=user_id).exists():
+            user = AllianceUser.objects.get(id=user_id)
+            user.user_permissions.add(permission)
+            user.save()
+
+    def remove_alliance_member_permission(self, user_id):
+        ct = ContentType.objects.get_for_model(AllianceUser)
+        permission, created = Permission.objects.get_or_create(codename='alliance_member',
+                                                      content_type=ct, name='Alliance Member')
+        if AllianceUser.objects.filter(id=user_id).exists():
+            user = AllianceUser.objects.get(id=user_id)
+            if user.has_perm('authentication.alliance_member'):
+                user.user_permissions.remove(permission)
+                user.save()
+
+class AllianceUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=40, unique=True)
     email = models.EmailField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_moderator = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
-    main_char_id = models.IntegerField(default=0)
+    main_char_id = models.CharField(max_length=64, default="")
 
     # Login information stuff
     forum_username = models.CharField(max_length=64)
@@ -106,16 +129,6 @@ class AllianceUser(AbstractBaseUser):
     # On Python 3: def __str__(self):
     def __unicode__(self):
         return self.username
-
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
 
     @property
     def is_staff(self):

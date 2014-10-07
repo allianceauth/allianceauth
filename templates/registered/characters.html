@@ -9,6 +9,10 @@
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="row">
+    {% if request.user.main_char_id %}
+    {% else %}
+        <div class="alert alert-danger" role="alert">No primary character set</div>
+    {% endif %}
     {% for character in characters %}
          <div class="well well-sm profile">
             <div class="col-sm-12">
@@ -25,7 +29,13 @@
                 </div>
             </div>
             <div class="col-md-offset-8">
-                <a href="/main_character_change/{{character.character_id}}"><button type="button" class="btn btn-primary">Make Primary</button></a>
+                <a href="/main_character_change/{{character.character_id}}">
+                    {% ifequal character.character_id request.user.main_char_id %}
+                        <button type="button" class="btn btn-disable" disabled>Make Primary</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary">Make Primary</button>
+                    {% endifequal %}
+                </a>
             </div>
         </div>
     {% endfor %}
