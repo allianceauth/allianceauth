@@ -30,5 +30,5 @@ class JabberManager():
         api.update_user(username, password)
 
     def __santatize_username(self, username):
-        sanatized = username.replace(" ","_")
+        sanatized = username.replace(" ", "_")
         return sanatized.lower()

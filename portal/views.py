@@ -76,8 +76,8 @@ def api_key_removal(request, api_id):
 
 
 @login_required
-def applications_view(request):
-    return render_to_response('registered/applications.html', None, context_instance=RequestContext(request))
+def services_view(request):
+    return render_to_response('registered/services.html', None, context_instance=RequestContext(request))
 
 
 @login_required
@@ -110,7 +110,7 @@ def activate_forum(request):
         
         if forumManager.check_user(character.character_name) == False:
             forumManager.add_user(character.character_name, "test", request.user.email, ['REGISTERED'])
-            return HttpResponseRedirect("/applications/")
+            return HttpResponseRedirect("/services/")
 
     return HttpResponseRedirect("/")
 
@@ -126,7 +126,7 @@ def activate_jabber(request):
     
         jabberManager.add_user(character.character_name,"test")
     
-        return HttpResponseRedirect("/applications/")
+        return HttpResponseRedirect("/services/")
     
     return HttpResponseRedirect("/")
 
@@ -144,6 +144,6 @@ def activate_mumble(request):
 
         mumbleManager.create_user(character.character_name, "test")
 
-        return HttpResponseRedirect("/applications/")
+        return HttpResponseRedirect("/services/")
 
     return HttpResponseRedirect("/")

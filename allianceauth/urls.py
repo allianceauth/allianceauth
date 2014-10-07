@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', 'portal.views.dashboard_view', name='auth_dashboard'),
     url(r'^characters/', 'portal.views.characters_view', name='auth_characters'),
     url(r'^api_key_management/', 'portal.views.api_key_management_view', name='auth_api_key_management'),
-    url(r'^applications/', 'portal.views.applications_view', name='auth_applications'),
+    url(r'^services/', 'portal.views.services_view', name='auth_services'),
 
     # Register
     url(r'^register/', 'registration.views.register', name='auth_register'),

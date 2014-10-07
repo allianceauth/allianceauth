@@ -1,74 +1,94 @@
 {% load staticfiles %}
+
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{% block title %}Empty titlle{% endblock title %}</title>
+    <title>{% block title %}Empty title{% endblock title %}</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap Core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
-    <link href="{% static 'css/updatecards.css' %}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock extra_css %}
-  </head>
 
-  <body>
+</head>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <img src="https://image.eveonline.com/Alliance/{{ ALLIANCE_ID }}_64.png" alt="" class="navbar-brand">
-          <a class="navbar-brand" href="{% url 'auth_dashboard' %}">
-              {{ ALLIANCE_NAME }}
-          </a>
+<body>
+    {% if user.is_authenticated %}
+    <div id="wrapper">
+        <!-- Navigation -->
+
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">{{ ALLIANCE_NAME }}</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                 {% if user.is_authenticated %}
+                        <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'auth_login_user' %}">Login</a></li>
+                  {% endif %}
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a class="active" href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth_characters' %}"><i class="fa fa-users fa-fw"></i> Characters</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-question fa-fw"></i> Help</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            {% block content %}
+            {% endblock content %}
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-              {% if user.is_authenticated %}
-                    <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'auth_login_user' %}">Login</a></li>
-              {% endif %}
-          </ul>
-         </div>
-        </div>
-      </div>
     </div>
-
-    <div class="container-fluid">
-      <div class="row">
-
-        {% if user.is_authenticated %}
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li><a href="{% url 'auth_dashboard' %}">Overview</a></li>
-            <li><a href="{% url 'auth_characters' %}">Characters</a></li>
-            <li><a href="{% url 'auth_api_key_management' %}">Api Keys</a></li>
-            <li><a href="{% url 'auth_applications' %}">Applications</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-        </div>
-        {% endif %}
-
-        {% block content %}
-        {% endblock content %}
-      </div>
-    </div>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    {% block extra_js %}{% endblock extra_js %}
-  </body>
+    {% endif %}
+</body>
 </html>
