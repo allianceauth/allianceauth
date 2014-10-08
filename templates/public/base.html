@@ -28,14 +28,10 @@
         <!-- Navigation -->
 
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">{{ ALLIANCE_NAME }}</a>
+                <a class="navbar-brand" href="{% url 'auth_dashboard' %}">{{ ALLIANCE_NAME }}</a>
+
             </div>
             <!-- /.navbar-header -->
 
@@ -63,19 +59,19 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a class="active" href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %} href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="{% url 'auth_characters' %}"><i class="fa fa-users fa-fw"></i> Characters</a>
+                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %} href="{% url 'auth_characters' %}"><i class="fa fa-users fa-fw"></i> Characters</a>
                         </li>
                         <li>
-                            <a href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
+                            <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %} href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
                         </li>
                         <li>
-                            <a href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
+                            <a {% ifequal request.path "/services/" %} class="active" {% endifequal %} href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-question fa-fw"></i> Help</a>
+                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href="{% url 'auth_help' %}"><i class="fa fa-question fa-fw"></i> Help</a>
                         </li>
                     </ul>
                 </div>

@@ -49,7 +49,7 @@ class AllianceUserManager(BaseUserManager):
     def check_if_user_exist_by_name(self, user_name):
         return AllianceUser.objects.filter(username=user_name).exists()
 
-    def update_user_form_info(self, username, password, user_id):
+    def update_user_forum_info(self, username, password, user_id):
         if AllianceUser.objects.filter(id=user_id).exists():
             user = AllianceUser.objects.get(id=user_id)
             user.forum_username = username
@@ -86,7 +86,7 @@ class AllianceUserManager(BaseUserManager):
                                                       content_type=ct, name='Alliance Member')
         if AllianceUser.objects.filter(id=user_id).exists():
             user = AllianceUser.objects.get(id=user_id)
-            if user.has_perm('authentication.alliance_member'):
+            if user.has_perm('alliance_member'):
                 user.user_permissions.remove(permission)
                 user.save()
 
@@ -100,12 +100,12 @@ class AllianceUser(AbstractBaseUser, PermissionsMixin):
     main_char_id = models.CharField(max_length=64, default="")
 
     # Login information stuff
-    forum_username = models.CharField(max_length=64)
-    forum_password = models.CharField(max_length=64)
-    jabber_username = models.CharField(max_length=64)
-    jabber_password = models.CharField(max_length=64)
-    mumble_username = models.CharField(max_length=64)
-    mumble_password = models.CharField(max_length=64)
+    forum_username = models.CharField(max_length=254)
+    forum_password = models.CharField(max_length=254)
+    jabber_username = models.CharField(max_length=254)
+    jabber_password = models.CharField(max_length=254)
+    mumble_username = models.CharField(max_length=254)
+    mumble_password = models.CharField(max_length=254)
 
     objects = AllianceUserManager()
 

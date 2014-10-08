@@ -128,7 +128,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
     'util.context_processors.alliance_id',
-    'util.context_processors.alliance_name'
+    'util.context_processors.alliance_name',
+    'util.context_processors.jabber_url'
 )
 
 ########## USER CONFIGURATION
@@ -151,12 +152,13 @@ STATICFILES_DIRS = (
 STATIC_URL = '/static/'
 
 # ALLIANCE INFO
-ALLIANCE_ID = '99001336'
-ALLIANCE_NAME = 'The 99 Percent'
+ALLIANCE_ID = '0'
+ALLIANCE_NAME = 'some alliance'
 
 # Jabber Prosody Info
-OPENFIRE_ADDRESS = "http://the99eve.com:9090/"
-OPENFIRE_SECRET_KEY = "SrJ35I36"
+JABBER_URL = "@someurl.com"
+OPENFIRE_ADDRESS = "http://someurl.com:9090/"
+OPENFIRE_SECRET_KEY = "somekey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

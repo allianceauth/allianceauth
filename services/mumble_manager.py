@@ -1,38 +1,61 @@
-import uuid
+import os
 import hashlib
-import random
 from django.db import connections
 from django.conf import settings
 
+
 class MumbleManager:
+
+    SQL_SELECT_MAX_ID = r"SELECT max(user_id)+1 as next_id from murmur_users"
+    SQL_CREATE_USER = r"INSERT INTO murmur_users (server_id, user_id, name, pw) VALUES (%s, %s, %s, %s)"
+    SQL_SELECT_GET_USER_ID_BY_NAME = r"SELECT user_id from murmur_users WHERE name = %s AND server_id = %s"
+    SQL_CHECK_USER_EXIST = r"SELECT name from murmur_users WHERE name = %s AND server_id = %s"
+    SQL_DELETE_USER = r"DELETE FROM murmur_users WHERE name = %s AND server_id = %s"
+    SQL_UPDATE_USER_PASSWORD = r"UPDATE murmur_users SET pw = %s WHERE name = %s AND server_id = %s"
 
     def __init__(self):
         self.dbcursor = connections['mumble'].cursor()
 
-    @staticmethod
-    def _gen_pwhash(password):
+    def __santatize_username(self, username):
+        sanatized = username.replace(" ", "_")
+        return sanatized
+
+    def __generate_random_pass(self):
+        return os.urandom(8).encode('hex')
+
+    def __generate_username(self, username, corp_ticker):
+        return "["+corp_ticker+"]"+username
+
+    def _gen_pwhash(self, password):
         return hashlib.sha1(password).hexdigest()
 
     def get_user_id_by_name(self, name):
-        self.dbcursor.execute(r"SELECT user_id from murmur_users WHERE name = %s AND server_id = %s",
-                              [name, settings.MUMBLE_SERVER_ID])
+        self.dbcursor.execute(self.SQL_SELECT_GET_USER_ID_BY_NAME, [name, settings.MUMBLE_SERVER_ID])
         row = self.dbcursor.fetchone()
         if row:
             return row[0]
 
-    def create_user(self, username, password):
-        """ Add a user """
-        self.dbcursor.execute(r"SELECT max(user_id)+1 as next_id from murmur_users")
-        user_id = self.dbcursor.fetchone()[0]
+    def create_user(self, corp_ticker, username):
 
-        self.dbcursor.execute(r"INSERT INTO murmur_users (server_id, user_id, name, pw) VALUES (%s, %s, %s, %s)",
-                              [settings.MUMBLE_SERVER_ID, user_id, self.__santatize_username(username), self._gen_pwhash(password)])
+        username_clean = self.__generate_username(self.__santatize_username(username),  corp_ticker)
+        password = self.__generate_random_pass()
+        pwhash = self._gen_pwhash(password)
 
-        return {'username': username, 'password': password }
+        try:
+            self.dbcursor.execute(self.SQL_SELECT_MAX_ID)
+            user_id = self.dbcursor.fetchone()[0]
+
+            self.dbcursor.execute(self.SQL_CREATE_USER,
+                                  [settings.MUMBLE_SERVER_ID, user_id, username_clean,
+                                   pwhash])
+
+            return username_clean, password
+        except:
+            return "", ""
 
     def check_user_exist(self, username):
-        """ Check if the username exists """
-        self.dbcursor.execute(r"SELECT name from murmur_users WHERE name = %s AND server_id = %s",
+
+        self.dbcursor.execute(self.SQL_CHECK_USER_EXIST,
                               [username, settings.MUMBLE_SERVER_ID])
 
         row = self.dbcursor.fetchone()
@@ -40,13 +63,31 @@ class MumbleManager:
             return True
         return False
 
-    def delete_user(self, uid):
-        """ Delete a user """
-        id = self.get_user_id_by_name(uid)
-        self.dbcursor.execute(r"DELETE FROM murmur_users WHERE user_id = %s AND server_id = %s",
-                              [id, settings.MUMBLE_SERVER_ID])
-        return True
+    def delete_user(self, username):
 
-    def __santatize_username(self, username):
-        sanatized = username.replace(" ","_")
-        return sanatized.lower()
+        if self.check_user_exist(username):
+            try:
+
+                self.dbcursor.execute(self.SQL_DELETE_USER,
+                                      [username, settings.MUMBLE_SERVER_ID])
+                return True
+            except:
+                return False
+
+        return False
+
+    def update_user_password(self, username):
+
+        password = self.__generate_random_pass()
+        pwhash = self._gen_pwhash(password)
+
+        if self.check_user_exist(username):
+            try:
+
+                self.dbcursor.execute(self.SQL_UPDATE_USER_PASSWORD,
+                                      [pwhash, username, settings.MUMBLE_SERVER_ID])
+                return password
+            except:
+                return ""
+
+        return ""

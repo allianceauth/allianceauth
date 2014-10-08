@@ -3,7 +3,6 @@ from django.conf import settings
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import Permission
 
 from services.eveapi_manager import EveApiManager
 from evespecific.managers import EveManager
@@ -81,6 +80,11 @@ def services_view(request):
 
 
 @login_required
+def help_view(request):
+    return render_to_response('registered/help.html', None, context_instance=RequestContext(request))
+
+
+@login_required
 def main_character_change(request, char_id):
     usermanager = AllianceUserManager()
     charactermanager = EveManager()
@@ -98,52 +102,163 @@ def main_character_change(request, char_id):
 
 
 @login_required
-@permission_required('auth.alliance_member')
+@permission_required('authentication.alliance_member')
 def activate_forum(request):
-    userManager = AllianceUserManager()
-    forumManager = Phpbb3Manager()
+    usermanager = AllianceUserManager()
+    forummanager = Phpbb3Manager()
 
-    if userManager.check_if_user_exist(request.user.id):
+    if usermanager.check_if_user_exist_by_id(request.user.id):
         # Valid now we get the main characters
-        characterManager = EveManager()
-        character = characterManager.get_character_by_id(request.user.main_char_id)
-        
-        if forumManager.check_user(character.character_name) == False:
-            forumManager.add_user(character.character_name, "test", request.user.email, ['REGISTERED'])
+        charactermanager = EveManager()
+        character = charactermanager.get_character_by_id(request.user.main_char_id)
+
+        result = forummanager.add_user(character.character_name, request.user.email, ['REGISTERED'])
+
+        # if empty we failed
+        if result[0] != "":
+            usermanager.update_user_forum_info(result[0], result[1], request.user.id)
+
+        return HttpResponseRedirect("/services/")
+
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@permission_required('authentication.alliance_member')
+def deactivate_forum(request):
+    usermanager = AllianceUserManager()
+    forummanager = Phpbb3Manager()
+
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+
+        result = forummanager.disable_user(request.user.forum_username)
+
+        # false we failed
+        if result:
+            usermanager.update_user_forum_info("", "", request.user.id)
+            return HttpResponseRedirect("/services/")
+
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@permission_required('authentication.alliance_member')
+def reset_forum_password(request):
+    usermanager = AllianceUserManager()
+    forummanager = Phpbb3Manager()
+
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+
+        result = forummanager.update_user_password(request.user.forum_username)
+
+        # false we failed
+        if result != "":
+            usermanager.update_user_forum_info(request.user.forum_username, result, request.user.id)
+            return HttpResponseRedirect("/services/")
+
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@permission_required('authentication.alliance_member')
+def activate_jabber(request):
+    usermanager = AllianceUserManager()
+    jabbermanager = JabberManager()
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+        charactermanager = EveManager()
+        character = charactermanager.get_character_by_id(request.user.main_char_id)
+    
+        info = jabbermanager.add_user(character.character_name)
+
+        # If our username is blank means we already had a user
+        if info[0] is not "":
+            usermanager.update_user_jabber_info(info[0], info[1], request.user.id)
+        return HttpResponseRedirect("/services/")
+    
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@permission_required('authentication.alliance_member')
+def deactivate_jabber(request):
+    usermanager = AllianceUserManager()
+    jabbermanager = JabberManager()
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+        result = jabbermanager.delete_user(request.user.jabber_username)
+        # If our username is blank means we failed
+        if result:
+            usermanager.update_user_jabber_info("", "", request.user.id)
+
+        return HttpResponseRedirect("/services/")
+
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@permission_required('authentication.alliance_member')
+def reset_jabber_password(request):
+    usermanager = AllianceUserManager()
+    jabbermanager = JabberManager()
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+        result = jabbermanager.update_user_pass(request.user.jabber_username)
+        # If our username is blank means we failed
+        if result != "":
+            usermanager.update_user_jabber_info(request.user.jabber_username, result, request.user.id)
+
+        return HttpResponseRedirect("/services/")
+
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@permission_required('authentication.alliance_member')
+def activate_mumble(request):
+    usermanager = AllianceUserManager()
+    charactermanager = EveManager()
+    mumblemanager = MumbleManager()
+
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+        character = charactermanager.get_character_by_id(request.user.main_char_id)
+
+        result = mumblemanager.create_user(character.corporation_ticker, character.character_name)
+
+        # if its empty we failed
+        if result[0] is not "":
+            usermanager.update_user_mumble_info(result[0], result[1], request.user.id)
+
             return HttpResponseRedirect("/services/")
 
     return HttpResponseRedirect("/")
 
-
 @login_required
-@permission_required('auth.alliance_member')
-def activate_jabber(request):
-    userManager = AllianceUserManager()
-    jabberManager = JabberManager()
-    if userManager.check_if_user_exist(request.user.id):
-        characterManager = EveManager()
-        character = characterManager.get_character_by_id(request.user.main_char_id)
-    
-        jabberManager.add_user(character.character_name,"test")
-    
-        return HttpResponseRedirect("/services/")
-    
+@permission_required('authentication.alliance_member')
+def deactivate_mumble(request):
+    usermanager = AllianceUserManager()
+    mumblemanager = MumbleManager()
+
+    if usermanager.check_if_user_exist_by_id(request.user.id):
+
+        result = mumblemanager.delete_user(request.user.mumble_username)
+
+        # if false we failed
+        if result:
+            usermanager.update_user_mumble_info("", "", request.user.id)
+
+            return HttpResponseRedirect("/services/")
+
     return HttpResponseRedirect("/")
 
-
 @login_required
-@permission_required('auth.alliance_member')
-def activate_mumble(request):
-    userManager = AllianceUserManager()
-    characterManager = EveManager()
-    mumbleManager = MumbleManager()
+@permission_required('authentication.alliance_member')
+def reset_mumble_password(request):
 
-    if userManager.check_if_user_exist(request.user.id):
-        characterManager = EveManager()
-        character = characterManager.get_character_by_id(request.user.main_char_id)
+    usermanager = AllianceUserManager()
+    mumblemanager = MumbleManager()
 
-        mumbleManager.create_user(character.character_name, "test")
+    if usermanager.check_if_user_exist_by_id(request.user.id):
 
-        return HttpResponseRedirect("/services/")
+        result = mumblemanager.update_user_password(request.user.mumble_username)
+
+        # if blank we failed
+        if result != "":
+            usermanager.update_user_mumble_info(request.user.mumble_username, result, request.user.id)
+
+            return HttpResponseRedirect("/services/")
 
     return HttpResponseRedirect("/")
