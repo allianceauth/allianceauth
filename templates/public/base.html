@@ -1,0 +1,90 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}Empty title{% endblock title %}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock extra_css %}
+
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <div id="wrapper">
+        <!-- Navigation -->
+
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'auth_dashboard' %}">{{ ALLIANCE_NAME }}</a>
+
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                 {% if user.is_authenticated %}
+                        <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'auth_login_user' %}">Login</a></li>
+                  {% endif %}
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %} href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %} href="{% url 'auth_characters' %}"><i class="fa fa-users fa-fw"></i> Characters</a>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %} href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/services/" %} class="active" {% endifequal %} href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href=""><i class="fa fa-question fa-fw"></i> Help</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

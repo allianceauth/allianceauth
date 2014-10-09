@@ -1,0 +1,52 @@
+{% load staticfiles %}
+<style>
+body {
+background: url('{% static 'img/index_images/index_bg.jpg' %}') no-repeat scroll;
+background-size: 100% 100%;
+}
+
+div {
+    height: 200px;
+    width: 400px;
+
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -200px;
+}
+
+</style>
+
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>The 99 Percent Eve Alliance</title>
+    </head>
+    <body>
+        <div id="content">
+            <p style="text-align:center">
+                <a href="/dashboard/">
+                    <img src="{% static 'img/index_images/auth.png' %}" border="0">
+                </a>
+            </p>
+            <p style="text-align:center">
+                <a href="/forums/">
+                    <img src="{% static 'img/index_images/forums.png' %}" border="0">
+                </a>
+            </p>
+
+            <p style="text-align:center">
+                <a href="/killboard/">
+                    <img src="{% static 'img/index_images/killboard.png' %}" border="0">
+                </a>
+            </p>
+
+            <p style="text-align:center">
+                <a href="https://youtube.com/">
+                    <img src="{% static 'img/index_images/media.png' %}" border="0">
+                </a>
+            </p>
+        </div>
+    </body>
+</html>
