@@ -12,10 +12,8 @@ from managers import EveManager
 from authentication.managers import AuthServicesInfoManager
 from services.managers.eve_api_manager import EveApiManager
 
-
 @login_required
-def api_key_management_view(request):
-
+def add_api_key(request):
     if request.method == 'POST':
         form = UpdateKeyForm(request.POST)
 
@@ -25,26 +23,35 @@ def api_key_management_view(request):
                                           request.user)
 
             # Grab characters associated with the key pair
-
             characters = EveApiManager.get_characters_from_api(form.cleaned_data['api_id'], form.cleaned_data['api_key'])
             EveManager.create_characters_from_list(characters, request.user, form.cleaned_data['api_id'])
             return HttpResponseRedirect("/api_key_management/")
     else:
         form = UpdateKeyForm()
     context = {'form': form, 'apikeypairs': EveManager.get_api_key_pairs(request.user.id)}
+    return render_to_response('registered/addapikey.html', context,
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def api_key_management_view(request):
+    context = {'apikeypairs': EveManager.get_api_key_pairs(request.user.id)}
+
     return render_to_response('registered/apikeymanagment.html', context,
                               context_instance=RequestContext(request))
 
 
 @login_required
 def api_key_removal(request, api_id):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     # Check if our users main id is in the to be deleted characters
     characters = EveManager.get_characters_by_owner_id(request.user.id)
     if characters is not None:
         for character in characters:
-            if character.character_id == request.user.main_char_id:
-                # TODO: Remove servies also
-                AuthServicesInfoManager.update_main_char_Id("", request.user.id)
+            if character.character_id == authinfo.main_char_id:
+                if character.api_id == api_id:
+                    # TODO: Remove servies also
+                    AuthServicesInfoManager.update_main_char_Id("", request.user)
 
     EveManager.delete_api_key_pair(api_id, request.user.id)
     EveManager.delete_characters_by_api_id(api_id, request.user.id)

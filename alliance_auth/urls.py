@@ -18,8 +18,10 @@ urlpatterns = patterns('',
 
     # Portal Urls
     url(r'^dashboard/$', 'portal.views.dashboard_view', name='auth_dashboard'),
+    url(r'^help/$', 'portal.views.help_view', name='auth_help'),
 
     # Eveonline Urls
+    url(r'^add_api_key/', 'eveonline.views.add_api_key', name='auth_add_api_key'),
     url(r'^api_key_management/', 'eveonline.views.api_key_management_view', name='auth_api_key_management'),
     url(r'^delete_api_pair/(\w+)/$', 'eveonline.views.api_key_removal', name='auth_api_key_removal'),
     url(r'^characters/', 'eveonline.views.characters_view', name='auth_characters'),
@@ -27,6 +29,7 @@ urlpatterns = patterns('',
 
     # Service Urls
     url(r'^services/', 'services.views.services_view', name='auth_services'),
+
     # Forum Service Control
     url(r'^activate_forum/$', 'services.views.activate_forum', name='auth_activate_forum'),
     url(r'^deactivate_forum/$', 'services.views.deactivate_forum', name='auth_deactivate_forum'),

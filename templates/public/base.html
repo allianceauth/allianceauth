@@ -71,7 +71,7 @@
                             <a {% ifequal request.path "/services/" %} class="active" {% endifequal %} href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href=""><i class="fa fa-question fa-fw"></i> Help</a>
+                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href="{% url 'auth_help' %}"><i class="fa fa-question fa-fw"></i> Help</a>
                         </li>
                     </ul>
                 </div>

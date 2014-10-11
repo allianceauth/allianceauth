@@ -12,6 +12,8 @@ from managers.mumble_manager import MumbleManager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 
+from celerytask.tasks import update_jabber_groups
+from celerytask.tasks import update_mumble_groups
 
 @login_required
 def services_view(request):
@@ -66,6 +68,7 @@ def activate_jabber(request):
     # If our username is blank means we already had a user
     if info[0] is not "":
         AuthServicesInfoManager.update_user_jabber_info(info[0], info[1], request.user)
+        update_jabber_groups(request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 
@@ -103,8 +106,9 @@ def activate_mumble(request):
     # if its empty we failed
     if result[0] is not "":
         AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], request.user)
+        update_mumble_groups(request.user)
         return HttpResponseRedirect("/services/")
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/dashboard")
 
 
 @login_required

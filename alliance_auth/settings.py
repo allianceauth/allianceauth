@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import djcelery
+djcelery.setup_loader()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -26,12 +28,13 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # Application definition
 
 INSTALLED_APPS = (
-    'django_admin_bootstrapped.bootstrap3',
-    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_evolution',
+    'djcelery',
+    'celerytask',
     'bootstrapform',
     'authentication',
     'portal',
@@ -141,9 +146,9 @@ ALLIANCE_ID = ''
 ALLIANCE_NAME = ''
 
 # Jabber Prosody Info
-JABBER_URL = "@someaddress.com"
-OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
+JABBER_URL = ""
+OPENFIRE_ADDRESS = ""
+OPENFIRE_SECRET_KEY = ""
 
 # Mumble settings
-MUMBLE_SERVER_ID = 1
+MUMBLE_SERVER_ID = ''

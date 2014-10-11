@@ -13,3 +13,8 @@ def index_view(request):
 @login_required
 def dashboard_view(request):
     return render_to_response('registered/dashboard.html', None, context_instance=RequestContext(request))
+
+
+@login_required
+def help_view(request):
+    return render_to_response('registered/help.html', None, context_instance=RequestContext(request))

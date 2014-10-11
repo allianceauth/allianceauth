@@ -14,7 +14,13 @@
         {% else %}
             <div class="alert alert-danger" role="alert">No api keys found</div>
         {% endif %}
-        <h1 class="page-header text-center">API Key Management</h1>
+        <h1 class="page-header text-center">API Key Management
+            <div class="text-right">
+                <a href="{% url 'auth_add_api_key' %}">
+                    <button type="button" class="btn btn-success">Add Key</button>
+                </a>
+            </div>
+        </h1>
         <table class="table table-bordered">
             <tr>
                 <th class="text-center">API ID</th>
@@ -36,12 +42,6 @@
             </tr>
             {% endfor %}
         </table>
-         <form class="form-signin" role="form" action="{% url 'auth_api_key_management' %}" method="POST">
-            {% csrf_token %}
-            {{ form|bootstrap_horizontal }}
-             <br/>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Add Key</button>
-        </form>
     </div>
 </div>
 

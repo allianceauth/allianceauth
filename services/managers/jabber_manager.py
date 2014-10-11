@@ -68,3 +68,13 @@ class JabberManager:
             return password
         except exception.UserNotFoundException:
             return ""
+
+    @staticmethod
+    def update_user_groups(username, password, groups):
+        api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        api.update_user(username, password, "", "", groups)
+
+    @staticmethod
+    def delete_user_groups(username, groups):
+        api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        api.delete_group(username,groups)
