@@ -74,6 +74,7 @@ def characters_view(request):
 def main_character_change(request, char_id):
 
     if EveManager.check_if_character_owned_by_user(char_id, request.user):
+        previousmainid = AuthServicesInfoManager.get_auth_service_info(request.user).main_char_id
         AuthServicesInfoManager.update_main_char_Id(char_id, request.user)
         # Check if character is in the alliance
         if EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
@@ -86,7 +87,7 @@ def main_character_change(request, char_id):
             remove_member_permission(request.user, 'alliance_member')
             remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
             remove_user_from_group(request.user,
-                                   generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
+                                   generate_corp_group_name(EveManager.get_character_by_id(previousmainid).corporation_name))
             deactivate_services(request.user)
 
         return HttpResponseRedirect("/characters")
