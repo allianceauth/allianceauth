@@ -13,7 +13,7 @@ from services.managers.eve_api_manager import EveApiManager
 from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
 from util.common_task import deactivate_services
-
+from util.common_task import generate_corp_group_name
 
 @login_required
 def add_api_key(request):
@@ -79,10 +79,14 @@ def main_character_change(request, char_id):
         if EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
             add_member_permission(request.user, 'alliance_member')
             add_user_to_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
+            add_user_to_group(request.user,
+                              generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
         else:
             #TODO: disable serivces
             remove_member_permission(request.user, 'alliance_member')
             remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
+            remove_user_from_group(request.user,
+                                   generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
             deactivate_services(request.user)
 
         return HttpResponseRedirect("/characters")
