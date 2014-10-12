@@ -1,21 +1,23 @@
 {% load staticfiles %}
 <style>
-body {
-background: url('{% static 'img/index_images/index_bg.jpg' %}') no-repeat scroll;
-background-size: 100% 100%;
+html {
+    background: url("{% static 'img/index_images/index_bg.jpg' %}") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 div {
     height: 200px;
     width: 400px;
-
     position: fixed;
     top: 60%;
     left: 50%;
     margin-top: -100px;
     margin-left: -200px;
 }
-
+  
 </style>
 
 <html>
