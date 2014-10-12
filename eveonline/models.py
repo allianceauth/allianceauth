@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import admin
 from django.contrib.auth.models import User
 
 
@@ -19,6 +18,3 @@ class EveApiKeyPair(models.Model):
     api_id = models.CharField(max_length=254)
     api_key = models.CharField(max_length=254)
     user = models.ForeignKey(User)
-
-admin.site.register(EveCharacter)
-admin.site.register(EveApiKeyPair)

@@ -13,5 +13,3 @@ class AuthServicesInfo(models.Model):
     main_char_id = models.CharField(max_length=64, default="")
 
     user = models.ForeignKey(User)
-
-admin.site.register(AuthServicesInfo)
