@@ -19,7 +19,7 @@ class ForumManager:
 
     SQL_GET_GROUP_ID = r"SELECT group_id from phpbb_groups WHERE group_name = %s"
 
-    SQL_ADD_GROUP = r"INSERT INTO phpbb_groups (group_name,group_desc) VALUES (%s,"")"
+    SQL_ADD_GROUP = r"INSERT INTO phpbb_groups (group_name,group_desc) VALUES (%s,%s)"
 
     SQL_UPDATE_USER_PASSWORD = r"UPDATE phpbb_users SET user_password = %s WHERE username = %s"
 
@@ -81,7 +81,7 @@ class ForumManager:
     @staticmethod
     def __create_group(groupname):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname])
+        cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname,groupname])
         return ForumManager.__get_group_id(groupname)
 
     @staticmethod
