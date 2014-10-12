@@ -50,47 +50,61 @@ def update_forum_groups(user):
 
 
 def add_to_databases(user, groups, syncgroups):
-    authserviceinfo = AuthServicesInfo.objects.get(user=user)
 
-    update = False
-    for group in groups:
-        syncgroup = syncgroups.filter(groupname=group.name)
-        if not syncgroup:
-            # gotta create group
-            # create syncgroup
-            # create service groups
-            synccache = SyncGroupCache()
-            synccache.groupname = group.name
-            synccache.user = user
-            synccache.save()
-            update = True
+    authserviceinfo = None
+    try:
+        authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    except:
+        pass
 
-    if update:
-        if authserviceinfo.jabber_username != "":
-            update_jabber_groups(user)
-        if authserviceinfo.mumble_username != "":
-            update_mumble_groups(user)
-        if authserviceinfo.forum_username != "":
-            update_forum_groups(user)
+    if authserviceinfo:
+        authserviceinfo = AuthServicesInfo.objects.get(user=user)
+
+        update = False
+        for group in groups:
+            syncgroup = syncgroups.filter(groupname=group.name)
+            if not syncgroup:
+                # gotta create group
+                # create syncgroup
+                # create service groups
+                synccache = SyncGroupCache()
+                synccache.groupname = group.name
+                synccache.user = user
+                synccache.save()
+                update = True
+
+        if update:
+            if authserviceinfo.jabber_username != "":
+                update_jabber_groups(user)
+            if authserviceinfo.mumble_username != "":
+                update_mumble_groups(user)
+            if authserviceinfo.forum_username != "":
+                update_forum_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
-    authserviceinfo = AuthServicesInfo.objects.get(user=user)
-    update = False
-    for syncgroup in syncgroups:
-        group = groups.filter(name=syncgroup.groupname)
+    authserviceinfo = None
+    try:
+        authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    except:
+        pass
 
-        if not group:
-            syncgroup.delete()
-            update = True
+    if authserviceinfo:
+        update = False
+        for syncgroup in syncgroups:
+            group = groups.filter(name=syncgroup.groupname)
 
-    if update:
-        if authserviceinfo.jabber_username != "":
-            update_jabber_groups(user)
-        if authserviceinfo.mumble_username != "":
-            update_mumble_groups(user)
-        if authserviceinfo.forum_username != "":
-            update_forum_groups(user)
+            if not group:
+                syncgroup.delete()
+                update = True
+
+        if update:
+            if authserviceinfo.jabber_username != "":
+                update_jabber_groups(user)
+            if authserviceinfo.mumble_username != "":
+                update_mumble_groups(user)
+            if authserviceinfo.forum_username != "":
+                update_forum_groups(user)
 
 
 @periodic_task(run_every=crontab(minute="*/1"))

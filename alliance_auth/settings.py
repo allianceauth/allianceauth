@@ -144,7 +144,7 @@ DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 
 # ALLIANCE INFO
 ALLIANCE_ID = '0'
-ALLIANCE_NAME = 'Alliance Name'
+ALLIANCE_NAME = 'SomeAllianceName'
 
 # Jabber Prosody Info
 JABBER_URL = "@someaddress.com"
