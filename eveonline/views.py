@@ -5,12 +5,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-
 from forms import UpdateKeyForm
 from managers import EveManager
 
 from authentication.managers import AuthServicesInfoManager
 from services.managers.eve_api_manager import EveApiManager
+from util.common_task import add_user_to_group
+from util.common_task import remove_user_from_group
+from util.common_task import deactivate_services
+
 
 @login_required
 def add_api_key(request):
@@ -75,9 +78,13 @@ def main_character_change(request, char_id):
         # Check if character is in the alliance
         if EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
             add_member_permission(request.user, 'alliance_member')
+            add_user_to_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
         else:
             #TODO: disable serivces
             remove_member_permission(request.user, 'alliance_member')
+            remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
+            deactivate_services(request.user)
 
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
+

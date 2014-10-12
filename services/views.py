@@ -14,6 +14,8 @@ from eveonline.managers import EveManager
 
 from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
+from celerytask.tasks import update_forum_groups
+
 
 @login_required
 def services_view(request):
@@ -31,6 +33,7 @@ def activate_forum(request):
     # if empty we failed
     if result[0] != "":
         AuthServicesInfoManager.update_user_forum_info(result[0], result[1], request.user)
+        update_forum_groups(request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 

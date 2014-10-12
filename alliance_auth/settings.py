@@ -65,7 +65,6 @@ ROOT_URLCONF = 'alliance_auth.urls'
 
 WSGI_APPLICATION = 'alliance_auth.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
@@ -141,14 +140,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
+
 # ALLIANCE INFO
-ALLIANCE_ID = ''
-ALLIANCE_NAME = ''
+ALLIANCE_ID = '0'
+ALLIANCE_NAME = 'Alliance Name'
 
 # Jabber Prosody Info
-JABBER_URL = ""
-OPENFIRE_ADDRESS = ""
-OPENFIRE_SECRET_KEY = ""
+JABBER_URL = "@someaddress.com"
+OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
+OPENFIRE_SECRET_KEY = "somekey"
 
 # Mumble settings
-MUMBLE_SERVER_ID = ''
+MUMBLE_SERVER_ID = '1'

@@ -50,6 +50,8 @@ def update_forum_groups(user):
 
 
 def add_to_databases(user, groups, syncgroups):
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+
     update = False
     for group in groups:
         syncgroup = syncgroups.filter(groupname=group.name)
@@ -64,12 +66,16 @@ def add_to_databases(user, groups, syncgroups):
             update = True
 
     if update:
-        update_jabber_groups(user)
-        update_mumble_groups(user)
-        update_forum_groups(user)
+        if authserviceinfo.jabber_username != "":
+            update_jabber_groups(user)
+        if authserviceinfo.mumble_username != "":
+            update_mumble_groups(user)
+        if authserviceinfo.forum_username != "":
+            update_forum_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
     update = False
     for syncgroup in syncgroups:
         group = groups.filter(name=syncgroup.groupname)
@@ -79,13 +85,15 @@ def remove_from_databases(user, groups, syncgroups):
             update = True
 
     if update:
-        update_jabber_groups(user)
-        update_mumble_groups(user)
-        update_forum_groups(user)
+        if authserviceinfo.jabber_username != "":
+            update_jabber_groups(user)
+        if authserviceinfo.mumble_username != "":
+            update_mumble_groups(user)
+        if authserviceinfo.forum_username != "":
+            update_forum_groups(user)
 
 
-@periodic_task(run_every=timedelta(seconds=10))
-#@periodic_task(run_every=crontab(minute="*/1"))
+@periodic_task(run_every=crontab(minute="*/1"))
 def run_databaseUpdate():
     users = User.objects.all()
     for user in users:
