@@ -36,4 +36,5 @@ def deactivate_services(user):
 
 
 def generate_corp_group_name(corpname):
-    return 'Corp_'+corpname.replace(' ','_')
+    return 'Corp_'+corpname.replace(' ', '_')
+

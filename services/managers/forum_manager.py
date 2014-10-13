@@ -1,4 +1,6 @@
 import os
+import calendar
+from datetime import datetime
 from passlib.apps import phpbb3_context
 from django.db import connections
 
@@ -6,8 +8,8 @@ from django.db import connections
 class ForumManager:
     
     SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
-                   r"user_password, user_email, group_id , user_permissions, " \
-                   r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                   r"user_password, user_email, group_id, user_regdate, user_permissions, " \
+                   r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     SQL_DEL_USER = r"DELETE FROM phpbb_users where username = %s"
 
@@ -79,6 +81,12 @@ class ForumManager:
         return [row[0] for row in cursor.fetchall()]
 
     @staticmethod
+    def __get_current_utc_date():
+        d = datetime.utcnow()
+        unixtime = calendar.timegm(d.utctimetuple())
+        return unixtime
+
+    @staticmethod
     def __create_group(groupname):
         cursor = connections['phpbb3'].cursor()
         cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname,groupname])
@@ -94,7 +102,6 @@ class ForumManager:
         cursor = connections['phpbb3'].cursor()
         cursor.execute(ForumManager.SQL_REMOVE_USER_GROUP, [userid, groupid])
 
-
     @staticmethod
     def add_user(username, email, groups):
         cursor = connections['phpbb3'].cursor()
@@ -108,8 +115,10 @@ class ForumManager:
             ForumManager.__update_user_info(username_clean, email, pwhash)
         else:
             try:
+
                 cursor.execute(ForumManager.SQL_ADD_USER, [username_clean, username_clean, pwhash,
-                                                           email, 2, "", "", "", ""])
+                                                           email, 2, ForumManager.__get_current_utc_date(),
+                                                           "", "", "", ""])
                 ForumManager.update_groups(username_clean, groups)
             except:
                 pass
@@ -147,9 +156,9 @@ class ForumManager:
         act_groups = set([g.replace(' ', '-') for g in groups])
         addgroups = act_groups - user_groups
         remgroups = user_groups - act_groups
+        print username
         print addgroups
         print remgroups
-        print userid
         for g in addgroups:
             if not g in forum_groups:
                 forum_groups[g] = ForumManager.__create_group(g)
