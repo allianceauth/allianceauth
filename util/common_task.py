@@ -17,8 +17,9 @@ def add_user_to_group(user, groupname):
 def remove_user_from_group(user, groupname):
     user = User.objects.get(username=user.username)
     group, created = Group.objects.get_or_create(name=groupname)
-    user.groups.remove(group)
-    user.save()
+    if user.groups.filter(name=groupname):
+        user.groups.remove(group)
+        user.save()
 
 
 def deactivate_services(user):
