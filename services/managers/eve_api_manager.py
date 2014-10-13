@@ -34,3 +34,15 @@ class EveApiManager():
 
         return ticker
 
+    @staticmethod
+    def check_api_is_type_account(api_id, api_key):
+        try:
+            api = evelink.api.API(api_key=(api_id, api_key))
+            account = evelink.account.Account(api=api)
+            info = account.key_info()
+            return info[0]['type'] == "account"
+
+        except evelink.api.APIError as error:
+            print error
+
+        return False
