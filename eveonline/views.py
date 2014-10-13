@@ -1,5 +1,7 @@
 from util import add_member_permission
 from util import remove_member_permission
+from util import check_if_user_has_permission
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -84,11 +86,12 @@ def main_character_change(request, char_id):
                               generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
         else:
             #TODO: disable serivces
-            remove_member_permission(request.user, 'alliance_member')
-            remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
-            remove_user_from_group(request.user,
-                                   generate_corp_group_name(EveManager.get_character_by_id(previousmainid).corporation_name))
-            deactivate_services(request.user)
+            if check_if_user_has_permission(request.user, 'alliance_member'):
+                remove_member_permission(request.user, 'alliance_member')
+                remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
+                remove_user_from_group(request.user,
+                                       generate_corp_group_name(EveManager.get_character_by_id(previousmainid).corporation_name))
+                deactivate_services(request.user)
 
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
