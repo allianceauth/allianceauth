@@ -28,11 +28,13 @@
                                     {{character.character_name}}
                                     </div>
                                     <div class="text-right col-md-4">
+                                        <a href="/main_character_change/{{character.character_id}}">
                                         {% ifequal character.character_id authinfo.main_char_id %}
                                             <button type="button" class="btn btn-default btn-xs" disabled>Make Primary</button>
                                         {% else %}
                                             <button type="button" class="btn btn-primary btn-xs">Make Primary</button>
                                         {% endifequal %}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
