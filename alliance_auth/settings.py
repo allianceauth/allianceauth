@@ -144,12 +144,13 @@ DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 
 # ALLIANCE INFO
 ALLIANCE_ID = '0'
-ALLIANCE_NAME = 'SomeAllianceName'
+ALLIANCE_NAME = 'Some alliance'
 
 # Jabber Prosody Info
 JABBER_URL = "@someaddress.com"
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
+OPENFIRE_SECRET_KEY = "somesecret"
 
 # Mumble settings
-MUMBLE_SERVER_ID = '1'
+MUMBLE_SERVER_ID = 1
+

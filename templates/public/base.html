@@ -19,7 +19,6 @@
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock extra_css %}
-
 </head>
 
 <body>
@@ -27,12 +26,15 @@
     <div id="wrapper">
         <!-- Navigation -->
 
-        <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
 
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'auth_dashboard' %}">{{ ALLIANCE_NAME }}</a>
-
+            <div class="navbar-header ">
+                <a class="navbar-brand ">
+                    <div class="fa fa-cog fa-spin"></div>
+                    {{ ALLIANCE_NAME }}
+                </a>
             </div>
+
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">

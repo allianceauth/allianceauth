@@ -11,7 +11,7 @@ class RegistrationForm(forms.Form):
     def clean(self):
         if ' ' in self.cleaned_data['username']:
             raise forms.ValidationError(u'Username can not contain a space')
-        
+
         if 'password' in self.cleaned_data and 'password_again' in self.cleaned_data:
             if self.cleaned_data['password'] != self.cleaned_data['password_again']:
                 raise forms.ValidationError(u'Passwords do not match')
