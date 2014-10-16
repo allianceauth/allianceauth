@@ -154,3 +154,5 @@ def run_api_refresh():
                     else:
                         #nuke it
                         deactivate_services(user)
+            else:
+                print 'No main_char_id set'
