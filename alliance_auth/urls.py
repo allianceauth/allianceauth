@@ -16,6 +16,13 @@ urlpatterns = patterns('',
     url(r'^logout_user/', 'authentication.views.logout_user', name='auth_logout_user'),
     url(r'^register_user/', 'registration.views.register_user_view', name='auth_register_user'),
 
+    url(r'^user/password/$', 'django.contrib.auth.views.password_change', name='password_change'),
+    url(r'^user/password/done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
+    url(r'^user/password/reset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),
+    url(r'^user/password/password/reset/done/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
+    url(r'^user/password/reset/complete/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
+    url(r'^user/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', name='password_reset_confirm'),
+
     # Portal Urls
     url(r'^dashboard/$', 'portal.views.dashboard_view', name='auth_dashboard'),
     url(r'^help/$', 'portal.views.help_view', name='auth_help'),

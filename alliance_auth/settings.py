@@ -32,8 +32,17 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
-# Application definition
+# EMAIL SETTINGS
+# By default uses the python smtpd server
+DOMAIN = 'https://the99eve.com'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'testing@example.com'
 
+# Application definition
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -108,7 +117,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'util.context_processors.alliance_id',
     'util.context_processors.alliance_name',
-    'util.context_processors.jabber_url'
+    'util.context_processors.jabber_url',
+    'util.context_processors.domain_url'
 )
 
 TEMPLATE_DIRS = (
@@ -144,12 +154,12 @@ DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 
 # ALLIANCE INFO
 ALLIANCE_ID = '0'
-ALLIANCE_NAME = 'Some alliance'
+ALLIANCE_NAME = 'Somealliance'
 
 # Jabber Prosody Info
 JABBER_URL = "@someaddress.com"
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somesecret"
+OPENFIRE_SECRET_KEY = "somekey"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

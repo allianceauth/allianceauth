@@ -11,3 +11,7 @@ def alliance_name(request):
 
 def jabber_url(request):
     return {'JABBER_URL': settings.JABBER_URL}
+
+
+def domain_url(request):
+    return {'DOMAIN': settings.DOMAIN}

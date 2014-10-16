@@ -60,6 +60,10 @@
                             </div>
                             <!-- /input-group -->
                         </li>
+                        <li class="text-center divider-horizontal">
+                            <h5>Main Navigation</h5>
+                        </li>
+
                         <li>
                             <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %} href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
@@ -75,6 +79,14 @@
                         <li>
                             <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href="{% url 'auth_help' %}"><i class="fa fa-question fa-fw"></i> Help</a>
                         </li>
+
+                        <li class="text-center divider-horizontal">
+                            <h5>Util</h5>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %} href="{% url 'password_change' %}"><i class="fa fa-lock fa-fw"></i>Change Password</a>
+                        </li>
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
