@@ -120,7 +120,7 @@ def run_databaseUpdate():
 
 
 #run at midnight everyday
-@periodic_task(run_every=crontab(minute=0, hour=0))
+@periodic_task(run_every=crontab(minute=0, hour="*/3"))
 def run_api_refresh():
     users = User.objects.all()
     for user in users:
