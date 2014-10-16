@@ -108,6 +108,7 @@ def remove_from_databases(user, groups, syncgroups):
                 update_forum_groups(user)
 
 
+#run every minute
 @periodic_task(run_every=crontab(minute="*/1"))
 def run_databaseUpdate():
     users = User.objects.all()
@@ -118,7 +119,8 @@ def run_databaseUpdate():
         remove_from_databases(user, groups, syncgroups)
 
 
-@periodic_task(run_every=crontab(day="*/1"))
+#run at midnight everyday
+@periodic_task(run_every=crontab(minute=0, hour=0))
 def run_api_refresh():
     users = User.objects.all()
     for user in users:
