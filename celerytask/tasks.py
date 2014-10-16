@@ -141,7 +141,7 @@ def run_api_refresh():
                             EveManager.update_characters_from_list(characters)
                             valid_key = True
                         else:
-                            EveManager.delete_characters_by_api_id(api_key_pair.api_id, api_key_pair.api_key)
+                            EveManager.delete_characters_by_api_id(api_key_pair.api_id, user)
                             EveManager.delete_api_key_pair(api_key_pair.api_id, api_key_pair.api_key)
 
                     if valid_key:
