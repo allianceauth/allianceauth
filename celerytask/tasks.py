@@ -128,23 +128,27 @@ def run_api_refresh():
         if api_key_pairs:
             valid_key = False
             authserviceinfo = AuthServicesInfo.objects.get(user=user)
-            for api_key_pair in api_key_pairs:
-                if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
-                    # Update characters
-                    characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
-                    EveManager.update_characters_from_list(characters)
-                    valid_key = True
-                else:
-                    EveManager.delete_characters_by_api_id(api_key_pair.api_id, api_key_pair.api_key)
-                    EveManager.delete_api_key_pair(api_key_pair.api_id, api_key_pair.api_key)
+            # We do a check on the authservice info to insure that we shoud run the check
+            # No point in running the check on people who arn't on services
+            if authserviceinfo.main_char_id:
+                if authserviceinfo.main_char_id != "":
+                    for api_key_pair in api_key_pairs:
+                        if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
+                            # Update characters
+                            characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
+                            EveManager.update_characters_from_list(characters)
+                            valid_key = True
+                        else:
+                            EveManager.delete_characters_by_api_id(api_key_pair.api_id, api_key_pair.api_key)
+                            EveManager.delete_api_key_pair(api_key_pair.api_id, api_key_pair.api_key)
 
-            if valid_key:
-                # Check our main character
-                main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
-                if main_alliance_id == settings.ALLIANCE_ID:
-                    pass
-                else:
-                    deactivate_services(user)
-            else:
-                #nuke it
-                deactivate_services(user)
+                    if valid_key:
+                        # Check our main character
+                        main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
+                        if main_alliance_id == settings.ALLIANCE_ID:
+                            pass
+                        else:
+                            deactivate_services(user)
+                    else:
+                        #nuke it
+                        deactivate_services(user)
