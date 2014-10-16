@@ -130,9 +130,11 @@ def run_api_refresh():
             authserviceinfo = AuthServicesInfo.objects.get(user=user)
             # We do a check on the authservice info to insure that we shoud run the check
             # No point in running the check on people who arn't on services
+            print 'Running update on user: '+user.username
             if authserviceinfo.main_char_id:
                 if authserviceinfo.main_char_id != "":
                     for api_key_pair in api_key_pairs:
+                        print 'Running on '+api_key_pair.api_id+':'+api_key_pair.api_key
                         if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
                             # Update characters
                             characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
