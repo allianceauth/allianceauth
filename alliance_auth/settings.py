@@ -33,7 +33,7 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # EMAIL SETTINGS
-# By default setup for gmail
+# By default uses the python smtpd server
 DOMAIN = 'https://the99eve.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

@@ -46,3 +46,28 @@ class EveApiManager():
             print error
 
         return False
+
+    @staticmethod
+    def get_api_info(api_id, api_key):
+        try:
+            api = evelink.api.API(api_key=(api_id, api_key))
+            account = evelink.account.Account(api=api)
+            info = account.key_info()
+            return info
+
+        except evelink.api.APIError as error:
+            print error
+
+        return False
+
+    @staticmethod
+    def api_key_is_valid(api_id, api_key):
+        try:
+            api = evelink.api.API(api_key=(api_id, api_key))
+            account = evelink.account.Account(api=api)
+            info = account.status()
+            return True
+        except evelink.api.APIError as error:
+            return False
+
+        return False

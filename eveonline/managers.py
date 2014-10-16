@@ -41,6 +41,19 @@ class EveManager:
                                       user, api_id)
 
     @staticmethod
+    def update_characters_from_list(chars):
+        for char in chars.result:
+            if EveManager.check_if_character_exist(chars.result[char]['name']):
+                eve_char = EveManager.get_character_by_character_name(chars.result[char]['name'])
+                eve_char.corporation_id = chars.result[char]['corp']['id']
+                eve_char.corporation_name = chars.result[char]['corp']['name']
+                eve_char.corporation_ticker = EveApiManager.get_corporation_ticker_from_id(chars.result[char]['corp']['id'])
+                eve_char.alliance_id = chars.result[char]['alliance']['id']
+                eve_char.alliance_name = chars.result[char]['alliance']['name']
+                eve_char.save()
+
+
+    @staticmethod
     def create_api_keypair(api_id, api_key, user_id):
         if not EveApiKeyPair.objects.filter(api_id=api_id).exists():
             api_pair = EveApiKeyPair()
@@ -50,9 +63,9 @@ class EveManager:
             api_pair.save()
 
     @staticmethod
-    def get_api_key_pairs(user_id):
-        if EveApiKeyPair.objects.filter(user=user_id).exists():
-            return EveApiKeyPair.objects.filter(user=user_id)
+    def get_api_key_pairs(user):
+        if EveApiKeyPair.objects.filter(user=user).exists():
+            return EveApiKeyPair.objects.filter(user=user)
 
     @staticmethod
     def delete_api_key_pair(api_id, user_id):
@@ -82,6 +95,11 @@ class EveManager:
             return EveCharacter.objects.all().filter(user=user)
 
         return None
+
+    @staticmethod
+    def get_character_by_character_name(char_name):
+        if EveCharacter.objects.filter(character_name=char_name).exists():
+            return EveCharacter.objects.get(character_name=char_name)
 
     @staticmethod
     def get_character_by_id(char_id):

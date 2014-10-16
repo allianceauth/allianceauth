@@ -1,5 +1,5 @@
 from models import SyncGroupCache
-from celery import task
+from django.conf import settings
 from celery.task import periodic_task
 from celery.task.schedules import crontab
 from django.contrib.auth.models import User
@@ -7,8 +7,9 @@ from services.managers.jabber_manager import JabberManager
 from services.managers.mumble_manager import MumbleManager
 from services.managers.forum_manager import ForumManager
 from authentication.models import AuthServicesInfo
-from django.utils.timezone import timedelta
-
+from eveonline.managers import EveManager
+from services.managers.eve_api_manager import EveApiManager
+from util.common_task import deactivate_services
 
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -115,3 +116,33 @@ def run_databaseUpdate():
         syncgroups = SyncGroupCache.objects.filter(user=user)
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
+
+
+@periodic_task(run_every=crontab(day="*/1"))
+def run_api_refresh():
+    users = User.objects.all()
+    for user in users:
+        api_key_pairs = EveManager.get_api_key_pairs(user.id)
+        if api_key_pairs:
+            valid_key = False
+            authserviceinfo = AuthServicesInfo.objects.get(user=user)
+            for api_key_pair in api_key_pairs:
+                if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
+                    # Update characters
+                    characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
+                    EveManager.update_characters_from_list(characters)
+                    valid_key = True
+                else:
+                    EveManager.delete_characters_by_api_id(api_key_pair.api_id, api_key_pair.api_key)
+                    EveManager.delete_api_key_pair(api_key_pair.api_id, api_key_pair.api_key)
+
+            if valid_key:
+                # Check our main character
+                main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
+                if main_alliance_id == settings.ALLIANCE_ID:
+                    pass
+                else:
+                    deactivate_services(user)
+            else:
+                #nuke it
+                deactivate_services(user)
