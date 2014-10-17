@@ -68,6 +68,13 @@ class EveManager:
             return EveApiKeyPair.objects.filter(user=user)
 
     @staticmethod
+    def check_if_api_key_pair_exist(api_id):
+        if EveApiKeyPair.objects.filter(api_id=api_id).exists():
+            return True
+        else:
+            return False
+
+    @staticmethod
     def delete_api_key_pair(api_id, user_id):
         if EveApiKeyPair.objects.filter(api_id=api_id).exists():
             # Check that its owned by our user_id
