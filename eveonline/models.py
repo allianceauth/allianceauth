@@ -13,8 +13,14 @@ class EveCharacter(models.Model):
     api_id = models.CharField(max_length=254)
     user = models.ForeignKey(User)
 
+    def __str__(self):
+        return self.character_name
+
 
 class EveApiKeyPair(models.Model):
     api_id = models.CharField(max_length=254)
     api_key = models.CharField(max_length=254)
     user = models.ForeignKey(User)
+
+    def __str__(self):
+        return self.user.username
