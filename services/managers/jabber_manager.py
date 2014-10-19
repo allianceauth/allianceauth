@@ -86,7 +86,7 @@ class JabberManager:
         api.delete_group(username,groups)
 
     @staticmethod
-    def send_broadcast_message(group_name, message):
+    def send_broadcast_message(group_name, broadcast_message):
         # create to address
         client = xmpp.Client(settings.JABBER_URL)
         client.connect(server=(settings.JABBER_SERVER, settings.JABBER_PORT))
@@ -99,7 +99,7 @@ class JabberManager:
                 if auth_info:
                     if auth_info.jabber_username != "":
                         to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
-                        message = xmpp.Message(to_address, message)
+                        message = xmpp.Message(to_address, broadcast_message)
                         message.setAttr('type', 'chat')
                         client.send(message)
                         client.Process(1)
@@ -109,10 +109,10 @@ class JabberManager:
                 if auth_info:
                     if auth_info.jabber_username != "":
                         to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
-                        message = xmpp.Message(to_address, message)
+                        message = xmpp.Message(to_address, broadcast_message)
                         message.setAttr('type', 'chat')
                         client.send(message)
                         client.Process(1)
-                        print to_address
+
 
         client.disconnect()
