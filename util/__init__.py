@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
 
+def bootstrap_permissions():
+    ct = ContentType.objects.get_for_model(User)
+    stored_permission, created = Permission.objects.get_or_create(codename="group_management",
+                                                                  content_type=ct, name="group_management")
+
+
 def add_member_permission(user, permission):
     ct = ContentType.objects.get_for_model(User)
     stored_permission, created = Permission.objects.get_or_create(codename=permission,

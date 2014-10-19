@@ -23,4 +23,4 @@ class EveApiKeyPair(models.Model):
     user = models.ForeignKey(User)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username + " - ApiKeyPair"

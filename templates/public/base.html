@@ -66,6 +66,9 @@
                             <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %} href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
                         </li>
                         <li>
+                            <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %} href="{% url 'auth_groups' %}"><i class="fa fa-cogs fa-sitemap"></i>   Groups</a>
+                        </li>
+                        <li>
                             <a {% ifequal request.path "/services/" %} class="active" {% endifequal %} href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
                         </li>
                         <li>
@@ -78,6 +81,11 @@
                         <li>
                             <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %} href="{% url 'password_change' %}"><i class="fa fa-lock fa-fw"></i>Change Password</a>
                         </li>
+                        {% if perms.auth.group_management %}
+                        <li>
+                            <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %} href="{% url 'auth_group_management' %}"><i class="fa fa-lock fa-sitemap"></i> Group Management</a>
+                        </li>
+                        {% endif %}
 
                     </ul>
                 </div>

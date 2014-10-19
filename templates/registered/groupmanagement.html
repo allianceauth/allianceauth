@@ -1,0 +1,75 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Groups Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+<div class="col-lg-12">
+    <h3 class="page-header text-center">Group Management</h3>
+    <h4 class="page-header text-center">Group Add Request</h4>
+
+    <table class="table table-bordered">
+        <tr>
+            <th class="text-center">RequestID</th>
+            <th class="text-center">CharacterName</th>
+            <th class="text-center">GroupName</th>
+            <th class="text-center">Action</th>
+        </tr>
+
+        {% for acceptrequest in acceptrequests %}
+            <tr>
+                <td class="text-center">{{ acceptrequest.id }}</td>
+                <td class="text-center">{{ acceptrequest.main_char.character_name }}</td>
+                <td class="text-center">{{ acceptrequest.group.name }}</td>
+                <td class="text-center">
+                    <a href="/group/request/accept/{{ acceptrequest.id }}">
+                        <button type="button" class="btn btn-success">
+                            Accept
+                        </button>
+                    </a>
+
+                    <a href="/group/request/reject/{{ acceptrequest.id }}">
+                        <button type="button" class="btn btn-danger">
+                            Reject
+                        </button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <h4 class="page-header text-center">Group Leave Request</h4>
+    <table class="table table-bordered">
+        <tr>
+            <th class="text-center">RequestID</th>
+            <th class="text-center">CharacterName</th>
+            <th class="text-center">GroupName</th>
+            <th class="text-center">Action</th>
+        </tr>
+
+        {% for leaverequest in leaverequests %}
+            <tr>
+                <td class="text-center">{{ leaverequest.id }}</td>
+                <td class="text-center">{{ leaverequest.main_char.character_name }}</td>
+                <td class="text-center">{{ leaverequest.group.name }}</td>
+                <td class="text-center">
+                    <a href="/group/leave_request/accept/{{ leaverequest.id }}">
+                        <button type="button" class="btn btn-success">
+                            Accept
+                        </button>
+                    </a>
+
+                    <a href="/group/leave_request/reject/{{ leaverequest.id }}">
+                        <button type="button" class="btn btn-danger">
+                            Reject
+                        </button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content %}

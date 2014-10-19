@@ -34,6 +34,19 @@ urlpatterns = patterns('',
     url(r'^characters/', 'eveonline.views.characters_view', name='auth_characters'),
     url(r'^main_character_change/(\w+)/$', 'eveonline.views.main_character_change', name='auth_main_character_change'),
 
+    # Group management
+    url(r'^groups/', 'groupmanagement.views.groups_view', name='auth_groups'),
+    url(r'^group/management/', 'groupmanagement.views.group_management', name='auth_group_management'),
+    url(r'^group/request_add/(\w+)', 'groupmanagement.views.group_request_add', name='auth_group_request_add'),
+    url(r'^group/request/accept/(\w+)', 'groupmanagement.views.group_accept_request', name='auth_group_accept_request'),
+    url(r'^group/request/reject/(\w+)', 'groupmanagement.views.group_reject_request', name='auth_group_reject_request'),
+
+    url(r'^group/request_leave/(\w+)', 'groupmanagement.views.group_request_leave', name='auth_group_request_leave'),
+    url(r'group/leave_request/accept/(\w+)', 'groupmanagement.views.group_leave_accept_request',
+        name='auth_group_leave_accept_request'),
+    url(r'^group/leave_request/reject/(\w+)', 'groupmanagement.views.group_leave_reject_request',
+        name='auth_group_leave_reject_request'),
+
     # Service Urls
     url(r'^services/', 'services.views.services_view', name='auth_services'),
 

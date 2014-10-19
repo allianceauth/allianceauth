@@ -17,6 +17,7 @@ from util.common_task import remove_user_from_group
 from util.common_task import deactivate_services
 from util.common_task import generate_corp_group_name
 
+
 @login_required
 def add_api_key(request):
     if request.method == 'POST':

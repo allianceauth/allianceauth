@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'registration',
     'services',
     'eveonline',
+    'groupmanagement'
 )
 
 MIDDLEWARE_CLASSES = (
