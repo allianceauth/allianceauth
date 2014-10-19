@@ -15,4 +15,8 @@ class UpdateKeyForm(forms.Form):
                                                        self.cleaned_data['api_key']):
                 raise forms.ValidationError(u'API not of type account')
 
+        if not EveApiManager.check_api_is_full(self.cleaned_data['api_id'],
+                                               self.cleaned_data['api_key']):
+                raise forms.ValidationError(u'API supplied is not a full api key')
+
         return self.cleaned_data
