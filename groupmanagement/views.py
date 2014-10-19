@@ -97,6 +97,8 @@ def groups_view(request):
         # Check if group is a corp
         if "Corp" in group.name:
             pass
+        elif "AllianceMember" in group.name:
+            pass
         else:
             # Get the descriptionn
             groupDesc = GroupDescription.objects.filter(group=group)
