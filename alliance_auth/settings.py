@@ -157,9 +157,14 @@ ALLIANCE_ID = '0'
 ALLIANCE_NAME = 'Somealliance'
 
 # Jabber Prosody Info
-JABBER_URL = "@someaddress.com"
+JABBER_URL = "someaddress.com"
+JABBER_PORT = 5223
+JABBER_SERVER = "someadddress.com"
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
 OPENFIRE_SECRET_KEY = "somekey"
+
+BROADCAST_USER = "broadcast@"+JABBER_URL
+BROADCAST_USER_PASSWORD = "somepassword"
 
 # Mumble settings
 MUMBLE_SERVER_ID = 1

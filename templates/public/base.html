@@ -87,6 +87,12 @@
                         </li>
                         {% endif %}
 
+                        {% if perms.auth.jabber_broadcast %}
+                        <li>
+                            <a {% ifequal request.path "/serivces/jabber_broadcast/" %} class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i class="fa fa-lock fa-bullhorn"></i> Jabber Broadcast</a>
+                        </li>
+                        {% endif %}
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

@@ -16,12 +16,31 @@ from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
 
+from forms import JabberBroadcastForm
+
+
+@login_required
+@permission_required('auth.jabber_broadcast')
+def jabber_broadcast_view(request):
+    success = False
+    if request.method == 'POST':
+        form = JabberBroadcastForm(request.POST)
+        if form.is_valid():
+            JabberManager.send_broadcast_message(form.cleaned_data['group'], form.cleaned_data['message'])
+            success = True
+    else:
+        form = JabberBroadcastForm()
+
+    context = {'form': form, 'success': success}
+    return render_to_response('registered/jabberbroadcast.html', context, context_instance=RequestContext(request))
+
 
 @login_required
 def services_view(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
 
     return render_to_response('registered/services.html', {'authinfo': authinfo}, context_instance=RequestContext(request))
+
 
 @login_required
 @permission_required('auth.alliance_member')

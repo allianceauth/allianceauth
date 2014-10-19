@@ -17,6 +17,8 @@ Requirments:
     python-passlib
     python-evelink
     python-openfire
+    python-xmpp
+    python-dnspython
     
     # Needed Apps
     rabbitmq

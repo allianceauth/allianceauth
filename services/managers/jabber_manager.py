@@ -1,9 +1,15 @@
 import os
+import time
+import xmpp
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.conf import settings
 from openfire import exception
 from openfire import UserService
 from urlparse import urlparse
 
+from authentication.managers import AuthServicesInfoManager
+from eveonline.managers import EveManager
 
 class JabberManager:
     
@@ -78,3 +84,35 @@ class JabberManager:
     def delete_user_groups(username, groups):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         api.delete_group(username,groups)
+
+    @staticmethod
+    def send_broadcast_message(group_name, message):
+        # create to address
+        client = xmpp.Client(settings.JABBER_URL)
+        client.connect(server=(settings.JABBER_SERVER, settings.JABBER_PORT))
+        client.auth(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, 'broadcast')
+
+        if group_name != 'all':
+            group = Group.objects.get(name=group_name)
+            for user in group.user_set.all():
+                auth_info = AuthServicesInfoManager.get_auth_service_info(user)
+                if auth_info:
+                    if auth_info.jabber_username != "":
+                        to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
+                        message = xmpp.Message(to_address, message)
+                        message.setAttr('type', 'chat')
+                        client.send(message)
+                        client.Process(1)
+        else:
+            for user in User.objects.all():
+                auth_info = AuthServicesInfoManager.get_auth_service_info(user)
+                if auth_info:
+                    if auth_info.jabber_username != "":
+                        to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
+                        message = xmpp.Message(to_address, message)
+                        message.setAttr('type', 'chat')
+                        client.send(message)
+                        client.Process(1)
+                        print to_address
+
+        client.disconnect()

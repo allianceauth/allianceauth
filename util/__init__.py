@@ -5,8 +5,8 @@ from django.contrib.auth.models import Permission
 
 def bootstrap_permissions():
     ct = ContentType.objects.get_for_model(User)
-    stored_permission, created = Permission.objects.get_or_create(codename="group_management",
-                                                                  content_type=ct, name="group_management")
+    Permission.objects.get_or_create(codename="group_management", content_type=ct, name="group_management")
+    Permission.objects.get_or_create(codename="jabber_broadcast", content_type=ct, name="jabber_broadcast")
 
 
 def add_member_permission(user, permission):
