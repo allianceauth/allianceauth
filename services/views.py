@@ -17,6 +17,31 @@ from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
 
 from forms import JabberBroadcastForm
+from forms import FleetFormatterForm
+
+
+@login_required
+def fleet_formatter_view(request):
+    if request.method == 'POST':
+        form = FleetFormatterForm(request.POST)
+        if form.is_valid():
+            generated = "Fleet Name: "+form.cleaned_data['fleet_name']+"\n"
+            generated = generated + "FC: "+form.cleaned_data['fleet_commander']+"\n"
+            generated = generated + "Comms: "+form.cleaned_data['fleet_comms']+"\n"
+            generated = generated + "Fleet Type: "+form.cleaned_data['fleet_type'] + " || " + form.cleaned_data['ship_priorities']+"\n"
+            generated = generated + "Form Up: "+form.cleaned_data['formup_location']+" @ "+form.cleaned_data['formup_time']+"\n"
+            generated = generated + "Duration: "+form.cleaned_data['expected_duration']+"\n"
+            generated = generated + "Reimbursable: "+form.cleaned_data['reimbursable']+"\n"
+            generated = generated + "Important: "+form.cleaned_data['important']+"\n"
+            if form.cleaned_data['comments'] != "":
+                generated = generated + "Why: "+form.cleaned_data['comments']+"\n"
+    else:
+        form = FleetFormatterForm()
+        generated = ""
+
+    context = {'form': form, 'generated': generated}
+
+    return render_to_response('registered/fleetformattertool.html', context, context_instance=RequestContext(request))
 
 
 @login_required

@@ -54,7 +54,7 @@ urlpatterns = patterns('',
     # Forum Service Control
     url(r'^activate_forum/$', 'services.views.activate_forum', name='auth_activate_forum'),
     url(r'^deactivate_forum/$', 'services.views.deactivate_forum', name='auth_deactivate_forum'),
-    url(r'reset_forum_password/$', 'services.views.reset_forum_password', name='auth_reset_forum_password'),
+    url(r'^reset_forum_password/$', 'services.views.reset_forum_password', name='auth_reset_forum_password'),
 
     # Jabber Service Control
     url(r'^activate_jabber/$', 'services.views.activate_jabber', name='auth_activate_jabber'),
@@ -63,6 +63,10 @@ urlpatterns = patterns('',
 
     # Mumble service contraol
     url(r'^activate_mumble/$', 'services.views.activate_mumble', name='auth_activate_mumble'),
-    url(r'deactivate_mumble/$', 'services.views.deactivate_mumble', name='auth_deactivate_mumble'),
-    url(r'reset_mumble_password/$', 'services.views.reset_mumble_password', name='auth_reset_mumble_password'),
+    url(r'^deactivate_mumble/$', 'services.views.deactivate_mumble', name='auth_deactivate_mumble'),
+    url(r'^reset_mumble_password/$', 'services.views.reset_mumble_password', name='auth_reset_mumble_password'),
+
+    # Tools
+    url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view', name='auth_fleet_format_tool_view'),
+
 )

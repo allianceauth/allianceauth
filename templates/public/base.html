@@ -92,7 +92,9 @@
                             <a {% ifequal request.path "/serivces/jabber_broadcast/" %} class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i class="fa fa-lock fa-bullhorn"></i> Jabber Broadcast</a>
                         </li>
                         {% endif %}
-
+                         <li>
+                            <a {% ifequal request.path "/tool/fleet_formatter_tool/" %} class="active" {% endifequal %} href="{% url 'auth_fleet_format_tool_view' %}"><i class="fa fa-space-shuttle fa-fw"></i> Fleet Broadcast Formatter</a>
+                         </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
