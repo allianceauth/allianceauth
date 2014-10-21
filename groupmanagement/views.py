@@ -37,8 +37,8 @@ def group_accept_request(request, group_request_id):
     try:
         group_request = GroupRequest.objects.get(id=group_request_id)
         group, created = Group.objects.get_or_create(name=group_request.group.name)
-        request.user.groups.add(group)
-        request.user.save()
+        group_request.user.groups.add(group)
+        group_request.user.save()
         group_request.delete()
     except:
         pass
@@ -66,8 +66,8 @@ def group_leave_accept_request(request, group_request_id):
     try:
         group_request = GroupRequest.objects.get(id=group_request_id)
         group, created = Group.objects.get_or_create(name=group_request.group.name)
-        request.user.groups.remove(group)
-        request.user.save()
+        group_request.user.groups.remove(group)
+        group_request.user.save()
         group_request.delete()
     except:
         pass
