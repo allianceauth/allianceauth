@@ -15,12 +15,14 @@
             <th class="text-center">Service</th>
             <th class="text-center">Username</th>
             <th class="text-center">Password</th>
+            <th class="text-center">Domain</th>
             <th class="text-center">Action</th>
         </tr>
         <tr>
             <td class="text-center">Forums</td>
             <td class="text-center">{{ authinfo.forum_username }}</td>
             <td class="text-center">{{ authinfo.forum_password }}</td>
+            <td class="text-center"><a href="https://the99eve.com/forums/">https://the99eve.com/forums/</a></td>
             <td class="text-center">
                 {% ifequal authinfo.forum_username "" %}
                 <a href="{% url 'auth_activate_forum' %}">
@@ -38,10 +40,9 @@
         </tr>
         <tr>
             <td class="text-center">Jabber</td>
-            <td class="text-center">
-                {{ authinfo.jabber_username }}{% if authinfo.jabber_username != "" %}{{ JABBER_URL }}{% endif %}
-            </td>
+            <td class="text-center">{{ authinfo.jabber_username }}</td>
             <td class="text-center">{{ authinfo.jabber_password }}</td>
+            <td class="text-center">{{ JABBER_URL }}</td>
             <td class="text-center">
                 {% ifequal authinfo.jabber_username "" %}
                 <a href="{% url 'auth_activate_jabber' %}">
@@ -61,6 +62,7 @@
             <td class="text-center">Mumble</td>
             <td class="text-center">{{ authinfo.mumble_username }}</td>
             <td class="text-center">{{ authinfo.mumble_password }}</td>
+            <td class="text-center">the99eve.com</td>
             <td class="text-center">
                 {% ifequal authinfo.mumble_username "" %}
                 <a href="{% url 'auth_activate_mumble' %}">
