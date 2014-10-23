@@ -86,3 +86,15 @@ class EveApiManager():
             return False
 
         return False
+
+    @staticmethod
+    def check_if_api_server_online():
+        try:
+            api = evelink.api.API()
+            server = evelink.server.Server(api=api)
+            info = server.server_status()
+            return True
+        except evelink.api.APIError as error:
+            return False
+
+        return False
