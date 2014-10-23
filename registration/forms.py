@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 
 
 class RegistrationForm(forms.Form):
@@ -11,6 +12,13 @@ class RegistrationForm(forms.Form):
     def clean(self):
         if ' ' in self.cleaned_data['username']:
             raise forms.ValidationError(u'Username can not contain a space')
+
+        # We attempt to get the user object if we succeed we know email as been used
+        try:
+            User.objects.get(email=self.cleaned_data['email'])
+            raise forms.ValidationError(u'Email as already been used')
+        except:
+            pass
 
         if 'password' in self.cleaned_data and 'password_again' in self.cleaned_data:
             if self.cleaned_data['password'] != self.cleaned_data['password_again']:
