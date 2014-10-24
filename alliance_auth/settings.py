@@ -156,6 +156,9 @@ DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 ALLIANCE_ID = '0'
 ALLIANCE_NAME = 'Somealliance'
 
+# Forum URL
+FORUM_URL = "http://someaddress.com"
+
 # Jabber Prosody Info
 JABBER_URL = "someaddress.com"
 JABBER_PORT = 5223
@@ -167,5 +170,6 @@ BROADCAST_USER = "broadcast@"+JABBER_URL
 BROADCAST_USER_PASSWORD = "somepassword"
 
 # Mumble settings
+MUMBLE_URL = "someurl.com"
 MUMBLE_SERVER_ID = 1
 

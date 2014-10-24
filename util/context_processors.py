@@ -14,4 +14,5 @@ def jabber_url(request):
 
 
 def domain_url(request):
-    return {'DOMAIN': settings.DOMAIN}
+    return {'DOMAIN': settings.DOMAIN, 'MUMBLE_URL': settings.MUMBLE_URL,
+            'FORUM_URL': settings.FORUM_URL}

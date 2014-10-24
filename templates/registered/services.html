@@ -22,7 +22,7 @@
             <td class="text-center">Forums</td>
             <td class="text-center">{{ authinfo.forum_username }}</td>
             <td class="text-center">{{ authinfo.forum_password }}</td>
-            <td class="text-center"><a href="https://the99eve.com/forums/">https://the99eve.com/forums/</a></td>
+            <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
             <td class="text-center">
                 {% ifequal authinfo.forum_username "" %}
                 <a href="{% url 'auth_activate_forum' %}">
@@ -62,7 +62,7 @@
             <td class="text-center">Mumble</td>
             <td class="text-center">{{ authinfo.mumble_username }}</td>
             <td class="text-center">{{ authinfo.mumble_password }}</td>
-            <td class="text-center">the99eve.com</td>
+            <td class="text-center">{{ MUMBLE_URL }}</td>
             <td class="text-center">
                 {% ifequal authinfo.mumble_username "" %}
                 <a href="{% url 'auth_activate_mumble' %}">
