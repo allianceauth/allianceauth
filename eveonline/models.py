@@ -24,3 +24,26 @@ class EveApiKeyPair(models.Model):
 
     def __str__(self):
         return self.user.username + " - ApiKeyPair"
+
+
+class EveAllianceInfo(models.Model):
+    alliance_id = models.CharField(max_length=254)
+    alliance_name = models.CharField(max_length=254)
+    alliance_ticker = models.CharField(max_length=254)
+    executor_corp_id = models.CharField(max_length=254)
+    member_count = models.IntegerField()
+
+    def __str__(self):
+        return self.alliance_name
+
+
+class EveCorporationInfo(models.Model):
+    corporation_id = models.CharField(max_length=254)
+    corporation_name = models.CharField(max_length=254)
+    corporation_ticker = models.CharField(max_length=254)
+    member_count = models.IntegerField()
+
+    alliance = models.ForeignKey(EveAllianceInfo)
+
+    def __str__(self):
+        return self.corporation_name

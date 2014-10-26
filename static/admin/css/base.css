@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: 12px;
-    font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    font-family: "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
     color: #333;
     background: #fff;
 }
@@ -42,7 +42,7 @@ p {
     line-height: 140%;
 }
 
-h1,h2,h3,h4,h5 {
+h1, h2, h3, h4, h5 {
     font-weight: bold;
 }
 
@@ -323,12 +323,12 @@ thead th.sorted {
 }
 
 thead th.sorted .text {
-	padding-right: 42px;
+    padding-right: 42px;
 }
 
 table thead th .text span {
     padding: 2px 5px;
-    display:block;
+    display: block;
 }
 
 table thead th .text a {
@@ -405,7 +405,7 @@ table.orderable tbody tr td:first-child {
     background-repeat: repeat-y;
 }
 
-table.orderable-initalized .order-cell, body>tr>td.order-cell {
+table.orderable-initalized .order-cell, body > tr > td.order-cell {
     display: none;
 }
 
@@ -445,9 +445,9 @@ textarea, select, .vTextField {
 }
 
 .button[disabled], input[type=submit][disabled], input[type=button][disabled] {
-	background-image: url(../img/nav-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/nav-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
@@ -464,11 +464,10 @@ textarea, select, .vTextField {
 }
 
 .button[disabled].default, input[type=submit][disabled].default, input[type=button][disabled].default {
-	background-image: url(../img/default-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/default-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
 }
-
 
 /* MODULES */
 
@@ -526,11 +525,11 @@ ul.messagelist li {
     background: #ffc url(../img/icon_success.gif) 5px .3em no-repeat;
 }
 
-ul.messagelist li.warning{
+ul.messagelist li.warning {
     background-image: url(../img/icon_alert.gif);
 }
 
-ul.messagelist li.error{
+ul.messagelist li.error {
     background-image: url(../img/icon_error.gif);
 }
 
@@ -560,7 +559,7 @@ ul.errorlist {
 }
 
 .errorlist li a {
- 	color: white;
+    color: white;
     text-decoration: underline;
 }
 
@@ -642,7 +641,7 @@ a.deletelink:hover {
 .object-tools {
     font-size: 10px;
     font-weight: bold;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     padding-left: 0;
     float: right;
     position: relative;

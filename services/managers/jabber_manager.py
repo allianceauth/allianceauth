@@ -1,18 +1,17 @@
 import os
-import time
+from urlparse import urlparse
+
 import xmpp
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.conf import settings
 from openfire import exception
 from openfire import UserService
-from urlparse import urlparse
 
 from authentication.managers import AuthServicesInfoManager
-from eveonline.managers import EveManager
+
 
 class JabberManager:
-    
     def __init__(self):
         pass
 
@@ -83,7 +82,7 @@ class JabberManager:
     @staticmethod
     def delete_user_groups(username, groups):
         api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-        api.delete_group(username,groups)
+        api.delete_group(username, groups)
 
     @staticmethod
     def send_broadcast_message(group_name, broadcast_message):
@@ -98,7 +97,7 @@ class JabberManager:
                 auth_info = AuthServicesInfoManager.get_auth_service_info(user)
                 if auth_info:
                     if auth_info.jabber_username != "":
-                        to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
+                        to_address = auth_info.jabber_username + '@' + settings.JABBER_URL
                         message = xmpp.Message(to_address, broadcast_message)
                         message.setAttr('type', 'chat')
                         client.send(message)
@@ -108,11 +107,10 @@ class JabberManager:
                 auth_info = AuthServicesInfoManager.get_auth_service_info(user)
                 if auth_info:
                     if auth_info.jabber_username != "":
-                        to_address = auth_info.jabber_username+'@'+settings.JABBER_URL
+                        to_address = auth_info.jabber_username + '@' + settings.JABBER_URL
                         message = xmpp.Message(to_address, broadcast_message)
                         message.setAttr('type', 'chat')
                         client.send(message)
                         client.Process(1)
-
 
         client.disconnect()

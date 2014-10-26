@@ -1,8 +1,9 @@
-from models import SyncGroupCache
 from django.conf import settings
 from celery.task import periodic_task
-from celery.task.schedules import crontab
 from django.contrib.auth.models import User
+
+from models import SyncGroupCache
+from celery.task.schedules import crontab
 from services.managers.jabber_manager import JabberManager
 from services.managers.mumble_manager import MumbleManager
 from services.managers.forum_manager import ForumManager
@@ -52,7 +53,6 @@ def update_forum_groups(user):
 
 
 def add_to_databases(user, groups, syncgroups):
-
     authserviceinfo = None
     try:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -134,14 +134,15 @@ def run_api_refresh():
                 authserviceinfo = AuthServicesInfo.objects.get(user=user)
                 # We do a check on the authservice info to insure that we shoud run the check
                 # No point in running the check on people who arn't on services
-                print 'Running update on user: '+user.username
+                print 'Running update on user: ' + user.username
                 if authserviceinfo.main_char_id:
                     if authserviceinfo.main_char_id != "":
                         for api_key_pair in api_key_pairs:
-                            print 'Running on '+api_key_pair.api_id+':'+api_key_pair.api_key
+                            print 'Running on ' + api_key_pair.api_id + ':' + api_key_pair.api_key
                             if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
                                 # Update characters
-                                characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
+                                characters = EveApiManager.get_characters_from_api(api_key_pair.api_id,
+                                                                                   api_key_pair.api_key)
                                 EveManager.update_characters_from_list(characters)
                                 valid_key = True
                             else:
@@ -156,7 +157,14 @@ def run_api_refresh():
                             else:
                                 deactivate_services(user)
                         else:
-                            #nuke it
+                            # nuke it
                             deactivate_services(user)
                 else:
                     print 'No main_char_id set'
+
+
+# Run Every 2 hours
+@periodic_task(run_every=crontab(minute=0, hour="*/2"))
+def run_alliance_corp_update():
+    alliance_info = EveApiManager.get_alliance_information(settings.ALLIANCE_ID)
+

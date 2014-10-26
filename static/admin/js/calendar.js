@@ -1,25 +1,25 @@
 /*
-calendar.js - Calendar functions by Adrian Holovaty
-depends on core.js for utility functions like removeChildren or quickElement
-*/
+ calendar.js - Calendar functions by Adrian Holovaty
+ depends on core.js for utility functions like removeChildren or quickElement
+ */
 
 // CalendarNamespace -- Provides a collection of HTML calendar-related helper functions
 var CalendarNamespace = {
     monthsOfYear: gettext('January February March April May June July August September October November December').split(' '),
     daysOfWeek: gettext('S M T W T F S').split(' '),
     firstDayOfWeek: parseInt(get_format('FIRST_DAY_OF_WEEK')),
-    isLeapYear: function(year) {
-        return (((year % 4)==0) && ((year % 100)!=0) || ((year % 400)==0));
+    isLeapYear: function (year) {
+        return (((year % 4) == 0) && ((year % 100) != 0) || ((year % 400) == 0));
     },
-    getDaysInMonth: function(month,year) {
+    getDaysInMonth: function (month, year) {
         var days;
-        if (month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
+        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
             days = 31;
         }
-        else if (month==4 || month==6 || month==9 || month==11) {
+        else if (month == 4 || month == 6 || month == 9 || month == 11) {
             days = 30;
         }
-        else if (month==2 && CalendarNamespace.isLeapYear(year)) {
+        else if (month == 2 && CalendarNamespace.isLeapYear(year)) {
             days = 29;
         }
         else {
@@ -27,10 +27,10 @@ var CalendarNamespace = {
         }
         return days;
     },
-    draw: function(month, year, div_id, callback) { // month = 1-12, year = 1-9999
+    draw: function (month, year, div_id, callback) { // month = 1-12, year = 1-9999
         var today = new Date();
         var todayDay = today.getDate();
-        var todayMonth = today.getMonth()+1;
+        var todayMonth = today.getMonth() + 1;
         var todayYear = today.getFullYear();
         var todayClass = '';
 
@@ -39,7 +39,7 @@ var CalendarNamespace = {
         var calDiv = document.getElementById(div_id);
         removeChildren(calDiv);
         var calTable = document.createElement('table');
-        quickElement('caption', calTable, CalendarNamespace.monthsOfYear[month-1] + ' ' + year);
+        quickElement('caption', calTable, CalendarNamespace.monthsOfYear[month - 1] + ' ' + year);
         var tableBody = quickElement('tbody', calTable);
 
         // Draw days-of-week header
@@ -48,7 +48,7 @@ var CalendarNamespace = {
             quickElement('th', tableRow, CalendarNamespace.daysOfWeek[(i + CalendarNamespace.firstDayOfWeek) % 7]);
         }
 
-        var startingPos = new Date(year, month-1, 1 - CalendarNamespace.firstDayOfWeek).getDay();
+        var startingPos = new Date(year, month - 1, 1 - CalendarNamespace.firstDayOfWeek).getDay();
         var days = CalendarNamespace.getDaysInMonth(month, year);
 
         // Draw blanks before first of month
@@ -61,17 +61,17 @@ var CalendarNamespace = {
         // Draw days of month
         var currentDay = 1;
         for (var i = startingPos; currentDay <= days; i++) {
-            if (i%7 == 0 && currentDay != 1) {
+            if (i % 7 == 0 && currentDay != 1) {
                 tableRow = quickElement('tr', tableBody);
             }
-            if ((currentDay==todayDay) && (month==todayMonth) && (year==todayYear)) {
-                todayClass='today';
+            if ((currentDay == todayDay) && (month == todayMonth) && (year == todayYear)) {
+                todayClass = 'today';
             } else {
-                todayClass='';
+                todayClass = '';
             }
             var cell = quickElement('td', tableRow, '', 'class', todayClass);
 
-            quickElement('a', cell, currentDay, 'href', 'javascript:void(' + callback + '('+year+','+month+','+currentDay+'));');
+            quickElement('a', cell, currentDay, 'href', 'javascript:void(' + callback + '(' + year + ',' + month + ',' + currentDay + '));');
             currentDay++;
         }
 
@@ -99,15 +99,15 @@ function Calendar(div_id, callback) {
     this.currentYear = this.today.getFullYear();
 }
 Calendar.prototype = {
-    drawCurrent: function() {
+    drawCurrent: function () {
         CalendarNamespace.draw(this.currentMonth, this.currentYear, this.div_id, this.callback);
     },
-    drawDate: function(month, year) {
+    drawDate: function (month, year) {
         this.currentMonth = month;
         this.currentYear = year;
         this.drawCurrent();
     },
-    drawPreviousMonth: function() {
+    drawPreviousMonth: function () {
         if (this.currentMonth == 1) {
             this.currentMonth = 12;
             this.currentYear--;
@@ -117,7 +117,7 @@ Calendar.prototype = {
         }
         this.drawCurrent();
     },
-    drawNextMonth: function() {
+    drawNextMonth: function () {
         if (this.currentMonth == 12) {
             this.currentMonth = 1;
             this.currentYear++;
@@ -127,11 +127,11 @@ Calendar.prototype = {
         }
         this.drawCurrent();
     },
-    drawPreviousYear: function() {
+    drawPreviousYear: function () {
         this.currentYear--;
         this.drawCurrent();
     },
-    drawNextYear: function() {
+    drawNextYear: function () {
         this.currentYear++;
         this.drawCurrent();
     }

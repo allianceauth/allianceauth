@@ -8,26 +8,26 @@
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
-<div class="col-lg-12">
-    <h1 class="page-header text-center">Fleet Broadcast Formatter Tool</h1>
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Fleet Broadcast Formatter Tool</h1>
 
-    <div class="container-fluid">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="row">
-            {% if generated != "" %}
-                <textarea class="form-control" rows="10" cols="60">{{ generated }}
-                </textarea>
-            {% endif %}
-                <form class="form-signin" role="form" action="" method="POST">
-                    {% csrf_token %}
-                    {{ form|bootstrap}}
-                    <br/>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Format</button>
-                    <br/>
-                </form>
+        <div class="container-fluid">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="row">
+                    {% if generated != "" %}
+                        <textarea class="form-control" rows="10" cols="60">{{ generated }}
+                        </textarea>
+                    {% endif %}
+                    <form class="form-signin" role="form" action="" method="POST">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                        <br/>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Format</button>
+                        <br/>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 {% endblock content %}

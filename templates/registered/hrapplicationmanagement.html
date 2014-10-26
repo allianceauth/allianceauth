@@ -1,0 +1,23 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}HR Application Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">HR Applications
+            <div class="text-right">
+                <a href="{% url 'auth_hrapplication_create_view' %}">
+                    <button type="button" class="btn btn-success">Create Application</button>
+                </a>
+            </div>
+        </h1>
+        <div class="container-fluid">
+        </div>
+    </div>
+
+{% endblock content %}

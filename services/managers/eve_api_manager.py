@@ -4,7 +4,6 @@ import evelink.eve
 
 
 class EveApiManager():
-
     def __init__(self):
         pass
 
@@ -33,6 +32,32 @@ class EveApiManager():
             print error
 
         return ticker
+
+    @staticmethod
+    def get_alliance_information(alliance_id):
+        results = {}
+        try:
+            api = evelink.api.API()
+            eve = evelink.eve.EVE(api=api)
+            alliance = eve.alliances()
+            results = alliance[0][int(alliance_id)]
+        except evelink.api.APIError as error:
+            print error
+
+        return results
+
+    @staticmethod
+    def get_corporation_information(corp_id):
+        results = {}
+        try:
+            api = evelink.api.API()
+            corp = evelink.corp.Corp(api=api)
+            corpinfo = corp.corporation_sheet(corp_id=int(corp_id))
+            results = corpinfo[0]
+        except evelink.api.APIError as error:
+            print error
+
+        return results
 
     @staticmethod
     def check_api_is_type_account(api_id, api_key):

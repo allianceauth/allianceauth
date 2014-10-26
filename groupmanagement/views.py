@@ -4,11 +4,9 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
 
 from models import GroupDescription
 from models import GroupRequest
-
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 
@@ -88,9 +86,9 @@ def group_leave_reject_request(request, group_request_id):
 
     return HttpResponseRedirect("/group/management/")
 
+
 @login_required
 def groups_view(request):
-
     paired_list = []
 
     for group in Group.objects.all():
@@ -118,6 +116,7 @@ def groups_view(request):
     render_items = {'pairs': paired_list}
     return render_to_response('registered/groups.html',
                               render_items, context_instance=RequestContext(request))
+
 
 @login_required
 def group_request_add(request, group_id):

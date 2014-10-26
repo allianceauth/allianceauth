@@ -19,10 +19,15 @@
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock extra_css %}
+    <style>
+        .grayiconecolor {
+            color: #505050;
+        }
+    </style>
 </head>
 
 <body>
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     <div id="wrapper">
         <!-- Navigation -->
 
@@ -38,11 +43,11 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                 {% if user.is_authenticated %}
-                        <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{% url 'auth_login_user' %}">Login</a></li>
-                  {% endif %}
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'auth_login_user' %}">Login</a></li>
+                {% endif %}
             </ul>
             <!-- /.navbar-top-links -->
 
@@ -57,44 +62,69 @@
                         </li>
 
                         <li>
-                            <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %} href="{% url 'auth_dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %}
+                                                                        href="{% url 'auth_dashboard' %}"><i
+                                    class="fa fa-dashboard fa-fw grayiconecolor"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %} href="{% url 'auth_characters' %}"><i class="fa fa-users fa-fw"></i> Characters</a>
+                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %}
+                                                                         href="{% url 'auth_characters' %}"><i
+                                    class="fa fa-users fa-fw grayiconecolor"></i> Characters</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %} href="{% url 'auth_api_key_management' %}"><i class="fa fa-key fa-fw"></i> Api Keys</a>
+                            <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %}
+                                                                                 href="{% url 'auth_api_key_management' %}"><i
+                                    class="fa fa-key fa-fw grayiconecolor"></i> Api Keys</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %} href="{% url 'auth_groups' %}"><i class="fa fa-cogs fa-sitemap"></i>   Groups</a>
+                            <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
+                                                                     href="{% url 'auth_groups' %}"><i
+                                    class="fa fa-cogs fa-sitemap grayiconecolor"></i> Groups</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/services/" %} class="active" {% endifequal %} href="{% url 'auth_services' %}"><i class="fa fa-cogs fa-fw"></i> Services</a>
+                            <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
+                                                                       href="{% url 'auth_services' %}"><i
+                                    class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %} href="{% url 'auth_help' %}"><i class="fa fa-question fa-fw"></i> Help</a>
+                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
+                                                                   href="{% url 'auth_help' %}"><i
+                                    class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
+                        </li>
+                        <li>
+                            <a {% ifequal request.path "/hr_application_management/" %} class="active" {% endifequal %}
+                                                                                        href="{% url 'auth_hrapplications_view' %}"><i
+                                    class="fa fa-file-o fa-fw grayiconecolor"></i> Applications</a>
                         </li>
 
                         <li class="text-center divider-horizontal">
                             <h5>Util</h5>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %} href="{% url 'password_change' %}"><i class="fa fa-lock fa-fw"></i>Change Password</a>
+                            <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %}
+                                                                            href="{% url 'password_change' %}"><i
+                                    class="fa fa-lock fa-fw grayiconecolor"></i>Change Password</a>
                         </li>
                         {% if perms.auth.group_management %}
-                        <li>
-                            <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %} href="{% url 'auth_group_management' %}"><i class="fa fa-lock fa-sitemap"></i> Group Management</a>
-                        </li>
+                            <li>
+                                <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}
+                                                                                        href="{% url 'auth_group_management' %}"><i
+                                        class="fa fa-lock fa-sitemap grayiconecolor"></i> Group Management</a>
+                            </li>
                         {% endif %}
 
                         {% if perms.auth.jabber_broadcast %}
-                        <li>
-                            <a {% ifequal request.path "/serivces/jabber_broadcast/" %} class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i class="fa fa-lock fa-bullhorn"></i> Jabber Broadcast</a>
-                        </li>
+                            <li>
+                                <a {% ifequal request.path "/serivces/jabber_broadcast/" %}
+                                    class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i
+                                        class="fa fa-lock fa-bullhorn grayiconecolor"></i> Jabber Broadcast</a>
+                            </li>
                         {% endif %}
-                         <li>
-                            <a {% ifequal request.path "/tool/fleet_formatter_tool/" %} class="active" {% endifequal %} href="{% url 'auth_fleet_format_tool_view' %}"><i class="fa fa-space-shuttle fa-fw"></i> Fleet Broadcast Formatter</a>
-                         </li>
+                        <li>
+                            <a {% ifequal request.path "/tool/fleet_formatter_tool/" %} class="active" {% endifequal %}
+                                                                                        href="{% url 'auth_fleet_format_tool_view' %}"><i
+                                    class="fa fa-space-shuttle fa-fw grayiconecolor"></i> Fleet Broadcast Formatter</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -107,6 +137,6 @@
             {% endblock content %}
         </div>
     </div>
-    {% endif %}
+{% endif %}
 </body>
 </html>

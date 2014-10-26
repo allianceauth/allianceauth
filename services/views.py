@@ -1,21 +1,17 @@
 from django.template import RequestContext
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render_to_response
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 
 from managers.jabber_manager import JabberManager
 from managers.forum_manager import ForumManager
 from managers.mumble_manager import MumbleManager
-
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
-
 from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
-
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 
@@ -25,16 +21,18 @@ def fleet_formatter_view(request):
     if request.method == 'POST':
         form = FleetFormatterForm(request.POST)
         if form.is_valid():
-            generated = "Fleet Name: "+form.cleaned_data['fleet_name']+"\n"
-            generated = generated + "FC: "+form.cleaned_data['fleet_commander']+"\n"
-            generated = generated + "Comms: "+form.cleaned_data['fleet_comms']+"\n"
-            generated = generated + "Fleet Type: "+form.cleaned_data['fleet_type'] + " || " + form.cleaned_data['ship_priorities']+"\n"
-            generated = generated + "Form Up: "+form.cleaned_data['formup_location']+" @ "+form.cleaned_data['formup_time']+"\n"
-            generated = generated + "Duration: "+form.cleaned_data['expected_duration']+"\n"
-            generated = generated + "Reimbursable: "+form.cleaned_data['reimbursable']+"\n"
-            generated = generated + "Important: "+form.cleaned_data['important']+"\n"
+            generated = "Fleet Name: " + form.cleaned_data['fleet_name'] + "\n"
+            generated = generated + "FC: " + form.cleaned_data['fleet_commander'] + "\n"
+            generated = generated + "Comms: " + form.cleaned_data['fleet_comms'] + "\n"
+            generated = generated + "Fleet Type: " + form.cleaned_data['fleet_type'] + " || " + form.cleaned_data[
+                'ship_priorities'] + "\n"
+            generated = generated + "Form Up: " + form.cleaned_data['formup_location'] + " @ " + form.cleaned_data[
+                'formup_time'] + "\n"
+            generated = generated + "Duration: " + form.cleaned_data['expected_duration'] + "\n"
+            generated = generated + "Reimbursable: " + form.cleaned_data['reimbursable'] + "\n"
+            generated = generated + "Important: " + form.cleaned_data['important'] + "\n"
             if form.cleaned_data['comments'] != "":
-                generated = generated + "Why: "+form.cleaned_data['comments']+"\n"
+                generated = generated + "Why: " + form.cleaned_data['comments'] + "\n"
     else:
         form = FleetFormatterForm()
         generated = ""
@@ -64,7 +62,8 @@ def jabber_broadcast_view(request):
 def services_view(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
 
-    return render_to_response('registered/services.html', {'authinfo': authinfo}, context_instance=RequestContext(request))
+    return render_to_response('registered/services.html', {'authinfo': authinfo},
+                              context_instance=RequestContext(request))
 
 
 @login_required

@@ -2,11 +2,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
 from forms import RegistrationForm
 
 
 def register_user_view(request):
-
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
 
@@ -14,7 +14,7 @@ def register_user_view(request):
 
             if not User.objects.filter(username=form.cleaned_data['username']).exists():
                 user = User.objects.create_user(form.cleaned_data['username'],
-                                           form.cleaned_data['email'], form.cleaned_data['password'])
+                                                form.cleaned_data['email'], form.cleaned_data['password'])
 
                 user.save()
 

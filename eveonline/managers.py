@@ -1,16 +1,18 @@
 from models import EveCharacter
 from models import EveApiKeyPair
+from models import EveAllianceInfo
+from models import EveCorporationInfo
+
 from services.managers.eve_api_manager import EveApiManager
 
 
 class EveManager:
-    
     def __init__(self):
         pass
 
     @staticmethod
     def create_character(character_id, character_name, corporation_id,
-                         corporation_name,  corporation_ticker, alliance_id,
+                         corporation_name, corporation_ticker, alliance_id,
                          alliance_name, user, api_id):
 
         if not EveCharacter.objects.filter(character_id=character_id).exists():
@@ -32,13 +34,14 @@ class EveManager:
         for char in chars.result:
             if not EveManager.check_if_character_exist(chars.result[char]['name']):
                 EveManager.create_character(chars.result[char]['id'],
-                                      chars.result[char]['name'],
-                                      chars.result[char]['corp']['id'],
-                                      chars.result[char]['corp']['name'],
-                                      EveApiManager.get_corporation_ticker_from_id(chars.result[char]['corp']['id']),
-                                      chars.result[char]['alliance']['id'],
-                                      chars.result[char]['alliance']['name'],
-                                      user, api_id)
+                                            chars.result[char]['name'],
+                                            chars.result[char]['corp']['id'],
+                                            chars.result[char]['corp']['name'],
+                                            EveApiManager.get_corporation_ticker_from_id(
+                                                chars.result[char]['corp']['id']),
+                                            chars.result[char]['alliance']['id'],
+                                            chars.result[char]['alliance']['name'],
+                                            user, api_id)
 
     @staticmethod
     def update_characters_from_list(chars):
@@ -47,7 +50,8 @@ class EveManager:
                 eve_char = EveManager.get_character_by_character_name(chars.result[char]['name'])
                 eve_char.corporation_id = chars.result[char]['corp']['id']
                 eve_char.corporation_name = chars.result[char]['corp']['name']
-                eve_char.corporation_ticker = EveApiManager.get_corporation_ticker_from_id(chars.result[char]['corp']['id'])
+                eve_char.corporation_ticker = EveApiManager.get_corporation_ticker_from_id(
+                    chars.result[char]['corp']['id'])
                 eve_char.alliance_id = chars.result[char]['alliance']['id']
                 eve_char.alliance_name = chars.result[char]['alliance']['name']
                 eve_char.save()
@@ -61,6 +65,38 @@ class EveManager:
             api_pair.api_key = api_key
             api_pair.user = user_id
             api_pair.save()
+
+    @staticmethod
+    def create_alliance_info(alliance_id, alliance_name, alliance_ticker, alliance_executor_corp_id,
+                             alliance_member_count):
+        if EveManager.check_if_alliance_exists_by_id(alliance_id):
+            alliance_info = EveAllianceInfo()
+            alliance_info.alliance_id = alliance_id
+            alliance_info.alliance_name = alliance_name
+            alliance_info.alliance_ticker = alliance_ticker
+            alliance_info.executor_corp_id = alliance_executor_corp_id
+            alliance_info.member_count = alliance_member_count
+            alliance_info.save()
+
+    @staticmethod
+    def update_alliance_info(alliance_id, alliance_executor_corp_id, alliance_member_count):
+        if EveManager.check_if_alliance_exists_by_id(alliance_id):
+            alliance_info = EveAllianceInfo.objects.get(alliance_id=alliance_id)
+            alliance_info.executor_corp_id = alliance_executor_corp_id
+            alliance_info.member_count = alliance_member_count
+            alliance_info.save()
+
+    @staticmethod
+    def create_corporation_info(corp_id, corp_name, corp_ticker, corp_member_count, alliance):
+        if EveManager.check_if_corporation_exists_by_id(corp_id):
+            corp_info = EveCorporationInfo()
+            corp_info.corporation_id = corp_id
+            corp_info.corporation_name = corp_name
+            corp_info.corporation_ticker = corp_ticker
+            corp_info.member_count = corp_member_count
+            corp_info.alliance = alliance
+            corp_info.save()
+
 
     @staticmethod
     def get_api_key_pairs(user):
@@ -112,7 +148,7 @@ class EveManager:
     def get_character_by_id(char_id):
         if EveCharacter.objects.filter(character_id=char_id).exists():
             return EveCharacter.objects.get(character_id=char_id)
-        
+
         return None
 
     @staticmethod
@@ -126,5 +162,13 @@ class EveManager:
 
         if character.user.id == user.id:
             return True
-        
+
         return False
+
+    @staticmethod
+    def check_if_alliance_exists_by_id(alliance_id):
+        return EveAllianceInfo.objects.filter(alliance_id=alliance_id).exists()
+
+    @staticmethod
+    def check_if_corporation_exists_by_id(corp_id):
+        return EveCorporationInfo.objects.filter(corporation_id=corp_id).exists()

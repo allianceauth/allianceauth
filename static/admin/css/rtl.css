@@ -81,12 +81,12 @@ div.breadcrumbs {
 /* SORTABLE TABLES */
 
 table thead th.sorted .sortoptions {
-   float: left;
+    float: left;
 }
 
 thead th.sorted .text {
-	padding-right: 0;
-	padding-left: 42px;
+    padding-right: 0;
+    padding-left: 42px;
 }
 
 /* dashboard styles */
@@ -129,10 +129,10 @@ thead th.sorted .text {
 }
 
 .filtered .actions {
-    border-left:1px solid #DDDDDD;
-    margin-left:160px !important;
+    border-left: 1px solid #DDDDDD;
+    margin-left: 160px !important;
     border-right: 0 none;
-    margin-right:0 !important;
+    margin-right: 0 !important;
 }
 
 #changelist table tbody td:first-child, #changelist table tbody th:first-child {
@@ -231,7 +231,7 @@ fieldset .field-box {
     padding-left: inherit;
     left: 10px;
     right: inherit;
-    float:left;
+    float: left;
 }
 
 .inline-related h3 span.delete label {

@@ -1,12 +1,10 @@
-from django.conf import settings
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
 
 from eveonline.managers import EveManager
-
 from authentication.managers import AuthServicesInfoManager
+
 
 # Create your views here.
 def index_view(request):

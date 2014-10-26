@@ -1,6 +1,6 @@
 var SelectBox = {
     cache: new Object(),
-    init: function(id) {
+    init: function (id) {
         var box = document.getElementById(id);
         var node;
         SelectBox.cache[id] = new Array();
@@ -9,7 +9,7 @@ var SelectBox = {
             cache.push({value: node.value, text: node.text, displayed: 1});
         }
     },
-    redisplay: function(id) {
+    redisplay: function (id) {
         // Repopulate HTML select box from cache
         var box = document.getElementById(id);
         box.options.length = 0; // clear all options
@@ -20,7 +20,7 @@ var SelectBox = {
             }
         }
     },
-    filter: function(id, text) {
+    filter: function (id, text) {
         // Redisplay the HTML select box, displaying only the choices containing ALL
         // the words in text. (It's an AND search.)
         var tokens = text.toLowerCase().split(/\s+/);
@@ -35,7 +35,7 @@ var SelectBox = {
         }
         SelectBox.redisplay(id);
     },
-    delete_from_cache: function(id, value) {
+    delete_from_cache: function (id, value) {
         var node, delete_index = null;
         for (var i = 0; (node = SelectBox.cache[id][i]); i++) {
             if (node.value == value) {
@@ -45,14 +45,14 @@ var SelectBox = {
         }
         var j = SelectBox.cache[id].length - 1;
         for (var i = delete_index; i < j; i++) {
-            SelectBox.cache[id][i] = SelectBox.cache[id][i+1];
+            SelectBox.cache[id][i] = SelectBox.cache[id][i + 1];
         }
         SelectBox.cache[id].length--;
     },
-    add_to_cache: function(id, option) {
+    add_to_cache: function (id, option) {
         SelectBox.cache[id].push({value: option.value, text: option.text, displayed: 1});
     },
-    cache_contains: function(id, value) {
+    cache_contains: function (id, value) {
         // Check if an item is contained in the cache
         var node;
         for (var i = 0; (node = SelectBox.cache[id][i]); i++) {
@@ -62,7 +62,7 @@ var SelectBox = {
         }
         return false;
     },
-    move: function(from, to) {
+    move: function (from, to) {
         var from_box = document.getElementById(from);
         var to_box = document.getElementById(to);
         var option;
@@ -75,7 +75,7 @@ var SelectBox = {
         SelectBox.redisplay(from);
         SelectBox.redisplay(to);
     },
-    move_all: function(from, to) {
+    move_all: function (from, to) {
         var from_box = document.getElementById(from);
         var to_box = document.getElementById(to);
         var option;
@@ -88,8 +88,8 @@ var SelectBox = {
         SelectBox.redisplay(from);
         SelectBox.redisplay(to);
     },
-    sort: function(id) {
-        SelectBox.cache[id].sort( function(a, b) {
+    sort: function (id) {
+        SelectBox.cache[id].sort(function (a, b) {
             a = a.text.toLowerCase();
             b = b.text.toLowerCase();
             try {
@@ -100,9 +100,9 @@ var SelectBox = {
                 // silently fail on IE 'unknown' exception
             }
             return 0;
-        } );
+        });
     },
-    select_all: function(id) {
+    select_all: function (id) {
         var box = document.getElementById(id);
         for (var i = 0; i < box.options.length; i++) {
             box.options[i].selected = 'selected';

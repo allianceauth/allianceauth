@@ -10,7 +10,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 import djcelery
+
+
 djcelery.setup_loader()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -154,7 +157,7 @@ STATIC_URL = '/static/'
 DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 
 # ALLIANCE INFO
-ALLIANCE_ID = '0'
+ALLIANCE_ID = '99001336'
 ALLIANCE_NAME = 'Somealliance'
 
 # Forum URL
@@ -167,7 +170,7 @@ JABBER_SERVER = "someadddress.com"
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
 OPENFIRE_SECRET_KEY = "somekey"
 
-BROADCAST_USER = "broadcast@"+JABBER_URL
+BROADCAST_USER = "broadcast@" + JABBER_URL
 BROADCAST_USER_PASSWORD = "somepassword"
 
 # Mumble settings

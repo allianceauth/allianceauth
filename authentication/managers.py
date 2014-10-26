@@ -4,7 +4,6 @@ from models import AuthServicesInfo
 
 
 class AuthServicesInfoManager:
-
     def __init__(self):
         pass
 

@@ -1,11 +1,11 @@
 import os
 import hashlib
+
 from django.db import connections
 from django.conf import settings
 
 
 class MumbleManager:
-
     SQL_SELECT_USER_MAX_ID = r"SELECT max(user_id)+1 as next_id from murmur_users"
 
     SQL_SELECT_GROUP_MAX_ID = r"SELECT MAX(group_id)+1 FROM murmur_groups"
@@ -54,7 +54,7 @@ class MumbleManager:
 
     @staticmethod
     def __generate_username(username, corp_ticker):
-        return "["+corp_ticker+"]"+username
+        return "[" + corp_ticker + "]" + username
 
     @staticmethod
     def _gen_pwhash(password):

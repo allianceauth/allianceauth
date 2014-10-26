@@ -1,12 +1,12 @@
 import os
 import calendar
 from datetime import datetime
+
 from passlib.apps import phpbb3_context
 from django.db import connections
 
 
 class ForumManager:
-    
     SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
                    r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -89,7 +89,7 @@ class ForumManager:
     @staticmethod
     def __create_group(groupname):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname,groupname])
+        cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname, groupname])
         return ForumManager.__get_group_id(groupname)
 
     @staticmethod
@@ -185,7 +185,7 @@ class ForumManager:
         cursor.execute(ForumManager.SQL_USER_ID_FROM_USERNAME, [ForumManager.__santatize_username(username)])
         row = cursor.fetchone()
         if row:
-            return True        
+            return True
         return False
 
     @staticmethod

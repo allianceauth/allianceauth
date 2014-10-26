@@ -6,8 +6,8 @@ class HRApplications(models.Model):
     character_name = models.CharField(max_length=254, default="")
     full_api_id = models.CharField(max_length=254, default="")
     full_api_key = models.CharField(max_length=254, default="")
-    prefered_corp = models.CharField(max_length=254, default="")
-    is_a_spi = models.BooleanField(default=False)
+    preferred_corp = models.CharField(max_length=254, default="")
+    is_a_spi = models.CharField(max_length=254, default="")
     about = models.TextField(default="")
     extra = models.TextField(default="")
 

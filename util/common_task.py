@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-from authentication.managers import AuthServicesInfoManager
 
+from authentication.managers import AuthServicesInfoManager
 from services.managers.jabber_manager import JabberManager
 from services.managers.forum_manager import ForumManager
 from services.managers.mumble_manager import MumbleManager
@@ -37,5 +37,5 @@ def deactivate_services(user):
 
 
 def generate_corp_group_name(corpname):
-    return 'Corp_'+corpname.replace(' ', '_')
+    return 'Corp_' + corpname.replace(' ', '_')
 

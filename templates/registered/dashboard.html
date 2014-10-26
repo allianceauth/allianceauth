@@ -1,62 +1,65 @@
 {% extends "public/base.html" %}
-{% block title %}Alliance Auth{% endblock%}
+{% block title %}Alliance Auth{% endblock %}
 {% block page_title %}Something something here{% endblock page_title %}
 
 {% block content %}
 
-<div class="col-lg-12">
-    <h1 class="page-header text-center">Dashboard</h1>
-    {% if perms.auth.alliance_member %}
-    <div class="col-lg-12 container" id="example">
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Dashboard</h1>
+        {% if perms.auth.alliance_member %}
+            <div class="col-lg-12 container" id="example">
 
 
-        <div class="row">
-            <div class="col-lg-6">
-                {% for character in characters %}
-                {% ifequal character.character_id authinfo.main_char_id %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">Main character</div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        {% for character in characters %}
+                            {% ifequal character.character_id authinfo.main_char_id %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Main character</div>
 
-                    <div class="panel-body">
-                        <div class="col-lg-5 col-sm-2"><img class=
-                        "ra-avatar img-responsive" src=
-                        "https://image.eveonline.com/Character/{{character.character_id}}_128.jpg"></div>
+                                    <div class="panel-body">
+                                        <div class="col-lg-5 col-sm-2"><img class=
+                                                                                    "ra-avatar img-responsive" src=
+                                                                                    "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                                        </div>
 
-                        <div class="col-lg-7 col-sm-2">
-                            <h4 class="">{{character.character_name}}</h4>
-                            <p>{{character.corporation_name}}</p>
-                            <p>{{character.alliance_name}}</p>
+                                        <div class="col-lg-7 col-sm-2">
+                                            <h4 class="">{{ character.character_name }}</h4>
+
+                                            <p>{{ character.corporation_name }}</p>
+
+                                            <p>{{ character.alliance_name }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endifequal %}
+                        {% endfor %}
+                    </div>
+
+
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Groups</div>
+                            <div class="panel-body">
+                                <div style="height: 128px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
+                                    <table class="table table-striped">
+                                        {% for group in user.groups.all %}
+                                            <tr>
+                                                <td>
+                                                    <p class="">{{ group.name }}</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endifequal %}
-                {% endfor %}
-            </div>
 
-
-            <div class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Groups</div>
-                    <div class="panel-body">
-                        <div style="height: 128px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
-                            <table class="table table-striped">
-                                {% for group in user.groups.all %}
-                                <tr>
-                                    <td>
-                                        <p class="">{{ group.name }}</p>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
-
-        </div>
+        {% else %}
+            <p> Not part of the alliance</p>
+        {% endif %}
     </div>
-    {% else %}
-    <p> Not part of the alliance</p>
-    {% endif %}
-</div>
 {% endblock content %}
