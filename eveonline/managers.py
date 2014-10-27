@@ -69,7 +69,7 @@ class EveManager:
     @staticmethod
     def create_alliance_info(alliance_id, alliance_name, alliance_ticker, alliance_executor_corp_id,
                              alliance_member_count):
-        if EveManager.check_if_alliance_exists_by_id(alliance_id):
+        if not EveManager.check_if_alliance_exists_by_id(alliance_id):
             alliance_info = EveAllianceInfo()
             alliance_info.alliance_id = alliance_id
             alliance_info.alliance_name = alliance_name
@@ -88,7 +88,7 @@ class EveManager:
 
     @staticmethod
     def create_corporation_info(corp_id, corp_name, corp_ticker, corp_member_count, alliance):
-        if EveManager.check_if_corporation_exists_by_id(corp_id):
+        if not EveManager.check_if_corporation_exists_by_id(corp_id):
             corp_info = EveCorporationInfo()
             corp_info.corporation_id = corp_id
             corp_info.corporation_name = corp_name
@@ -97,6 +97,13 @@ class EveManager:
             corp_info.alliance = alliance
             corp_info.save()
 
+    @staticmethod
+    def update_corporation_info(corp_id, corp_member_count, alliance):
+        if EveManager.check_if_corporation_exists_by_id(corp_id):
+            corp_info = EveCorporationInfo.objects.get(corporation_id = corp_id)
+            corp_info.member_count = corp_member_count
+            corp_info.alliance = alliance
+            corp_info.save()
 
     @staticmethod
     def get_api_key_pairs(user):
@@ -172,3 +179,22 @@ class EveManager:
     @staticmethod
     def check_if_corporation_exists_by_id(corp_id):
         return EveCorporationInfo.objects.filter(corporation_id=corp_id).exists()
+
+    @staticmethod
+    def get_alliance_info_by_id(alliance_id):
+        if EveManager.check_if_alliance_exists_by_id(alliance_id):
+            return EveAllianceInfo.objects.get(alliance_id=alliance_id)
+        else:
+            return None
+
+    @staticmethod
+    def get_corporation_info_by_id(corp_id):
+        if EveManager.check_if_corporation_exists_by_id(corp_id):
+            return EveCorporationInfo.objects.get(corporation_id=corp_id)
+        else:
+            return None
+
+
+    @staticmethod
+    def get_all_corporation_info():
+        return EveCorporationInfo.objects.all()

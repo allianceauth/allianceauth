@@ -166,5 +166,32 @@ def run_api_refresh():
 # Run Every 2 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/2"))
 def run_alliance_corp_update():
-    alliance_info = EveApiManager.get_alliance_information(settings.ALLIANCE_ID)
+    if EveApiManager.check_if_api_server_online():
 
+        # Updated alliance info
+        alliance_info = EveApiManager.get_alliance_information(settings.ALLIANCE_ID)
+        # Populate alliance info
+        if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
+            EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
+                                            alliance_info['executor_id'], alliance_info['member_count'])
+
+        EveManager.update_alliance_info(settings.ALLIANCE_ID, alliance_info['executor_id'],
+                                        alliance_info['member_count'])
+
+        alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
+
+        # Create the corps in the alliance
+        for alliance_corp in alliance_info['member_corps']:
+            corpinfo = EveApiManager.get_corporation_information(alliance_corp)
+            if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
+                EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
+                                                   corpinfo['members']['current'], alliance)
+
+        # Update all the corps
+        for all_corp_info in EveManager.get_all_corporation_info():
+            corpinfo = EveApiManager.get_corporation_information(all_corp_info.corporation_id)
+            if corpinfo['alliance']['id'] == int(settings.ALLIANCE_ID):
+                EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance)
+            else:
+                # No longer in the alliance nuke it
+                all_corp_info.delete()
