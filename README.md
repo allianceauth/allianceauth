@@ -34,9 +34,23 @@ Services Interaction:
     
 Startup Instructions:
 
+    python syncdb
     python manage.py celeryd --verbosity=2 --loglevel=DEBUG
     python manage.py celerybeat --verbosity=2 --loglevel=DEBUG
     python manage.py runserver
+
+Special Permissions In Admin:
+    auth | user | alliance_member ( Added auto by auth when a member is verified )
+    auth | user | group_management ( Access to add members to groups within the alliance )
+    auth | user | human_resources ( Corp only access to view applications )
+    auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
+
+
+Note:
+
+    In order to create permissions automatically you there is a "bootstrap_permissions" function in the
+    __init__.py of the groupmanagement folder. Comment out before running syncdb, after add it back.
+    This is there because i currently have no idea how to do this any other way.
 
     
 
