@@ -7,6 +7,7 @@ def bootstrap_permissions():
     ct = ContentType.objects.get_for_model(User)
     Permission.objects.get_or_create(codename="group_management", content_type=ct, name="group_management")
     Permission.objects.get_or_create(codename="jabber_broadcast", content_type=ct, name="jabber_broadcast")
+    Permission.objects.get_or_create(codename="human_resources", content_type=ct, name="human_resources")
 
 
 def add_member_permission(user, permission):

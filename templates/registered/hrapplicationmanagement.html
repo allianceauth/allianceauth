@@ -9,15 +9,78 @@
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">HR Applications
+        {% if not perms.auth.alliance_member %}
+            <h1 class="page-header text-center">Personal Applications
             <div class="text-right">
                 <a href="{% url 'auth_hrapplication_create_view' %}">
-                    <button type="button" class="btn btn-success">Create Application</button>
+                    {% if personal_app %}
+                        <button type="button" class="btn btn-success" disabled>Create Application</button>
+                    {% else %}
+                        <button type="button" class="btn btn-success">Create Application</button>
+                    {% endif %}
                 </a>
             </div>
         </h1>
-        <div class="container-fluid">
-        </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Application ID</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">Main Character</th>
+                    <th class="text-center">Corporation</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                {% if personal_app %}
+                    <tr>
+                        <td class="text-center">{{ personal_app.id }}</td>
+                        <td class="text-center">{{ personal_app.user.username }}</td>
+                        <td class="text-center">{{ personal_app.character_name }}</td>
+                        <td class="text-center">{{ personal_app.corp.corporation_name }}</td>
+                        <td class="text-center">
+                            <a href="/hr_application_personal_view/">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            </a>
+                            <a href="/hr_application_personal_removal/">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        {% endif %}
+        {% if perms.auth.human_resources %}
+            <h1 class="page-header text-center">Application Management</h1>
+            <div class="container-fluid">
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="text-center">Application ID</th>
+                        <th class="text-center">Username</th>
+                        <th class="text-center">Main Character</th>
+                        <th class="text-center">Corporation</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                    {% for app in applications %}
+                        <tr>
+                            <td class="text-center">{{ app.id }}</td>
+                            <td class="text-center">{{ app.user.username }}</td>
+                            <td class="text-center">{{ app.character_name }}</td>
+                            <td class="text-center">{{ app.corp.corporation_name }}</td>
+                            <td class="text-center">
+                                <a href="/hr_application_view/{{ app.id }}">
+                                    <button type="button" class="btn btn-primary"><span
+                                            class="glyphicon glyphicon-eye-open"></span></button>
+                                </a>
+                                <a href="/hr_application_remove/{{ app.id }}">
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock content %}

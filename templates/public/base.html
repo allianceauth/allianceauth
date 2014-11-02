@@ -91,11 +91,14 @@
                                                                    href="{% url 'auth_help' %}"><i
                                     class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
                         </li>
+
+                        {% if not perms.auth.alliance_member or perms.auth.human_resources %}
                         <li>
                             <a {% ifequal request.path "/hr_application_management/" %} class="active" {% endifequal %}
                                                                                         href="{% url 'auth_hrapplications_view' %}"><i
                                     class="fa fa-file-o fa-fw grayiconecolor"></i> Applications</a>
                         </li>
+                        {% endif %}
 
                         <li class="text-center divider-horizontal">
                             <h5>Util</h5>
