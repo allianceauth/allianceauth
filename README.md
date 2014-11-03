@@ -3,7 +3,7 @@ allianceauth
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
-Requirments:
+Requirements:
 
     # Django Stuff #
     django 1.6.1
@@ -35,6 +35,10 @@ Services Interaction:
 Startup Instructions:
 
     python syncdb
+    python manage.py shell
+        from util import bootstrap_permissions
+        bootstrap_permissions()
+
     python manage.py celeryd --verbosity=2 --loglevel=DEBUG
     python manage.py celerybeat --verbosity=2 --loglevel=DEBUG
     python manage.py runserver
@@ -44,7 +48,7 @@ Special Permissions In Admin:
     auth | user | group_management ( Access to add members to groups within the alliance )
     auth | user | human_resources ( Corp only access to view applications )
     auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
-
+    auth | user | blue_memeber ( Auto Added to people who register has a blue when adding api key)
 
 Note:
 

@@ -13,10 +13,8 @@ import os
 
 import djcelery
 
-
 djcelery.setup_loader()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -103,8 +101,8 @@ DATABASES = {
     'mumble': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_mumble',
-        'USER': 'allianceauth',
-        'PASSWORD': 'allianceauth',
+        'USER': 'alliancemumble',
+        'PASSWORD': 'alliancemumble',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -148,17 +146,21 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
 STATIC_URL = '/static/'
 
 DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
+DEFAULT_BLUE_GROUP = 'BlueMember'
 
 # ALLIANCE INFO
 ALLIANCE_ID = '99001336'
 ALLIANCE_NAME = 'Somealliance'
+
+# Needed to update standings
+ALLIANCE_EXEC_CORP_ID = ''
+ALLIANCE_EXEC_CORP_VCODE = ''
+ALLIANCE_BLUE_STANDING = 5.0
 
 # Forum URL
 FORUM_URL = "http://someaddress.com"

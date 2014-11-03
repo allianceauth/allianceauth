@@ -10,7 +10,7 @@ class AuthServicesInfo(models.Model):
     mumble_username = models.CharField(max_length=254, default="")
     mumble_password = models.CharField(max_length=254, default="")
     main_char_id = models.CharField(max_length=64, default="")
-
+    is_blue = models.BooleanField(default=False)
     user = models.ForeignKey(User)
 
     def __str__(self):

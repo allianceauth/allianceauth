@@ -1,6 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
+from django.conf import settings
 
 
 def bootstrap_permissions():
@@ -8,6 +10,9 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="group_management", content_type=ct, name="group_management")
     Permission.objects.get_or_create(codename="jabber_broadcast", content_type=ct, name="jabber_broadcast")
     Permission.objects.get_or_create(codename="human_resources", content_type=ct, name="human_resources")
+    Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member")
+    Group.objects.get_or_create(name=settings.DEFAULT_ALLIANCE_GROUP)
+    Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
 
 
 def add_member_permission(user, permission):

@@ -57,6 +57,10 @@ class MumbleManager:
         return "[" + corp_ticker + "]" + username
 
     @staticmethod
+    def __generate_username_blue(username, corp_ticker):
+        return "[BLUE][" + corp_ticker + "]" + username
+
+    @staticmethod
     def _gen_pwhash(password):
         return hashlib.sha1(password).hexdigest()
 
@@ -118,6 +122,26 @@ class MumbleManager:
     def create_user(corp_ticker, username):
         dbcursor = connections['mumble'].cursor()
         username_clean = MumbleManager.__generate_username(MumbleManager.__santatize_username(username), corp_ticker)
+        password = MumbleManager.__generate_random_pass()
+        pwhash = MumbleManager._gen_pwhash(password)
+
+        try:
+            dbcursor.execute(MumbleManager.SQL_SELECT_USER_MAX_ID)
+            user_id = dbcursor.fetchone()[0]
+
+            dbcursor.execute(MumbleManager.SQL_CREATE_USER,
+                             [settings.MUMBLE_SERVER_ID, user_id, username_clean, pwhash])
+
+            return username_clean, password
+        except:
+
+            return "", ""
+
+    @staticmethod
+    def create_blue_user(corp_ticker, username):
+        dbcursor = connections['mumble'].cursor()
+        username_clean = MumbleManager.__generate_username_blue(MumbleManager.__santatize_username(username),
+                                                                corp_ticker)
         password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
 

@@ -158,6 +158,20 @@ def activate_mumble(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def activate_blue_mumble(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    result = MumbleManager.create_blue_user(character.corporation_ticker, character.character_name)
+    # if its empty we failed
+    if result[0] is not "":
+        AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], request.user)
+        update_mumble_groups(request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
 @permission_required('auth.alliance_member')
 def deactivate_mumble(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -170,7 +184,31 @@ def deactivate_mumble(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def deactivate_blue_mumble(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = MumbleManager.delete_user(authinfo.mumble_username)
+    # if false we failed
+    if result:
+        AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/")
+
+
+@login_required
 @permission_required('auth.alliance_member')
+def reset_mumble_password(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = MumbleManager.update_user_password(authinfo.mumble_username)
+    # if blank we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_mumble_info(authinfo.mumble_username, result, request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/")
+
+
+@login_required
+@permission_required('auth.blue_member')
 def reset_mumble_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = MumbleManager.update_user_password(authinfo.mumble_username)

@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 
 from eveonline.models import EveCorporationInfo
 
@@ -6,7 +7,9 @@ from eveonline.models import EveCorporationInfo
 class HRApplicationForm(forms.Form):
     allchoices = []
     for corp in EveCorporationInfo.objects.all():
-        allchoices.append((str(corp.corporation_id), str(corp.corporation_name)))
+        if corp.alliance is not None:
+            if corp.alliance.alliance_id == settings.ALLIANCE_ID:
+                allchoices.append((str(corp.corporation_id), str(corp.corporation_name)))
 
     character_name = forms.CharField(max_length=254, required=True, label="Main Character Name")
     full_api_id = forms.CharField(max_length=254, required=True, label="API ID")

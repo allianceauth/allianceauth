@@ -9,7 +9,40 @@
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">Available Services</h1>
-        {% if perms.auth.alliance_member %}
+        {% if perms.auth.blue_member %}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Service</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">Password</th>
+                    <th class="text-center">Domain</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Mumble</td>
+                    <td class="text-center">{{ authinfo.mumble_username }}</td>
+                    <td class="text-center">{{ authinfo.mumble_password }}</td>
+                    <td class="text-center">{{ MUMBLE_URL }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.mumble_username "" %}
+                            <a href="{% url 'auth_activate_blue_mumble' %}">
+                                <button type="button" class="btn btn-success"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_mumble_password' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_blue_mumble' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            </table>
+        {% elif perms.auth.alliance_member %}
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">Service</th>
