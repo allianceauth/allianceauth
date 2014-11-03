@@ -1,0 +1,14 @@
+# Python Stuff # - see bootstrap.sh
+mysql-python
+
+dnspython
+passlib
+
+# Django Stuff #
+django==1.6.1
+django-evolution
+django-bootstrap-form
+django-celery
+
+# Needed Apps
+bcrypt
