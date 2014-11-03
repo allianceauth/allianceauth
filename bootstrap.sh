@@ -11,6 +11,8 @@ sudo apt-get -y install python-pip
 cd /vagrant/
 
 sudo pip install --upgrade pip
+
+# Pip moved location after upgrade from 1.0
 sudo ln -s /usr/local/bin/pip /usr/bin/pip 2>/dev/null
 
 sudo apt-get -y install libmysqlclient-dev 
