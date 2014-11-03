@@ -23,21 +23,13 @@ sudo pip install --allow-external libffi-dev libffi-dev
 #TODO collect user input and use that to populate the passwords
 sudo apt-get -y install mysql-server-5.5
 sudo apt-get -y install rabbitmq-server
-sudo apt-get -y install python-xmpp 
+#sudo apt-get -y install python-xmpp 
 
 sudo pip install -r requirements.txt
 
+chmod +x startup.sh
 
-# TODO Extract the rest of this file to separate shell script
-
-
-
-## comment out bootstrap_permissions() before sync, as per instructions
-#cp groupmanagement/__init__.py groupmanagement/__init__.py.bak
-#sed "s/bootstrap_permissions()/#bootstrap_permissions()/" groupmanagement/__init__.py.bak > groupmanagement/__init__.py
-#python manage.py syncdb
-#mv groupmanagement/__init__.py.bak groupmanagement/__init__.py
-
-#python manage.py celeryd --verbosity=2 --loglevel=DEBUG
-#python manage.py celerybeat --verbosity=2 --loglevel=DEBUG
-#python manage.py runserver
+echo '--------'
+echo 'This would be a good point to adjust mysql passwords, as well as all the stuff '
+echo 'in ./alliance_auth/settings.py otherwise startup.sh will not work.'
+echo '--------'
