@@ -165,7 +165,7 @@ ALLIANCE_BLUE_STANDING = 5.0
 # Forum URL
 FORUM_URL = "http://someaddress.com"
 
-# Jabber Prosody Info
+# Jabber information
 JABBER_URL = "someaddress.com"
 JABBER_PORT = 5223
 JABBER_SERVER = "someadddress.com"

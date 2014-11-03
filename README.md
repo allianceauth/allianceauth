@@ -21,7 +21,7 @@ Requirements:
     python-dnspython
     
     # Needed Apps
-    rabbitmq
+    celeryd
     bcrypt
     
 Services Interaction:
@@ -34,6 +34,7 @@ Services Interaction:
     
 Startup Instructions:
 
+    ./bootstrap.sh (Sudo if needed)
     python syncdb
     python manage.py shell
         from util import bootstrap_permissions
@@ -50,13 +51,6 @@ Special Permissions In Admin:
     auth | user | human_resources ( Corp only access to view applications )
     auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
     auth | user | blue_memeber ( Auto Added to people who register has a blue when adding api key)
-
-Note:
-
-    In order to create permissions automatically you there is a "bootstrap_permissions" function in the
-    __init__.py of the groupmanagement folder. Comment out before running syncdb, after add it back.
-    This is there because i currently have no idea how to do this any other way.
-
     
 
 Eve alliance auth for the 99 percent
