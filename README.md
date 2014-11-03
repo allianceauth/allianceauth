@@ -35,6 +35,7 @@ Services Interaction:
 Startup Instructions:
 
     ./bootstrap.sh (Sudo if needed)
+    *Configure the settings.py file in the alliance_auth folder*    
     python syncdb
     python manage.py shell
         from util import bootstrap_permissions
