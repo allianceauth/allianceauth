@@ -44,6 +44,7 @@ Startup Instructions:
     python manage.py runserver
 
 Special Permissions In Admin:
+
     auth | user | alliance_member ( Added auto by auth when a member is verified )
     auth | user | group_management ( Access to add members to groups within the alliance )
     auth | user | human_resources ( Corp only access to view applications )
