@@ -29,7 +29,7 @@ sudo apt-get -y install rabbitmq-server
 
 sudo pip install -r requirements.txt
 
-chmod +x startup.sh
+chmod +x *.sh
 
 echo '--------'
 echo 'This would be a good point to adjust mysql passwords, as well as all the stuff '
