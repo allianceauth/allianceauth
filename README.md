@@ -36,7 +36,7 @@ Startup Instructions:
 
     ./bootstrap.sh (Sudo if needed)
     *Configure the settings.py file in the alliance_auth folder*    
-    python syncdb
+    python manage.py syncdb
     python manage.py shell
         from util import bootstrap_permissions
         from celerytask.tasks import run_alliance_corp_update
@@ -56,4 +56,4 @@ Special Permissions In Admin:
     auth | user | blue_memeber ( Auto Added to people who register has a blue when adding api key)
     
 
-Eve alliance auth for the 99 percent
+Brought to you by The 99 Percent skunkworks.
