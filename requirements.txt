@@ -3,6 +3,7 @@ mysql-python
 
 dnspython
 passlib
+xmpppy==0.5.0rc1
 
 # Django Stuff #
 django==1.6.1
