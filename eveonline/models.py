@@ -31,6 +31,7 @@ class EveAllianceInfo(models.Model):
     alliance_name = models.CharField(max_length=254)
     alliance_ticker = models.CharField(max_length=254)
     executor_corp_id = models.CharField(max_length=254)
+    is_blue = models.BooleanField(default=False)
     member_count = models.IntegerField()
 
     def __str__(self):
@@ -42,8 +43,8 @@ class EveCorporationInfo(models.Model):
     corporation_name = models.CharField(max_length=254)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
-
-    alliance = models.ForeignKey(EveAllianceInfo)
+    is_blue = models.BooleanField(default=False)
+    alliance = models.ForeignKey(EveAllianceInfo, blank=True, null=True)
 
     def __str__(self):
         return self.corporation_name

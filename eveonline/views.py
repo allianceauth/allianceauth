@@ -17,6 +17,21 @@ from util.common_task import deactivate_services
 from util.common_task import generate_corp_group_name
 
 
+def disable_alliance_member(user, char_id):
+    remove_member_permission(user, 'alliance_member')
+    remove_user_from_group(user, settings.DEFAULT_ALLIANCE_GROUP)
+    remove_user_from_group(user,
+                           generate_corp_group_name(
+                               EveManager.get_character_by_id(char_id).corporation_name))
+    deactivate_services(user)
+
+
+def disable_blue_member(user):
+    remove_member_permission(user, 'blue_member')
+    remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
+    deactivate_services(user)
+
+
 @login_required
 def add_api_key(request):
     if request.method == 'POST':
@@ -57,7 +72,10 @@ def api_key_removal(request, api_id):
             if character.character_id == authinfo.main_char_id:
                 if character.api_id == api_id:
                     # TODO: Remove servies also
-                    AuthServicesInfoManager.update_main_char_Id("", request.user)
+                    if authinfo.is_blue:
+                        disable_blue_member(request.user)
+                    else:
+                        disable_alliance_member(request.user, authinfo.main_char_id)
 
     EveManager.delete_api_key_pair(api_id, request.user.id)
     EveManager.delete_characters_by_api_id(api_id, request.user.id)
@@ -78,20 +96,26 @@ def main_character_change(request, char_id):
         previousmainid = AuthServicesInfoManager.get_auth_service_info(request.user).main_char_id
         AuthServicesInfoManager.update_main_char_Id(char_id, request.user)
         # Check if character is in the alliance
+        character_info = EveManager.get_character_by_id(char_id)
+        corporation_info = EveManager.get_corporation_info_by_id(character_info.corporation_id)
+
         if EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
             add_member_permission(request.user, 'alliance_member')
             add_user_to_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
             add_user_to_group(request.user,
                               generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
+
+        elif corporation_info.is_blue:
+            add_member_permission(request.user, 'blue_member')
+            add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
+
         else:
             # TODO: disable serivces
             if check_if_user_has_permission(request.user, 'alliance_member'):
-                remove_member_permission(request.user, 'alliance_member')
-                remove_user_from_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
-                remove_user_from_group(request.user,
-                                       generate_corp_group_name(
-                                           EveManager.get_character_by_id(previousmainid).corporation_name))
-                deactivate_services(request.user)
+                disable_alliance_member(request.user, previousmainid)
+
+            if check_if_user_has_permission(request.user, 'blue_member'):
+                disable_blue_member(request.user)
 
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")

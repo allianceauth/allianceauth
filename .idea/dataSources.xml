@@ -21,8 +21,8 @@
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/alliance_mumble</jdbc-url>
-      <user-name>allianceauth</user-name>
-      <user-password>dfcbdfc6dfc6dfc3dfcbdfc4dfc9dfcfdfcbdfdfdfdedfc2</user-password>
+      <user-name>alliancemumble</user-name>
+      <user-password>dfcbdfc6dfc6dfc3dfcbdfc4dfc9dfcfdfc7dfdfdfc7dfc8dfc6dfcf</user-password>
       <libraries />
     </data-source>
   </component>

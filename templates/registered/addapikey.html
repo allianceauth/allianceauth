@@ -17,10 +17,28 @@
                     <p class="text-center">
                         Full API Key is required for auth services
                     </p>
-                    <a target="_blank"
-                       href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=268435455">Create
-                        a full API key</a>
+
+                    <p class="text-center">
+                        <a target="_blank"
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=268435455">Create
+                            a full API key</a>
                     </p>
+
+                    <p class="text-center">
+                        NOTE: If you are part of the alliance do not check "Blue" this is for people who are blue to the
+                        alliance
+                        but are not in it. Blue access is limited.
+                    </p>
+
+                    <p class="text-center"><b>Do not change the accessmask or deselect options or it will not work </b>
+                    </p>
+
+                    <p class="text-center">
+                        <a target="_blank"
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=8388608">Create
+                            a blue key</a>
+                    </p>
+
                     <form class="form-signin" role="form" action="{% url 'auth_add_api_key' %}" method="POST">
                         {% csrf_token %}
                         {{ form|bootstrap }}
