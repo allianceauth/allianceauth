@@ -1,6 +1,5 @@
 # Python Stuff # - see bootstrap.sh
 mysql-python
-xmpppy
 
 dnspython
 passlib
