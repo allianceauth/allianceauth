@@ -105,10 +105,16 @@ def main_character_change(request, char_id):
             add_user_to_group(request.user,
                               generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
 
-        elif corporation_info.is_blue:
-            add_member_permission(request.user, 'blue_member')
-            add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
+        elif corporation_info != None:
+            if corporation_info.is_blue:
+                add_member_permission(request.user, 'blue_member')
+                add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
+            else:
+                if check_if_user_has_permission(request.user, 'alliance_member'):
+                    disable_alliance_member(request.user, previousmainid)
 
+                if check_if_user_has_permission(request.user, 'blue_member'):
+                    disable_blue_member(request.user)
         else:
             # TODO: disable serivces
             if check_if_user_has_permission(request.user, 'alliance_member'):

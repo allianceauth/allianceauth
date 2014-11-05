@@ -41,4 +41,4 @@ def check_if_user_has_permission(user, permission):
     ct = ContentType.objects.get_for_model(User)
     stored_permission, created = Permission.objects.get_or_create(codename=permission,
                                                                   content_type=ct, name=permission)
-    return user.has_perm(stored_permission)
+    return user.has_perm('auth.' + permission)

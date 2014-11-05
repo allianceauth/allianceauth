@@ -33,7 +33,6 @@ def deactivate_services(user):
     if authinfo.forum_username != "":
         ForumManager.disable_user(authinfo.forum_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
-    AuthServicesInfoManager.update_main_char_Id("", user)
 
 
 def generate_corp_group_name(corpname):
