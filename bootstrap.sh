@@ -22,16 +22,38 @@ sudo pip install --allow-external python-openfire python-openfire==0.2.3-beta
 sudo pip install https://github.com/eve-val/evelink/zipball/master
 sudo pip install --allow-external libffi-dev libffi-dev
 
-#TODO collect user input and use that to populate the passwords
+export MYSQL_ROOT_PASS=poitot
+
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
 sudo apt-get -y install mysql-server-5.5
+
+#check it's up
+sudo mysqladmin status -p$MYSQL_ROOT_PASS
+
+echo 'Creating databases and allianceauth user'
+sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_auth 
+sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_forum
+sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_mumble
+
+sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'allianceauth'@'localhost' IDENTIFIED BY 'allianceauth'"
+sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'allianceauth'@'localhost'";
+
+sudo mysqladmin -p$MYSQL_ROOT_PASS flush-privileges
+
 sudo apt-get -y install rabbitmq-server
-#sudo apt-get -y install python-xmpp 
 
 sudo pip install -r requirements.txt
 
 chmod +x *.sh
 
 echo '--------'
-echo 'This would be a good point to adjust mysql passwords, as well as all the stuff '
-echo 'in ./alliance_auth/settings.py otherwise startup.sh will not work.'
+echo 'Almost there!'
+echo 'Next steps:\n'
+echo '1. Adjust mysql root password if you feel so inclined.'
+echo '2. Adjust all the stuff in ./alliance_auth/settings.py.'
+echo '3. Comment out bootstrap_permissions() inside groupmanagement/__init__.py'
+echo '4. Run sudo python manage.py syncdb to set up the database tables'
+echo '5. Uncomment that line that you commented out in step 3.'
+echo "6. run cd /vagrant/; ./startup.sh to start, and ./shutdown.sh to stop."
 echo '--------'
