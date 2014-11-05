@@ -52,8 +52,6 @@ echo 'Almost there!'
 echo 'Next steps:\n'
 echo '1. Adjust mysql root password if you feel so inclined.'
 echo '2. Adjust all the stuff in ./alliance_auth/settings.py.'
-echo '3. Comment out bootstrap_permissions() inside groupmanagement/__init__.py'
-echo '4. Run sudo python manage.py syncdb to set up the database tables'
-echo '5. Uncomment that line that you commented out in step 3.'
-echo "6. run cd /vagrant/; ./startup.sh to start, and ./shutdown.sh to stop."
+echo '3. Run sudo python manage.py syncdb to set up the database tables'
+echo "4. run cd /vagrant/; ./startup.sh to start, and ./shutdown.sh to stop."
 echo '--------'
