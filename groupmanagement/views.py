@@ -1,6 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
@@ -95,7 +96,9 @@ def groups_view(request):
         # Check if group is a corp
         if "Corp" in group.name:
             pass
-        elif "AllianceMember" in group.name:
+        elif settings.DEFAULT_ALLIANCE_GROUP in group.name:
+            pass
+        elif settings.DEFAULT_BLUE_GROUP in group.name:
             pass
         else:
             # Get the descriptionn
