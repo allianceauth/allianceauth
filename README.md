@@ -35,17 +35,9 @@ Services Interaction:
 Startup Instructions:
 
     ./bootstrap.sh (Sudo if needed)
-    *Configure the settings.py file in the alliance_auth folder*    
-    python manage.py syncdb
-    python manage.py shell
-        from util import bootstrap_permissions
-        from celerytask.tasks import run_alliance_corp_update
-        bootstrap_permissions()
-        run_alliance_corp_update()
-
-    python manage.py celeryd --verbosity=2 --loglevel=DEBUG
-    python manage.py celerybeat --verbosity=2 --loglevel=DEBUG
-    python manage.py runserver
+    ./startup.sh
+    ./shutdown.sh
+    
 
 Special Permissions In Admin:
 
