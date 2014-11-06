@@ -109,6 +109,7 @@ def main_character_change(request, char_id):
             if corporation_info.is_blue:
                 add_member_permission(request.user, 'blue_member')
                 add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
+                AuthServicesInfoManager.update_is_blue(True, request.user)
             else:
                 if check_if_user_has_permission(request.user, 'alliance_member'):
                     disable_alliance_member(request.user, previousmainid)
