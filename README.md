@@ -1,5 +1,6 @@
-allianceauth
+Alliance Auth
 ============
+
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
