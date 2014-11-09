@@ -153,8 +153,9 @@ def run_api_refresh():
                             main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
                             if main_alliance_id == settings.ALLIANCE_ID:
                                 pass
-                            elif corp.is_blue:
-                                pass
+                            elif corp != None:
+                                if not corp.is_blue:
+                                    deactivate_services(user)
                             else:
                                 deactivate_services(user)
                         else:
