@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 from util import add_member_permission
 from util import remove_member_permission
@@ -15,6 +16,9 @@ from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
 from util.common_task import deactivate_services
 from util.common_task import generate_corp_group_name
+from eveonline.models import EveCorporationInfo
+from eveonline.models import EveCharacter
+from authentication.models import AuthServicesInfo
 
 
 def disable_alliance_member(user, char_id):
@@ -127,3 +131,27 @@ def main_character_change(request, char_id):
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
 
+
+@login_required
+@permission_required('auth.corp_stats')
+def corp_stats_view(request):
+    # Get the corp the member is in
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
+    main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+    corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
+    current_count = 0
+    allcharacters = []
+    all_auth = AuthServicesInfo.objects.all()
+    for auth in all_auth:
+        if auth.main_char_id != "":
+            user_char = EveCharacter.objects.get(character_id=auth.main_char_id)
+
+            if user_char.corporation_id == corp.corporation_id:
+                current_count = current_count + 1
+                allcharacters.append(user_char)
+
+    context = {"corp": corp,
+               "currentCount": current_count,
+               "characters": allcharacters}
+
+    return render_to_response('registered/corpstats.html', context, context_instance=RequestContext(request))

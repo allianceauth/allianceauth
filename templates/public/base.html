@@ -108,6 +108,14 @@
                                                                             href="{% url 'password_change' %}"><i
                                     class="fa fa-lock fa-fw grayiconecolor"></i>Change Password</a>
                         </li>
+                        {% if perms.auth.corp_stats %}
+                            <li>
+                                <a {% ifequal request.path "/corporation_stats" %} class="active" {% endifequal %}
+                                                                                   href="{% url 'auth_corp_stats' %}"><i
+                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
+                            </li>
+                        {% endif %}
+
                         {% if perms.auth.group_management %}
                             <li>
                                 <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}

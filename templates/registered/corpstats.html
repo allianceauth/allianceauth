@@ -1,0 +1,62 @@
+{% extends "public/base.html" %}
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}Corporation Stats{% endblock page_title %}
+
+{% block content %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Corporation Stats</h1>
+        {% if perms.auth.alliance_member %}
+            <div class="col-lg-12 container" id="example">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Corporation</div>
+
+                            <div class="panel-body">
+                                <div class="col-lg-5 col-sm-2"><img class=
+                                                                            "ra-avatar img-responsive" src=
+                                                                            "https://image.eveonline.com/Corporation/{{ corp.corporation_id }}_128.png">
+                                </div>
+
+                                <div class="col-lg-7 col-sm-2">
+                                    <h4 class="">Name: {{ corp.corporation_name }}</h4>
+
+                                    <p>Ticker: {{ corp.corporation_ticker }}</p>
+
+                                    <p>Memeber: {{ corp.member_count }}</p>
+
+                                    <p>Total Authed Members: {{ currentCount }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Registered Characters</div>
+                            <div class="panel-body">
+                                <div style="height: 200px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
+                                    <table class="table table-striped">
+                                        {% for character in characters %}
+                                            <tr>
+                                                <td>
+                                                    <p class="">{{ character.character_name }}</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% else %}
+            <p> Not part of the alliance</p>
+        {% endif %}
+    </div>
+{% endblock content %}

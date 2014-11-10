@@ -41,9 +41,9 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">Groups</div>
                             <div class="panel-body">
-                                <div style="height: 128px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
+                                <div style="height: 300px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                                     <table class="table table-striped">
-                                        {% for group in user.groups.all %}
+                                        {% for char in user.groups.all %}
                                             <tr>
                                                 <td>
                                                     <p class="">{{ group.name }}</p>

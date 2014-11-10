@@ -41,6 +41,7 @@ urlpatterns = patterns('',
                        url(r'^characters/', 'eveonline.views.characters_view', name='auth_characters'),
                        url(r'^main_character_change/(\w+)/$', 'eveonline.views.main_character_change',
                            name='auth_main_character_change'),
+                       url(r'^corporation_stats/$', 'eveonline.views.corp_stats_view', name='auth_corp_stats'),
 
                        # Group management
                        url(r'^groups/', 'groupmanagement.views.groups_view', name='auth_groups'),
