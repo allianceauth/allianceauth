@@ -46,6 +46,7 @@ class ForumManager:
     @staticmethod
     def __santatize_username(username):
         sanatized = username.replace(" ", "_")
+        sanatized = sanatized.replace("'", "")
         return sanatized.lower()
 
     @staticmethod
