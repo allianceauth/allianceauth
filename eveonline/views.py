@@ -141,15 +141,13 @@ def corp_stats_view(request):
     corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
     current_count = 0
     allcharacters = []
-    all_auth = AuthServicesInfo.objects.all()
-    for auth in all_auth:
-        if auth.main_char_id != "":
+    all_characters = EveCharacter.objects.all()
+    for char in all_characters:
+        if char:
             try:
-                user_char = EveCharacter.objects.get(character_id=auth.main_char_id)
-
-                if user_char.corporation_id == corp.corporation_id:
+                if char.corporation_id == corp.corporation_id:
                     current_count = current_count + 1
-                    allcharacters.append(user_char)
+                    allcharacters.append(char)
             except:
                 pass
 
