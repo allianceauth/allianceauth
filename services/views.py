@@ -82,6 +82,21 @@ def activate_forum(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def activate_blue_forum(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    # Valid now we get the main characters
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    result = ForumManager.add_user(character.character_name, request.user.email, ['REGISTERED'])
+    # if empty we failed
+    if result[0] != "":
+        AuthServicesInfoManager.update_user_forum_info(result[0], result[1], request.user)
+        update_forum_groups(request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
 @permission_required('auth.alliance_member')
 def deactivate_forum(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -94,8 +109,32 @@ def deactivate_forum(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def deactivate_blue_forum(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = ForumManager.disable_user(authinfo.forum_username)
+    # false we failed
+    if result:
+        AuthServicesInfoManager.update_user_forum_info("", "", request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
 @permission_required('auth.alliance_member')
 def reset_forum_password(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = ForumManager.update_user_password(authinfo.forum_username)
+    # false we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_forum_info(authinfo.forum_username, result, request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@permission_required('auth.blue_member')
+def reset_blue_forum_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = ForumManager.update_user_password(authinfo.forum_username)
     # false we failed
@@ -120,6 +159,20 @@ def activate_jabber(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def activate_blue_jabber(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    info = JabberManager.add_user(character.character_name)
+    # If our username is blank means we already had a user
+    if info[0] is not "":
+        AuthServicesInfoManager.update_user_jabber_info(info[0], info[1], request.user)
+        update_jabber_groups(request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
 @permission_required('auth.alliance_member')
 def deactivate_jabber(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -132,8 +185,32 @@ def deactivate_jabber(request):
 
 
 @login_required
+@permission_required('auth.blue_member')
+def deactivate_blue_jabber(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = JabberManager.delete_user(authinfo.jabber_username)
+    # If our username is blank means we failed
+    if result:
+        AuthServicesInfoManager.update_user_jabber_info("", "", request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
 @permission_required('auth.alliance_member')
 def reset_jabber_password(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = JabberManager.update_user_pass(authinfo.jabber_username)
+    # If our username is blank means we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_jabber_info(authinfo.jabber_username, result, request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@permission_required('auth.blue_member')
+def reset_blue_jabber_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = JabberManager.update_user_pass(authinfo.jabber_username)
     # If our username is blank means we failed
@@ -209,7 +286,7 @@ def reset_mumble_password(request):
 
 @login_required
 @permission_required('auth.blue_member')
-def reset_mumble_password(request):
+def reset_blue_mumble_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = MumbleManager.update_user_password(authinfo.mumble_username)
     # if blank we failed

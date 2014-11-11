@@ -15,4 +15,10 @@ def jabber_url(request):
 
 def domain_url(request):
     return {'DOMAIN': settings.DOMAIN, 'MUMBLE_URL': settings.MUMBLE_URL,
-            'FORUM_URL': settings.FORUM_URL}
+            'FORUM_URL': settings.FORUM_URL,
+            'ENABLE_ALLIANCE_FORUM': settings.ENABLE_ALLIANCE_FORUM,
+            'ENABLE_ALLIANCE_JABBER': settings.ENABLE_ALLIANCE_JABBER,
+            'ENABLE_ALLIANCE_MUMBLE': settings.ENABLE_ALLIANCE_MUMBLE,
+            'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
+            'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
+            'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE}
