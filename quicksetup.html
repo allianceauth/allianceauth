@@ -31,7 +31,7 @@
 
       <section>
         <div id="title">
-          <h1>Allianceauth</h1>
+          <h1>AllianceAuth</h1>
           <p>Eve Alliance Management - Quick Setup</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/R4stl1n">R4stl1n</a></span>
@@ -39,23 +39,36 @@
         </div>
 
         <h3>
-		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eve Alliance Auth</h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows Environment Setup</h3>
 
-		<p>The AllianceAuth is a Django application designed to help eve online alliances quickly and effectively manage their users and applications.</p>
-
-		<h3>
-		<a id="quick-checkout" class="anchor" href="#quick-checkout" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Checkout</h3>
-
-		<pre>
-		<code>
-$ git clone https://github.com/R4stl1n/allianceauth.git
-$ cd allianceauth</code>
-		</pre>
+		<p>This guide shows how to get the auth up and running quickly in a windows 7 focused environment.</p>
 
 		<h3>
-		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-		<p>Raynaldo Rivera - R4stl1n</p>
+		<a id="quick-checkout" class="anchor" href="#quick-checkout" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python Setup</h3>
+		<p> AllianceAuth is written in django which is a web framework around python. In order to begin development you must first install python and a few other things. Below are the links. Please pick the appropriate x86 or 64bit depending on your computer.</p>
+		
+		<pre><ol><li type="square"><a href="https://www.python.org/downloads/release/python-278/">Python 2.7.8</a></li><li type="square"><a href="http://www.codegood.com/archives/129">Mysql-python</a></li><li type="square"><a href="http://dev.mysql.com/downloads/connector/python/">Python-Mysql-Connector</a></li></ol></pre>
+		<p> After you have those installed we need to add python to your system path.</p>
+		<pre><li type="square">Click the start icon and right click control panel</li><li type="square">Click "Advanced System Properties"</li><li type="square">Click "Environment Variables"</li><li type="square">Scroll till you see the word path, click it and then click edit</li><li type="square">At the very end of the string (moving to the right) add the following </br>    <code>";C:\Python27;C:\Python27\Scripts"</code> without the quotes</li><li type="square">Click "OK" on all open windows</li></pre>
+		<p> Now we have python installed we need to install pip to grab our other dependencies </p>
+		<pre><li type="square">Download the get-pip.py script from here <a href="https://bootstrap.pypa.io/get-pip.py">Get-Pip.py</a> save it to your desktop</li><li type="square">Open a command prompt </br>    (Click start button then in the run bar type "cmd" without the quotes)</li><li type="square">Naviagate to your desktop by typing "cd Desktop"</li><li type="square">Run the get pip install by typing "python get-pip.py"</li></pre>
+		<h3>
+		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grabbing a copy of the AllianceAuth</h3>
+		<p> Now that we have python setup we are going to grab the latest development branch from git, Open a command prompt and type the following </p>
+		<pre><li type="square">git clone https://github.com/R4stl1n/allianceauth.git</li><li type="square">cd allianceauth</li></pre>
+		
+		<h3>
+		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth - Dependencies</h3>
+		<p> Now we can start working on getting the dependencies for the auth. This is easy first we have to make a quick change to requirements.txt </p>
+		<pre><li type="square">Open requirements.txt</li><li type="square">comment(add a "#" infront of it) or delete the line that says "mysql-python"</li></pre>
+		<p> Open up a command prompt and type the following to get the dependencies </p>
+		<pre><li type="square">pip install -r requirements.txt</li></pre>
+		<p> AllianceAuth requires a mysql database to store its information in so we need to set one up. On windows there are a few options however the easiest is to use xampp </p>
+		<pre><li type="square">Download xampp and install it - <a href="https://www.apachefriends.org/download.html"> Xampp Download</a> (either one works) </li></pre>
+		<h3>
+		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth - Database Setup</h3>
+		<p> With xampp installed we now have a way to store our information. So lets create a mysql database. Note: if you cannot start the apache service due to a "port error" either stop the application using the port (ex. skype) or change the port in the apache config</p>
+		<pre><li type="square">Open the xampp application</li><li type="square">Click the start button on both the apache and mysql service's</li><li type="square">Click admin button on the mysql service line, this will open up your </br>  web browser and take you to the phpmyadmin page. </li><li type="square">Click the button called databases at the top of the webpage</li><li type="square">In the new database field enter the name "alliance_auth" then click </br>  create new database</li><li type="square">After the database is create it should appear in the left hand side navigation.</br>  Double click it</li><li type="square">Click the privileges button at the top of the screen</li><li type="square">Click the Add User Button </li><li type="square">In the username field and password field put the following "allianceauth",</br>  in the host field erase the percent sign and put in "localhost"</li><li type="square">Scroll down the page and hit the go button</li></pre>
       </section>
 
     </div>
