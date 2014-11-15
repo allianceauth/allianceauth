@@ -33,15 +33,6 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
-# EMAIL SETTINGS
-# By default uses the python smtpd server
-DOMAIN = 'https://the99eve.com'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
-
 # Application definition
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -150,40 +141,107 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
 
+#####################################################
+##
+## Alliance configuration starts here
+##
+#####################################################
+
+#################
+# EMAIL SETTINGS
+#################
+# DOMAIN - The alliance auth domain_url
+# EMAIL_HOST - SMTP Server URL
+# EMAIL_PORT - SMTP Server PORT
+# EMAIL_HOST_USER - Email Username
+# EMAIL_HOST_PASSWORD - Email Password
+# EMAIL_USE_TLS - Set to use TLS encryption
+#################
+DOMAIN = 'https://the99eve.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+
+#########################
+# Default Group Settings
+#########################
+# DEFAULT_ALLIANCE_GROUP - Default group alliance members are put in
+# DEFAULT_BLUE_GROUP - Default group for blue members
+#########################
 DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
 DEFAULT_BLUE_GROUP = 'BlueMember'
 
+#########################
+# Alliance Service Setup
+#########################
+# ENABLE_ALLIANCE_FORUM - Enable forum support in the auth for alliance members
+# ENABLE_ALLIANCE_JABBER - Enable jabber support in the auth for alliance members
+# ENABLE_ALLIANCE_MUMBLE - Enable mumble support in the auth for alliance members
+#########################
 ENABLE_ALLIANCE_FORUM = True
 ENABLE_ALLIANCE_JABBER = True
 ENABLE_ALLIANCE_MUMBLE = True
 
+#####################
+# Blue service Setup
+#####################
+# ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
+# ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
+# ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
+#####################
 ENABLE_BLUE_FORUM = False
 ENABLE_BLUE_JABBER = False
 ENABLE_BLUE_MUMBLE = True
 
-# ALLIANCE INFO
+#########################
+# Alliance Configuration
+#########################
+# ALLIANCE_ID - Set this to your AllianceID 
+# ALLIANCE_NAME - Set this to your Alliance Name
+# ALLIANCE_EXEC_CORP_ID - Set this to the api id for the exec corp
+# ALLIANCE_EXEC_CORP_VCODE - Set this to the api vcode for the exe corp
+# ALLIANCE_BLUE_STANDING - The default lowest standings setting to consider blue
+########################
 ALLIANCE_ID = '99001336'
 ALLIANCE_NAME = 'Somealliance'
-
-# Needed to update standings
 ALLIANCE_EXEC_CORP_ID = ''
 ALLIANCE_EXEC_CORP_VCODE = ''
 ALLIANCE_BLUE_STANDING = 5.0
 
-# Forum URL
+#####################
+# Forum Configuration
+#####################
+# FORUM_URL - Forum url location
+#####################
 FORUM_URL = "http://someaddress.com"
 
-# Jabber information
+######################
+# Jabber Configuration
+######################
+# JABBER_URL - Jabber address url
+# JABBER_PORT - Jabber service portal
+# JABBER_SERVER - Jabber server url
+# OPENFIRE_ADDRESS - Address of the openfire admin console
+# OPENFIRE_SECRET_KEY - Openfire userservice secret key
+# BROADCAST_USER - Broadcast user JID
+# BROADCAST_USER_PASSWORD - Broadcast user password
+######################
 JABBER_URL = "someaddress.com"
 JABBER_PORT = 5223
 JABBER_SERVER = "someadddress.com"
 OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
 OPENFIRE_SECRET_KEY = "somekey"
-
 BROADCAST_USER = "broadcast@" + JABBER_URL
 BROADCAST_USER_PASSWORD = "somepassword"
 
-# Mumble settings
+######################################
+# Mumble Configuration
+######################################
+# MUMBLE_URL - Mumble server url
+# MUMBLE_SERVER_ID - Mumble server id
+######################################
 MUMBLE_URL = "someurl.com"
 MUMBLE_SERVER_ID = 1
 

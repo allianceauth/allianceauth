@@ -28,7 +28,7 @@ Requirements:
     python-dnspython
     
     # Needed Apps
-	rabbitmq server
+	Rabbitmq server
         
 Startup Instructions:
 
