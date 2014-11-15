@@ -69,7 +69,20 @@
 		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth - Database Setup</h3>
 		<p> With xampp installed we now have a way to store our information. So lets create a mysql database. Note: if you cannot start the apache service due to a "port error" either stop the application using the port (ex. skype) or change the port in the apache config</p>
 		<pre><li type="square">Open the xampp application</li><li type="square">Click the start button on both the apache and mysql service's</li><li type="square">Click admin button on the mysql service line, this will open up your </br>  web browser and take you to the phpmyadmin page. </li><li type="square">Click the button called databases at the top of the webpage</li><li type="square">In the new database field enter the name "alliance_auth" then click </br>  create new database</li><li type="square">After the database is create it should appear in the left hand side navigation.</br>  Double click it</li><li type="square">Click the privileges button at the top of the screen</li><li type="square">Click the Add User Button </li><li type="square">In the username field and password field put the following "allianceauth",</br>  in the host field erase the percent sign and put in "localhost"</li><li type="square">Scroll down the page and hit the go button</li></pre>
-      </section>
+		<h3>
+		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth - Configuration</h3>
+		<p> By default if you setup the database as instructed you won't need to modify the database connection information.</p>
+		<pre><li type="square">Configure the ALLIANCE_ID settings in the settings.py </br>  in the alliance_auth folder</li><li type="square">Configure the CORPORATION_ID and CORPORATION_VCODE settings in the settings.py </br>  in the alliance_auth folder</li></pre>
+		<p> Now all we need to do is populate the database. Open the command prompt and navigate to the root folder of the project and enter the following commands. Note: make sure to create the super user.</p>
+		<pre><li type="square">python manage.py syncdb</li><li type="square">python manage.py shell < run_alliance_corp_update.py</li></pre>
+		<h3>
+		<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth - Startup</h3>
+		<p> Last we go ahead and startup the AllianceAuth. Open up the command prompt navigate to the root folder of the project.</p>
+		<pre><li type="square">python manage.py runserver</li></pre>
+		<p> That is all it takes if for whatever reason you need to run the automated task inside of celerytask/tasks.py open a command prompt and navigate to the root directory </p>
+		<pre><li type="square">python manage.py shell</li><li type="square">from celerytask.tasks import taskfunctionhere</li><li type="square">taskfunctionhere()</li></pre>
+		
+	  </section>
 
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
