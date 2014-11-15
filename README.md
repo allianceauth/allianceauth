@@ -28,17 +28,8 @@ Requirements:
     python-dnspython
     
     # Needed Apps
-    celeryd
-    bcrypt
-    
-Services Interaction:
-
-    # Supported services #
-    Phpbb3   (Forums)
-    Mumble   (Voice)
-    Openfire (Jabber)
-    
-    
+	rabbitmq server
+        
 Startup Instructions:
 
     ./bootstrap.sh (Sudo if needed)
