@@ -4,6 +4,11 @@ Alliance Auth
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
+Links:
+    [Project Website](http://r4stl1n.github.io/allianceauth/)
+	[Dev Setup Guide] (http://r4stl1n.github.io/allianceauth/quicksetup.html)
+	[Production Setup Guide] (http://r4stl1n.github.io/allianceauth/fullsetup.html)
+
 Requirements:
 
     # Django Stuff #
@@ -48,5 +53,3 @@ Special Permissions In Admin:
     auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
     auth | user | blue_memeber ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats (View basic corp auth stats *who is authed etc*)
-
-Brought to you by The 99 Percent skunkworks.
