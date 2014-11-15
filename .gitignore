@@ -54,3 +54,4 @@ docs/_build/
 target/
 
 .vagrant/
+alliance_auth/settings.py
