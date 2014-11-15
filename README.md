@@ -4,11 +4,11 @@ Alliance Auth
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
-Links:
+[Project Website](http://r4stl1n.github.io/allianceauth/)
 
-    [Project Website](http://r4stl1n.github.io/allianceauth/)
-	[Dev Setup Guide] (http://r4stl1n.github.io/allianceauth/quicksetup.html)
-	[Production Setup Guide] (http://r4stl1n.github.io/allianceauth/fullsetup.html)
+[Dev Setup Guide] (http://r4stl1n.github.io/allianceauth/quicksetup.html)
+
+[Production Setup Guide] (http://r4stl1n.github.io/allianceauth/fullsetup.html)
 
 Requirements:
 
