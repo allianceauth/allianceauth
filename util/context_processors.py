@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 
 
 def alliance_id(request):
@@ -21,4 +22,5 @@ def domain_url(request):
             'ENABLE_ALLIANCE_MUMBLE': settings.ENABLE_ALLIANCE_MUMBLE,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
-            'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE}
+            'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
+            'CURRENT_UTC_TIME': timezone.now()}

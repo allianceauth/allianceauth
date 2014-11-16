@@ -123,4 +123,8 @@ urlpatterns = patterns('',
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),
 
+                       # Timer URLS
+                       url(r'^timers/$', 'timerboard.views.timer_view', name='auth_timer_view'),
+                       url(r'^add_timer/$', 'timerboard.views.add_timer_view', name='auth_add_timer_view'),
+                       url(r'^remove_timer/(\w+)', 'timerboard.views.remove_timer', name='auth_remove_timer'),
 )

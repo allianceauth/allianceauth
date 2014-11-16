@@ -1,0 +1,211 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Timer Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Operation Timers
+            <div class="text-right">
+                <a href="{% url 'auth_add_timer_view' %}">
+                    {% if perms.auth.timer_management %}
+                        <button type="button" class="btn btn-success">Create Timer</button>
+                    {% endif %}
+                </a>
+            </div>
+        </h1>
+        <div class="col-lg-12 text-center">
+            <div class="label label-info text-left">
+                <b>Current Eve Time: {{ CURRENT_UTC_TIME | date:"Y-m-d H:i" }}</b>
+            </div>
+        </div>
+        <h4><b>Next Timer</b></h4>
+        <table class="table table-responsive table-bordered">
+            <tr>
+                <th style="width:150px" class="text-center">Fleet Name</th>
+                <th class="text-center">Fleet Type</th>
+                <th class="text-center">System</th>
+                <th class="text-center">Structure</th>
+                <th class="text-center">Eve Time</th>
+                <th class="text-center">Creator</th>
+                {% if perms.auth.timer_management %}
+                    <th class="text-center">Action</th>
+                {% endif %}
+            </tr>
+            {% if closest_timer %}
+                {% ifequal closest_timer.important True %}
+                    <tr class="danger">
+                        {% else %}
+                    <tr class="info">
+                {% endifequal %}
+                <td style="width:150px" class="text-center">{{ closest_timer.name }}</td>
+                <td class="text-center">
+                    {% ifequal closest_timer.fleet_type "Armor" %}
+                        <div class="label label-danger">
+                            Armor
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.fleet_type "Shield" %}
+                        <div class="label label-primary">
+                            Shield
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.fleet_type "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center"><a
+                        href="http://evemaps.dotlan.net/system/{{ closest_timer.system }}">{{ closest_timer.system }} {{ closest_timer.planet_moon }} </a>
+                </td>
+                <td class="text-center">
+                    {% ifequal closest_timer.structure "I-HUB" %}
+                        <div class="label label-warning">
+                            I-HUB
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "POCO" %}
+                        <div class="label label-success">
+                            POCO
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "POS[S]" %}
+                        <div class="label label-info">
+                            POS [S]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "POS[M]" %}
+                        <div class="label label-info">
+                            POS [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "POS[L]" %}
+                        <div class="label label-info">
+                            POS [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "Station" %}
+                        <div class="label label-danger">
+                            Station
+                        </div>
+                    {% endifequal %}
+                    {% ifequal closest_timer.structure "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center">{{ closest_timer.eve_time | date:"Y-m-d H:i" }} UTC</td>
+                <td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
+                {% if perms.auth.timer_management %}
+                    <td class="text-center">
+
+                        <a href="/remove_timer/{{ closest_timer.id }}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    </td>
+                {% endif %}
+            {% endif %}
+            </tr>
+        </table>
+
+        <h4><b>Future Timers</b></h4>
+        <table class="table table-bordered">
+            <tr>
+                <th style="width:150px" class="text-center">Fleet Name</th>
+                <th class="text-center">Fleet Type</th>
+                <th class="text-center">System</th>
+                <th class="text-center">Structure</th>
+                <th class="text-center">Eve Time</th>
+                <th class="text-center">Creator</th>
+                {% if perms.auth.timer_management %}
+                    <th class="text-center">Action</th>
+                {% endif %}
+            </tr>
+            {% for timer in timers %}
+                {% ifnotequal timer closest_timer %}
+                    {% ifequal timer.important True %}
+                        <tr class="danger">
+                            {% else %}
+                        <tr class="info">
+                    {% endifequal %}
+                <td style="width:150px" class="text-center">{{ timer.name }}</td>
+                <td class="text-center">
+                    {% ifequal timer.fleet_type "Armor" %}
+                        <div class="label label-danger">
+                            Armor
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.fleet_type "Shield" %}
+                        <div class="label label-primary">
+                            Shield
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.fleet_type "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center"><a
+                        href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
+                </td>
+                <td class="text-center">
+                    {% ifequal timer.structure "I-HUB" %}
+                        <div class="label label-warning">
+                            I-HUB
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POCO" %}
+                        <div class="label label-success">
+                            POCO
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[S]" %}
+                        <div class="label label-info">
+                            POS [S]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[M]" %}
+                        <div class="label label-info">
+                            POS [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[L]" %}
+                        <div class="label label-info">
+                            POS [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Station" %}
+                        <div class="label label-danger">
+                            Station
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center">{{ timer.eve_time | date:"Y-m-d H:i" }} UTC</td>
+                <td class="text-center">{{ timer.eve_character.character_name }}</td>
+                {% if perms.auth.timer_management %}
+                    <td class="text-center">
+                        <a href="/remove_timer/{{ timer.id }}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    </td>
+                {% endif %}
+                </tr>
+                {% endifnotequal %}
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock content %}

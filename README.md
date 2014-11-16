@@ -46,5 +46,6 @@ Special Permissions In Admin:
     auth | user | group_management ( Access to add members to groups within the alliance )
     auth | user | human_resources ( Corp only access to view applications )
     auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
-    auth | user | blue_memeber ( Auto Added to people who register has a blue when adding api key)
+    auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats (View basic corp auth stats *who is authed etc*)
+    auth | user | timer_management ( Access to create and remove timers)

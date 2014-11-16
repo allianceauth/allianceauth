@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'eveonline',
     'groupmanagement',
     'hrapplications',
+    'timerboard',
 )
 
 MIDDLEWARE_CLASSES = (

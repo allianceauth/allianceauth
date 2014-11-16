@@ -13,6 +13,7 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="human_resources", content_type=ct, name="human_resources")
     Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member")
     Permission.objects.get_or_create(codename="corp_stats", content_type=ct, name="corp_stats")
+    Permission.objects.get_or_create(codename="timer_management", content_type=ct, name="timer_management")
     Group.objects.get_or_create(name=settings.DEFAULT_ALLIANCE_GROUP)
     Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
 

@@ -54,9 +54,6 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-
-                        </li>
                         <li class="text-center divider-horizontal">
                             <h5>Main Navigation</h5>
                         </li>
@@ -76,29 +73,42 @@
                                                                                  href="{% url 'auth_api_key_management' %}"><i
                                     class="fa fa-key fa-fw grayiconecolor"></i> Api Keys</a>
                         </li>
-                        <li>
-                            <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
-                                                                     href="{% url 'auth_groups' %}"><i
-                                    class="fa fa-cogs fa-sitemap grayiconecolor"></i> Groups</a>
-                        </li>
-                        <li>
-                            <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
-                                                                       href="{% url 'auth_services' %}"><i
-                                    class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
-                        </li>
+
+                        {% if  perms.auth.alliance_member %}
+                            <li>
+                                <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
+                                                                         href="{% url 'auth_groups' %}"><i
+                                        class="fa fa-cogs fa-sitemap grayiconecolor"></i> Groups</a>
+                            </li>
+                        {% endif %}
+                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+                            <li>
+                                <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
+                                                                           href="{% url 'auth_services' %}"><i
+                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
+                            </li>
+
+                            <li>
+                                <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_timer_view' %}"><i
+                                        class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
+                            </li>
+                        {% endif %}
+
+                        {% if not perms.auth.alliance_member and not perms.auth.blue_member or perms.auth.human_resources %}
+                            <li>
+                                <a {% ifequal request.path "/hr_application_management/" %}
+                                    class="active" {% endifequal %}
+                                    href="{% url 'auth_hrapplications_view' %}"><i
+                                        class="fa fa-file-o fa-fw grayiconecolor"></i> Applications</a>
+                            </li>
+                        {% endif %}
+
                         <li>
                             <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
                                                                    href="{% url 'auth_help' %}"><i
                                     class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
                         </li>
-
-                        {% if not perms.auth.alliance_member or perms.auth.human_resources %}
-                        <li>
-                            <a {% ifequal request.path "/hr_application_management/" %} class="active" {% endifequal %}
-                                                                                        href="{% url 'auth_hrapplications_view' %}"><i
-                                    class="fa fa-file-o fa-fw grayiconecolor"></i> Applications</a>
-                        </li>
-                        {% endif %}
 
                         <li class="text-center divider-horizontal">
                             <h5>Util</h5>
@@ -108,6 +118,15 @@
                                                                             href="{% url 'password_change' %}"><i
                                     class="fa fa-lock fa-fw grayiconecolor"></i>Change Password</a>
                         </li>
+
+                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+                            <li>
+                                <a {% ifequal request.path "/tool/fleet_formatter_tool/" %}
+                                    class="active" {% endifequal %}
+                                    href="{% url 'auth_fleet_format_tool_view' %}"><i
+                                        class="fa fa-space-shuttle fa-fw grayiconecolor"></i> Fleet Broadcast Formatter</a>
+                            </li>
+                        {% endif %}
                         {% if perms.auth.corp_stats %}
                             <li>
                                 <a {% ifequal request.path "/corporation_stats" %} class="active" {% endifequal %}
@@ -131,11 +150,6 @@
                                         class="fa fa-lock fa-bullhorn grayiconecolor"></i> Jabber Broadcast</a>
                             </li>
                         {% endif %}
-                        <li>
-                            <a {% ifequal request.path "/tool/fleet_formatter_tool/" %} class="active" {% endifequal %}
-                                                                                        href="{% url 'auth_fleet_format_tool_view' %}"><i
-                                    class="fa fa-space-shuttle fa-fw grayiconecolor"></i> Fleet Broadcast Formatter</a>
-                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -149,5 +163,10 @@
         </div>
     </div>
 {% endif %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery.datetimepicker.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>{% block extra_script %}
+{% endblock extra_script %}</script>
 </body>
 </html>
