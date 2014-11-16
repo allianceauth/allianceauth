@@ -35,7 +35,10 @@ Startup Instructions:
     ./bootstrap.sh (Sudo if needed)
     ./startup.sh
     ./shutdown.sh
-    
+
+Vagrant Instructions:
+
+    Copy the scripts to the root directory before running
 
 Special Permissions In Admin:
 
