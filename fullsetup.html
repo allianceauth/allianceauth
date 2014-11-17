@@ -276,7 +276,59 @@ dbPrefix=murmur_
 	<p> Thats it everything is working the auth is auto updating and everything is good to go. Few notes</p>
 	<p><li type="square"> Modify the password_reset_email.html in the templates/registration/ folder to say yourdomain </li><li type="square"> To update your installation do the following </li></p>
 	<pre><li type="square">git pull</li><li type="square">python manage.py syncdb</li><li type="square">python manage.py shell < run_alliance_corp_update.py</li></pre>
+	</br></br>
+	
+	<h2>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unsupported Configurations</h2>
+	<p> The below configurations are community commited and not officially supported by the allianceauth project </p>
+	
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>NGINX Example Setup</h3>
+	<p> This uses proxypass so it requires you to have the service running on port 8000</p>
+	<pre><li type="square">sudo add-apt-repository ppa:nginx/stable</li><li type="square">sudo apt-get update</li><li type="square">sudo apt-get install nginx</li><li type="square">sudo nano /etc/nginx/sites-available/default</li></pre>
+	<p> Now change the config. Make sure to change yoursite.com and yourcert etc to the correct paths.</p>
+	<pre><code>server {
 
+    listen 80;
+    listen [::]:80;
+    listen 443 ssl;
+
+    server_name yoursite.com;
+
+    ssl_certificate /etc/nginx/ssl/yourcert.crt;
+    ssl_certificate_key /etc/nginx/ssl/yourkey.key;
+
+    access_log            /var/log/nginx/yoursite.access.log
+
+    location /static {
+        alias /home/allianceserver/allianceauth/static;
+    }
+
+    if ($ssl_protocol = "") {
+       rewrite ^   https://$server_name$request_uri? permanent;
+    }
+
+    location = /favicon.ico {
+            alias    /home/allianceserver/allianceauth/favicon.ico;
+    }
+
+    location / {
+
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header        X-Forwarded-Proto $scheme;
+
+      # Fix the “It appears that your reverse proxy set up is broken" error.
+      proxy_pass          http://localhost:8000;
+      proxy_read_timeout  90;
+
+      proxy_redirect      http://localhost:8000 http://bloodforthebloodgod.co.uk;
+    }
+
+  }</code></pre>
+  
+	<p> Now restart the nginx service /etc/init.d/nginx restart</p>
 	
 	</section>
 
