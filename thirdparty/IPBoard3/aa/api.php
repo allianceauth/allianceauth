@@ -295,11 +295,10 @@ class API_Server
 			$this->addLogging( $api_key );
 			
 			$member = IPSMember::load($username,'all','username');
-			
+			$groups = array();
 			if( $member['mgroup_others']) {
 				$groupids = explode(',' , $member['mgroup_others']);
-				
-				$groups = array();
+
 				foreach ($groupids as &$groupid) {
 					ipsRegistry::DB()->build(array('select' => 'g_title', 'from'=>'groups','where'=>'g_id='.$groupid));
 					$result = ipsRegistry::DB()->execute();
