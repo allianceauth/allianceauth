@@ -20,7 +20,9 @@ def domain_url(request):
             'ENABLE_ALLIANCE_FORUM': settings.ENABLE_ALLIANCE_FORUM,
             'ENABLE_ALLIANCE_JABBER': settings.ENABLE_ALLIANCE_JABBER,
             'ENABLE_ALLIANCE_MUMBLE': settings.ENABLE_ALLIANCE_MUMBLE,
+            'ENABLE_ALLIANCE_IPBOARD': settings.ENABLE_ALLIANCE_IPBOARD,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
+            'ENABLE_BLUE_IPBOARD': settings.ENABLE_BLUE_IPBOARD,
             'CURRENT_UTC_TIME': timezone.now()}

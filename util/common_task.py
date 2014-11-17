@@ -2,9 +2,10 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 
 from authentication.managers import AuthServicesInfoManager
-from services.managers.jabber_manager import JabberManager
-from services.managers.forum_manager import ForumManager
+from services.managers.openfire_manager import OpenfireManager
+from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.mumble_manager import MumbleManager
+from services.managers.ipboard_manager import IPBoardManager
 
 
 def add_user_to_group(user, groupname):
@@ -28,10 +29,13 @@ def deactivate_services(user):
         MumbleManager.delete_user(authinfo.mumble_username)
         AuthServicesInfoManager.update_user_mumble_info("", "", user)
     if authinfo.jabber_username != "":
-        JabberManager.delete_user(authinfo.jabber_username)
+        OpenfireManager.delete_user(authinfo.jabber_username)
         AuthServicesInfoManager.update_user_jabber_info("", "", user)
     if authinfo.forum_username != "":
-        ForumManager.disable_user(authinfo.forum_username)
+        Phpbb3Manager.disable_user(authinfo.forum_username)
+        AuthServicesInfoManager.update_user_forum_info("", "", user)
+    if authinfo.ipboard_username != "":
+        IPBoardManager.disable_user(authinfo.ipboard_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
 
 

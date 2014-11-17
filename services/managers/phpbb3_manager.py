@@ -6,7 +6,7 @@ from passlib.apps import phpbb3_context
 from django.db import connections
 
 
-class ForumManager:
+class Phpbb3Manager:
     SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
                    r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -52,7 +52,7 @@ class ForumManager:
     @staticmethod
     def __get_group_id(groupname):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_GET_GROUP_ID, [groupname])
+        cursor.execute(Phpbb3Manager.SQL_GET_GROUP_ID, [groupname])
         row = cursor.fetchone()
 
         return row[0]
@@ -60,14 +60,14 @@ class ForumManager:
     @staticmethod
     def __get_user_id(username):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_USER_ID_FROM_USERNAME, [username])
+        cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [username])
         row = cursor.fetchone()
         return row[0]
 
     @staticmethod
     def __get_all_groups():
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_GET_ALL_GROUPS)
+        cursor.execute(Phpbb3Manager.SQL_GET_ALL_GROUPS)
         rows = cursor.fetchall()
         out = {}
         for row in rows:
@@ -78,7 +78,7 @@ class ForumManager:
     @staticmethod
     def __get_user_groups(userid):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_GET_USER_GROUPS, [userid])
+        cursor.execute(Phpbb3Manager.SQL_GET_USER_GROUPS, [userid])
         return [row[0] for row in cursor.fetchall()]
 
     @staticmethod
@@ -90,37 +90,37 @@ class ForumManager:
     @staticmethod
     def __create_group(groupname):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_ADD_GROUP, [groupname, groupname])
-        return ForumManager.__get_group_id(groupname)
+        cursor.execute(Phpbb3Manager.SQL_ADD_GROUP, [groupname, groupname])
+        return Phpbb3Manager.__get_group_id(groupname)
 
     @staticmethod
     def __add_user_to_group(userid, groupid):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
+        cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
 
     @staticmethod
     def __remove_user_from_group(userid, groupid):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(ForumManager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+        cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
 
     @staticmethod
     def add_user(username, email, groups):
         cursor = connections['phpbb3'].cursor()
 
-        username_clean = ForumManager.__santatize_username(username)
-        password = ForumManager.__generate_random_pass()
-        pwhash = ForumManager.__gen_hash(password)
+        username_clean = Phpbb3Manager.__santatize_username(username)
+        password = Phpbb3Manager.__generate_random_pass()
+        pwhash = Phpbb3Manager.__gen_hash(password)
 
         # check if the username was simply revoked
-        if ForumManager.check_user(username_clean):
-            ForumManager.__update_user_info(username_clean, email, pwhash)
+        if Phpbb3Manager.check_user(username_clean):
+            Phpbb3Manager.__update_user_info(username_clean, email, pwhash)
         else:
             try:
 
-                cursor.execute(ForumManager.SQL_ADD_USER, [username_clean, username_clean, pwhash,
-                                                           email, 2, ForumManager.__get_current_utc_date(),
+                cursor.execute(Phpbb3Manager.SQL_ADD_USER, [username_clean, username_clean, pwhash,
+                                                           email, 2, Phpbb3Manager.__get_current_utc_date(),
                                                            "", "", "", ""])
-                ForumManager.update_groups(username_clean, groups)
+                Phpbb3Manager.update_groups(username_clean, groups)
             except:
                 pass
 
@@ -130,11 +130,11 @@ class ForumManager:
     def disable_user(username):
         cursor = connections['phpbb3'].cursor()
 
-        password = ForumManager.__gen_hash(ForumManager.__generate_random_pass())
+        password = Phpbb3Manager.__gen_hash(Phpbb3Manager.__generate_random_pass())
         revoke_email = "revoked@the99eve.com"
         try:
-            pwhash = ForumManager.__gen_hash(password)
-            cursor.execute(ForumManager.SQL_DIS_USER, [revoke_email, pwhash, username])
+            pwhash = Phpbb3Manager.__gen_hash(password)
+            cursor.execute(Phpbb3Manager.SQL_DIS_USER, [revoke_email, pwhash, username])
             return True
         except TypeError as e:
             print e
@@ -144,16 +144,16 @@ class ForumManager:
     def delete_user(username):
         cursor = connections['phpbb3'].cursor()
 
-        if ForumManager.check_user(username):
-            cursor.execute(ForumManager.SQL_DEL_USER, [username])
+        if Phpbb3Manager.check_user(username):
+            cursor.execute(Phpbb3Manager.SQL_DEL_USER, [username])
             return True
         return False
 
     @staticmethod
     def update_groups(username, groups):
-        userid = ForumManager.__get_user_id(username)
-        forum_groups = ForumManager.__get_all_groups()
-        user_groups = set(ForumManager.__get_user_groups(userid))
+        userid = Phpbb3Manager.__get_user_id(username)
+        forum_groups = Phpbb3Manager.__get_all_groups()
+        user_groups = set(Phpbb3Manager.__get_user_groups(userid))
         act_groups = set([g.replace(' ', '-') for g in groups])
         addgroups = act_groups - user_groups
         remgroups = user_groups - act_groups
@@ -162,28 +162,28 @@ class ForumManager:
         print remgroups
         for g in addgroups:
             if not g in forum_groups:
-                forum_groups[g] = ForumManager.__create_group(g)
-            ForumManager.__add_user_to_group(userid, forum_groups[g])
+                forum_groups[g] = Phpbb3Manager.__create_group(g)
+            Phpbb3Manager.__add_user_to_group(userid, forum_groups[g])
 
         for g in remgroups:
-            ForumManager.__remove_user_from_group(userid, forum_groups[g])
+            Phpbb3Manager.__remove_user_from_group(userid, forum_groups[g])
 
     @staticmethod
     def remove_group(username, group):
         cursor = connections['phpbb3'].cursor()
-        userid = ForumManager.__get_user_id(username)
-        groupid = ForumManager.__get_group_id(group)
+        userid = Phpbb3Manager.__get_user_id(username)
+        groupid = Phpbb3Manager.__get_group_id(group)
 
         if userid:
             if groupid:
-                cursor.execute(ForumManager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+                cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
 
 
     @staticmethod
     def check_user(username):
         cursor = connections['phpbb3'].cursor()
         """ Check if the username exists """
-        cursor.execute(ForumManager.SQL_USER_ID_FROM_USERNAME, [ForumManager.__santatize_username(username)])
+        cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [Phpbb3Manager.__santatize_username(username)])
         row = cursor.fetchone()
         if row:
             return True
@@ -192,10 +192,10 @@ class ForumManager:
     @staticmethod
     def update_user_password(username):
         cursor = connections['phpbb3'].cursor()
-        password = ForumManager.__generate_random_pass()
-        if ForumManager.check_user(username):
-            pwhash = ForumManager.__gen_hash(password)
-            cursor.execute(ForumManager.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
+        password = Phpbb3Manager.__generate_random_pass()
+        if Phpbb3Manager.check_user(username):
+            pwhash = Phpbb3Manager.__gen_hash(password)
+            cursor.execute(Phpbb3Manager.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
             return password
 
         return ""
@@ -204,6 +204,6 @@ class ForumManager:
     def __update_user_info(username, email, password):
         cursor = connections['phpbb3'].cursor()
         try:
-            cursor.execute(ForumManager.SQL_DIS_USER, [email, password, username])
+            cursor.execute(Phpbb3Manager.SQL_DIS_USER, [email, password, username])
         except:
             pass

@@ -180,10 +180,12 @@ DEFAULT_BLUE_GROUP = 'BlueMember'
 # ENABLE_ALLIANCE_FORUM - Enable forum support in the auth for alliance members
 # ENABLE_ALLIANCE_JABBER - Enable jabber support in the auth for alliance members
 # ENABLE_ALLIANCE_MUMBLE - Enable mumble support in the auth for alliance members
+# ENABLE_ALLIANCE_IPBOARD - Enable IPBoard forum support in the auth for alliance members
 #########################
 ENABLE_ALLIANCE_FORUM = True
 ENABLE_ALLIANCE_JABBER = True
 ENABLE_ALLIANCE_MUMBLE = True
+ENABLE_ALLIANCE_IPBOARD = False
 
 #####################
 # Blue service Setup
@@ -191,10 +193,12 @@ ENABLE_ALLIANCE_MUMBLE = True
 # ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
 # ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
+# ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 #####################
 ENABLE_BLUE_FORUM = False
 ENABLE_BLUE_JABBER = False
 ENABLE_BLUE_MUMBLE = True
+ENABLE_BLUE_IPBOARD = False
 
 #########################
 # Alliance Configuration
@@ -215,8 +219,14 @@ ALLIANCE_BLUE_STANDING = 5.0
 # Forum Configuration
 #####################
 # FORUM_URL - Forum url location
+# IPBOARD_ENDPOINT - Api endpoint if using ipboard
+# IPBOARD_APIKEY - Api key to interact with ipboard
+# IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
 FORUM_URL = "http://someaddress.com"
+IPBOARD_ENDPOINT = 'someaddress.com/interface/board/index.php'
+IPBOARD_APIKEY = 'somekeyhere'
+IPBOARD_APIMODULE = 'aa'
 
 ######################
 # Jabber Configuration

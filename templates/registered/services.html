@@ -25,16 +25,39 @@
                     <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.forum_username "" %}
-                            <a href="{% url 'auth_activate_blue_forum' %}">
+                            <a href="{% url 'auth_activate_forum' %}">
                             <button type="button" class="btn btn-success"><span
                                         class="glyphicon glyphicon-ok"></span></button>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_reset_blue_forum_password' %}">
+                            <a href="{% url 'auth_reset_forum_password' %}">
                             <button type="button" class="btn btn-primary"><span
                                         class="glyphicon glyphicon-refresh"></span></button>
                             </a>
-                            <a href="{% url 'auth_deactivate_blue_forum' %}">
+                            <a href="{% url 'auth_deactivate_forum' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                {% endif %}
+                {%  if ENABLE_BLUE_IPBOARD %}
+                    <td class="text-center">IPBoard Forums</td>
+                    <td class="text-center">{{ authinfo.ipboard_username }}</td>
+                    <td class="text-center">{{ authinfo.ipboard_password }}</td>
+                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                    <td class="text-center">
+                        {% ifequal authinfo.ipboard_username "" %}
+                            <a href="{% url 'auth_activate_ipboard' %}">
+                            <button type="button" class="btn btn-success"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_ipboard_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_ipboard' %}">
                             <button type="button" class="btn btn-danger"><span
                                         class="glyphicon glyphicon-remove"></span></button>
                             </a>
@@ -49,16 +72,16 @@
                         <td class="text-center">{{ JABBER_URL }}</td>
                         <td class="text-center">
                             {% ifequal authinfo.jabber_username "" %}
-                                <a href="{% url 'auth_activate_blue_jabber' %}">
+                                <a href="{% url 'auth_activate_jabber' %}">
                                     <button type="button" class="btn btn-success"><span
                                             class="glyphicon glyphicon-ok"></span></button>
                                 </a>
                             {% else %}
-                                <a href="{% url 'auth_reset_blue_jabber_password' %}">
+                                <a href="{% url 'auth_reset_blue_password' %}">
                                     <button type="button" class="btn btn-primary"><span
                                             class="glyphicon glyphicon-refresh"></span></button>
                                 </a>
-                                <a href="{% url 'auth_deactivate_blue_jabber' %}">
+                                <a href="{% url 'auth_deactivate_jabber' %}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>
                                 </a>
@@ -74,16 +97,16 @@
                         <td class="text-center">{{ MUMBLE_URL }}</td>
                         <td class="text-center">
                             {% ifequal authinfo.mumble_username "" %}
-                                <a href="{% url 'auth_activate_blue_mumble' %}">
+                                <a href="{% url 'auth_activate_mumble' %}">
                                     <button type="button" class="btn btn-success"><span
                                             class="glyphicon glyphicon-ok"></span></button>
                                 </a>
                             {% else %}
-                                <a href="{% url 'auth_reset_blue_mumble_password' %}">
+                                <a href="{% url 'auth_reset_mumble_password' %}">
                                     <button type="button" class="btn btn-primary"><span
                                             class="glyphicon glyphicon-refresh"></span></button>
                                 </a>
-                                <a href="{% url 'auth_deactivate_blue_mumble' %}">
+                                <a href="{% url 'auth_deactivate_mumble' %}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>
                                 </a>
@@ -125,6 +148,29 @@
                         {% endifequal %}
                     </td>
                 </tr>
+                {% endif %}
+                {%  if ENABLE_ALLIANCE_IPBOARD %}
+                    <td class="text-center">IPBoard Forums</td>
+                    <td class="text-center">{{ authinfo.ipboard_username }}</td>
+                    <td class="text-center">{{ authinfo.ipboard_password }}</td>
+                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                    <td class="text-center">
+                        {% ifequal authinfo.ipboard_username "" %}
+                            <a href="{% url 'auth_activate_ipboard' %}">
+                            <button type="button" class="btn btn-success"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_ipboard_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_ipboard' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
                 {% endif %}
                 {% if ENABLE_ALLIANCE_JABBER %}
                 <tr>

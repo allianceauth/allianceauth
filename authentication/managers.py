@@ -58,6 +58,14 @@ class AuthServicesInfoManager:
             authserviceinfo.save(update_fields=['mumble_username', 'mumble_password'])
 
     @staticmethod
+    def update_user_ipboard_info(username, password, user):
+        if User.objects.filter(username=user.username).exists():
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.ipboard_username = username
+            authserviceinfo.ipboard_password = password
+            authserviceinfo.save(update_fields=['ipboard_username', 'ipboard_password'])
+
+    @staticmethod
     def update_is_blue(is_blue, user):
         if User.objects.filter(username=user.username).exists():
             authserviceinfo = AuthServicesInfoManager.__get_or_create(user)

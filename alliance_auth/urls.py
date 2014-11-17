@@ -86,12 +86,6 @@ urlpatterns = patterns('',
                        url(r'^reset_forum_password/$', 'services.views.reset_forum_password',
                            name='auth_reset_forum_password'),
 
-                       url(r'^activate_blue_forum/$', 'services.views.activate_blue_forum',
-                           name='auth_activate_blue_forum'),
-                       url(r'^deactivate_blue_forum/$', 'services.views.deactivate_blue_forum',
-                           name='auth_deactivate_blue_forum'),
-                       url(r'^reset_blue_forum_password/$', 'services.views.reset_blue_forum_password',
-                           name='auth_reset_blue_forum_password'),
 
                        # Jabber Service Control
                        url(r'^activate_jabber/$', 'services.views.activate_jabber', name='auth_activate_jabber'),
@@ -99,25 +93,16 @@ urlpatterns = patterns('',
                        url(r'^reset_jabber_password/$', 'services.views.reset_jabber_password',
                            name='auth_reset_jabber_password'),
 
-                       url(r'^activate_blue_jabber/$', 'services.views.activate_blue_jabber',
-                           name='auth_activate_blue_jabber'),
-                       url(r'^deactivate_blue_jabber/$', 'services.views.deactivate_blue_jabber',
-                           name='auth_deactivate_blue_jabber'),
-                       url(r'^reset_blue_jabber_password/$', 'services.views.reset_blue_jabber_password',
-                           name='auth_reset_blue_jabber_password'),
-
                        # Mumble service control
                        url(r'^activate_mumble/$', 'services.views.activate_mumble', name='auth_activate_mumble'),
                        url(r'^deactivate_mumble/$', 'services.views.deactivate_mumble', name='auth_deactivate_mumble'),
                        url(r'^reset_mumble_password/$', 'services.views.reset_mumble_password',
                            name='auth_reset_mumble_password'),
 
-                       url(r'^activate_blue_mumble/$', 'services.views.activate_blue_mumble',
-                           name='auth_activate_blue_mumble'),
-                       url(r'^deactivate_blue_mumble/$', 'services.views.deactivate_blue_mumble',
-                           name='auth_deactivate_blue_mumble'),
-                       url(r'^reset_blue_mumble_password/$', 'services.views.reset_blue_mumble_password',
-                           name='auth_reset_blue_mumble_password'),
+                       # Ipboard service control
+                       url(r'^activate_ipboard/$', 'services.views.activate_ipboard_forum', name='auth_activate_ipboard'),
+                       url(r'^deactivate_ipboard/$', 'services.views.deactivate_ipboard_forum', name='auth_deactivate_ipboard'),
+                       url(r'^reset_ipboard_password/$', 'services.views.reset_ipboard_password', name='auth_reset_ipboard_password'),
 
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',

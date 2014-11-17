@@ -11,7 +11,7 @@ from openfire import UserService
 from authentication.managers import AuthServicesInfoManager
 
 
-class JabberManager:
+class OpenfireManager:
     def __init__(self):
         pass
 
@@ -35,8 +35,8 @@ class JabberManager:
     def add_user(username):
 
         try:
-            sanatized_username = JabberManager.__santatize_username(username)
-            password = JabberManager.__generate_random_pass()
+            sanatized_username = OpenfireManager.__santatize_username(username)
+            password = OpenfireManager.__generate_random_pass()
             api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.add_user(sanatized_username, password)
 
@@ -68,7 +68,7 @@ class JabberManager:
     @staticmethod
     def update_user_pass(username):
         try:
-            password = JabberManager.__generate_random_pass()
+            password = OpenfireManager.__generate_random_pass()
             api = UserService(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.update_user(username, password)
             return password

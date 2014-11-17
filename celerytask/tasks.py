@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 
 from models import SyncGroupCache
 from celery.task.schedules import crontab
-from services.managers.jabber_manager import JabberManager
+from services.managers.openfire_manager import OpenfireManager
 from services.managers.mumble_manager import MumbleManager
-from services.managers.forum_manager import ForumManager
+from services.managers.phpbb3_manager import Phpbb3Manager
+from services.managers.ipboard_manager import IPBoardManager
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from services.managers.eve_api_manager import EveApiManager
@@ -23,7 +24,7 @@ def update_jabber_groups(user):
     if len(groups) == 0:
         groups.append('empty')
 
-    JabberManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
+    OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
 
 
 def update_mumble_groups(user):
@@ -49,7 +50,20 @@ def update_forum_groups(user):
     if len(groups) == 0:
         groups.append('empty')
 
-    ForumManager.update_groups(authserviceinfo.forum_username, groups)
+    Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
+
+
+def update_ipboard_groups(user):
+    syncgroups = SyncGroupCache.objects.filter(user=user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
+    for syncgroup in syncgroups:
+        groups.append(str(syncgroup.groupname))
+
+    if len(groups) == 0:
+        groups.append('empty')
+
+    IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
 
 
 def add_to_databases(user, groups, syncgroups):
@@ -79,6 +93,8 @@ def add_to_databases(user, groups, syncgroups):
                 update_mumble_groups(user)
             if authserviceinfo.forum_username != "":
                 update_forum_groups(user)
+            if authserviceinfo.ipboard_username != "":
+                update_ipboard_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -104,6 +120,8 @@ def remove_from_databases(user, groups, syncgroups):
                 update_mumble_groups(user)
             if authserviceinfo.forum_username != "":
                 update_forum_groups(user)
+            if authserviceinfo.ipboard_username != "":
+                update_ipboard_groups(user)
 
 
 # Run every minute
