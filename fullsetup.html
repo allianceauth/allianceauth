@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Allianceauth by R4stl1n - Full Production Setup</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/R4stl1n/allianceauth">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/R4stl1n/allianceauth/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/R4stl1n/allianceauth/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>AllianceAuth</h1>
+          <p>Eve Alliance Management - Full Production Setup</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/R4stl1n">R4stl1n</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+		<h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro:</h3>
+		<p>This guide is a bit long winded. This is what would need to be done step by step to have a full working alliance auth including services. There is an assumption that you know how to buy a vps and how to ssh into the machine as well has the dns is already setup and you have a domain name also that you have generated a corp exec api key. </p>
+
+		<p> If you would like someone to set it up for you contact "Raynaldo Rivera" ingame and we can negotiate a rate to install it for you</p>
+		<p> If you have any questions regarding the guide you can contact "Raynaldo Rivera" ingame and ill try and help you along </p>
+		
+        <h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linux Environment</h3>
+
+		<p>So lets begin, the following are the prereqs for the tutorial.</p>
+		<pre><li type="square">A VPS with the following specification are recommended: </br>  2GB Ram, 256 MB Swap, 2 Cores, 80 GB HD space, 3000 GB Bandwidth</br>  <a href="http://www.ramnode.com/">Ramnode</a> is a good provider</li><li type="square">Ubuntu 12.04 64bit installed with a root account setup</li><li type="square">Root access to the server</li><li type="square">Roughly 3 hours</li></pre>
+		<p>The first thing we want to do is update our base repositories and update the operating system itself open a terminal and execute the following commands.</p>
+		<pre><li type="square">apt-get update</li><li type="square">apt-get upgrade</li><li type="square">restart now</li></pre>
+		<p>After the machine has restarted we want to go ahead and create a normal user to run the auth service under. SSH back into the machine and type the following. </p>
+		<pre><li type="square">adduser allianceserver</li></pre>
+		<p>Now we add our new user to the sudoers list so we can perform root commands. so we are going to open the sudoers file and add a line </p>
+		<pre><li type="square">nano /etc/sudoers</li><li type="square"> Locate the line "root ALL=(ALL:ALL) ALL"- under that line add</br>  "allianceserver ALL=(ALL:ALL) ALL"<li type="square">restart now</li></pre>
+		
+		<h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Database Setup</h3>
+
+		<p>Now reconnect using the account that we just created. So first thing we are going to do is install the mysql database that is required by all services.</p>
+		<pre><li type="square">sudo apt-get install mysql-server</li><li type="square">sudo apt-get install mysql-client</li></pre>
+		<p>During installation make sure to set a secure root password, A good website to do this at is <a href="http://random.org" target="_blank">Random.org</a>. Now we need to setup a normal database user to be used to interact with the databases. For this tutorial our user will have access to all databases simply so I don't have to type the same instructions. In theory you should have a separate user for each database. Our user is allianceserver and create a secure password</p>
+		<pre><li type="square">mysql -u root -p</li><li type="square">CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'changeme!';</li><li type="square">GRANT ALL PRIVILEGES ON * . * TO 'allianceserver'@'localhost';</li></pre>
+		<p>Since we are already here we are going to create the database's needed for our services</p>
+		<pre><li type="square">create database alliance_auth;</li><li type="square">create database alliance_forum;</li><li type="square">create database alliance_jabber;</li><li type="square">create database alliance_mumble;</li><li type="square">create database alliance_killboard;</li></pre>
+		
+		<h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth Setup</h3>
+		<p>First thing we cant to get up and running is the alliance auth. Since all core configuration stems from it so now we will grab everything using apt get in a terminal type the following</p>
+		<pre><li type="square">sudo apt-get git python python-mysql python-setuptools python-mysql.connector rabbitmq-server python-pip screen</li></pre>
+		<p>Now we will move to our home directory and checkout a fresh copy of the development build of the AllianceAuth</p>
+		<pre><li type="square">cd ~</li><li type="square">git clone https://github.com/R4stl1n/allianceauth.git</li></pre>
+		<p>Now we need to get all the python requirements for the auth to do this we use pip to grab all the dependencies</p>
+		<pre><li type="square">cd allianceauth</li><li type="square">pip install -r requirments.txt</li></pre>
+		<p> Now we create a settings.py file by copying the example file and modify the setting and configure the core settings</p>
+		<pre><li type="square">cp alliance_auth/settings.py.example alliance_auth/settings.py</li><li type="square">nano alliance_auth/settings.py</li></pre>
+		<p><li type="square">First generate a new SECRET_KEY using this <a href="http://www.miniwebtool.com/django-secret-key-generator/" target="_blank">site</a>.</li><li type="square">Replace the key that is currently in SECRET_KEY with the one you created</li><li type="square">Create a <a href="gmail.com" target="_blank">gmail</a> account for your alliance to use during password resets.</li><li type="square">Set DEBUG to False</li><li type="square">Change ALLOWED_HOSTS to ['127.0.0.1','.yourdomain.com']</li>Go to the area where it says TEMPLATE_DIRS add a new item to the list '/home/allianceserver/allianceauth/templates',</li><li type="square"> Go to the area where it says STATICFILES_DIRS add a new item to the list '/home/allianceserver/allianceauth/static', <li type="square"> Go to the DATABASES section of the settings.py and change each databases user and password to the username and password you specified in the database setup portion. <li type="square">Scroll down to the email settings of the settings.py file and put in your username and password for the gmail account.</li><li type="square"> Scroll down to the "Alliance Configuration" part of the settings.py. Change the ALLIANCE_ID, ALLIANCE_NAME, ALLIANCE_EXEC_CORP_ID, and ALLIANCE_EXEC_CORP_VCODE.</li><li type="square">Move down to the forum url and change it to "https://yourdomain.com"</li><li type="square"> Move to the jabber section and change all the urls to yourdomain.com, do not change the format of the address simply the "someaddress" part. Change teh OPENFIRE_SECRET_KEY and BROADCAST_USER_PASSWORD to whatever you want these to be. We will configure openfire to utilize these later.</li><li type="square">Finally move to MUMBLE_URL and change it to yourdomain.com</li></p>
+		<p> After these steps are done hit "ctrl+o" to write the changes and then "ctrl+x" to close nano </p>
+		
+		<h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Starting Alliance Auth</h3>
+		<p> If everything is setup correctly we should be able to perform the next steps in the root directory of the alliance auth. Make sure to setup a secure admin password during the syncdb process.</p>
+		<pre><li type="square">python manage.py syncdb</li><li type="square">python manage.py shell < run_alliance_corp_update.py</li><li type="square">python manage.py runserver 0.0.0.0:8000</li></pre>
+		<p>If there are no errors and everything starts up you should be able to connect to the auth by going to http://yourdomain.com:8000 </p>
+		
+		<h3>
+		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Apache Setup</h3>
+		<p> Go ahead and download apache and all the dependencies for php and wsgi. We are also going to go ahead and enable ssl support and generate a self signed certificate to be used for https connections. You will want to get a commercial cert but that is outside the scope of this tutorial. During the openssl generate you will be presented with questions the important thing you fill out is the common name make sure this is your domain name ex. yourdomain.com</p>
+		<pre><li type="square">sudo apt-get install apache2 php5 php5-gd php5-curl curl php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl libapache2-mod-php5 libapache2-mod-wsgi</li><li type="square">sudo a2enmod ssl</li><li type="square">sudo mkdir /etc/apache2/ssl</li><li type="square">sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/apache2/ssl/apache.pem -keyout /etc/apache2/ssl/apache.key </li></pre>
+		<p> The next thing we are going to do is modify the available site configuration in the apache configs. If you have been following along you can just copy and paste these configs after changing the url.</p>
+		<pre><li type="square">sudo nano /etc/apache2/sites-enabled/000-default.conf</li></pre>
+		<p> Change everything in that file to whats below. This forces http connections to be https. make sure to change the urls to yourdomain </p>
+		<pre><code>&lt;VirtualHost *:80&gt;
+        ServerName yourdomain.com
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /var/www
+
+        Redirect permanent / https://yourdomain.com/
+
+        &lt;Directory /&gt;
+                Options FollowSymLinks
+                AllowOverride None
+        &lt;/Directory&gt;
+        &lt;Directory /var/www/&gt;
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        &lt;/Directory&gt;
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        &lt;Directory &quot;/usr/lib/cgi-bin&quot;&gt;
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        &lt;/Directory&gt;
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Alias /doc/ &quot;/usr/share/doc/&quot;
+    &lt;Directory &quot;/usr/share/doc/&quot;&gt;
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    &lt;/Directory&gt;
+
+&lt;/VirtualHost&gt;</code></pre>
+	<p> Next we are going to change the ssl configuration to provide our auth including other forums. This is a easy copy and paste</p>
+	<pre><li type="square">sudo nano /etc/apache2/sites-enabled/default-ssl.conf</li></pre>
+	<p> Change it to the following </p>
+	<pre><code>&lt;IfModule mod_ssl.c&gt;
+&lt;VirtualHost _default_:443&gt;
+
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /var/www
+
+        WSGIDaemonProcess allianceauth python-path=/home/allianceserver/allianceauth
+        WSGIProcessGroup allianceauth
+        WSGIScriptAlias / /home/allianceserver/allianceauth/alliance_auth/wsgi.py
+
+        Alias /favicon.ico /var/www/favicon.ico
+        Alias /static/ /home/allianceserver/allianceauth/static/
+        Alias /templates/ /home/allianceserver/allianceauth/templates/
+
+        Alias /forums &quot;/var/www/forums/&quot;
+        Alias /killboard &quot;/var/www/killboard/&quot;
+
+        &lt;Directory &quot;/var/www/forums/&quot;&gt;
+                Order Deny,Allow
+                Allow from all
+        &lt;/Directory&gt;
+
+        &lt;Directory &quot;/var/www/killboard/&quot;&gt;
+                Order Deny,Allow
+                Allow from all
+        &lt;/Directory&gt;
+
+
+        &lt;Directory /&gt;
+                Options FollowSymLinks
+                AllowOverride None
+        &lt;/Directory&gt;
+
+        &lt;Directory /var/www/&gt;
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        &lt;/Directory&gt;
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        &lt;Directory &quot;/usr/lib/cgi-bin&quot;&gt;
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        &lt;/Directory&gt;
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/ssl_access.log combined
+
+        Alias /doc/ &quot;/usr/share/doc/&quot;
+        &lt;Directory &quot;/usr/share/doc/&quot;&gt;
+                Options Indexes MultiViews FollowSymLinks
+                AllowOverride None
+                Order deny,allow
+                Deny from all
+                Allow from 127.0.0.0/255.0.0.0 ::1/128
+        &lt;/Directory&gt;
+
+        #   SSL Engine Switch:
+        #   Enable/Disable SSL for this virtual host.
+        SSLEngine on
+
+		SSLCertificateFile /etc/apache2/ssl/apache.pem
+		SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+
+        &lt;FilesMatch &quot;\.(cgi|shtml|phtml|php)$&quot;&gt;
+                SSLOptions +StdEnvVars
+        &lt;/FilesMatch&gt;
+        &lt;Directory /usr/lib/cgi-bin&gt;
+                SSLOptions +StdEnvVars
+        &lt;/Directory&gt;
+
+        BrowserMatch &quot;MSIE [2-6]&quot; \
+                nokeepalive ssl-unclean-shutdown \
+                downgrade-1.0 force-response-1.0
+        # MSIE 7 and newer should be able to use keepalive
+        BrowserMatch &quot;MSIE [17-9]&quot; ssl-unclean-shutdown
+
+&lt;/VirtualHost&gt;
+&lt;/IfModule&gt;
+</code></pre>
+	<p> Restart apache </p>
+	<pre><li type="square">sudo /etc/init.d/apache2 restart</li></pre>
+	<p> If all went well you should now see the allianceauth pop up when you navigate to https://yourdomain.com</p>
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mumble Setup</h3>
+	<p> Mumble is by far the easiest service to get up and running first we have to grab the newest copy of the mumble repositories and add them. So we do the following in our terminal.</p>
+	<pre><li type="square">sudo apt-get install python-software-properties</li><li type="square">sudo add-apt-repository ppa:mumble/release</li><li type="square">sudo apt-get update</li><li type="square">sudo apt-get install mumble-server</li></pre>
+	<p> Now we are going to configure mumble to utilize our database this is simple we simply modify the mumble-server.ini</p>
+	<pre><li type="square">sudo nano /etc/mumble-server.ini</li></pre>
+	<p><li type="square">Locate the line that starts with database=/var/lib/.... add a # infront of it this comments it out</li><li type="square"> Directly below it add the following. Make sure you change the password</li></p>
+	<pre><code>database=alliance_mumble
+dbDriver=QMYSQL
+dbUsername=allianceserver
+dbPassword=yourpassword
+dbHost=127.0.0.1
+dbPort=3306
+dbPrefix=murmur_
+</code></pre>
+    <p>Save the file then do the following commands to refresh mumble</p>
+	<pre><li type="square">sudo /etc/init.d/mumble-server restart</li><li type="square">sudo dpkg-reconfigure mumble-server</li><li type="square">sudo /etc/init.d/mumble-server restart</li></pre>
+	<p> Thats it mumble is now ready to be utilized in our services </p>
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Openfire Setup</h3>
+	<p> First we grab our dependencies and a copy of openfire and install it</p>
+	<pre><li type="square">sudo apt-get install openjdk-7-jdk</li><li type="square">wget http://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_3.9.3_all.deb</li><li type="square">sudo dpkg -i openfire_3.9.3_all.deb</li><li type="square">sudo /etc/init.d/openfire restart</li></pre>
+	<p> If all goes well you should see "openfire started" and navigate to http://yourdomain.com:9090 and follow the onscreen instructions. Note: Insure that you set your "server_name" to yourdomain.com or you will have problems with broadcasting. Also make sure to configure the database to utilize a mysql database.</p>
+	
+	<p><li type="square"> Login to the admin panel at http://yourdomain.com:9090 </li><li type="square">Click Plugins tab at the top</li><li type="square">Click "Available Plugins"</li><li type="square">Click "Grab Available plugins:</li><li type="square">Scroll till you see "User Service Plugin" and click the green + to install</li><li type="square">Click the server tab at top of page</li><li type="square"> Click the server settings tab</li><li type="square">Now click the user service option in the menu to the left</li><li type="square">Enable the user service plugin and then set the secret key auth to what you set during the allianceauth setup</li></p>
+	<p> Thats it jabber is now setup to be utilized with the auth </p>
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forum Setup</h3>
+	<p> Forums are just about as simple to setup although it requires us to navigate and change permissions here and there. Thankfully its pretty straight forward. So we are going to grab a copy of phpbb3 move it into the /var/www directory so apache can pick it up then we are going to change permissions to allow apache to access it.</p>
+	<pre><li type="square">wget https://www.phpbb.com/files/release/phpBB-3.1.1.zip</li><li type="square">unzip phpBB-3.1.1.zip</li><li type="square">sudo mv phpBB3 /var/www/forums</li><li type="square">sudo chmod -R www-data:www-data /var/www/forums/</li></pre>
+	<p> Now go ahead and navigate to https://yourdomain.com/forums/ and follow the installation process. Make sure to leave the "prefix" for the mysql database alone. After that the forums are setup to be accessed by the auth</p>
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bonus - Killboard Setup</h3>
+	<p> Although the killboard isn't directly managed by the auth it is still considered an alliance service. Installation is pretty straight forward and setup exactly like the forums.</p>
+	<pre><li type="square">wget http://evekb.org/downloads/EDK4.2.5.0.zip</li><li type="square">unzip EDK4.2.5.0.zip</li><li type="square">mv evedev-kb-R4.2.5.0 /var/www/killboard</li><li type="square">sudo chmod -R www-data:www-data /var/www/killboard</li></pre>
+	<p> Now navigate to https://yourdomain.com/killboard/ and follow the instructions make sure to set your domain to utilize https or it will cause errors </p>
+	<h3>
+	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tieing it all together</h3>
+	<p> Everything is setup to work with the auth now. What we need to do now is force another pull and get the celery task running in the background. So navigate back to the root directory of the allianceauth.</p>
+	<pre><li type="square">python manage.py shell < run_alliance_corp_update.py</li><li type="square">sudo /etc/init.d/rabbitmq-server start</li><li type="square">screen -dm bash -c 'python manage.py celeryd --verbosity=2 --loglevel=DEBUG'</li><li type="square">screen -dm bash -c 'python manage.py celerybeat --verbosity=2 --loglevel=DEBUG'</li><li type="square">sudo /etc/init.d/apache2 restart</li></pre>
+	<p> Thats it everything is working the auth is auto updating and everything is good to go. Few notes</p>
+	<p><li type="square"> Modify the password_reset_email.html in the templates/registration/ folder to say yourdomain </li><li type="square"> To update your installation do the following </li></p>
+	<pre><li type="square">git pull</li><li type="square">python manage.py syncdb</li><li type="square">python manage.py shell < run_alliance_corp_update.py</li></pre>
+
+	
+	</section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
