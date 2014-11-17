@@ -4,6 +4,7 @@ from hashlib import md5
 
 from django.conf import settings
 
+
 class IPBoardManager:
 
     def __init__(self):
@@ -72,8 +73,9 @@ class IPBoardManager:
     def get_user_groups(username):
         groups = []
         ret = IPBoardManager.exec_xmlrpc('getUserGroups', username=username)
-        for group in ret:
-            groups.append(group["g_title"])
+        if type(ret) is list:
+            for group in ret:
+                groups.append(group["g_title"])
         return groups
 
     @staticmethod
