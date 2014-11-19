@@ -70,7 +70,7 @@
 		<h3>
 		<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>AllianceAuth Setup</h3>
 		<p>First thing we cant to get up and running is the alliance auth. Since all core configuration stems from it so now we will grab everything using apt get in a terminal type the following</p>
-		<pre><li type="square">sudo apt-get install git python python-mysql python-setuptools python-mysql.connector rabbitmq-server python-pip screen</li></pre>
+		<pre><li type="square">sudo apt-get install git python python-mysqldb python-setuptools python-mysql.connector rabbitmq-server python-pip screen</li></pre>
 		<p>Now we will move to our home directory and checkout a fresh copy of the development build of the AllianceAuth</p>
 		<pre><li type="square">cd ~</li><li type="square">git clone https://github.com/R4stl1n/allianceauth.git</li></pre>
 		<p>Now we need to get all the python requirements for the auth to do this we use pip to grab all the dependencies</p>
