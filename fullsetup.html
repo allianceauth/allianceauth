@@ -262,12 +262,12 @@ dbPrefix=murmur_
 	<h3>
 	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forum Setup</h3>
 	<p> Forums are just about as simple to setup although it requires us to navigate and change permissions here and there. Thankfully its pretty straight forward. So we are going to grab a copy of phpbb3 move it into the /var/www directory so apache can pick it up then we are going to change permissions to allow apache to access it.</p>
-	<pre><li type="square">wget https://www.phpbb.com/files/release/phpBB-3.1.1.zip</li><li type="square">unzip phpBB-3.1.1.zip</li><li type="square">sudo mv phpBB3 /var/www/forums</li><li type="square">sudo chmod -R www-data:www-data /var/www/forums/</li></pre>
+	<pre><li type="square">wget https://www.phpbb.com/files/release/phpBB-3.1.1.zip</li><li type="square">unzip phpBB-3.1.1.zip</li><li type="square">sudo mv phpBB3 /var/www/forums</li><li type="square">sudo chown -R www-data:www-data /var/www/forums/</li></pre>
 	<p> Now go ahead and navigate to https://yourdomain.com/forums/ and follow the installation process. Make sure to leave the "prefix" for the mysql database alone. After that the forums are setup to be accessed by the auth</p>
 	<h3>
 	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bonus - Killboard Setup</h3>
 	<p> Although the killboard isn't directly managed by the auth it is still considered an alliance service. Installation is pretty straight forward and setup exactly like the forums.</p>
-	<pre><li type="square">wget http://evekb.org/downloads/EDK4.2.5.0.zip</li><li type="square">unzip EDK4.2.5.0.zip</li><li type="square">mv evedev-kb-R4.2.5.0 /var/www/killboard</li><li type="square">sudo chmod -R www-data:www-data /var/www/killboard</li></pre>
+	<pre><li type="square">wget http://evekb.org/downloads/EDK4.2.5.0.zip</li><li type="square">unzip EDK4.2.5.0.zip</li><li type="square">mv evedev-kb-R4.2.5.0 /var/www/killboard</li><li type="square">sudo chown -R www-data:www-data /var/www/killboard</li></pre>
 	<p> Now navigate to https://yourdomain.com/killboard/ and follow the instructions make sure to set your domain to utilize https or it will cause errors </p>
 	<h3>
 	<a id="eve-alliance-auth" class="anchor" href="#eve-alliance-auth" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tieing it all together</h3>
