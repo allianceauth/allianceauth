@@ -91,7 +91,7 @@
 		<p> Go ahead and download apache and all the dependencies for php and wsgi. We are also going to go ahead and enable ssl support and generate a self signed certificate to be used for https connections. You will want to get a commercial cert but that is outside the scope of this tutorial. During the openssl generate you will be presented with questions the important thing you fill out is the common name make sure this is your domain name ex. yourdomain.com</p>
 		<pre><li type="square">sudo apt-get install apache2 php5 php5-gd php5-curl curl php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl libapache2-mod-php5 libapache2-mod-wsgi</li><li type="square">sudo a2enmod ssl</li><li type="square">sudo mkdir /etc/apache2/ssl</li><li type="square">sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/apache2/ssl/apache.pem -keyout /etc/apache2/ssl/apache.key </li></pre>
 		<p> The next thing we are going to do is modify the available site configuration in the apache configs. If you have been following along you can just copy and paste these configs after changing the url.</p>
-		<pre><li type="square">sudo nano /etc/apache2/sites-enabled/000-default.conf</li></pre>
+		<pre><li type="square">sudo nano /etc/apache2/sites-available/default</li></pre>
 		<p> Change everything in that file to whats below. This forces http connections to be https. make sure to change the urls to yourdomain </p>
 		<pre><code>&lt;VirtualHost *:80&gt;
         ServerName yourdomain.com
@@ -139,7 +139,7 @@
 
 &lt;/VirtualHost&gt;</code></pre>
 	<p> Next we are going to change the ssl configuration to provide our auth including other forums. This is a easy copy and paste</p>
-	<pre><li type="square">sudo nano /etc/apache2/sites-enabled/default-ssl.conf</li></pre>
+	<pre><li type="square">sudo nano /etc/apache2/sites-available/default-ssl</li></pre>
 	<p> Change it to the following </p>
 	<pre><code>&lt;IfModule mod_ssl.c&gt;
 &lt;VirtualHost _default_:443&gt;
