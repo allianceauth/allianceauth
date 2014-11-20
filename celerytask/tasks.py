@@ -259,7 +259,8 @@ def run_alliance_corp_update():
             if corpinfo['alliance']['id'] is not None:
                 alliance = EveManager.get_alliance_info_by_id(corpinfo['alliance']['id'])
 
-            if alliance is not None:
+            if alliance is not None and all_corp_info.alliance is not None:
+
                 if all_corp_info.alliance.alliance_id == settings.ALLIANCE_ID:
                     EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, False)
                 else:
