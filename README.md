@@ -10,6 +10,13 @@ Built for "The 99 Percent" open for anyone to use
 
 [Production Setup Guide] (http://r4stl1n.github.io/allianceauth/fullsetup.html)
 
+Note:
+
+    Please keep your admin account and normal accounts separate. If you are the admin only use 
+    the admin account for admin stuff do not attempt to use it for your personal services. Create a new
+    normal account for this or things will break.
+    
+    
 Requirements:
 
     # Django Stuff #
