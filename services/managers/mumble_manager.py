@@ -2,6 +2,8 @@ import os
 import hashlib
 import sys
 
+import django
+
 from django.db import connections
 from django.conf import settings
 
@@ -134,6 +136,8 @@ class MumbleManager:
                              [settings.MUMBLE_SERVER_ID, user_id, username_clean, pwhash])
 
             return username_clean, password
+        except django.db.utils.IntegrityError as error:
+            print error
         except:
             print "Unexpected error:", sys.exc_info()[0]
             return "", ""
