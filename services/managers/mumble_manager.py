@@ -3,7 +3,6 @@ import hashlib
 import sys
 
 import django
-
 from django.db import connections
 from django.conf import settings
 
@@ -105,8 +104,9 @@ class MumbleManager:
 
     @staticmethod
     def _add_user_to_group(userid, groupid):
-        dbcursor = connections['mumble'].cursor()
-        dbcursor.execute(MumbleManager.SQL_ADD_USER_TO_GROUP, [groupid, settings.MUMBLE_SERVER_ID, userid])
+        if userid != None:
+            dbcursor = connections['mumble'].cursor()
+            dbcursor.execute(MumbleManager.SQL_ADD_USER_TO_GROUP, [groupid, settings.MUMBLE_SERVER_ID, userid])
 
     @staticmethod
     def _del_user_from_group(userid, groupid):
