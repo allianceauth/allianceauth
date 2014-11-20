@@ -1,5 +1,6 @@
 import os
 import hashlib
+import sys
 
 from django.db import connections
 from django.conf import settings
@@ -134,7 +135,7 @@ class MumbleManager:
 
             return username_clean, password
         except:
-
+            print "Unexpected error:", sys.exc_info()[0]
             return "", ""
 
     @staticmethod
@@ -154,7 +155,7 @@ class MumbleManager:
 
             return username_clean, password
         except:
-
+            print "Unexpected error:", sys.exc_info()[0]
             return "", ""
 
     @staticmethod
