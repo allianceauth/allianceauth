@@ -140,7 +140,8 @@ class MumbleManager:
             print error
         except:
             print "Unexpected error:", sys.exc_info()[0]
-            return "", ""
+
+        return "", ""
 
     @staticmethod
     def create_blue_user(corp_ticker, username):
@@ -160,7 +161,8 @@ class MumbleManager:
             return username_clean, password
         except:
             print "Unexpected error:", sys.exc_info()[0]
-            return "", ""
+
+        return "", ""
 
     @staticmethod
     def check_user_exist(username):
