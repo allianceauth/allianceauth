@@ -9,61 +9,8 @@
 
 {% block content %}
     <div class="col-lg-12">
-        {% if not perms.auth.alliance_member %}
-            <h1 class="page-header text-center">Personal Applications
-                <div class="text-right">
-                    <a href="{% url 'auth_hrapplication_create_view' %}">
-                        {% if personal_app %}
-                            <button type="button" class="btn btn-success" disabled>Create Application</button>
-                        {% else %}
-                            <button type="button" class="btn btn-success">Create Application</button>
-                        {% endif %}
-                    </a>
-                </div>
-            </h1>
-            <table class="table table-bordered">
-                <tr>
-                    <th class="text-center">Application ID</th>
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Main Character</th>
-                    <th class="text-center">Corporation
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-                {% for personal_app in personal_apps %}
-                    <tr>
-                        <td class="text-center">{{ personal_app.id }}</td>
-                        <td class="text-center">{{ personal_app.user.username }}</td>
-                        <td class="text-center">{{ personal_app.character_name }}</td>
-                        <td class="text-center">{{ personal_app.corp.corporation_name }}</td>
-                        <td class="text-center">
-                            {% if personal_app.approved_denied == None %}
-                                <div class="panel panel-warning" role="alert">Pending</div>
-                            {% elif  personal_app.approved_denied == True %}
-                                <div class="panel panel-success" role="alert">Approved</div>
-                            {% else %}
-                                <div class="panel panel-danger" role="alert">Rejected</div>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <a href="/hr_application_personal_view/{{ personal_app.id }}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-eye-open"></span></button>
-                            </a>
-
-                            {% if personal_app.approved_denied == None %}
-                                <a href="/hr_application_personal_removal/{{ personal_app.id }}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
         {% if perms.auth.human_resources %}
-            <h1 class="page-header text-center">Application Management
+            <h1 class="page-header text-center">Application Search Results
                 <div class="text-right">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">

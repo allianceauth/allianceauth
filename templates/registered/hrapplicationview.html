@@ -9,14 +9,40 @@
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Create Application</h1>
+        <h1 class="page-header text-center">View Application</h1>
 
         <div class="container-fluid">
             <div class="col-md-4 col-md-offset-4">
                 <div class="row">
                     <form class="form-signin">
                         <div class="form-group">
-                            <label class="control-label" for="id_character_name">User Account</label>
+                            <label class="control-label  " for="id_extra">Status</label>
+
+                            <div class=" ">
+                                {% if application.approved_denied == None %}
+                                    <div class="alert alert-warning" role="alert">Pending</div>
+                                {% elif  application.approved_denied %}
+                                    <div class="alert alert-success" role="alert">Approved</div>
+                                {% else %}
+                                    <div class="alert alert-danger" role="alert">Rejected</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">Reviewer</label>
+
+                            <div class=" ">
+                                {% if application.reviewer_character == None %}
+                                    <div class="alert alert-info" role="alert">pending</div>
+                                {% else %}
+                                    <div class="alert alert-info"
+                                         role="alert">{{ application.reviewer_character.character_name }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                        <label class="control-label" for="id_character_name">User Account</label>
 
                             <div class=" ">
                                 <input class=" form-control" value="{{ application.user.username }}" disabled>
@@ -78,11 +104,110 @@
                                           disabled>{{ application.extra }}</textarea>
                             </div>
                         </div>
-                        <br>
+
+                        {% if perms.auth.human_resources %}
+                            <div class="form-group text-center">
+                                <label class="control-label text-center" for="id_extra">Actions</label>
+
+                                <div class="container-fluid well">
+                                    <div class="row text-center">
+                                        <a href="/hr_application_approve/{{ application.id }}">
+                                            <button type="button" class="btn btn-lg btn-success">Approve</button>
+                                        </a>
+
+                                        <a href="/hr_application_reject/{{ application.id }}">
+                                            <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                        </a>
+
+                                        <a href="/hr_application_remove/{{ application.id }}">
+                                            <button type="button" class="btn btn-lg btn-danger">Delete</button>
+                                        </a>
+                                    </div>
+                                    <br/>
+
+                                    <div class="row text-center">
+                                        <a href="{{ JACK_KNIFE_URL }}?usid={{ application.full_api_id }}&apik={{ application.full_api_key }}"
+                                           target="_blank">
+                                            <button type="button" class="btn btn-lg btn-primary">API Jack Knife</button>
+                                        </a>
+                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                                data-target="#myModal">
+                                            Comment
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingThree">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                   href="#collapseThree" aria-expanded="false"
+                                                   aria-controls="collapseThree">
+                                                    Comments - {{ comments|length }}
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingThree">
+                                            <div class="panel-body">
+                                                {% for comment in comments %}
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading" role="tab" id="">
+                                                            <div class="panel-title">{{ comment.commenter_character.character_name }}
+                                                                - {{ comment.commenter_character.corporation_name }}</div>
+                                                        </div>
+                                                        <div class="panel-body">{{ comment.comment }}</div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endif %}
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
     </div>
 
+    {% if perms.auth.human_resources %}
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span
+                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-signin" role="form" action="" method="POST">
+                            {% csrf_token %}
+                            {{ comment_form.app_id|bootstrap }}
+                            {{ comment_form.comment|bootstrap }}
+                            <br/>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}
+{% block extra_script %}
+    $(document).ready(function(){
+    var appid = {{ application.id }};
+
+    $('#id_app_id').val(appid);
+    $('#id_commenter_id').val(commenterid);
+    });
+{% endblock %}

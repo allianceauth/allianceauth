@@ -25,4 +25,5 @@ def domain_url(request):
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
             'ENABLE_BLUE_IPBOARD': settings.ENABLE_BLUE_IPBOARD,
+            'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'CURRENT_UTC_TIME': timezone.now()}

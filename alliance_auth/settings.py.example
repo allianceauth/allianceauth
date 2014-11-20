@@ -216,6 +216,14 @@ ALLIANCE_EXEC_CORP_VCODE = ''
 ALLIANCE_BLUE_STANDING = 5.0
 
 #####################
+# HR Configuration
+#####################
+# JACK_KNIFE_URL - Url for the audit page of API Jack knife
+#                  Should seriously replace with your own.
+#####################
+JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
+
+#####################
 # Forum Configuration
 #####################
 # FORUM_URL - Forum url location

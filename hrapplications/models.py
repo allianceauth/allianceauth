@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from eveonline.models import EveCorporationInfo
+from eveonline.models import EveCharacter
 
 
 class HRApplication(models.Model):
@@ -15,12 +16,19 @@ class HRApplication(models.Model):
     corp = models.ForeignKey(EveCorporationInfo)
     user = models.ForeignKey(User)
 
+    approved_denied = models.NullBooleanField(blank=True, null=True)
+    reviewer_user = models.ForeignKey(User, blank=True, null=True, related_name="review_user")
+    reviewer_character = models.ForeignKey(EveCharacter, blank=True, null=True)
+
     def __str__(self):
         return self.character_name + " - Application"
 
 
 class HRApplicationComment(models.Model):
-    date = models.DateTimeField(auto_now=True)
-    comment = models.TextField(default="")
+    comment = models.CharField(max_length=254, default="")
+    application = models.ForeignKey(HRApplication)
+    commenter_user = models.ForeignKey(User)
+    commenter_character = models.ForeignKey(EveCharacter)
 
-    user = models.ForeignKey(User)
+    def __str__(self):
+        return str(self.application.character_name) + " - Comment"
