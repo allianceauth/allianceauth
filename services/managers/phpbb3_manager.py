@@ -9,7 +9,7 @@ from django.db import connections
 class Phpbb3Manager:
     SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
-                   r"user_sig, user_occ, user_interests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                   r"user_sig) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
     SQL_DEL_USER = r"DELETE FROM phpbb_users where username = %s"
 
@@ -119,7 +119,7 @@ class Phpbb3Manager:
 
                 cursor.execute(Phpbb3Manager.SQL_ADD_USER, [username_clean, username_clean, pwhash,
                                                            email, 2, Phpbb3Manager.__get_current_utc_date(),
-                                                           "", "", "", ""])
+                                                           "", ""])
                 Phpbb3Manager.update_groups(username_clean, groups)
             except:
                 pass
