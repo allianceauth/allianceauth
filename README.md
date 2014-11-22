@@ -18,10 +18,11 @@ Note:
     
 Update Note:
     
-    The recent HRApplication update broke evolve somehow.. Im sure its in the way i redid the models. 
-    To update when you get the evolve error is first. We need to remove the old hr tables from mysql.
-    We then need to wipe the evolve records in the admin section of the auth. Also keep in mind that 
-    modifiying the mysql database is dangerous and could corrupt the database if mistakes are made.
+    The recent HRApplication update broke evolve somehow.. Im sure its in the way i 
+    redid the models. To update when you get the evolve error is first. We need to 
+    remove the old hr tables from mysql. We then need to wipe the evolve records in 
+    the admin section of the auth. Also keep in mind that modifying the mysql database 
+    is dangerous and could corrupt the database if mistakes are made.
     
     python manage.py syncdb
     python manage.py evolve --hint --execute
