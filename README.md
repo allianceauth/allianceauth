@@ -76,3 +76,8 @@ Special Permissions In Admin:
     auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats (View basic corp auth stats *who is authed etc*)
     auth | user | timer_management ( Access to create and remove timers)
+
+
+Beta Testers:
+
+     IskFiend ( For constantly bugging me about things that break for him )
