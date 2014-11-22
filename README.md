@@ -16,6 +16,26 @@ Note:
     the admin account for admin stuff do not attempt to use it for your personal services. Create a new
     normal account for this or things will break.
     
+Update Note:
+    
+    The recent HRApplication update broke evolve somehow.. Im sure its in the way i redid the models. 
+    To update when you get the evolve error is first. We need to remove the old hr tables from mysql.
+    We then need to wipe the evolve records in the admin section of the auth.
+    
+    To wipe the mysql databse execute the following:
+        mysql -u MYSQLUSER -p
+        use ALLIANCEAUTHDATABASE;
+        drop table hrapplications_hrapplication;
+        drop table hrapplications_hrapplicationcomment;
+        
+    Now go back to the admin interface in both of the evolve sections delete all the entries.
+    After that go to your shell and run the following.
+    python manage.py syncdb;
+    python manage.py shell;
+          from util import bootstrap_permissions
+          bootstrap_permissions()
+          exit()
+          
     
 Requirements:
 
