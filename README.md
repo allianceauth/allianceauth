@@ -13,14 +13,15 @@ Built for "The 99 Percent" open for anyone to use
 Note:
 
     Please keep your admin account and normal accounts separate. If you are the admin only use 
-    the admin account for admin stuff do not attempt to use it for your personal services. Create a new
-    normal account for this or things will break.
+    the admin account for admin stuff do not attempt to use it for your personal services. 
+    Create a new normal account for this or things will break.
     
 Update Note:
     
     The recent HRApplication update broke evolve somehow.. Im sure its in the way i redid the models. 
     To update when you get the evolve error is first. We need to remove the old hr tables from mysql.
-    We then need to wipe the evolve records in the admin section of the auth. Also
+    We then need to wipe the evolve records in the admin section of the auth. Also keep in mind that 
+    modifiying the mysql database is dangerous and could corrupt the database if mistakes are made.
     
     python manage.py syncdb
     python manage.py evolve --hint --execute
@@ -33,12 +34,22 @@ Update Note:
         
     Now go back to the admin interface in both of the evolve sections delete all the entries.
     After that go to your shell and run the following.
-    python manage.py syncdb;
-    python manage.py shell;
-          from util import bootstrap_permissions
-          bootstrap_permissions()
-          exit()
-          
+        python manage.py syncdb;
+        python manage.py shell;
+              from util import bootstrap_permissions
+              bootstrap_permissions()
+              exit()
+    
+    This next step is only needed if you hadn't updated since teh IPBoard update.
+    Back to mysql database and execute the following:
+        mysql -u MYSQLUSER -p
+        use ALLIANCEAUTHDATBASE;
+        ALTER TABLE authentication_authservicesinfo ADD ipboard_password  VARCHAR(254);
+        ALTER TABLE authentication_authservicesinfo ADD ipboard_username  VARCHAR(254);
+        
+    Now restart mysql and httpd
+        sudo /etc/init.d/mysqld restart
+        sudo /etc/init.d/apache2 restart
     
 Requirements:
 
@@ -81,6 +92,7 @@ Special Permissions In Admin:
     auth | user | timer_management ( Access to create and remove timers)
 
 
-Beta Testers:
+Beta Testers/ Bug Fixers:
 
-     IskFiend ( For constantly bugging me about things that break for him )
+     IskFiend ( Bug Fixes and Server Configuration )
+     Mr McClain (Bug Fixes and server configuration)
