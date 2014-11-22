@@ -25,16 +25,16 @@ def remove_user_from_group(user, groupname):
 
 def deactivate_services(user):
     authinfo = AuthServicesInfoManager.get_auth_service_info(user)
-    if authinfo.mumble_username != "":
+    if authinfo.mumble_username and authinfo.mumble_username != "":
         MumbleManager.delete_user(authinfo.mumble_username)
         AuthServicesInfoManager.update_user_mumble_info("", "", user)
-    if authinfo.jabber_username != "":
+    if authinfo.jabber_username and authinfo.jabber_username != "":
         OpenfireManager.delete_user(authinfo.jabber_username)
         AuthServicesInfoManager.update_user_jabber_info("", "", user)
-    if authinfo.forum_username != "":
+    if authinfo.forum_username and authinfo.forum_username != "":
         Phpbb3Manager.disable_user(authinfo.forum_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
-    if authinfo.ipboard_username != "":
+    if authinfo.ipboard_username and authinfo.ipboard_username != "":
         IPBoardManager.disable_user(authinfo.ipboard_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
 
