@@ -18,6 +18,7 @@ def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
+    print groups
     for syncgroup in syncgroups:
         groups.append(str(syncgroup.groupname))
 
