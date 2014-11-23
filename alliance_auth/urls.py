@@ -114,6 +114,14 @@ urlpatterns = patterns('',
                        url(r'^reset_ipboard_password/$', 'services.views.reset_ipboard_password',
                            name='auth_reset_ipboard_password'),
 
+                       # Teamspeak3 service control
+                       url(r'^activate_teamspeak3/$', 'services.views.activate_teamspeak3',
+                           name='auth_activate_teamspeak3'),
+                       url(r'^deactivate_teamspeak3/$', 'services.views.deactivate_teamspeak3',
+                           name='auth_deactivate_teamspeak3'),
+                       url(r'reset_teamspeak3_perm/$', 'services.views.reset_teamspeak3_perm',
+                           name='auth_reset_teamspeak3_perm'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),

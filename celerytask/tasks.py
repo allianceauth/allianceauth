@@ -8,6 +8,7 @@ from services.managers.openfire_manager import OpenfireManager
 from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
+from services.managers.teamspeak3_manager import Teamspeak3Manager
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from services.managers.eve_api_manager import EveApiManager
@@ -69,6 +70,19 @@ def update_ipboard_groups(user):
     IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
 
 
+def update_teamspeak3_groups(user):
+    syncgroups = SyncGroupCache.objects.filter(user=user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
+    for syncgroup in syncgroups:
+        groups.append(str(syncgroup.groupname))
+
+    if len(groups) == 0:
+        groups.append('empty')
+
+    Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
+
+
 def add_to_databases(user, groups, syncgroups):
     authserviceinfo = None
     try:
@@ -90,14 +104,16 @@ def add_to_databases(user, groups, syncgroups):
                 update = True
 
         if update:
-            if authserviceinfo.jabber_username != "":
+            if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 update_jabber_groups(user)
-            if authserviceinfo.mumble_username != "":
+            if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
                 update_mumble_groups(user)
-            if authserviceinfo.forum_username != "":
+            if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
                 update_forum_groups(user)
-            if authserviceinfo.ipboard_username != "":
+            if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
                 update_ipboard_groups(user)
+            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -117,14 +133,16 @@ def remove_from_databases(user, groups, syncgroups):
                 update = True
 
         if update:
-            if authserviceinfo.jabber_username != "":
+            if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 update_jabber_groups(user)
-            if authserviceinfo.mumble_username != "":
+            if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
                 update_mumble_groups(user)
-            if authserviceinfo.forum_username != "":
+            if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
                 update_forum_groups(user)
-            if authserviceinfo.ipboard_username != "":
+            if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
                 update_ipboard_groups(user)
+            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                update_teamspeak3_groups(user)
 
 
 # Run every minute

@@ -3,22 +3,24 @@ from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import user_passes_test
 
 from managers.openfire_manager import OpenfireManager
 from managers.phpbb3_manager import Phpbb3Manager
 from managers.mumble_manager import MumbleManager
 from managers.ipboard_manager import IPBoardManager
+from managers.teamspeak3_manager import Teamspeak3Manager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
 from celerytask.tasks import update_ipboard_groups
+from celerytask.tasks import update_teamspeak3_groups
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
-from django.contrib.auth.decorators import user_passes_test
-
 from util import check_if_user_has_permission
+
 
 @login_required
 def fleet_formatter_view(request):
@@ -150,7 +152,6 @@ def reset_ipboard_password(request):
     return HttpResponseRedirect("/dashboard")
 
 
-
 @login_required
 @user_passes_test(service_blue_alliance_test)
 def activate_jabber(request):
@@ -226,5 +227,57 @@ def reset_mumble_password(request):
     # if blank we failed
     if result != "":
         AuthServicesInfoManager.update_user_mumble_info(authinfo.mumble_username, result, request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_teamspeak3(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    if check_if_user_has_permission(request.user, "blue_member"):
+        result = Teamspeak3Manager.add_blue_user(character.character_name, character.corporation_ticker)
+    else:
+        result = Teamspeak3Manager.add_user(character.character_name, character.corporation_ticker)
+
+    # if its empty we failed
+    if result[0] is not "":
+        AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
+        update_teamspeak3_groups(request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_teamspeak3(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
+    # if false we failed
+    if result:
+        AuthServicesInfoManager.update_user_teamspeak3_info("", "", request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def reset_teamspeak3_perm(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+
+    Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
+
+    if check_if_user_has_permission(request.user, "blue_member"):
+        result = Teamspeak3Manager.generate_new_blue_permissionkey(authinfo.teamspeak3_uid, character.character_name,
+                                                                   character.corporation_ticker)
+    else:
+        result = Teamspeak3Manager.generate_new_permissionkey(authinfo.teamspeak3_uid, character.character_name,
+                                                              character.corporation_ticker)
+
+    # if blank we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/")

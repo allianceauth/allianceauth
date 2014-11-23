@@ -12,3 +12,4 @@ django-evolution
 django-bootstrap-form
 django-celery
 
+git+git://github.com/nikdoof/python-ts3.git

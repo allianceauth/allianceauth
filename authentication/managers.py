@@ -66,6 +66,14 @@ class AuthServicesInfoManager:
             authserviceinfo.save(update_fields=['ipboard_username', 'ipboard_password'])
 
     @staticmethod
+    def update_user_teamspeak3_info(uid, perm_key, user):
+        if User.objects.filter(username=user.username).exists():
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.teamspeak3_uid = uid
+            authserviceinfo.teamspeak3_perm_key = perm_key
+            authserviceinfo.save(update_fields=['teamspeak3_uid', 'teamspeak3_perm_key'])
+
+    @staticmethod
     def update_is_blue(is_blue, user):
         if User.objects.filter(username=user.username).exists():
             authserviceinfo = AuthServicesInfoManager.__get_or_create(user)

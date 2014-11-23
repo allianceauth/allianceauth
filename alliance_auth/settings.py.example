@@ -186,6 +186,7 @@ ENABLE_ALLIANCE_FORUM = True
 ENABLE_ALLIANCE_JABBER = True
 ENABLE_ALLIANCE_MUMBLE = True
 ENABLE_ALLIANCE_IPBOARD = False
+ENABLE_ALLIANCE_TEAMSPEAK3 = False
 
 #####################
 # Blue service Setup
@@ -199,6 +200,7 @@ ENABLE_BLUE_FORUM = False
 ENABLE_BLUE_JABBER = False
 ENABLE_BLUE_MUMBLE = True
 ENABLE_BLUE_IPBOARD = False
+ENABLE_BLUE_TEAMSPEAK3 = False
 
 #########################
 # Alliance Configuration
@@ -264,3 +266,20 @@ BROADCAST_USER_PASSWORD = "somepassword"
 MUMBLE_URL = "someurl.com"
 MUMBLE_SERVER_ID = 1
 
+######################################
+# Teamspeak3 Configuration
+######################################
+# TEAMSPEAK3_SERVER_IP - Teamspeak3 server ip
+# TEAMSPEAK3_SERVER_PORT - Teamspeak3 server port
+# TEAMSPEAK3_SERVERQUERY_USER - Teamspeak3 serverquery username
+# TEAMSPEAK3_SERVERQUERY_PASSWORD - Teamspeak3 serverquery password
+# TEAMSPEAK3_VIRTUAL_SERVER - Virtual server id
+# TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
+# TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
+######################################
+TEAMSPEAK3_SERVER_IP = '127.0.0.1'
+TEAMSPEAK3_SERVER_PORT = 10011
+TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
+TEAMSPEAK3_SERVERQUERY_PASSWORD = 'passwordhere'
+TEAMSPEAK3_VIRTUAL_SERVER = 1
+TEAMSPEAK3_PUBLIC_URL = 'someaddress.com'

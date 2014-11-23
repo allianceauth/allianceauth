@@ -8,171 +8,63 @@
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Available Services</h1>
-        {% if perms.auth.blue_member %}
-            <table class="table table-bordered">
-                <tr>
-                    <th class="text-center">Service</th>
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Password</th>
-                    <th class="text-center">Domain</th>
-                    <th class="text-center">Action</th>
-                </tr>
-                {% if ENABLE_BLUE_FORUM %}
-                    <td class="text-center">Forums</td>
-                    <td class="text-center">{{ authinfo.forum_username }}</td>
-                    <td class="text-center">{{ authinfo.forum_password }}</td>
-                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                    <td class="text-center">
-                        {% ifequal authinfo.forum_username "" %}
-                            <a href="{% url 'auth_activate_forum' %}">
+    <h1 class="page-header text-center">Available Services</h1>
+    {% if perms.auth.blue_member %}
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">Service</th>
+                <th class="text-center">Username</th>
+                <th class="text-center">Password</th>
+                <th class="text-center">Domain</th>
+                <th class="text-center">Action</th>
+            </tr>
+            {% if ENABLE_BLUE_FORUM %}
+                <td class="text-center">Forums</td>
+                <td class="text-center">{{ authinfo.forum_username }}</td>
+                <td class="text-center">{{ authinfo.forum_password }}</td>
+                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.forum_username "" %}
+                        <a href="{% url 'auth_activate_forum' %}">
                             <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_reset_forum_password' %}">
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_reset_forum_password' %}">
                             <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_forum' %}">
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_forum' %}">
                             <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                {% endif %}
-                {%  if ENABLE_BLUE_IPBOARD %}
-                    <td class="text-center">IPBoard Forums</td>
-                    <td class="text-center">{{ authinfo.ipboard_username }}</td>
-                    <td class="text-center">{{ authinfo.ipboard_password }}</td>
-                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                    <td class="text-center">
-                        {% ifequal authinfo.ipboard_username "" %}
-                            <a href="{% url 'auth_activate_ipboard' %}">
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
+            {% if ENABLE_BLUE_IPBOARD %}
+                <td class="text-center">IPBoard Forums</td>
+                <td class="text-center">{{ authinfo.ipboard_username }}</td>
+                <td class="text-center">{{ authinfo.ipboard_password }}</td>
+                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.ipboard_username "" %}
+                        <a href="{% url 'auth_activate_ipboard' %}">
                             <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_reset_ipboard_password' %}">
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_reset_ipboard_password' %}">
                             <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_ipboard' %}">
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_ipboard' %}">
                             <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                {% endif %}
-                {% if ENABLE_BLUE_JABBER %}
-                    <tr>
-                        <td class="text-center">Jabber</td>
-                        <td class="text-center">{{ authinfo.jabber_username }}</td>
-                        <td class="text-center">{{ authinfo.jabber_password }}</td>
-                        <td class="text-center">{{ JABBER_URL }}</td>
-                        <td class="text-center">
-                            {% ifequal authinfo.jabber_username "" %}
-                                <a href="{% url 'auth_activate_jabber' %}">
-                                    <button type="button" class="btn btn-warning"><span
-                                            class="glyphicon glyphicon-ok"></span></button>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'auth_reset_jabber_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-refresh"></span></button>
-                                </a>
-                                <a href="{% url 'auth_deactivate_jabber' %}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
-                                </a>
-                            {% endifequal %}
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if ENABLE_BLUE_MUMBLE %}
-                    <tr>
-                        <td class="text-center">Mumble</td>
-                        <td class="text-center">{{ authinfo.mumble_username }}</td>
-                        <td class="text-center">{{ authinfo.mumble_password }}</td>
-                        <td class="text-center">{{ MUMBLE_URL }}</td>
-                        <td class="text-center">
-                            {% ifequal authinfo.mumble_username "" %}
-                                <a href="{% url 'auth_activate_mumble' %}">
-                                    <button type="button" class="btn btn-warning"><span
-                                            class="glyphicon glyphicon-ok"></span></button>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'auth_reset_mumble_password' %}">
-                                    <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-refresh"></span></button>
-                                </a>
-                                <a href="{% url 'auth_deactivate_mumble' %}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
-                                </a>
-                            {% endifequal %}
-                        </td>
-                    </tr>
-                {% endif %}
-            </table>
-        {% elif perms.auth.alliance_member %}
-            <table class="table table-bordered">
-                <tr>
-                    <th class="text-center">Service</th>
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Password</th>
-                    <th class="text-center">Domain</th>
-                    <th class="text-center">Action</th>
-                </tr>
-                {% if ENABLE_ALLIANCE_FORUM %}
-                <tr>
-                    <td class="text-center">Forums</td>
-                    <td class="text-center">{{ authinfo.forum_username }}</td>
-                    <td class="text-center">{{ authinfo.forum_password }}</td>
-                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                    <td class="text-center">
-                        {% ifequal authinfo.forum_username "" %}
-                            <a href="{% url 'auth_activate_forum' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_reset_forum_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_forum' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                </tr>
-                {% endif %}
-                {%  if ENABLE_ALLIANCE_IPBOARD %}
-                    <td class="text-center">IPBoard Forums</td>
-                    <td class="text-center">{{ authinfo.ipboard_username }}</td>
-                    <td class="text-center">{{ authinfo.ipboard_password }}</td>
-                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                    <td class="text-center">
-                        {% ifequal authinfo.ipboard_username "" %}
-                            <a href="{% url 'auth_activate_ipboard' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_reset_ipboard_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_ipboard' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                {% endif %}
-                {% if ENABLE_ALLIANCE_JABBER %}
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
+            {% if ENABLE_BLUE_JABBER %}
                 <tr>
                     <td class="text-center">Jabber</td>
                     <td class="text-center">{{ authinfo.jabber_username }}</td>
@@ -196,8 +88,8 @@
                         {% endifequal %}
                     </td>
                 </tr>
-                {% endif %}
-                {% if ENABLE_ALLIANCE_MUMBLE %}
+            {% endif %}
+            {% if ENABLE_BLUE_MUMBLE %}
                 <tr>
                     <td class="text-center">Mumble</td>
                     <td class="text-center">{{ authinfo.mumble_username }}</td>
@@ -221,11 +113,195 @@
                         {% endifequal %}
                     </td>
                 </tr>
-                {% endif %}
-            </table>
-        {% else %}
-            <div class="alert alert-danger" role="alert">You are not in the alliance</div>
-        {% endif %}
+            {% endif %}
+            {% if ENABLE_BLUE_TEAMSPEAK3 %}
+                <tr>
+                    <th class="text-center">Service</th>
+                    <th class="text-center">Unique ID</th>
+                    <th class="text-center">PermissionKey</th>
+                    <th class="text-center">Quick Link</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Teamspeak 3</td>
+                    <td class="text-center">{{ authinfo.teamspeak3_uid }}</td>
+                    <td class="text-center">{{ authinfo.teamspeak3_perm_key }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.teamspeak3_uid "" %}
+                        {% else %}
+                            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}">Teamspeak3
+                                Link</a>
+                        {% endifequal %}
+                    </td>
+                    <td class="text-center">
+                        {% ifequal authinfo.teamspeak3_uid "" %}
+                            <a href="{% url 'auth_activate_teamspeak3' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_teamspeak3_perm' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_teamspeak3' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    {% elif perms.auth.alliance_member %}
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">Service</th>
+                <th class="text-center">Username</th>
+                <th class="text-center">Password</th>
+                <th class="text-center">Domain</th>
+                <th class="text-center">Action</th>
+            </tr>
+            {% if ENABLE_ALLIANCE_FORUM %}
+                <tr>
+                    <td class="text-center">Forums</td>
+                    <td class="text-center">{{ authinfo.forum_username }}</td>
+                    <td class="text-center">{{ authinfo.forum_password }}</td>
+                    <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                    <td class="text-center">
+                        {% ifequal authinfo.forum_username "" %}
+                            <a href="{% url 'auth_activate_forum' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_forum_password' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_forum' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_ALLIANCE_IPBOARD %}
+                <td class="text-center">IPBoard Forums</td>
+                <td class="text-center">{{ authinfo.ipboard_username }}</td>
+                <td class="text-center">{{ authinfo.ipboard_password }}</td>
+                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.ipboard_username "" %}
+                        <a href="{% url 'auth_activate_ipboard' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_reset_ipboard_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_ipboard' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
+            {% if ENABLE_ALLIANCE_JABBER %}
+                <tr>
+                    <td class="text-center">Jabber</td>
+                    <td class="text-center">{{ authinfo.jabber_username }}</td>
+                    <td class="text-center">{{ authinfo.jabber_password }}</td>
+                    <td class="text-center">{{ JABBER_URL }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.jabber_username "" %}
+                            <a href="{% url 'auth_activate_jabber' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_jabber_password' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_jabber' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_ALLIANCE_MUMBLE %}
+                <tr>
+                    <td class="text-center">Mumble</td>
+                    <td class="text-center">{{ authinfo.mumble_username }}</td>
+                    <td class="text-center">{{ authinfo.mumble_password }}</td>
+                    <td class="text-center">{{ MUMBLE_URL }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.mumble_username "" %}
+                            <a href="{% url 'auth_activate_mumble' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_mumble_password' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_mumble' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_ALLIANCE_TEAMSPEAK3 %}
+                <tr>
+                    <th class="text-center">Service</th>
+                    <th class="text-center">Unique ID</th>
+                    <th class="text-center">PermissionKey</th>
+                    <th class="text-center">Quick Link</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Teamspeak 3</td>
+                    <td class="text-center">{{ authinfo.teamspeak3_uid }}</td>
+                    <td class="text-center">{{ authinfo.teamspeak3_perm_key }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.teamspeak3_uid "" %}
+                        {% else %}
+                            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}">Teamspeak3
+                                Link</a>
+                        {% endifequal %}
+                    </td>
+                    <td class="text-center">
+                        {% ifequal authinfo.teamspeak3_uid "" %}
+                            <a href="{% url 'auth_activate_teamspeak3' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_reset_teamspeak3_perm' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_teamspeak3' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    {% else %}
+        <div class="alert alert-danger" role="alert">You are not in the alliance</div>
+    {% endif %}
     </div>
 
 {% endblock content %}

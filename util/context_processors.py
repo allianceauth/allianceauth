@@ -21,9 +21,12 @@ def domain_url(request):
             'ENABLE_ALLIANCE_JABBER': settings.ENABLE_ALLIANCE_JABBER,
             'ENABLE_ALLIANCE_MUMBLE': settings.ENABLE_ALLIANCE_MUMBLE,
             'ENABLE_ALLIANCE_IPBOARD': settings.ENABLE_ALLIANCE_IPBOARD,
+            'ENABLE_ALLIANCE_TEAMSPEAK3': settings.ENABLE_ALLIANCE_TEAMSPEAK3,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
             'ENABLE_BLUE_IPBOARD': settings.ENABLE_BLUE_IPBOARD,
+            'ENABLE_BLUE_TEAMSPEAK3': settings.ENABLE_BLUE_TEAMSPEAK3,
+            'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'CURRENT_UTC_TIME': timezone.now()}

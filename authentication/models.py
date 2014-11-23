@@ -11,6 +11,8 @@ class AuthServicesInfo(models.Model):
     jabber_password = models.CharField(max_length=254, default="")
     mumble_username = models.CharField(max_length=254, default="")
     mumble_password = models.CharField(max_length=254, default="")
+    teamspeak3_uid = models.CharField(max_length=254, default="")
+    teamspeak3_perm_key = models.CharField(max_length=254, default="")
     main_char_id = models.CharField(max_length=64, default="")
     is_blue = models.BooleanField(default=False)
     user = models.ForeignKey(User)
