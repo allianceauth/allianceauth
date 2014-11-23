@@ -12,7 +12,7 @@ Built for "The 99 Percent" open for anyone to use
 
 Special Thanks: 
 
-    Thanking nikdoof because without his old auth implementation this project
+    Thanking [Nikdoof](https://github.com/nikdoof), without his old auth implementation this project
     wouldn't be as far as it is now.
 
 Note:
