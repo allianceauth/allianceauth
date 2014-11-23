@@ -1,3 +1,5 @@
+import types
+
 from django.conf import settings
 
 from services.managers.util.ts3 import TS3Server
@@ -83,9 +85,13 @@ class Teamspeak3Manager:
         server = Teamspeak3Manager.__get_created_server()
         group_cache = server.send_command('servergrouplist')
         outlist = {}
-        for group in group_cache:
-            outlist[group['keys']['name']] = group['keys']['sgid']
-        return outlist
+        if type(group_cache) is types.DictType:
+            for group in group_cache:
+                outlist[group['keys']['name']] = group['keys']['sgid']
+        else:
+            print '1024 error'
+
+        print outlist
 
     @staticmethod
     def _add_user_to_group(uid, groupname):
