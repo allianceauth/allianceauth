@@ -126,22 +126,21 @@ class Teamspeak3Manager:
 
         server_groups = Teamspeak3Manager._group_list()
 
-        if server_groups:
-            if not settings.DEFAULT_ALLIANCE_GROUP in server_groups:
-                Teamspeak3Manager._create_group(settings.DEFAULT_ALLIANCE_GROUP)
+        if not settings.DEFAULT_ALLIANCE_GROUP in server_groups:
+            Teamspeak3Manager._create_group(settings.DEFAULT_ALLIANCE_GROUP)
 
-            alliange_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_ALLIANCE_GROUP)
+        alliance_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_ALLIANCE_GROUP)
 
-            ret = server.send_command('tokenadd', {'tokentype': 0, 'tokenid1': alliange_group_id, 'tokenid2': 0,
-                                                   'tokendescription': username_clean,
-                                                   'tokencustomset': "ident=sso_uid value=%s" % username_clean})
+        ret = server.send_command('tokenadd', {'tokentype': 0, 'tokenid1': alliance_group_id, 'tokenid2': 0,
+                                               'tokendescription': username_clean,
+                                               'tokencustomset': "ident=sso_uid value=%s" % username_clean})
 
-            try:
-                if 'keys' in ret:
-                    if 'token' in ret['keys']:
-                        token = ret['keys']['token']
-            except:
-                pass
+        try:
+            if 'keys' in ret:
+                if 'token' in ret['keys']:
+                    token = ret['keys']['token']
+        except:
+            pass
 
         return username_clean, token
 
