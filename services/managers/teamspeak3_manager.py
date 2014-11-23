@@ -95,6 +95,7 @@ class Teamspeak3Manager:
 
     @staticmethod
     def _add_user_to_group(uid, groupname):
+        groupname = groupname[:30]
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
@@ -107,6 +108,7 @@ class Teamspeak3Manager:
 
     @staticmethod
     def _remove_user_from_group(uid, groupname):
+        groupname = groupname[:30]
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
@@ -205,11 +207,15 @@ class Teamspeak3Manager:
         return Teamspeak3Manager.add_blue_user(username, corpticker)
 
     @staticmethod
-    def update_groups(uid, groups):
+    def update_groups(uid, l_groups):
         userid = Teamspeak3Manager._get_userid(uid)
         if userid:
             server_groups = Teamspeak3Manager._group_list()
             user_groups = set(Teamspeak3Manager._user_group_list(userid))
+            groups = []
+            for l_group in l_groups:
+                groups.append(l_group[:30])
+
             act_groups = set([g.replace(' ', '-') for g in groups])
             addgroups = act_groups - user_groups
             remgroups = user_groups - act_groups
