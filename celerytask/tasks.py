@@ -18,12 +18,14 @@ def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
-    print groups
+
     for syncgroup in syncgroups:
         groups.append(str(syncgroup.groupname))
 
     if len(groups) == 0:
         groups.append('empty')
+
+    print groups
 
     OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
 
