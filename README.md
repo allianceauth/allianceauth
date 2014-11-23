@@ -10,6 +10,11 @@ Built for "The 99 Percent" open for anyone to use
 
 [Production Setup Guide] (http://r4stl1n.github.io/allianceauth/fullsetup.html)
 
+Special Thanks: 
+
+    Thanking nikdoof because without his old auth implementation this project
+    wouldn't be as far as it is now.
+
 Note:
 
     Please keep your admin account and normal accounts separate. If you are the admin only use 
