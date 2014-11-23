@@ -94,7 +94,7 @@ def groups_view(request):
 
     for group in Group.objects.all():
         # Check if group is a corp
-        if "Corp" in group.name:
+        if "Corp_" in group.name:
             pass
         elif settings.DEFAULT_ALLIANCE_GROUP in group.name:
             pass
