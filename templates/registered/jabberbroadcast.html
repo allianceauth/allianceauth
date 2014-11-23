@@ -17,11 +17,12 @@
                     {% if success %}
                         <div class="alert alert-success" role="alert">Broadcast Sent!!</div>
                     {% endif %}
-                    <form class="form-signin" role="form" action="" method="POST">
+                    <form class="form-signin" role="form" action="" method="POST"
+                          onsubmit="this.submit_button.disabled = true;">
                         {% csrf_token %}
                         {{ form|bootstrap }}
                         <br/>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="this.disabled=true">Broadcast</button>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Broadcast</button>
                     </form>
                 </div>
             </div>
