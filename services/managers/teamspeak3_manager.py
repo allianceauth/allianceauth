@@ -1,5 +1,3 @@
-import types
-
 from django.conf import settings
 
 from services.managers.util.ts3 import TS3Server
@@ -85,7 +83,7 @@ class Teamspeak3Manager:
         server = Teamspeak3Manager.__get_created_server()
         group_cache = server.send_command('servergrouplist')
         outlist = {}
-        if type(group_cache) is types.DictType:
+        if group_cache:
             for group in group_cache:
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
