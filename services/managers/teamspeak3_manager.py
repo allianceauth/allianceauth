@@ -39,6 +39,7 @@ class Teamspeak3Manager:
     def _group_id_by_name(groupname):
         server = Teamspeak3Manager.__get_created_server()
         group_cache = server.send_command('servergrouplist')
+
         for group in group_cache:
             if group['keys']['name'] == groupname:
                 return group['keys']['sgid']
