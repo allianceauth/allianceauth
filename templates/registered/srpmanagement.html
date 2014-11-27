@@ -12,7 +12,7 @@
         <div class="row">
             <h1 class="page-header text-center">SRP Management
                 <div class="text-right">
-                    {% if perms.auth.timer_management %}
+                    {% if perms.auth.srp_management %}
                         <a href="{% url 'auth_srp_fleet_add_view' %}">
                             <button type="button" class="btn btn-success">Add SRP Fleet</button>
                         </a>
@@ -25,7 +25,7 @@
                     <th class="text-center">Fleet Time</th>
                     <th class="text-center">Fleet Doctrine</th>
                     <th class="text-center">Fleet Commander</th>
-                    {% if perms.auth.timer_management %}
+                    {% if perms.auth.srp_management %}
                         <th class="text-center">Fleet SRP Code</th>
                     {% endif %}
                     <th class="text-center">Actions</th>
@@ -57,7 +57,7 @@
                                         class="glyphicon glyphicon-eye-open"></span></button>
                             </a>
 
-                            {% if perms.auth.timer_management %}
+                            {% if perms.auth.srp_management %}
                                 <a href="/srp_fleet_remove/{{ srpfleet.id }}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>
