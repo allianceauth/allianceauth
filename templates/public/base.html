@@ -63,15 +63,17 @@
                                                                         href="{% url 'auth_dashboard' %}"><i
                                     class="fa fa-dashboard fa-fw grayiconecolor"></i> Dashboard</a>
                         </li>
-                        <li>
-                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %}
-                                                                         href="{% url 'auth_characters' %}"><i
-                                    class="fa fa-users fa-fw grayiconecolor"></i> Characters</a>
-                        </li>
+
                         <li>
                             <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %}
                                                                                  href="{% url 'auth_api_key_management' %}"><i
                                     class="fa fa-key fa-fw grayiconecolor"></i> Api Keys</a>
+                        </li>
+
+                        <li>
+                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %}
+                                                                         href="{% url 'auth_characters' %}"><i
+                                    class="fa fa-users fa-fw grayiconecolor"></i> Characters</a>
                         </li>
 
                         {% if  perms.auth.alliance_member %}
@@ -81,17 +83,22 @@
                                         class="fa fa-cogs fa-sitemap grayiconecolor"></i> Groups</a>
                             </li>
                         {% endif %}
+
+                        <li>
+                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
+                                                                   href="{% url 'auth_help' %}"><i
+                                    class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
+                        </li>
+
+
+                        <li class="text-center divider-horizontal">
+                            <h5>Aux Navigation</h5>
+                        </li>
                         {% if  perms.auth.alliance_member or perms.auth.blue_member %}
                             <li>
                                 <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
                                                                            href="{% url 'auth_services' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
-                            </li>
-
-                            <li>
-                                <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_timer_view' %}"><i
-                                        class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
+                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Alliance Services</a>
                             </li>
                         {% endif %}
 
@@ -104,11 +111,39 @@
                             </li>
                         {% endif %}
 
-                        <li>
-                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
-                                                                   href="{% url 'auth_help' %}"><i
-                                    class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
-                        </li>
+                        {% if perms.auth.corp_stats %}
+                            <li>
+                                <a {% ifequal request.path "/corporation_stats" %} class="active" {% endifequal %}
+                                                                                   href="{% url 'auth_corp_stats' %}"><i
+                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
+                            </li>
+                        {% endif %}
+
+                        {% if perms.auth.group_management %}
+                            <li>
+                                <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}
+                                                                                        href="{% url 'auth_group_management' %}"><i
+                                        class="fa fa-lock fa-sitemap grayiconecolor"></i> Group Management</a>
+                            </li>
+                        {% endif %}
+
+                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+
+                            <li>
+                                <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_timer_view' %}"><i
+                                        class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
+                            </li>
+
+
+                            <li>
+                                <a {% ifequal request.path "/srp/" %} class="active" {% endifequal %}
+                                                                      href="{% url 'auth_srp_management_view' %}"><i
+                                        class="fa fa-money fa-fw grayiconecolor"></i> Ship Replacement</a>
+                            </li>
+
+                        {% endif %}
+
 
                         <li class="text-center divider-horizontal">
                             <h5>Util</h5>
@@ -127,21 +162,6 @@
                                         class="fa fa-space-shuttle fa-fw grayiconecolor"></i> Fleet Broadcast Formatter</a>
                             </li>
                         {% endif %}
-                        {% if perms.auth.corp_stats %}
-                            <li>
-                                <a {% ifequal request.path "/corporation_stats" %} class="active" {% endifequal %}
-                                                                                   href="{% url 'auth_corp_stats' %}"><i
-                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
-                            </li>
-                        {% endif %}
-
-                        {% if perms.auth.group_management %}
-                            <li>
-                                <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}
-                                                                                        href="{% url 'auth_group_management' %}"><i
-                                        class="fa fa-lock fa-sitemap grayiconecolor"></i> Group Management</a>
-                            </li>
-                        {% endif %}
 
                         {% if perms.auth.jabber_broadcast %}
                             <li>
@@ -151,6 +171,7 @@
                             </li>
                         {% endif %}
                     </ul>
+
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>

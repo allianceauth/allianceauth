@@ -95,6 +95,7 @@ Special Permissions In Admin:
     auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats (View basic corp auth stats *who is authed etc*)
     auth | user | timer_management ( Access to create and remove timers)
+    auth | user | srp_management ( Allows for an individual to create and remove srp fleets and fleet data)
 
 
 Beta Testers/ Bug Fixers:

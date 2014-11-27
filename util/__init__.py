@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -14,6 +16,7 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member")
     Permission.objects.get_or_create(codename="corp_stats", content_type=ct, name="corp_stats")
     Permission.objects.get_or_create(codename="timer_management", content_type=ct, name="timer_management")
+    Permission.objects.get_or_create(codename="srp_management", content_type=ct, name="srp_management")
     Group.objects.get_or_create(name=settings.DEFAULT_ALLIANCE_GROUP)
     Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
 
@@ -44,3 +47,11 @@ def check_if_user_has_permission(user, permission):
     stored_permission, created = Permission.objects.get_or_create(codename=permission,
                                                                   content_type=ct, name=permission)
     return user.has_perm('auth.' + permission)
+
+
+def random_string(string_length=10):
+    """Returns a random string of length string_length."""
+    random = str(uuid.uuid4())  # Convert UUID format to a Python string.
+    random = random.upper()  # Make all characters uppercase.
+    random = random.replace("-", "")  # Remove the UUID '-'.
+    return random[0:string_length]  # Return the random string.

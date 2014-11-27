@@ -1,0 +1,73 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Srp Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <div class="row">
+            <h1 class="page-header text-center">SRP Management
+                <div class="text-right">
+                    {% if perms.auth.timer_management %}
+                        <a href="{% url 'auth_srp_fleet_add_view' %}">
+                            <button type="button" class="btn btn-success">Add SRP Fleet</button>
+                        </a>
+                    {% endif %}
+                </div>
+            </h1>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Fleet Name</th>
+                    <th class="text-center">Fleet Time</th>
+                    <th class="text-center">Fleet Doctrine</th>
+                    <th class="text-center">Fleet Commander</th>
+                    {% if perms.auth.timer_management %}
+                        <th class="text-center">Fleet SRP Code</th>
+                    {% endif %}
+                    <th class="text-center">Actions</th>
+                </tr>
+                {% for srpfleet in srpfleets %}
+                    <tr>
+                        <td class="text-center">
+                            <div class="label label-info">
+                                {{ srpfleet.fleet_name }}
+                            </div>
+                        </td>
+                        <td class="text-center">{{ srpfleet.fleet_time }}</td>
+                        <td class="text-center">{{ srpfleet.fleet_doctrine }}</td>
+                        <td class="text-center">
+                            <div class="label label-success">
+                                {{ srpfleet.fleet_commander.character_name }}
+                            </div>
+                        </td>
+                        {% if perms.auth.timer_management %}
+                            <th class="text-center">
+                                <div class="label label-danger">
+                                    {{ srpfleet.fleet_srp_code }}
+                                </div>
+                            </th>
+                        {% endif %}
+                        <td class="text-center">
+                            <a href="/srp_fleet_view/{{ srpfleet.id }}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            </a>
+
+                            {% if perms.auth.timer_management %}
+                                <a href="/srp_fleet_remove/{{ srpfleet.id }}">
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock content %}

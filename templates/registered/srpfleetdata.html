@@ -1,0 +1,51 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Srp Fleet Data{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <div class="row">
+            <h1 class="page-header text-center">SRP Fleet Data
+            </h1>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Pilot Name</th>
+                    <th class="text-center">Killboard Link</th>
+                    <th class="text-center">Additional Info</th>
+                    {% if perms.auth.timer_management %}
+                        <th class="text-center">Actions</th>
+                    {% endif %}
+                </tr>
+                {% for srpfleetrequest in srpfleetrequests %}
+                    <tr>
+                        <td class="text-center">
+                            <div class="label label-info">
+                                {{ srpfleetrequest.character.character_name }}
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ srpfleetrequest.killboard_link }}"
+                               target="_blank">{{ srpfleetrequest.killboard_link }}</a>
+                        </td>
+                        <td class="text-center">{{ srpfleetrequest.additional_info }}</td>
+                        {% if perms.auth.timer_management %}
+                            <td class="text-center">
+
+                                <a href="/srp_request_remove/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock content %}

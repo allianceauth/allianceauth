@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'groupmanagement',
     'hrapplications',
     'timerboard',
+    'srp',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -81,6 +81,9 @@ urlpatterns = patterns('',
                            name="auth_hrapplication_reject"),
                        url(r'hr_application_search/', 'hrapplications.views.hr_application_search',
                            name="auth_hrapplication_search"),
+                       url(r'hr_mark_in_progress/(\w+)', 'hrapplications.views.hr_application_mark_in_progress',
+                           name="auth_hrapplication_mark_in_progress"),
+
 
                        # Service Urls
                        url(r'^services/', 'services.views.services_view', name='auth_services'),
@@ -130,4 +133,13 @@ urlpatterns = patterns('',
                        url(r'^timers/$', 'timerboard.views.timer_view', name='auth_timer_view'),
                        url(r'^add_timer/$', 'timerboard.views.add_timer_view', name='auth_add_timer_view'),
                        url(r'^remove_timer/(\w+)', 'timerboard.views.remove_timer', name='auth_remove_timer'),
+
+                       # SRP URLS
+                       url(r'^srp/$', 'srp.views.srp_management', name='auth_srp_management_view'),
+                       url(r'^srp_fleet_view/(\w+)$', 'srp.views.srp_fleet_view', name='auth_srp_fleet_view'),
+                       url(r'^srp_fleet_add_view/$', 'srp.views.srp_fleet_add_view', name='auth_srp_fleet_add_view'),
+                       url(r'^srp_fleet_remove/(\w+)$', 'srp.views.srp_fleet_remove', name='auth_srp_flet_remove'),
+                       url(r'^srp_request/(\w+)', 'srp.views.srp_request_view', name='auth_srp_request_view'),
+                       url(r'^srp_request_remove/(\w+)', 'srp.views.srp_request_remove',
+                           name="auth_srp_request_remove"),
 )
