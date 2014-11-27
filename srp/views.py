@@ -22,6 +22,13 @@ def srp_util_test(user):
 @login_required
 @user_passes_test(srp_util_test)
 def srp_management(request):
+    context = {"srpfleets": SrpFleetMain.objects.filter(fleet_srp_status="")}
+    return render_to_response('registered/srpmanagement.html', context, context_instance=RequestContext(request))
+
+
+@login_required
+@user_passes_test(srp_util_test)
+def srp_management_all(request):
     context = {"srpfleets": SrpFleetMain.objects.all()}
     return render_to_response('registered/srpmanagement.html', context, context_instance=RequestContext(request))
 
@@ -31,7 +38,8 @@ def srp_management(request):
 def srp_fleet_view(request, fleet_id):
     if SrpFleetMain.objects.filter(id=fleet_id):
         fleet_main = SrpFleetMain.objects.get(id=fleet_id)
-        context = {"srpfleetrequests": SrpUserRequest.objects.filter(srp_fleet_main=fleet_main)}
+        context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
+                   "srpfleetrequests": SrpUserRequest.objects.filter(srp_fleet_main=fleet_main)}
 
         return render_to_response('registered/srpfleetdata.html', context, context_instance=RequestContext(request))
 
@@ -83,6 +91,28 @@ def srp_fleet_remove(request, fleet_id):
 
 
 @login_required
+@permission_required('auth.srp_management')
+def srp_fleet_mark_completed(request, fleet_id):
+    if SrpFleetMain.objects.filter(id=fleet_id).exists():
+        srpfleetmain = SrpFleetMain.objects.get(id=fleet_id)
+        srpfleetmain.fleet_srp_status = "Completed"
+        srpfleetmain.save()
+
+    return HttpResponseRedirect("/srp_fleet_view/" + str(fleet_id))
+
+
+@login_required
+@permission_required('auth.srp_management')
+def srp_fleet_mark_uncompleted(request, fleet_id):
+    if SrpFleetMain.objects.filter(id=fleet_id).exists():
+        srpfleetmain = SrpFleetMain.objects.get(id=fleet_id)
+        srpfleetmain.fleet_srp_status = ""
+        srpfleetmain.save()
+
+    return HttpResponseRedirect("/srp_fleet_view/" + str(fleet_id))
+
+
+@login_required
 @user_passes_test(srp_util_test)
 def srp_request_view(request, fleet_srp):
     completed = False
@@ -126,6 +156,40 @@ def srp_request_remove(request, srp_request_id):
         srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
         stored_fleet_view = srpuserrequest.srp_fleet_main.id
         srpuserrequest.delete()
+
+    if stored_fleet_view is None:
+        return HttpResponseRedirect("/srp")
+    else:
+        return HttpResponseRedirect("/srp_fleet_view/" + str(stored_fleet_view))
+
+
+@login_required
+@permission_required('auth.srp_management')
+def srp_request_approve(request, srp_request_id):
+    stored_fleet_view = None
+
+    if SrpUserRequest.objects.filter(id=srp_request_id).exists():
+        srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
+        stored_fleet_view = srpuserrequest.srp_fleet_main.id
+        srpuserrequest.srp_status = "Approved"
+        srpuserrequest.save()
+
+    if stored_fleet_view is None:
+        return HttpResponseRedirect("/srp")
+    else:
+        return HttpResponseRedirect("/srp_fleet_view/" + str(stored_fleet_view))
+
+
+@login_required
+@permission_required('auth.srp_management')
+def srp_request_reject(request, srp_request_id):
+    stored_fleet_view = None
+
+    if SrpUserRequest.objects.filter(id=srp_request_id).exists():
+        srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
+        stored_fleet_view = srpuserrequest.srp_fleet_main.id
+        srpuserrequest.srp_status = "Rejected"
+        srpuserrequest.save()
 
     if stored_fleet_view is None:
         return HttpResponseRedirect("/srp")

@@ -13,8 +13,11 @@
             <h1 class="page-header text-center">SRP Management
                 <div class="text-right">
                     {% if perms.auth.srp_management %}
+                        <a href="{% url 'auth_srp_management_all_view' %}">
+                            <button type="button" class="btn btn-primary">View All</button>
+                        </a>
                         <a href="{% url 'auth_srp_fleet_add_view' %}">
-                            <button type="button" class="btn btn-success">Add SRP Fleet</button>
+                        <button type="button" class="btn btn-success">Add SRP Fleet</button>
                         </a>
                     {% endif %}
                 </div>
@@ -25,9 +28,8 @@
                     <th class="text-center">Fleet Time</th>
                     <th class="text-center">Fleet Doctrine</th>
                     <th class="text-center">Fleet Commander</th>
-                    {% if perms.auth.srp_management %}
-                        <th class="text-center">Fleet SRP Code</th>
-                    {% endif %}
+                    <th class="text-center">Fleet SRP Code</th>
+                    <th class="text-center">SRP Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
                 {% for srpfleet in srpfleets %}
@@ -44,13 +46,24 @@
                                 {{ srpfleet.fleet_commander.character_name }}
                             </div>
                         </td>
-                        {% if perms.auth.timer_management %}
-                            <th class="text-center">
-                                <div class="label label-danger">
-                                    {{ srpfleet.fleet_srp_code }}
+
+                        <th class="text-center">
+                            <div class="label label-warning">
+                                <a href="/srp_request/{{ srpfleet.fleet_srp_code }}"
+                                   target="_blank">{{ srpfleet.fleet_srp_code }}</a>
+                            </div>
+                        </th>
+                        <td class="text-center">
+                            {% if srpfleet.fleet_srp_status == "" %}
+                                <div class="label label-warning">
+                                    Pending
                                 </div>
-                            </th>
-                        {% endif %}
+                            {% else %}
+                                <div class="label label-success">
+                                    Completed
+                                </div>
+                            {% endif %}
+                        </td>
                         <td class="text-center">
                             <a href="/srp_fleet_view/{{ srpfleet.id }}">
                                 <button type="button" class="btn btn-primary"><span

@@ -8,6 +8,7 @@ class SrpFleetMain(models.Model):
     fleet_doctrine = models.CharField(max_length=254, default="")
     fleet_time = models.DateTimeField()
     fleet_srp_code = models.CharField(max_length=254, default="", unique=True)
+    fleet_srp_status = models.CharField(max_length=254, default="")
     fleet_commander = models.ForeignKey(EveCharacter)
 
     def __str__(self):
@@ -16,7 +17,9 @@ class SrpFleetMain(models.Model):
 
 class SrpUserRequest(models.Model):
     killboard_link = models.CharField(max_length=254, default="")
+    after_action_report_link = models.CharField(max_length=254, default="")
     additional_info = models.CharField(max_length=254, default="")
+    srp_status = models.CharField(max_length=254, default="")
     character = models.ForeignKey(EveCharacter)
     srp_fleet_main = models.ForeignKey(SrpFleetMain)
 
