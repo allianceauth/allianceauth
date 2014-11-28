@@ -33,6 +33,7 @@
                     <th class="text-center">Fleet Time</th>
                     <th class="text-center">Fleet Doctrine</th>
                     <th class="text-center">Fleet Commander</th>
+                    <th class="text-center">Fleet AAR</th>
                     <th class="text-center">Fleet SRP Code</th>
                     <th class="text-center">Fleet ISK Cost</th>
                     <th class="text-center">SRP Status</th>
@@ -52,7 +53,8 @@
                                 {{ srpfleet.fleet_commander.character_name }}
                             </div>
                         </td>
-
+                        <th class="text-center"><a href="{{ srpfleet.fleet_srp_aar_link }}"
+                                                   target="_blank">{{ srpfleet.fleet_srp_aar_link }}</a></th>
                         <th class="text-center">
                             <div class="label label-warning">
                                 <a href="/srp_request/{{ srpfleet.fleet_srp_code }}"
@@ -60,14 +62,11 @@
                             </div>
                         </th>
                         <td class="text-center">
-
                             {% for key,value in price_pair.items %}
                                 {% if key == srpfleet.id %}
                                     ISK: {{ value | intcomma }}
                                 {% endif %}
                             {% endfor %}
-
-
                         </td>
 
                         <td class="text-center">
@@ -82,12 +81,18 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
+
                             <a href="/srp_fleet_view/{{ srpfleet.id }}">
                                 <button type="button" class="btn btn-primary"><span
                                         class="glyphicon glyphicon-eye-open"></span></button>
                             </a>
 
                             {% if perms.auth.srp_management %}
+                                <a href="/srp_fleet_edit/{{ srpfleet.id }}">
+                                    <button type="button" class="btn btn-info"><span
+                                            class="glyphicon glyphicon-pencil"></span></button>
+                                </a>
+
                                 <a href="/srp_fleet_remove/{{ srpfleet.id }}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>

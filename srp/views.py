@@ -14,6 +14,7 @@ from models import SrpUserRequest
 from form import SrpFleetMainForm
 from form import SrpFleetUserRequestForm
 from form import SrpFleetUpdateCostForm
+from form import SrpFleetMainUpdateForm
 
 
 def srp_util_test(user):
@@ -248,4 +249,28 @@ def srp_request_update_amount_view(request, fleet_srp_request_id):
     render_items = {'form': form, "no_srp_code": no_srp_code}
 
     return render_to_response('registered/srpfleetrequestamount.html', render_items,
+                              context_instance=RequestContext(request))
+
+
+@login_required
+@permission_required('auth.srp_management')
+def srp_fleet_edit_view(request, fleet_id):
+    no_fleet_id = False
+    form = None
+    if SrpFleetMain.objects.filter(id=fleet_id).exists():
+        if request.method == 'POST':
+            form = SrpFleetMainUpdateForm(request.POST)
+            if form.is_valid():
+                srpfleetmain = SrpFleetMain.objects.get(id=fleet_id)
+                srpfleetmain.fleet_srp_aar_link = form.cleaned_data['fleet_aar_link']
+                srpfleetmain.save()
+                return HttpResponseRedirect("/srp")
+        else:
+            form = SrpFleetMainUpdateForm()
+    else:
+        no_fleet_id = True
+
+    render_items = {'form': form, "no_fleet_id": no_fleet_id}
+
+    return render_to_response('registered/srpfleetupdate.html', render_items,
                               context_instance=RequestContext(request))

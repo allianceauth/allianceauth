@@ -14,3 +14,7 @@ class SrpFleetUserRequestForm(forms.Form):
 
 class SrpFleetUpdateCostForm(forms.Form):
     srp_total_amount = forms.IntegerField(required=True, label="Total SRP Amount")
+
+
+class SrpFleetMainUpdateForm(forms.Form):
+    fleet_aar_link = forms.CharField(required=True, label="After Action Report Link")
