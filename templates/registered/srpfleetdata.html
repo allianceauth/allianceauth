@@ -1,7 +1,7 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
-
+{% load humanize %}
 {% block title %}Alliance Auth{% endblock %}
 
 {% block page_title %}Srp Fleet Data{% endblock page_title %}
@@ -25,11 +25,19 @@
                     {% endif %}
                 </div>
             </h1>
+            <div class="alert alert-info" role="alert">
+                <div class="text-right">
+                    <b>Total Losses: {{ srpfleetrequests.count }}</b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>Total ISK Cost: {{ totalcost | intcomma }}</b>
+                </div>
+            </div>
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">Pilot Name</th>
                     <th class="text-center">Killboard Link</th>
                     <th class="text-center">Additional Info</th>
+                    <th class="text-center">SRP ISK Cost</th>
                     <th class="text-center">Status</th>
                     {% if perms.auth.srp_management %}
                         <th class="text-center">Actions</th>
@@ -47,6 +55,7 @@
                                target="_blank">{{ srpfleetrequest.killboard_link }}</a>
                         </td>
                         <td class="text-center">{{ srpfleetrequest.additional_info }}</td>
+                        <td class="text-center">ISK: {{ srpfleetrequest.srp_total_amount | intcomma }}</td>
                         <td class="text-center">
                             {% if srpfleetrequest.srp_status == "Approved" %}
                                 <div class="label label-success">
@@ -65,6 +74,10 @@
                         {% if perms.auth.srp_management %}
 
                             <td class="text-center">
+                                <a href="/srp_request_amount_update/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-info"><span
+                                            class="glyphicon glyphicon-pencil"></span></button>
+                                </a>
                                 <a href="/srp_request_approve/{{ srpfleetrequest.id }}">
                                     <button type="button" class="btn btn-success"><span
                                             class="glyphicon glyphicon-ok"></span></button>

@@ -1,7 +1,7 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
-
+{% load humanize %}
 {% block title %}Alliance Auth{% endblock %}
 
 {% block page_title %}Srp Management{% endblock page_title %}
@@ -17,11 +17,16 @@
                             <button type="button" class="btn btn-primary">View All</button>
                         </a>
                         <a href="{% url 'auth_srp_fleet_add_view' %}">
-                        <button type="button" class="btn btn-success">Add SRP Fleet</button>
+                            <button type="button" class="btn btn-success">Add SRP Fleet</button>
                         </a>
                     {% endif %}
                 </div>
             </h1>
+            <div class="alert alert-info" role="alert">
+                <div class="text-right">
+                    <b>Total ISK Cost: {{ totalcost | intcomma }}</b>
+                </div>
+            </div>
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">Fleet Name</th>
@@ -29,6 +34,7 @@
                     <th class="text-center">Fleet Doctrine</th>
                     <th class="text-center">Fleet Commander</th>
                     <th class="text-center">Fleet SRP Code</th>
+                    <th class="text-center">Fleet ISK Cost</th>
                     <th class="text-center">SRP Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -53,6 +59,17 @@
                                    target="_blank">{{ srpfleet.fleet_srp_code }}</a>
                             </div>
                         </th>
+                        <td class="text-center">
+
+                            {% for key,value in price_pair.items %}
+                                {% if key == srpfleet.id %}
+                                    ISK: {{ value | intcomma }}
+                                {% endif %}
+                            {% endfor %}
+
+
+                        </td>
+
                         <td class="text-center">
                             {% if srpfleet.fleet_srp_status == "" %}
                                 <div class="label label-warning">

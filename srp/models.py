@@ -20,6 +20,7 @@ class SrpUserRequest(models.Model):
     after_action_report_link = models.CharField(max_length=254, default="")
     additional_info = models.CharField(max_length=254, default="")
     srp_status = models.CharField(max_length=254, default="")
+    srp_total_amount = models.BigIntegerField(default=0)
     character = models.ForeignKey(EveCharacter)
     srp_fleet_main = models.ForeignKey(SrpFleetMain)
 
