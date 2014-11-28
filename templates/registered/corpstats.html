@@ -39,11 +39,22 @@
                             <div class="panel-heading">Registered Characters</div>
                             <div class="panel-body">
                                 <div style="height: 200px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
-                                    <table class="table table-striped">
-                                        {% for character in characters %}
+                                    <table class="table table-condensed">
+                                        <tr>
+                                            <th class="text-center">Character Name</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                        {% for key,value in characters.items %}
                                             <tr>
-                                                <td>
-                                                    <p class="">{{ character.character_name }}</p>
+                                                <td class="text-center">
+                                                    <p class="">{{ key }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="{{ JACK_KNIFE_URL }}?usid={{ value.api_id }}&apik={{ value.api_key }}"
+                                                       target="_blank">
+                                                        <button type="button" class="btn btn-primary">API JackKnife
+                                                        </button>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         {% endfor %}

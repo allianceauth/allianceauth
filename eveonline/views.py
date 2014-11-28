@@ -18,6 +18,7 @@ from util.common_task import deactivate_services
 from util.common_task import generate_corp_group_name
 from eveonline.models import EveCorporationInfo
 from eveonline.models import EveCharacter
+from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
 
 
@@ -140,14 +141,14 @@ def corp_stats_view(request):
     main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
     corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
     current_count = 0
-    allcharacters = []
+    allcharacters = {}
     all_characters = EveCharacter.objects.all()
     for char in all_characters:
         if char:
             try:
                 if char.corporation_id == corp.corporation_id:
                     current_count = current_count + 1
-                    allcharacters.append(char)
+                    allcharacters[char.character_name] = EveApiKeyPair.objects.get(api_id=char.api_id)
             except:
                 pass
 
