@@ -279,5 +279,6 @@ def reset_teamspeak3_perm(request):
     # if blank we failed
     if result != "":
         AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
+        update_teamspeak3_groups(request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/")
