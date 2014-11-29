@@ -168,8 +168,7 @@ def run_api_refresh():
             if api_key_pairs:
                 valid_key = False
                 authserviceinfo = AuthServicesInfo.objects.get(user=user)
-                # We do a check on the authservice info to insure that we shoud run the check
-                # No point in running the check on people who arn't on services
+
                 print 'Running update on user: ' + user.username
                 if authserviceinfo.main_char_id:
                     if authserviceinfo.main_char_id != "":
@@ -192,7 +191,7 @@ def run_api_refresh():
                             main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
                             if main_alliance_id == settings.ALLIANCE_ID:
                                 pass
-                            elif corp != None:
+                            elif corp is not None:
                                 if corp.is_blue is not True:
                                     deactivate_services(user)
                             else:
