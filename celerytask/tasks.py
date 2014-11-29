@@ -276,6 +276,11 @@ def run_alliance_corp_update():
                             EveManager.update_alliance_info(all_alliance_api_info['id'],
                                                             all_alliance_api_info['executor_id'],
                                                             all_alliance_api_info['member_count'], False)
+
+                    else:
+                        EveManager.update_alliance_info(all_alliance_api_info['id'],
+                                                        all_alliance_api_info['executor_id'],
+                                                        all_alliance_api_info['member_count'], False)
                 else:
                     EveManager.update_alliance_info(all_alliance_api_info['id'],
                                                     all_alliance_api_info['executor_id'],
