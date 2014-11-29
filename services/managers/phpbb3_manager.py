@@ -62,7 +62,10 @@ class Phpbb3Manager:
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [username])
         row = cursor.fetchone()
-        return row[0]
+        if row is not None:
+            return row[0]
+        else:
+            return None
 
     @staticmethod
     def __get_all_groups():
@@ -158,34 +161,36 @@ class Phpbb3Manager:
     @staticmethod
     def update_groups(username, groups):
         userid = Phpbb3Manager.__get_user_id(username)
-        forum_groups = Phpbb3Manager.__get_all_groups()
-        user_groups = set(Phpbb3Manager.__get_user_groups(userid))
-        act_groups = set([g.replace(' ', '-') for g in groups])
-        addgroups = act_groups - user_groups
-        remgroups = user_groups - act_groups
-        print username
-        print addgroups
-        print remgroups
-        for g in addgroups:
-            if not g in forum_groups:
-                forum_groups[g] = Phpbb3Manager.__create_group(g)
-            Phpbb3Manager.__add_user_to_group(userid, forum_groups[g])
+        if userid is not None:
+            forum_groups = Phpbb3Manager.__get_all_groups()
+            user_groups = set(Phpbb3Manager.__get_user_groups(userid))
+            act_groups = set([g.replace(' ', '-') for g in groups])
+            addgroups = act_groups - user_groups
+            remgroups = user_groups - act_groups
+            print username
+            print addgroups
+            print remgroups
+            for g in addgroups:
+                if not g in forum_groups:
+                    forum_groups[g] = Phpbb3Manager.__create_group(g)
+                Phpbb3Manager.__add_user_to_group(userid, forum_groups[g])
 
-        for g in remgroups:
-            Phpbb3Manager.__remove_user_from_group(userid, forum_groups[g])
+            for g in remgroups:
+                Phpbb3Manager.__remove_user_from_group(userid, forum_groups[g])
 
     @staticmethod
     def remove_group(username, group):
         cursor = connections['phpbb3'].cursor()
         userid = Phpbb3Manager.__get_user_id(username)
-        groupid = Phpbb3Manager.__get_group_id(group)
+        if userid is not None:
+            groupid = Phpbb3Manager.__get_group_id(group)
 
-        if userid:
-            if groupid:
-                try:
-                    cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
-                except:
-                    pass
+            if userid:
+                if groupid:
+                    try:
+                        cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+                    except:
+                        pass
 
     @staticmethod
     def check_user(username):
