@@ -83,6 +83,14 @@ def update_teamspeak3_groups(user):
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
 
+def create_syncgroup_for_user(user, groupname, servicename):
+    synccache = SyncGroupCache()
+    synccache.groupname = groupname
+    synccache.user = user
+    synccache.servicename = servicename
+    synccache.save()
+
+
 def add_to_databases(user, groups, syncgroups):
     authserviceinfo = None
     try:
@@ -95,25 +103,27 @@ def add_to_databases(user, groups, syncgroups):
 
         update = False
         for group in groups:
-            syncgroup = syncgroups.filter(groupname=group.name)
-            if not syncgroup:
-                synccache = SyncGroupCache()
-                synccache.groupname = group.name
-                synccache.user = user
-                synccache.save()
-                update = True
 
-        if update:
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
-                update_jabber_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "openfire")
+                    update_jabber_groups(user)
             if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
-                update_mumble_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="mumble").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "mumble")
+                    update_mumble_groups(user)
             if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
-                update_forum_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="phpbb3").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "phpbb3")
+                    update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
-                update_ipboard_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "ipboard")
+                    update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                update_teamspeak3_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="teamspeak3").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "teamspeak3")
+                    update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):

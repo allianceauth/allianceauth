@@ -95,13 +95,19 @@ class Phpbb3Manager:
 
     @staticmethod
     def __add_user_to_group(userid, groupid):
-        cursor = connections['phpbb3'].cursor()
-        cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
+        try:
+            cursor = connections['phpbb3'].cursor()
+            cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
+        except:
+            pass
 
     @staticmethod
     def __remove_user_from_group(userid, groupid):
         cursor = connections['phpbb3'].cursor()
-        cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+        try:
+            cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+        except:
+            pass
 
     @staticmethod
     def add_user(username, email, groups):
@@ -118,8 +124,8 @@ class Phpbb3Manager:
             try:
 
                 cursor.execute(Phpbb3Manager.SQL_ADD_USER, [username_clean, username_clean, pwhash,
-                                                           email, 2, Phpbb3Manager.__get_current_utc_date(),
-                                                           "", ""])
+                                                            email, 2, Phpbb3Manager.__get_current_utc_date(),
+                                                            "", ""])
                 Phpbb3Manager.update_groups(username_clean, groups)
             except:
                 pass
@@ -176,8 +182,10 @@ class Phpbb3Manager:
 
         if userid:
             if groupid:
-                cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
-
+                try:
+                    cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+                except:
+                    pass
 
     @staticmethod
     def check_user(username):

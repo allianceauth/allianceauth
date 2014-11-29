@@ -6,7 +6,6 @@ from django.conf import settings
 
 
 class IPBoardManager:
-
     def __init__(self):
         pass
 
@@ -23,15 +22,18 @@ class IPBoardManager:
     @staticmethod
     def exec_xmlrpc(func, **kwargs):
         """ Send a XMLRPC request """
+        try:
+            server = xmlrpclib.Server(settings.IPBOARD_ENDPOINT, verbose=False)
+            params = {}
+            for i in kwargs:
+                params[i] = kwargs[i]
+            params['api_key'] = settings.IPBOARD_APIKEY
+            params['api_module'] = settings.IPBOARD_APIMODULE
+            print params
 
-        server = xmlrpclib.Server(settings.IPBOARD_ENDPOINT, verbose=False)
-        params = {}
-        for i in kwargs:
-            params[i] = kwargs[i]
-        params['api_key'] = settings.IPBOARD_APIKEY
-        params['api_module'] = settings.IPBOARD_APIMODULE
-        print params
-        return getattr(server, func)(params)
+            return getattr(server, func)(params)
+        except:
+            return {}
 
     @staticmethod
     def add_user(username, email):
@@ -39,7 +41,8 @@ class IPBoardManager:
         sanatized = str(IPBoardManager.__santatize_username(username))
         plain_password = IPBoardManager.__generate_random_pass()
         password = md5(plain_password).hexdigest()
-        ret = IPBoardManager.exec_xmlrpc('createUser', username=sanatized, email=str(email), display_name=sanatized, md5_passwordHash=password)
+        ret = IPBoardManager.exec_xmlrpc('createUser', username=sanatized, email=str(email), display_name=sanatized,
+                                         md5_passwordHash=password)
         return sanatized, plain_password
 
     @staticmethod
