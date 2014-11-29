@@ -193,7 +193,7 @@ def run_api_refresh():
                             if main_alliance_id == settings.ALLIANCE_ID:
                                 pass
                             elif corp != None:
-                                if not corp.is_blue:
+                                if corp.is_blue is not True:
                                     deactivate_services(user)
                             else:
                                 deactivate_services(user)
