@@ -91,6 +91,13 @@ def create_syncgroup_for_user(user, groupname, servicename):
     synccache.save()
 
 
+def remove_all_syncgroups_for_service(user, servicename):
+    syncgroups = SyncGroupCache.objects.filter(user=user)
+    for syncgroup in syncgroups:
+        if syncgroup.servicename == servicename:
+            syncgroup.delete()
+
+
 def add_to_databases(user, groups, syncgroups):
     authserviceinfo = None
     try:
@@ -101,7 +108,6 @@ def add_to_databases(user, groups, syncgroups):
     if authserviceinfo:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
 
-        update = False
         for group in groups:
 
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
