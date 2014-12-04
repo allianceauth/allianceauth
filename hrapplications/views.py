@@ -178,3 +178,15 @@ def hr_application_search(request):
                                       context, context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect("/hr_application_management/")
+
+
+@login_required
+@permission_required('auth.human_resources')
+def hr_application_mark_in_progress(request, app_id):
+    if HRApplication.objects.filter(id=app_id).exists():
+        auth_info = AuthServicesInfo.objects.get(user=request.user)
+        application = HRApplication.objects.get(id=app_id)
+        application.reviewer_inprogress_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+        application.save()
+
+    return HttpResponseRedirect("/hr_application_view/" + str(app_id))

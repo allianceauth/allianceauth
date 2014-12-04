@@ -218,7 +218,13 @@ class MumbleManager:
         for g in addgroups:
             if not g in mumble_groups:
                 mumble_groups[g] = MumbleManager._add_group(g)
-            MumbleManager._add_user_to_group(userid, mumble_groups[g])
+            try:
+                MumbleManager._add_user_to_group(userid, mumble_groups[g])
+            except:
+                print "Error occurred while adding a mumble to a group"
 
         for g in remgroups:
-            MumbleManager._del_user_from_group(userid, mumble_groups[g])
+            try:
+                MumbleManager._del_user_from_group(userid, mumble_groups[g])
+            except:
+                print "Error occurred while removing a mumble user from group"

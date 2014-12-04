@@ -19,6 +19,8 @@ class HRApplication(models.Model):
     approved_denied = models.NullBooleanField(blank=True, null=True)
     reviewer_user = models.ForeignKey(User, blank=True, null=True, related_name="review_user")
     reviewer_character = models.ForeignKey(EveCharacter, blank=True, null=True)
+    reviewer_inprogress_character = models.ForeignKey(EveCharacter, blank=True, null=True,
+                                                      related_name="inprogress_character")
 
     def __str__(self):
         return self.character_name + " - Application"

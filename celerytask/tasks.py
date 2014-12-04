@@ -83,6 +83,21 @@ def update_teamspeak3_groups(user):
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
 
+def create_syncgroup_for_user(user, groupname, servicename):
+    synccache = SyncGroupCache()
+    synccache.groupname = groupname
+    synccache.user = user
+    synccache.servicename = servicename
+    synccache.save()
+
+
+def remove_all_syncgroups_for_service(user, servicename):
+    syncgroups = SyncGroupCache.objects.filter(user=user)
+    for syncgroup in syncgroups:
+        if syncgroup.servicename == servicename:
+            syncgroup.delete()
+
+
 def add_to_databases(user, groups, syncgroups):
     authserviceinfo = None
     try:
@@ -93,27 +108,28 @@ def add_to_databases(user, groups, syncgroups):
     if authserviceinfo:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
 
-        update = False
         for group in groups:
-            syncgroup = syncgroups.filter(groupname=group.name)
-            if not syncgroup:
-                synccache = SyncGroupCache()
-                synccache.groupname = group.name
-                synccache.user = user
-                synccache.save()
-                update = True
 
-        if update:
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
-                update_jabber_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "openfire")
+                    update_jabber_groups(user)
             if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
-                update_mumble_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="mumble").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "mumble")
+                    update_mumble_groups(user)
             if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
-                update_forum_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="phpbb3").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "phpbb3")
+                    update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
-                update_ipboard_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "ipboard")
+                    update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                update_teamspeak3_groups(user)
+                if syncgroups.filter(groupname=group.name).filter(servicename="teamspeak3").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "teamspeak3")
+                    update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -168,8 +184,7 @@ def run_api_refresh():
             if api_key_pairs:
                 valid_key = False
                 authserviceinfo = AuthServicesInfo.objects.get(user=user)
-                # We do a check on the authservice info to insure that we shoud run the check
-                # No point in running the check on people who arn't on services
+
                 print 'Running update on user: ' + user.username
                 if authserviceinfo.main_char_id:
                     if authserviceinfo.main_char_id != "":
@@ -192,8 +207,8 @@ def run_api_refresh():
                             main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
                             if main_alliance_id == settings.ALLIANCE_ID:
                                 pass
-                            elif corp != None:
-                                if not corp.is_blue:
+                            elif corp is not None:
+                                if corp.is_blue is not True:
                                     deactivate_services(user)
                             else:
                                 deactivate_services(user)
@@ -277,6 +292,15 @@ def run_alliance_corp_update():
                                                             all_alliance_api_info['executor_id'],
                                                             all_alliance_api_info['member_count'], False)
 
+                    else:
+                        EveManager.update_alliance_info(all_alliance_api_info['id'],
+                                                        all_alliance_api_info['executor_id'],
+                                                        all_alliance_api_info['member_count'], False)
+                else:
+                    EveManager.update_alliance_info(all_alliance_api_info['id'],
+                                                    all_alliance_api_info['executor_id'],
+                                                    all_alliance_api_info['member_count'], False)
+
         # Update corp infos
         for all_corp_info in EveManager.get_all_corporation_info():
             alliance = None
@@ -325,7 +349,7 @@ def run_alliance_corp_update():
         # Check the alliances
         for all_alliance_info in EveManager.get_all_alliance_info():
             if all_alliance_info.alliance_id != settings.ALLIANCE_ID:
-                if not all_alliance_info.is_blue:
+                if all_alliance_info.is_blue is not True:
                     all_alliance_info.delete()
 
 

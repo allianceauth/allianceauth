@@ -12,6 +12,7 @@ from managers.ipboard_manager import IPBoardManager
 from managers.teamspeak3_manager import Teamspeak3Manager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
+from celerytask.tasks import remove_all_syncgroups_for_service
 from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
@@ -96,6 +97,7 @@ def activate_forum(request):
 def deactivate_forum(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Phpbb3Manager.disable_user(authinfo.forum_username)
+    remove_all_syncgroups_for_service(request.user, "phpbb")
     # false we failed
     if result:
         AuthServicesInfoManager.update_user_forum_info("", "", request.user)
@@ -134,6 +136,7 @@ def activate_ipboard_forum(request):
 def deactivate_ipboard_forum(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = IPBoardManager.disable_user(authinfo.ipboard_username)
+    remove_all_syncgroups_for_service(request.user, "ipboard")
     # false we failed
     if result:
         AuthServicesInfoManager.update_user_ipboard_info("", "", request.user)
@@ -171,6 +174,7 @@ def activate_jabber(request):
 def deactivate_jabber(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = OpenfireManager.delete_user(authinfo.jabber_username)
+    remove_all_syncgroups_for_service(request.user, "openfire")
     # If our username is blank means we failed
     if result:
         AuthServicesInfoManager.update_user_jabber_info("", "", request.user)
@@ -212,6 +216,7 @@ def activate_mumble(request):
 def deactivate_mumble(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = MumbleManager.delete_user(authinfo.mumble_username)
+    remove_all_syncgroups_for_service(request.user, "mumble")
     # if false we failed
     if result:
         AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
@@ -224,6 +229,7 @@ def deactivate_mumble(request):
 def reset_mumble_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = MumbleManager.update_user_password(authinfo.mumble_username)
+
     # if blank we failed
     if result != "":
         AuthServicesInfoManager.update_user_mumble_info(authinfo.mumble_username, result, request.user)
@@ -254,9 +260,13 @@ def activate_teamspeak3(request):
 def deactivate_teamspeak3(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
+
+    remove_all_syncgroups_for_service(request.user, "teamspeak3")
+
     # if false we failed
     if result:
         AuthServicesInfoManager.update_user_teamspeak3_info("", "", request.user)
+
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/")
 
@@ -269,6 +279,8 @@ def reset_teamspeak3_perm(request):
 
     Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
 
+    remove_all_syncgroups_for_service(request.user, "teamspeak3")
+
     if check_if_user_has_permission(request.user, "blue_member"):
         result = Teamspeak3Manager.generate_new_blue_permissionkey(authinfo.teamspeak3_uid, character.character_name,
                                                                    character.corporation_ticker)
@@ -279,5 +291,6 @@ def reset_teamspeak3_perm(request):
     # if blank we failed
     if result != "":
         AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
+        update_teamspeak3_groups(request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/")

@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django_evolution',
     'djcelery',
     'celerytask',
@@ -53,6 +54,7 @@ INSTALLED_APPS = (
     'groupmanagement',
     'hrapplications',
     'timerboard',
+    'srp',
 )
 
 MIDDLEWARE_CLASSES = (

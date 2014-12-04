@@ -28,21 +28,22 @@
                                 {% endif %}
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="control-label  " for="id_extra">Reviewer</label>
 
                             <div class=" ">
-                                {% if application.reviewer_character == None %}
+                                {% if application.reviewer_inprogress_character == None %}
                                     <div class="alert alert-info" role="alert">pending</div>
                                 {% else %}
                                     <div class="alert alert-info"
-                                         role="alert">{{ application.reviewer_character.character_name }}</div>
+                                         role="alert">{{ application.reviewer_inprogress_character.character_name }}</div>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="form-group">
-                        <label class="control-label" for="id_character_name">User Account</label>
+                            <label class="control-label" for="id_character_name">User Account</label>
 
                             <div class=" ">
                                 <input class=" form-control" value="{{ application.user.username }}" disabled>
@@ -110,18 +111,27 @@
                                 <label class="control-label text-center" for="id_extra">Actions</label>
 
                                 <div class="container-fluid well">
+
                                     <div class="row text-center">
-                                        <a href="/hr_application_approve/{{ application.id }}">
-                                            <button type="button" class="btn btn-lg btn-success">Approve</button>
-                                        </a>
+                                        {% if application.reviewer_inprogress_character != None %}
+                                            <a href="/hr_application_approve/{{ application.id }}">
+                                                <button type="button" class="btn btn-lg btn-success">Approve</button>
+                                            </a>
 
-                                        <a href="/hr_application_reject/{{ application.id }}">
-                                            <button type="button" class="btn btn-lg btn-info">Reject</button>
-                                        </a>
+                                            <a href="/hr_application_reject/{{ application.id }}">
+                                                <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                            </a>
 
-                                        <a href="/hr_application_remove/{{ application.id }}">
-                                            <button type="button" class="btn btn-lg btn-danger">Delete</button>
-                                        </a>
+                                            <a href="/hr_application_remove/{{ application.id }}">
+                                                <button type="button" class="btn btn-lg btn-danger">Delete</button>
+                                            </a>
+
+                                        {% else %}
+                                            <a href="/hr_mark_in_progress/{{ application.id }}">
+                                                <button type="button" class="btn btn-lg btn-warning">Mark In Progress
+                                                </button>
+                                            </a>
+                                        {% endif %}
                                     </div>
                                     <br/>
 

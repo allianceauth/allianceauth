@@ -18,7 +18,7 @@ class Teamspeak3Manager:
     def __santatize_username(username):
         sanatized = username.replace(" ", "_")
         sanatized = sanatized.replace("'", "")
-        return sanatized.lower()
+        return sanatized
 
     @staticmethod
     def __generate_username(username, corp_ticker):
@@ -39,6 +39,7 @@ class Teamspeak3Manager:
     def _group_id_by_name(groupname):
         server = Teamspeak3Manager.__get_created_server()
         group_cache = server.send_command('servergrouplist')
+
         for group in group_cache:
             if group['keys']['name'] == groupname:
                 return group['keys']['sgid']
@@ -206,8 +207,10 @@ class Teamspeak3Manager:
 
     @staticmethod
     def update_groups(uid, l_groups):
+        print uid
+        print l_groups
         userid = Teamspeak3Manager._get_userid(uid)
-        if userid:
+        if userid is not None:
             server_groups = Teamspeak3Manager._group_list()
             user_groups = set(Teamspeak3Manager._user_group_list(userid))
             groups = []
