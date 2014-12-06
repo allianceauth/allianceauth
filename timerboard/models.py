@@ -6,6 +6,8 @@ from eveonline.models import EveCorporationInfo
 
 
 class Timer(models.Model):
+    class Meta:
+        ordering = ['eve_time']
     name = models.CharField(max_length=254, default="")
     system = models.CharField(max_length=254, default="")
     planet_moon = models.CharField(max_length=254, default="")
