@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
 
+from eveonline.models import EveCharacter
+from authentication.models import AuthServicesInfo
 from managers.openfire_manager import OpenfireManager
 from managers.phpbb3_manager import Phpbb3Manager
 from managers.mumble_manager import MumbleManager
@@ -56,7 +58,17 @@ def jabber_broadcast_view(request):
     if request.method == 'POST':
         form = JabberBroadcastForm(request.POST)
         if form.is_valid():
-            OpenfireManager.send_broadcast_message(form.cleaned_data['group'], form.cleaned_data['message'])
+            user_info = AuthServicesInfo.objects.get(user=request.user)
+            main_char = EveCharacter.objects.get(character_id=user_info.main_char_id)
+            if user_info.main_char_id != "":
+                OpenfireManager.send_broadcast_message(form.cleaned_data['group'], form.cleaned_data[
+                    'message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + main_char.character_name + " TO: " +
+                                                       form.cleaned_data[
+                                                           'group'] + " #####\n##### Replies are NOT monitored #####\n")
+            else:
+                OpenfireManager.send_broadcast_message(form.cleaned_data['group'], form.cleaned_data[
+                    'message'] + "\n##### SENT BY: " + "No character but can send pings?" + " TO: " + form.cleaned_data[
+                                                           'group'] + " #####\n##### Replies are NOT monitored #####\n")
             success = True
     else:
         form = JabberBroadcastForm()
