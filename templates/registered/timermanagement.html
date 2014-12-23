@@ -19,8 +19,8 @@
         </h1>
         <div class="col-lg-12 text-center">
             <div class="label label-info text-left">
-                <b>Current Eve Time: {{ CURRENT_UTC_TIME | date:"Y-m-d H:i" }}</b>
-            </div>
+                <b>Current Eve Time: </b>
+            </div><div class="label label-info text-left" id="current-time"></div>
         </div>
         <h4><b>Next Timer</b></h4>
         <table class="table table-responsive table-bordered">
@@ -30,6 +30,7 @@
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
+		<th class="text-center">Local Time</th>
                 <th class="text-center">Creator</th>
                 {% if perms.auth.timer_management %}
                     <th class="text-center">Action</th>
@@ -99,8 +100,9 @@
                         </div>
                     {% endifequal %}
                 </td>
-                <td class="text-center">{{ closest_timer.eve_time | date:"Y-m-d H:i" }} UTC</td>
-                <td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
+                <td class="text-center" nowrap>{{ closest_timer.eve_time | date:"Y-m-d H:i" }}</td>
+		<td id="countdownclosest" class="text-center" nowrap></td>
+		<td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
 
@@ -122,6 +124,7 @@
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
+                <th class="text-center">Local Time</th>
                 <th class="text-center">Creator</th>
                 {% if perms.auth.timer_management %}
                     <th class="text-center">Action</th>
@@ -192,7 +195,8 @@
                         </div>
                     {% endifequal %}
                 </td>
-                <td class="text-center">{{ timer.eve_time | date:"Y-m-d H:i" }} UTC</td>
+                <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
+                <td class="text-center" nowrap><div id="countdown{{ timer.id }}"></div></td>
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
@@ -208,4 +212,22 @@
         </table>
     </div>
 
+
+<script src="/static/js/dateformat.js"></script>
+<script src="/static/js/countdown.js"></script>
+<script>
+var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in timers %}
+var clock{{ timer.id }} = document.getElementById("countdown{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
+
+setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+{% for timer in timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+
+setInterval(function(){updateClock()}, 1000);
+
+function updateClock() {
+  var clock = new Date();
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+}
+
+</script>
 {% endblock content %}
