@@ -124,7 +124,7 @@ class MumbleManager:
     @staticmethod
     def create_user(corp_ticker, username):
         dbcursor = connections['mumble'].cursor()
-        username_clean = MumbleManager.__generate_username(MumbleManager.__santatize_username(username), corp_ticker)
+        username_clean = MumbleManager.__santatize_username(MumbleManager.__generate_username(username, corp_ticker))
         password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
 
@@ -146,8 +146,8 @@ class MumbleManager:
     @staticmethod
     def create_blue_user(corp_ticker, username):
         dbcursor = connections['mumble'].cursor()
-        username_clean = MumbleManager.__generate_username_blue(MumbleManager.__santatize_username(username),
-                                                                corp_ticker)
+        username_clean = MumbleManager.__santatize_username(MumbleManager.__generate_username_blue(username,
+                                                                corp_ticker))
         password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
 
