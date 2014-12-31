@@ -120,8 +120,8 @@ class Teamspeak3Manager:
 
     @staticmethod
     def add_user(username, corp_ticker):
-        username_clean = Teamspeak3Manager.__generate_username(Teamspeak3Manager.__santatize_username(username),
-                                                               corp_ticker)
+        username_clean = Teamspeak3Manager.__santatize_username(Teamspeak3Manager.__generate_username(username,
+                                                               corp_ticker))
         server = Teamspeak3Manager.__get_created_server()
         token = ""
 
@@ -147,8 +147,8 @@ class Teamspeak3Manager:
 
     @staticmethod
     def add_blue_user(username, corp_ticker):
-        username_clean = Teamspeak3Manager.__generate_username_blue(Teamspeak3Manager.__santatize_username(username),
-                                                                    corp_ticker)
+        username_clean = Teamspeak3Manager.__santatize_username(Teamspeak3Manager.__generate_username_blue(username,
+                                                                    corp_ticker))
         server = Teamspeak3Manager.__get_created_server()
         token = ""
 
