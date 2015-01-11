@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5xvh4e0x&@-$6(kj%4^80pdo1n5v-!mtx(e(1tw@kn-1le*ts@'
+SECRET_KEY = os.environ.get('AA_SECRET_KEY', '5xvh4e0x&@-$6(kj%4^80pdo1n5v-!mtx(e(1tw@kn-1le*ts@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'True' == os.environ.get('AA_DEBUG','True')
 
 TEMPLATE_DEBUG = True
 
@@ -77,28 +77,28 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_auth',
-        'USER': 'allianceauth',
-        'PASSWORD': 'allianceauth',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceauth'),
+        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'allianceauth'),
+        'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_DEFAULT_PORT', '3306'),
     },
 
     'phpbb3': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_forum',
-        'USER': 'allianceauth',
-        'PASSWORD': 'allianceauth',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceauth'),
+        'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'allianceauth'),
+        'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
     },
 
     'mumble': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_mumble',
-        'USER': 'alliancemumble',
-        'PASSWORD': 'alliancemumble',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'USER': os.environ.get('AA_DB_MUMBLE_USER', 'alliancemumble'),
+        'PASSWORD': os.environ.get('AA_DB_MUMBLE_PASSWORD', 'alliancemumble'),
+        'HOST': os.environ.get('AA_DB_MUMBLE_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_MUMBLE_PORT', '3306'),
     }
 }
 
@@ -130,9 +130,9 @@ LOGIN_URL = '/login_user/'
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = os.environ.get('AA_LANGUAGE_CODE', 'en-us')
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.get('AA_TIME_ZONE', 'UTC')
 
 USE_I18N = True
 
@@ -160,12 +160,12 @@ STATIC_URL = '/static/'
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
-DOMAIN = 'https://the99eve.com'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
+DOMAIN = os.environ.get('AA_DOMAIN', 'https://the99eve.com')
+EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('AA_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 
 #########################
 # Default Group Settings
@@ -173,8 +173,8 @@ EMAIL_USE_TLS = True
 # DEFAULT_ALLIANCE_GROUP - Default group alliance members are put in
 # DEFAULT_BLUE_GROUP - Default group for blue members
 #########################
-DEFAULT_ALLIANCE_GROUP = 'AllianceMember'
-DEFAULT_BLUE_GROUP = 'BlueMember'
+DEFAULT_ALLIANCE_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'AllianceMember')
+DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'BlueMember')
 
 #########################
 # Alliance Service Setup
@@ -184,11 +184,11 @@ DEFAULT_BLUE_GROUP = 'BlueMember'
 # ENABLE_ALLIANCE_MUMBLE - Enable mumble support in the auth for alliance members
 # ENABLE_ALLIANCE_IPBOARD - Enable IPBoard forum support in the auth for alliance members
 #########################
-ENABLE_ALLIANCE_FORUM = True
-ENABLE_ALLIANCE_JABBER = True
-ENABLE_ALLIANCE_MUMBLE = True
-ENABLE_ALLIANCE_IPBOARD = False
-ENABLE_ALLIANCE_TEAMSPEAK3 = False
+ENABLE_ALLIANCE_FORUM = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_FORUM', 'True')
+ENABLE_ALLIANCE_JABBER = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_JABBER', 'True')
+ENABLE_ALLIANCE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_MUMBLE', 'True')
+ENABLE_ALLIANCE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_IPBOARD', 'False')
+ENABLE_ALLIANCE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_TEAMSPEAK3', 'False')
 
 #####################
 # Blue service Setup
@@ -198,11 +198,11 @@ ENABLE_ALLIANCE_TEAMSPEAK3 = False
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 #####################
-ENABLE_BLUE_FORUM = False
-ENABLE_BLUE_JABBER = False
-ENABLE_BLUE_MUMBLE = True
-ENABLE_BLUE_IPBOARD = False
-ENABLE_BLUE_TEAMSPEAK3 = False
+ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
+ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'False')
+ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'True')
+ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False')
+ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
 
 #########################
 # Alliance Configuration
@@ -213,11 +213,11 @@ ENABLE_BLUE_TEAMSPEAK3 = False
 # ALLIANCE_EXEC_CORP_VCODE - Set this to the api vcode for the exe corp
 # ALLIANCE_BLUE_STANDING - The default lowest standings setting to consider blue
 ########################
-ALLIANCE_ID = '99001336'
-ALLIANCE_NAME = 'Somealliance'
-ALLIANCE_EXEC_CORP_ID = ''
-ALLIANCE_EXEC_CORP_VCODE = ''
-ALLIANCE_BLUE_STANDING = 5.0
+ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '99001336')
+ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', 'Somealliance')
+ALLIANCE_EXEC_CORP_ID = os.environ.get('AA_ALLIANCE_EXEC_CORP_ID', '')
+ALLIANCE_EXEC_CORP_VCODE = os.environ.get('AA_ALLIANCE_EXEC_CORP_VCODE', '')
+ALLIANCE_BLUE_STANDING = float(os.environ.get('AA_ALLIANCE_BLUE_STANDING', '5.0'))
 
 #####################
 # HR Configuration
@@ -225,7 +225,7 @@ ALLIANCE_BLUE_STANDING = 5.0
 # JACK_KNIFE_URL - Url for the audit page of API Jack knife
 #                  Should seriously replace with your own.
 #####################
-JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
+JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/eveapi/audit.php')
 
 #####################
 # Forum Configuration
@@ -235,9 +235,9 @@ JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-FORUM_URL = "http://someaddress.com"
-IPBOARD_ENDPOINT = 'someaddress.com/interface/board/index.php'
-IPBOARD_APIKEY = 'somekeyhere'
+FORUM_URL = os.environ.get('AA_FORUM_URL', "http://someaddress.com")
+IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'someaddress.com/interface/board/index.php')
+IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
 
 ######################
@@ -251,13 +251,13 @@ IPBOARD_APIMODULE = 'aa'
 # BROADCAST_USER - Broadcast user JID
 # BROADCAST_USER_PASSWORD - Broadcast user password
 ######################
-JABBER_URL = "someaddress.com"
-JABBER_PORT = 5223
-JABBER_SERVER = "someadddress.com"
-OPENFIRE_ADDRESS = "http://someaddress.com:9090/"
-OPENFIRE_SECRET_KEY = "somekey"
-BROADCAST_USER = "broadcast@" + JABBER_URL
-BROADCAST_USER_PASSWORD = "somepassword"
+JABBER_URL = os.environ.get('AA_JABBER_URL', "someaddress.com")
+JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
+JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "someadddress.com")
+OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://someaddress.com:9090/")
+OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
+BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
+BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
 
 ######################################
 # Mumble Configuration
@@ -265,8 +265,8 @@ BROADCAST_USER_PASSWORD = "somepassword"
 # MUMBLE_URL - Mumble server url
 # MUMBLE_SERVER_ID - Mumble server id
 ######################################
-MUMBLE_URL = "someurl.com"
-MUMBLE_SERVER_ID = 1
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "someurl.com")
+MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 
 ######################################
 # Teamspeak3 Configuration
@@ -279,9 +279,9 @@ MUMBLE_SERVER_ID = 1
 # TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
 # TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
 ######################################
-TEAMSPEAK3_SERVER_IP = '127.0.0.1'
-TEAMSPEAK3_SERVER_PORT = 10011
-TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
-TEAMSPEAK3_SERVERQUERY_PASSWORD = 'passwordhere'
-TEAMSPEAK3_VIRTUAL_SERVER = 1
-TEAMSPEAK3_PUBLIC_URL = 'someaddress.com'
+TEAMSPEAK3_SERVER_IP = os.environ.get('AA_TEAMSPEAK3_SERVER_IP', '127.0.0.1')
+TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'))
+TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
+TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
+TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
+TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'someaddress.com')
