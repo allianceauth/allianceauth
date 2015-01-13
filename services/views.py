@@ -25,6 +25,7 @@ from forms import FleetFormatterForm
 from util import check_if_user_has_permission
 
 import threading
+import datetime 
 
 
 @login_required
@@ -52,19 +53,6 @@ def fleet_formatter_view(request):
 
     return render_to_response('registered/fleetformattertool.html', context, context_instance=RequestContext(request))
 
-class xmppThread (threading.Thread):
-    def __init__(self, threadID, name, counter, group, message,):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.counter = counter
-        self.group = group
-        self.message = message
-    def run(self):
-        print "Starting " + self.name
-        OpenfireManager.send_broadcast_message(self.group, self.message)
-        print "Exiting " + self.name
-
 @login_required
 @permission_required('auth.jabber_broadcast')
 def jabber_broadcast_view(request):
@@ -75,18 +63,16 @@ def jabber_broadcast_view(request):
             user_info = AuthServicesInfo.objects.get(user=request.user)
             main_char = EveCharacter.objects.get(character_id=user_info.main_char_id)
             if user_info.main_char_id != "":
-                message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + main_char.character_name + " TO: " + form.cleaned_data['group'] + " #####\n##### Replies are NOT monitored #####\n"
+                message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + main_char.character_name + " TO: " + form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
                 group_to_send = form.cleaned_data['group']
 
-                broadcast_thread = xmppThread(1, "XMPP Broadcast Thread", 1, group_to_send, message_to_send)
-                broadcast_thread.start()
+                OpenfireManager.send_broadcast_threaded(group_to_send, message_to_send,)
 
             else:
-                message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "No character but can send pings?" + " TO: " + form.cleaned_data['group'] + " #####\n##### Replies are NOT monitored #####\n"
+                message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "No character but can send pings?" + " TO: " + form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
                 group_to_send = form.cleaned_data['group']
 
-                broadcast_thread = xmppThread(1, "XMPP Broadcast Thread", 1, group_to_send, message_to_send)
-                broadcast_thread.start()
+                OpenfireManager.send_broadcast_threaded(group_to_send, message_to_send,)
 
             success = True
     else:
