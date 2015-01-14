@@ -128,7 +128,11 @@
                         {% endif %}
 
                         {% if  perms.auth.alliance_member or perms.auth.blue_member %}
-
+							<li>
+                                <a {% ifequal request.path "/fits" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_fleet_fits' %}"><i
+                                        class="fa fa-bolt fa-fw grayiconecolor"></i> Fleet Doctrines</a>
+                            </li>
                             <li>
                                 <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_timer_view' %}"><i

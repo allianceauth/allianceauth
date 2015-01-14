@@ -152,6 +152,8 @@ urlpatterns = patterns('',
                            name='auth_srp_request_approve'),
                        url(r'srp_request_reject/(\w+)', 'srp.views.srp_request_reject', name='auth_srp_request_reject'),
                        url(r'srp_request_amount_update/(\w+)', 'srp.views.srp_request_update_amount_view',
-                           name="auth_srp_request_update_amount_view")
-
+                           name="auth_srp_request_update_amount_view"),
+                       
+			# FLEET FITTINGS
+			url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
 )

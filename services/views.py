@@ -311,3 +311,9 @@ def reset_teamspeak3_perm(request):
         update_teamspeak3_groups(request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/")
+
+@login_required
+def fleet_fits(request):
+    context = {}
+    return render_to_response('registered/fleetfits.html', context,
+context_instance=RequestContext(request))
