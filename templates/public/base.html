@@ -169,7 +169,7 @@
 
                         {% if perms.auth.jabber_broadcast %}
                             <li>
-                                <a {% ifequal request.path "/serivces/jabber_broadcast/" %}
+                                <a {% ifequal request.path "/services/jabber_broadcast/" %}
                                     class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i
                                         class="fa fa-lock fa-bullhorn grayiconecolor"></i> Jabber Broadcast</a>
                             </li>
