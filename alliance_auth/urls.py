@@ -86,8 +86,8 @@ urlpatterns = patterns('',
 
 
                        # Service Urls
-                       url(r'^services/', 'services.views.services_view', name='auth_services'),
-                       url(r'^serivces/jabber_broadcast/$', 'services.views.jabber_broadcast_view',
+                       url(r'^services/$', 'services.views.services_view', name='auth_services'),
+                       url(r'^services/jabber_broadcast/$', 'services.views.jabber_broadcast_view',
                            name='auth_jabber_broadcast_view'),
 
                        # Forum Service Control
