@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import authTS
+from .models import AuthTS
 from .models import TSgroup
-from .models import userTSgroup
+from .models import UserTSgroup
 
 class AuthTSgroupAdmin(admin.ModelAdmin):
 	fields = ['ts_group_id','auth_group_id']
@@ -9,5 +9,5 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 class TSgroupAdmin(admin.ModelAdmin):
 	fields = ['name']
 
-admin.site.register(authTS, AuthTSgroupAdmin)
+admin.site.register(AuthTS, AuthTSgroupAdmin)
 admin.site.register(TSgroup, TSgroupAdmin)
