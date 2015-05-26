@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from services.managers.util.ts3 import TS3Server
+from services.models import TSgroup
 
 
 class Teamspeak3Manager:
@@ -117,6 +118,13 @@ class Teamspeak3Manager:
         if groupname in user_groups:
             server.send_command('servergroupdelclient',
                                 {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
+
+    @staticmethod
+    def _sync_ts_group_db():
+        remote_groups = Teamspeak3Manager._group_list()
+        local_groups = TSgroup.objects.all()
+        for key in remote_groups:
+            TSgroup.objects.update_or_create(group_id=remote_groups[key],name=key)
 
     @staticmethod
     def add_user(username, corp_ticker):

@@ -55,3 +55,4 @@ target/
 
 .vagrant/
 alliance_auth/settings.py
+requirements.txt
