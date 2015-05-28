@@ -124,7 +124,7 @@ class Teamspeak3Manager:
         remote_groups = Teamspeak3Manager._group_list()
         local_groups = TSgroup.objects.all()
         for key in remote_groups:
-            TSgroup.objects.update_or_create(group_id=remote_groups[key],name=key)
+            TSgroup.objects.update_or_create(ts_group_id=remote_groups[key],ts_group_name=key)
 
     @staticmethod
     def add_user(username, corp_ticker):
@@ -217,25 +217,24 @@ class Teamspeak3Manager:
     def update_groups(uid, l_groups):
         print uid
         print l_groups
+        Teamspeak3Manager._sync_ts_group_db()
         userid = Teamspeak3Manager._get_userid(uid)
+        act_groups = []
         if userid is not None:
-            server_groups = Teamspeak3Manager._group_list()
-            user_groups = set(Teamspeak3Manager._user_group_list(userid))
-            groups = []
-            for l_group in l_groups:
-                groups.append(l_group[:30])
+            user_ts_groups = set(Teamspeak3Manager._user_group_list(userid))
+            for key in user_ts_groups:
+                for group in l_groups:
+                    if group.auth_group.id = user_ts_groups[key]:
+                        act_groups += group
 
-            act_groups = set([g.replace(' ', '-') for g in groups])
-            addgroups = act_groups - user_groups
-            remgroups = user_groups - act_groups
+            addgroups = act_groups - l_groups
+            remgroups = l_groups - act_groups
 
             print userid
             print addgroups
             print remgroups
 
             for g in addgroups:
-                if not g in server_groups.keys():
-                    Teamspeak3Manager._create_group(g)
                 Teamspeak3Manager._add_user_to_group(userid, g)
 
             for g in remgroups:

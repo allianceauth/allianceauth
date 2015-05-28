@@ -9,6 +9,8 @@ from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
+from services.models import AuthTS
+from services.models import TSgroup
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from services.managers.eve_api_manager import EveApiManager
@@ -71,14 +73,11 @@ def update_ipboard_groups(user):
 
 
 def update_teamspeak3_groups(user):
-    syncgroups = SyncGroupCache.objects.filter(user=user)
+    usergroups = User.objects.filter(id=user.id).first().groups.all()
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
-    for syncgroup in syncgroups:
-        groups.append(str(syncgroup.groupname))
-
-    if len(groups) == 0:
-        groups.append('empty')
+    for usergroup in usergroups:
+        groups += list(AuthTS.objects.filter(auth_group=usergroup))
 
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
