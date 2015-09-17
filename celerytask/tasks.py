@@ -229,7 +229,7 @@ def run_corp_update():
         corpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
         if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
             EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
-                                               corpinfo['members']['current'], False, alliance)
+                                               corpinfo['members']['current'], False, None)
 
         # Create the corps in the standings
         corp_standings = EveApiManager.get_corp_standings()
@@ -276,7 +276,7 @@ def run_corp_update():
                         EveManager.update_alliance_info(all_alliance_api_info['id'],
                                                         all_alliance_api_info['executor_id'],
                                                         all_alliance_api_info['member_count'], False)
-                 else:
+                else:
                     EveManager.update_alliance_info(all_alliance_api_info['id'],
                                                     all_alliance_api_info['executor_id'],
                                                     all_alliance_api_info['member_count'], False)
