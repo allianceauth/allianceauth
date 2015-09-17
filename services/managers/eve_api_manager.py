@@ -140,10 +140,10 @@ class EveApiManager():
         return False
 
     @staticmethod
-    def get_alliance_standings():
-        if settings.ALLIANCE_EXEC_CORP_ID != "":
+    def get_corp_standings():
+        if settings.CORP_API_ID != "":
             try:
-                api = evelink.api.API(api_key=(settings.ALLIANCE_EXEC_CORP_ID, settings.ALLIANCE_EXEC_CORP_VCODE))
+                api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
                 corp = evelink.corp.Corp(api=api)
                 corpinfo = corp.contacts()
                 results = corpinfo[0]

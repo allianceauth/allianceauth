@@ -6,7 +6,7 @@
 
     <div class="col-lg-12">
         <h1 class="page-header text-center">Corporation Stats</h1>
-        {% if perms.auth.alliance_member %}
+        {% if perms.auth.member %}
             <div class="col-lg-12 container" id="example">
 
                 <div class="row">
@@ -67,7 +67,7 @@
                 </div>
             </div>
         {% else %}
-            <p> Not part of the alliance</p>
+            <p> Not part of the corporation</p>
         {% endif %}
     </div>
 {% endblock content %}

@@ -22,9 +22,9 @@ from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
 
 
-def disable_alliance_member(user, char_id):
-    remove_member_permission(user, 'alliance_member')
-    remove_user_from_group(user, settings.DEFAULT_ALLIANCE_GROUP)
+def disable_member(user, char_id):
+    remove_member_permission(user, 'member')
+    remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
     remove_user_from_group(user,
                            generate_corp_group_name(
                                EveManager.get_character_by_id(char_id).corporation_name))
@@ -80,7 +80,7 @@ def api_key_removal(request, api_id):
                     if authinfo.is_blue:
                         disable_blue_member(request.user)
                     else:
-                        disable_alliance_member(request.user, authinfo.main_char_id)
+                        disable_member(request.user, authinfo.main_char_id)
 
     EveManager.delete_api_key_pair(api_id, request.user.id)
     EveManager.delete_characters_by_api_id(api_id, request.user.id)
@@ -104,9 +104,9 @@ def main_character_change(request, char_id):
         character_info = EveManager.get_character_by_id(char_id)
         corporation_info = EveManager.get_corporation_info_by_id(character_info.corporation_id)
 
-        if EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID:
-            add_member_permission(request.user, 'alliance_member')
-            add_user_to_group(request.user, settings.DEFAULT_ALLIANCE_GROUP)
+        if EveManager.get_charater_corporation_id_by_id(char_id) == settings.CORP_ID:
+            add_member_permission(request.user, 'member')
+            add_user_to_group(request.user, settings.DEFAULT_AUTH_GROUP)
             add_user_to_group(request.user,
                               generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
 
@@ -116,15 +116,15 @@ def main_character_change(request, char_id):
                 add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
                 AuthServicesInfoManager.update_is_blue(True, request.user)
             else:
-                if check_if_user_has_permission(request.user, 'alliance_member'):
-                    disable_alliance_member(request.user, previousmainid)
+                if check_if_user_has_permission(request.user, 'member'):
+                    disable_member(request.user, previousmainid)
 
                 if check_if_user_has_permission(request.user, 'blue_member'):
                     disable_blue_member(request.user)
         else:
             # TODO: disable serivces
-            if check_if_user_has_permission(request.user, 'alliance_member'):
-                disable_alliance_member(request.user, previousmainid)
+            if check_if_user_has_permission(request.user, 'member'):
+                disable_member(request.user, previousmainid)
 
             if check_if_user_has_permission(request.user, 'blue_member'):
                 disable_blue_member(request.user)

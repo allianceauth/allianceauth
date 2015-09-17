@@ -2,12 +2,12 @@ from django.conf import settings
 from django.utils import timezone
 
 
-def alliance_id(request):
-    return {'ALLIANCE_ID': settings.ALLIANCE_ID}
+def corp_id(request):
+    return {'CORP_ID': settings.CORP_ID}
 
 
-def alliance_name(request):
-    return {'ALLIANCE_NAME': settings.ALLIANCE_NAME}
+def corp_name(request):
+    return {'CORP_NAME': settings.CORP_NAME}
 
 
 def jabber_url(request):
@@ -17,11 +17,11 @@ def jabber_url(request):
 def domain_url(request):
     return {'DOMAIN': settings.DOMAIN, 'MUMBLE_URL': settings.MUMBLE_URL,
             'FORUM_URL': settings.FORUM_URL,
-            'ENABLE_ALLIANCE_FORUM': settings.ENABLE_ALLIANCE_FORUM,
-            'ENABLE_ALLIANCE_JABBER': settings.ENABLE_ALLIANCE_JABBER,
-            'ENABLE_ALLIANCE_MUMBLE': settings.ENABLE_ALLIANCE_MUMBLE,
-            'ENABLE_ALLIANCE_IPBOARD': settings.ENABLE_ALLIANCE_IPBOARD,
-            'ENABLE_ALLIANCE_TEAMSPEAK3': settings.ENABLE_ALLIANCE_TEAMSPEAK3,
+            'ENABLE_AUTH_FORUM': settings.ENABLE_AUTH_FORUM,
+            'ENABLE_AUTH_JABBER': settings.ENABLE_AUTH_JABBER,
+            'ENABLE_AUTH_MUMBLE': settings.ENABLE_AUTH_MUMBLE,
+            'ENABLE_AUTH_IPBOARD': settings.ENABLE_AUTH_IPBOARD,
+            'ENABLE_AUTH_TEAMSPEAK3': settings.ENABLE_AUTH_TEAMSPEAK3,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
