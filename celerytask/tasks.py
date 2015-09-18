@@ -13,6 +13,9 @@ from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from services.managers.eve_api_manager import EveApiManager
 from util.common_task import deactivate_services
+from util import add_member_permission
+from util import remove_member_permission
+from util import check_if_user_has_permission
 
 
 def update_jabber_groups(user):
@@ -210,11 +213,37 @@ def run_api_refresh():
                             elif corp is not None:
                                 if corp.is_blue is not True:
                                     deactivate_services(user)
+                                    if check_if_user_has_permission(user, "member"):
+                                        remove_member_permission(user, "member")
+                                    if check_if_user_has_permission(user, "blue_member"):
+                                        remove_member_permission(user, "blue_member")
+                                else:
+                                    if check_if_user_has_permission(user, "member"):
+                                        remove_member_permission(user, "member")
+                                    if not check_if_user_has_permission(user, "blue_member"):
+                                        add_member_permission(user, "blue_member")
+
+                                    #Fix mumble username ticker
+                                    result = MumbleManager.delete_user(authserviceinfo.mumble_username)
+                                      remove_all_syncgroups_for_service(user, "mumble")
+                                    if result:
+                                        AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
+                                        #make new user (how generous)
+                                        
                             else:
                                 deactivate_services(user)
+                                if check_if_user_has_permission(user, "member"):
+                                    remove_member_permission(user, "member")
+                                if check_if_user_has_permission(user, "blue_member"):
+                                    remove_member_permission(user, "blue_member")
                         else:
                             # nuke it
                             deactivate_services(user)
+                            if check_if_user_has_permission(user, "member"):
+                                remove_member_permission(user, "member")
+                            if check_if_user_has_permission(user, "blue_member"):
+                                remove_member_permission(user, "blue_member")
+
                 else:
                     print 'No main_char_id set'
 
