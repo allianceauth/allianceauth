@@ -235,7 +235,7 @@ def run_corp_update():
         corp_standings = EveApiManager.get_corp_standings()
         if corp_standings:
             for standing_id in EveApiManager.get_corp_standings()['alliance']:
-                if int(corp_standings['alliance'][standing_id]['standing']) >= settings.ALLIANCE_BLUE_STANDING:
+                if int(corp_standings['alliance'][standing_id]['standing']) >= settings.BLUE_STANDING:
                     if EveApiManager.check_if_id_is_character(standing_id):
                         pass
                     elif EveApiManager.check_if_id_is_corp(standing_id):
