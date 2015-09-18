@@ -267,7 +267,7 @@ def run_corp_update():
             all_alliance_api_info = EveApiManager.get_alliance_information(all_alliance_info.alliance_id)
             if 'alliance' in corp_standings:
                 if int(all_alliance_info.alliance_id) in corp_standings['alliance']:
-                    if int(alliance_standings['alliance'][int(all_alliance_info.alliance_id)][
+                    if int(corp_standings['alliance'][int(all_alliance_info.alliance_id)][
                         'standing']) >= settings.BLUE_STANDING:
                         EveManager.update_alliance_info(all_alliance_api_info['id'],
                                                         all_alliance_api_info['executor_id'],
@@ -295,7 +295,7 @@ def run_corp_update():
             if alliance is not None and all_corp_info.alliance is not None:
 
                 if int(alliance.alliance_id) in corp_standings['alliance']:
-                    if int(alliance_standings['alliance'][int(alliance.alliance_id)][
+                    if int(corp_standings['alliance'][int(alliance.alliance_id)][
                         'standing']) >= settings.BLUE_STANDING:
                         EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance,
                                                            True)
