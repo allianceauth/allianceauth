@@ -214,7 +214,14 @@ def run_api_refresh():
                             corp = EveManager.get_corporation_info_by_id(character.corporation_id)
                             main_corp_id = EveManager.get_charater_corporation_id_by_id(authserviceinfo.main_char_id)
                             if main_corp_id == settings.CORP_ID:
-                                pass
+                                if not check_if_user_has_permission(user, "member"):
+                                    #transition from blue to member
+                                    if check_if_user_has_permission(user, "blue_member"):
+                                        #strip blue status
+                                        remove_member_permission(user, "blue_member")
+                                        remove_user_from_group(settings.DEFAULT_BLUE_GROUP)
+                                    add_member_permission(user, "member")
+                                    add_user_to_group(user, settings.DEFAULT_AUTH_GROUP)
                             elif corp is not None:
                                 if corp.is_blue is not True:
                                     if check_if_user_has_permission(user, "member"):
