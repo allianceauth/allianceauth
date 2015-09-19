@@ -16,7 +16,10 @@ from util.common_task import deactivate_services
 from util import add_member_permission
 from util import remove_member_permission
 from util import check_if_user_has_permission
-
+from eveonline.views import disable_alliance_member
+from eveonline.views import disable_blue_member
+from util.common_task import add_user_to_group
+from util.common_task import remove_user_from_group
 
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -212,16 +215,19 @@ def run_api_refresh():
                                 pass
                             elif corp is not None:
                                 if corp.is_blue is not True:
-                                    deactivate_services(user)
                                     if check_if_user_has_permission(user, "member"):
-                                        remove_member_permission(user, "member")
-                                    if check_if_user_has_permission(user, "blue_member"):
-                                        remove_member_permission(user, "blue_member")
+                                        disable_alliance_member(user, authserviceinfo.main_char_id)
+                                    elif check_if_user_has_permission(user, "blue_member"):
+                                        disable_blue_member(user, authserviceonfo.main_char_id)
+                                    else:
+                                        deactivate_services(user)
                                 else:
                                     if check_if_user_has_permission(user, "member"):
                                         remove_member_permission(user, "member")
+                                        remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
                                     if not check_if_user_has_permission(user, "blue_member"):
                                         add_member_permission(user, "blue_member")
+                                        add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
 
                                     #Fix mumble username ticker
                                     result = MumbleManager.delete_user(authserviceinfo.mumble_username)
@@ -231,18 +237,21 @@ def run_api_refresh():
                                         #make new user (how generous)
                                         
                             else:
-                                deactivate_services(user)
                                 if check_if_user_has_permission(user, "member"):
-                                    remove_member_permission(user, "member")
-                                if check_if_user_has_permission(user, "blue_member"):
-                                    remove_member_permission(user, "blue_member")
+                                    disable_alliance_member(user, authserviceinfo.main_char_id)
+                                elif check_if_user_has_permission(user, "blue_member"):
+                                    disable_blue_member(user, authserviceonfo.main_char_id)
+                                else:
+                                    deactivate_services(user)
+
                         else:
                             # nuke it
-                            deactivate_services(user)
                             if check_if_user_has_permission(user, "member"):
-                                remove_member_permission(user, "member")
-                            if check_if_user_has_permission(user, "blue_member"):
-                                remove_member_permission(user, "blue_member")
+                                disable_alliance_member(user, authserviceinfo.main_char_id)
+                            elif check_if_user_has_permission(user, "blue_member"):
+                                disable_blue_member(user, authserviceonfo.main_char_id)
+                            else:
+                                deactivate_services(user)
 
                 else:
                     print 'No main_char_id set'
