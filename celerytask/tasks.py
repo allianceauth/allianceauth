@@ -20,6 +20,8 @@ from eveonline.views import disable_alliance_member
 from eveonline.views import disable_blue_member
 from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
+from services.managers.mumble_manager import MumbleManager
+from celerytask.tasks import update_mumble_groups
 
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -230,12 +232,14 @@ def run_api_refresh():
                                         add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
 
                                     #Fix mumble username ticker
-                                    result = MumbleManager.delete_user(authserviceinfo.mumble_username)
-                                      remove_all_syncgroups_for_service(user, "mumble")
-                                    if result:
-                                        AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
-                                        #make new user (how generous)
-                                        
+                                    MumbleManager.delete_user(authserviceinfo.mumble_username)
+                                    remove_all_syncgroups_for_service(user, "mumble")
+                                    AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
+
+                                    #make new user (how generous)
+                                    result = MumbleManager.create_blue_user(character.corporation_ticker, character.character_name)
+                                    AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], user)
+                                    update_mumble_groups(request.user)
                             else:
                                 if check_if_user_has_permission(user, "member"):
                                     disable_alliance_member(user, authserviceinfo.main_char_id)
