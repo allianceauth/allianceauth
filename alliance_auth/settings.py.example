@@ -170,7 +170,7 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 #########################
 # Default Group Settings
 #########################
-# DEFAULT_ALLIANCE_GROUP - Default group alliance members are put in
+# DEFAULT_AUTH_GROUP - Default group members are put in
 # DEFAULT_BLUE_GROUP - Default group for blue members
 #########################
 DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
@@ -179,10 +179,10 @@ DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
 #########################
 # Alliance Service Setup
 #########################
-# ENABLE_ALLIANCE_FORUM - Enable forum support in the auth for alliance members
-# ENABLE_ALLIANCE_JABBER - Enable jabber support in the auth for alliance members
-# ENABLE_ALLIANCE_MUMBLE - Enable mumble support in the auth for alliance members
-# ENABLE_ALLIANCE_IPBOARD - Enable IPBoard forum support in the auth for alliance members
+# ENABLE_AUTH_FORUM - Enable forum support in the auth for auth'd members
+# ENABLE_AUTH_JABBER - Enable jabber support in the auth for auth'd members
+# ENABLE_AUTH_MUMBLE - Enable mumble support in the auth for auth'd members
+# ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'True')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'True')
@@ -207,11 +207,11 @@ ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', '
 #########################
 # Alliance Configuration
 #########################
-# ALLIANCE_ID - Set this to your AllianceID 
-# ALLIANCE_NAME - Set this to your Alliance Name
-# ALLIANCE_EXEC_CORP_ID - Set this to the api id for the exec corp
-# ALLIANCE_EXEC_CORP_VCODE - Set this to the api vcode for the exe corp
-# ALLIANCE_BLUE_STANDING - The default lowest standings setting to consider blue
+# CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
+# CORP_NAME - Set this to your Corporation Name
+# CORP_API_ID - Set this to the api id for the corp API key
+# CORP_API_VCODE - Set this to the api vcode for the corp API key
+# BLUE_STANDING - The default lowest standings setting to consider blue
 ########################
 CORP_ID = os.environ.get('AA_CORP_ID', '')
 CORP_NAME = os.environ.get('AA_CORP_NAME', '')
