@@ -16,12 +16,21 @@ from util.common_task import deactivate_services
 from util import add_member_permission
 from util import remove_member_permission
 from util import check_if_user_has_permission
-from eveonline.views import disable_alliance_member
-from eveonline.views import disable_blue_member
 from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
-from services.managers.mumble_manager import MumbleManager
-from celerytask.tasks import update_mumble_groups
+
+def disable_alliance_member(user, char_id):
+    remove_member_permission(user, 'member')
+    remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
+    remove_user_from_group(user,
+                           generate_corp_group_name(
+                               EveManager.get_character_by_id(char_id).corporation_name))
+    deactivate_services(user)
+
+def disable_blue_member(user):
+    remove_member_permission(user, 'blue_member')
+    remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
+    deactivate_services(user)
 
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -227,7 +236,7 @@ def run_api_refresh():
                                     if check_if_user_has_permission(user, "member"):
                                         disable_alliance_member(user, authserviceinfo.main_char_id)
                                     elif check_if_user_has_permission(user, "blue_member"):
-                                        disable_blue_member(user, authserviceonfo.main_char_id)
+                                        disable_blue_member(user)
                                     else:
                                         deactivate_services(user)
                                 else:
@@ -260,7 +269,7 @@ def run_api_refresh():
                             if check_if_user_has_permission(user, "member"):
                                 disable_alliance_member(user, authserviceinfo.main_char_id)
                             elif check_if_user_has_permission(user, "blue_member"):
-                                disable_blue_member(user, authserviceonfo.main_char_id)
+                                disable_blue_member(user)
                             else:
                                 deactivate_services(user)
 
