@@ -56,6 +56,7 @@ def hr_application_create_view(request):
 			application.character_name = form.cleaned_data['character_name']
 			application.full_api_id = form.cleaned_data['full_api_id']
 			application.full_api_key = form.cleaned_data['full_api_key']
+			application.corp = EveCorporationInfo.objects.get(corporation_id=form.cleaned_data['corp'])
 			application.is_a_spi = form.cleaned_data['is_a_spi']
 			application.about = form.cleaned_data['about']
 			application.extra = form.cleaned_data['extra']

@@ -157,7 +157,7 @@ STATIC_URL = '/static/'
 # Set to FALSE for alliance
 # Set to TRUE for corp
 ###########################
-IS_CORP = False
+IS_CORP = 'False' == os.environ.get('AA_IS_CORP', 'True')
 
 
 #################
