@@ -1,11 +1,13 @@
 from django import forms
 from django.conf import settings
 
+from eveonline.models import EveCorporationInfo
+
 class HRApplicationForm(forms.Form):
     allchoices = []
 
     if settings.IS_CORP:
-        corp = EveCorporationInfo.objects.filter(corporation_id=settings.CORP_ID)
+        corp = EveCorporationInfo.objects.get(corporation_id=settings.CORP_ID)
         allchoices.append((str(corp.corporation_id), str(corp.corporation_name)))
     else:
         for corp in EveCorporationInfo.objects.all():
