@@ -150,6 +150,16 @@ STATIC_URL = '/static/'
 ##
 #####################################################
 
+###########################
+# ALLIANCE / CORP TOGGLE
+###########################
+# Specifies to run membership checks against corp or alliance
+# Set to FALSE for alliance
+# Set to TRUE for corp
+###########################
+IS_CORP = False
+
+
 #################
 # EMAIL SETTINGS
 #################
@@ -205,7 +215,7 @@ ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False'
 ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
 
 #########################
-# Alliance Configuration
+# Corp Configuration
 #########################
 # CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
 # CORP_NAME - Set this to your Corporation Name
@@ -218,6 +228,19 @@ CORP_NAME = os.environ.get('AA_CORP_NAME', '')
 CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
 CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
+
+#########################
+# Alliance Configuration
+#########################
+# ALLIANCE_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
+# ALLIANCE_NAME - Set this to your Corporation Name
+# ALLIANCE_API_ID - Set this to the api id for the corp API key
+# ALLIANCE_API_VCODE - Set this to the api vcode for the corp API key
+# BLUE_STANDING - The default lowest standings setting to consider blue
+########################
+ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
+ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
+
 
 #####################
 # HR Configuration
