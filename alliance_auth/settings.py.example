@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Generate a new key here: http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = os.environ.get('AA_SECRET_KEY', '5xvh4e0x&@-$6(kj%4^80pdo1n5v-!mtx(e(1tw@kn-1le*ts@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -166,7 +167,7 @@ IS_CORP = 'False' == os.environ.get('AA_IS_CORP', 'True')
 # DOMAIN - The alliance auth domain_url
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
-# EMAIL_HOST_USER - Email Username
+# EMAIL_HOST_USER - Email Username (for gmail, the part before @gmail.com)
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
@@ -203,11 +204,13 @@ ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', '
 #####################
 # Blue service Setup
 #####################
+# BLUE_STANDING - The default lowest standings setting to consider blue
 # ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
 # ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 #####################
+BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
 ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'False')
 ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'True')
@@ -217,26 +220,23 @@ ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', '
 #########################
 # Corp Configuration
 #########################
+# If running in alliance mode, the following should be for the executor corp#
 # CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
 # CORP_NAME - Set this to your Corporation Name
 # CORP_API_ID - Set this to the api id for the corp API key
 # CORP_API_VCODE - Set this to the api vcode for the corp API key
-# BLUE_STANDING - The default lowest standings setting to consider blue
 ########################
 CORP_ID = os.environ.get('AA_CORP_ID', '')
 CORP_NAME = os.environ.get('AA_CORP_NAME', '')
 CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
 CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
-BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
+
 
 #########################
 # Alliance Configuration
 #########################
-# ALLIANCE_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
-# ALLIANCE_NAME - Set this to your Corporation Name
-# ALLIANCE_API_ID - Set this to the api id for the corp API key
-# ALLIANCE_API_VCODE - Set this to the api vcode for the corp API key
-# BLUE_STANDING - The default lowest standings setting to consider blue
+# ALLIANCE_ID - Set this to your Alliance ID (get this from https://zkillboard.com/alliance/#######)
+# ALLIANCE_NAME - Set this to your Alliance Name
 ########################
 ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
 ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
@@ -258,7 +258,7 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-FORUM_URL = os.environ.get('AA_FORUM_URL', "")
+FORUM_URL = os.environ.get('AA_FORUM_URL', "http://someurl.com")
 IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'someaddress.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
@@ -269,15 +269,16 @@ IPBOARD_APIMODULE = 'aa'
 # JABBER_URL - Jabber address url
 # JABBER_PORT - Jabber service portal
 # JABBER_SERVER - Jabber server url
-# OPENFIRE_ADDRESS - Address of the openfire admin console
-# OPENFIRE_SECRET_KEY - Openfire userservice secret key
+# OPENFIRE_ADDRESS - Address of the openfire admin console including port
+#                    Please use http with 9090 or https with 9091
+# OPENFIRE_SECRET_KEY - Openfire REST API secret key
 # BROADCAST_USER - Broadcast user JID
 # BROADCAST_USER_PASSWORD - Broadcast user password
 ######################
-JABBER_URL = os.environ.get('AA_JABBER_URL', "")
+JABBER_URL = os.environ.get('AA_JABBER_URL', "someurl.com")
 JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
-JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "")
-OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "")
+JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "someurl.com")
+OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://someurl.com:9090")
 OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
 BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
 BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
@@ -288,7 +289,7 @@ BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepass
 # MUMBLE_URL - Mumble server url
 # MUMBLE_SERVER_ID - Mumble server id
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "")
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "someurl.com")
 MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 
 ######################################
@@ -302,7 +303,7 @@ MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 # TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
 # TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
 ######################################
-TEAMSPEAK3_SERVER_IP = os.environ.get('AA_TEAMSPEAK3_SERVER_IP', '')
+TEAMSPEAK3_SERVER_IP = os.environ.get('AA_TEAMSPEAK3_SERVER_IP', '127.0.0.1')
 TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'))
 TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
 TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')

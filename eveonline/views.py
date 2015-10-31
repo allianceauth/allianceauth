@@ -104,7 +104,7 @@ def main_character_change(request, char_id):
         character_info = EveManager.get_character_by_id(char_id)
         corporation_info = EveManager.get_corporation_info_by_id(character_info.corporation_id)
 
-        if EveManager.get_charater_corporation_id_by_id(char_id) == settings.CORP_ID:
+        if (settings.IS_CORP and EveManager.get_charater_corporation_id_by_id(char_id) == settings.CORP_ID) or (not settings.IS_CORP and EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID):
             add_member_permission(request.user, 'member')
             add_user_to_group(request.user, settings.DEFAULT_AUTH_GROUP)
             add_user_to_group(request.user,
