@@ -2,13 +2,20 @@ from django.conf import settings
 from django.utils import timezone
 
 
+def is_corp(request):
+    return {'IS_CORP': settings.IS_CORP}
+
 def corp_id(request):
     return {'CORP_ID': settings.CORP_ID}
-
 
 def corp_name(request):
     return {'CORP_NAME': settings.CORP_NAME}
 
+def alliance_id(request):
+    return {'ALLIANCE_ID': settings.ALLIANCE_ID}
+
+def alliance_name(request):
+    return {'ALLIANCE_NAME': settings.CORP_NAME}
 
 def jabber_url(request):
     return {'JABBER_URL': settings.JABBER_URL}

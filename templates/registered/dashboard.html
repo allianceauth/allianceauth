@@ -1,6 +1,6 @@
 {% extends "public/base.html" %}
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}Something something here{% endblock page_title %}
+{% block page_title %}Dashboard{% endblock page_title %}
 
 {% block content %}
 
@@ -59,7 +59,11 @@
                 </div>
             </div>
         {% else %}
-            <p> Not part of the corporation</p>
+            {% if IS_CORP %}
+                <p> Not part of the corporation.</p>
+            {% else %}
+                <p> Not part of the alliance.</p>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock content %}

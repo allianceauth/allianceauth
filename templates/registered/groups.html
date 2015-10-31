@@ -52,7 +52,11 @@
                 {% endfor %}
             </table>
         {% else %}
-            <div class="alert alert-danger" role="alert">You are not in the corporation</div>
+            {% if IS_CORP %}
+                <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
+            {% endif %}
         {% endif %}
     </div>
 

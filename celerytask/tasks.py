@@ -225,7 +225,8 @@ def run_api_refresh():
                             character = EveManager.get_character_by_id(authserviceinfo.main_char_id)
                             corp = EveManager.get_corporation_info_by_id(character.corporation_id)
                             main_corp_id = EveManager.get_charater_corporation_id_by_id(authserviceinfo.main_char_id)
-                            if main_corp_id == settings.CORP_ID:
+                            main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
+                            if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
                                 if not check_if_user_has_permission(user, "member"):
                                     #transition from blue to member
                                     if check_if_user_has_permission(user, "blue_member"):
@@ -237,29 +238,38 @@ def run_api_refresh():
                             elif corp is not None:
                                 if corp.is_blue is not True:
                                     if check_if_user_has_permission(user, "member"):
+                                        #transition from member to nobody
                                         disable_alliance_member(user, authserviceinfo.main_char_id)
                                     elif check_if_user_has_permission(user, "blue_member"):
+                                        #transition from blue to nobody
                                         disable_blue_member(user)
                                     else:
+                                        #stay nobody, make sure no services
                                         deactivate_services(user)
                                 else:
+                                    change_status = False
                                     if check_if_user_has_permission(user, "member"):
-                                        remove_member_permission(user, "member")
-                                        remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
+                                        #remove auth member to prepare for member to blue transition
+                                        disable_alliance_member(user, authserviceinfo.main_char_id)
+                                        change_status = True
                                     if not check_if_user_has_permission(user, "blue_member"):
+                                        #perform member to blue transition
                                         add_member_permission(user, "blue_member")
                                         add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
-
-                                    #Fix mumble username ticker
-                                    MumbleManager.delete_user(authserviceinfo.mumble_username)
-                                    remove_all_syncgroups_for_service(user, "mumble")
-                                    AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
-
-                                    #make new user (how generous)
-                                    result = MumbleManager.create_blue_user(character.corporation_ticker, character.character_name)
-                                    AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], user)
-                                    update_mumble_groups(request.user)
+                                        change_status = True
+                                        
+                                    #if user has mumble account, rename it with proper ticker
+                                    if (not authserviceinfo.mumble_username == "") and change_status:
+                                        #Fix mumble username ticker
+                                        MumbleManager.delete_user(authserviceinfo.mumble_username)
+                                        remove_all_syncgroups_for_service(user, "mumble")
+                                        AuthServicesInfoManager.update_user_mumble_info("", "", request.user)
+                                        #make new user (how generous)
+                                        result = MumbleManager.create_blue_user(character.corporation_ticker, character.character_name)
+                                        AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], user)
+                                        update_mumble_groups(request.user)
                             else:
+                                # disable accounts with missing corp data
                                 if check_if_user_has_permission(user, "member"):
                                     disable_alliance_member(user, authserviceinfo.main_char_id)
                                 elif check_if_user_has_permission(user, "blue_member"):
@@ -268,7 +278,7 @@ def run_api_refresh():
                                     deactivate_services(user)
 
                         else:
-                            # nuke it
+                            # disable accounts with invalid keys
                             if check_if_user_has_permission(user, "member"):
                                 disable_alliance_member(user, authserviceinfo.main_char_id)
                             elif check_if_user_has_permission(user, "blue_member"):
@@ -286,12 +296,27 @@ def run_corp_update():
     # I am not proud of this block of code
     if EveApiManager.check_if_api_server_online():
 
-        # Create the corp
-        corpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
-        if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
-            EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
-                                               corpinfo['members']['current'], False, None)
-
+        if settings.IS_CORP:
+            # Create the corp
+            corpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
+            if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
+                EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
+                                                   corpinfo['members']['current'], False, None)
+        else:
+            # Updated alliance info
+            alliance_info = EveApiManager.get_alliance_information(settings.ALLIANCE_ID)
+ 
+             # Populate alliance info
+            if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
+            EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
+                                             alliance_info['executor_id'], alliance_info['member_count'], False)
+            alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
+            # Create the corps in the alliance
+            for alliance_corp in alliance_info['member_corps']:
+                corpinfo = EveApiManager.get_corporation_information(alliance_corp)
+                if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
+                    EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
+                                                    corpinfo['members']['current'], False, alliance)
 
         #determine what level of standings to check
         #refer to https://github.com/eve-val/evelink/blob/master/evelink/parsing/contact_list.py#L43
@@ -333,7 +358,10 @@ def run_corp_update():
         # Update all allinace info's
         for all_alliance_info in EveManager.get_all_alliance_info():
             all_alliance_api_info = EveApiManager.get_alliance_information(all_alliance_info.alliance_id)
-            if standing_level in corp_standings:
+            if (not settings.IS_CORP and all_alliance_info.alliance_id == settings.ALLIANCE_ID):
+                EveManager.update_alliance_info(all_alliance_api_info['id'], all_alliance_api_info['executor_id'],
+                                                all_alliance_api_info['member_count'], False)
+            elif standing_level in corp_standings:
                 if int(all_alliance_info.alliance_id) in corp_standings[standing_level]:
                     if int(corp_standings[standing_level][int(all_alliance_info.alliance_id)][
                         'standing']) >= settings.BLUE_STANDING:
@@ -362,7 +390,9 @@ def run_corp_update():
 
             if alliance is not None and all_corp_info.alliance is not None:
 
-                if int(alliance.alliance_id) in corp_standings[standing_level]:
+                if (not settings.IS_CORP) and (all_corp_info.alliance.alliance_id == settings.ALLIANCE_ID):
+                    EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, False)
+                elif int(alliance.alliance_id) in corp_standings[standing_level]:
                     if int(corp_standings[standing_level][int(alliance.alliance_id)][
                         'standing']) >= settings.BLUE_STANDING:
                         EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance,
@@ -383,15 +413,18 @@ def run_corp_update():
                 else:
                     EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], None, False)
 
-        # Nuke the none believers
+        # Remove irrelevent corp and alliance models
         # Check the corps
         for all_corp_info in EveManager.get_all_corporation_info():
-            if all_corp_info.corporation_id != settings.CORP_ID:
+            if (settings.IS_CORP and all_corp_info.corporation_id != settings.CORP_ID) or (not settings.IS_CORP and all_corp_info.alliance_id != settings.ALLIANCE_ID):
                 if not all_corp_info.is_blue:
                     all_corp_info.delete()
 
         # Check the alliances
         for all_alliance_info in EveManager.get_all_alliance_info():
+            if (not settings.IS_CORP and all_alliance_info.alliance_id != settings.ALLIANCE_ID):
+                if all_alliance_info.is_blue is not True:
+                    all_alliance_info.delete()
             if all_alliance_info.is_blue is not True:
                 all_alliance_info.delete()
 
