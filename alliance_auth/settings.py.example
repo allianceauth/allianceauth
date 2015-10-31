@@ -112,8 +112,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'util.context_processors.is_corp',
     'util.context_processors.corp_id',
     'util.context_processors.corp_name',
+    'util.context_processors.alliance_id',
+    'util.context_processors.alliance_name',
     'util.context_processors.jabber_url',
     'util.context_processors.domain_url'
 )
