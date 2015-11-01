@@ -117,7 +117,10 @@ def add_to_databases(user, groups, syncgroups):
 
     if authserviceinfo:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
-
+		
+	if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                update_teamspeak3_groups(user)
+				
         for group in groups:
             print group
 
@@ -137,8 +140,6 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
-            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
