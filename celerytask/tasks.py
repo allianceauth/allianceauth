@@ -308,9 +308,9 @@ def run_corp_update():
  
              # Populate alliance info
             if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
-            EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
+                EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
                                              alliance_info['executor_id'], alliance_info['member_count'], False)
-            alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
+                alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
             # Create the corps in the alliance
             for alliance_corp in alliance_info['member_corps']:
                 corpinfo = EveApiManager.get_corporation_information(alliance_corp)
