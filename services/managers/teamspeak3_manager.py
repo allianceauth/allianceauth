@@ -100,6 +100,7 @@ class Teamspeak3Manager:
         print("groupname = {0}").format(groupname)
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
+        print("server_groups = {0}").format(server_groups)
         user_groups = Teamspeak3Manager._user_group_list(uid)
         print("user_groups = {0}").format(user_groups)
 
