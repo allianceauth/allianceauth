@@ -95,16 +95,21 @@ class Teamspeak3Manager:
 
     @staticmethod
     def _add_user_to_group(uid, groupname):
+		print("--RUNNING _add_user_to_groups()--")
         groupname = groupname[:30]
+		print("groupname = {0}").format(groupname)
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
+		print("user_groups = {0}").format(user_groups)
 
         if not groupname in server_groups:
-            Teamspeak3Manager._create_group(groupname)
+            #Teamspeak3Manager._create_group(groupname)
+			print("----GROUP NAME WAS NOT FOUND IN SERVER GROUPS----")
         if not groupname in user_groups:
-            server.send_command('servergroupaddclient',
+            resp = server.send_command('servergroupaddclient',
                                 {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
+            print(resp)
 
     @staticmethod
     def _remove_user_from_group(uid, groupname):
