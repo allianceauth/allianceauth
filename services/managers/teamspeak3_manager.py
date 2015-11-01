@@ -224,7 +224,7 @@ class Teamspeak3Manager:
         if userid is not None:
             user_ts_groups = Teamspeak3Manager._user_group_list(userid)
             for key in user_ts_groups:
-                user_ts_groups[key] = long(user_ts_groups[key])
+                user_ts_groups[key] = int(user_ts_groups[key])
             print("user_ts_groups = {0}").format(user_ts_groups)
             for ts_group_key in ts_groups:
 				print("(For addgroups) GID {0}").format(user_ts_group_key)
