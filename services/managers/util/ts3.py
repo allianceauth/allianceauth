@@ -60,6 +60,8 @@ class TS3Proto():
     def send_command(self, command, keys=None, opts=None):
         cmd = self.construct_command(command, keys=keys, opts=opts)
         self.send('%s\n' % cmd)
+        
+        print("Command to be sent: {0}").format(cmd)
 
         data = []
 
