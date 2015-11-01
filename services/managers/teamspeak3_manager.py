@@ -227,7 +227,7 @@ class Teamspeak3Manager:
                 user_ts_groups[key] = int(user_ts_groups[key])
             print("user_ts_groups = {0}").format(user_ts_groups)
             for ts_group_key in ts_groups:
-				print("(For addgroups) GID {0}").format(user_ts_group_key)
+                print("(For addgroups) GID {0}").format(user_ts_group_key)
                 if ts_groups[ts_group_key] not in user_ts_groups.values():
                     print("Adding {0}").format(ts_group_key)
                     addgroups[ts_group_key] = ts_groups[ts_group_key]
