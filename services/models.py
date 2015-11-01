@@ -16,7 +16,7 @@ class AuthTS(models.Model):
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
-        verbose_name='Auth / TS Groups'
+        verbose_name='Auth / TS Group'
 
     def __str__(self):
         return self.auth_group.name
@@ -26,7 +26,7 @@ class UserTSgroup(models.Model):
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
-        verbose_name='User / TS Group'
+        verbose_name='User TS Group'
 
     def __str__(self):
         return self.user.name

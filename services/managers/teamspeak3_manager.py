@@ -214,21 +214,29 @@ class Teamspeak3Manager:
         return Teamspeak3Manager.add_blue_user(username, corpticker)
 
     @staticmethod
-    def update_groups(uid, l_groups):
+    def update_groups(uid, ts_groups):
+        print "Running update_groups" 
         print uid
-        print l_groups
-        Teamspeak3Manager._sync_ts_group_db()
+        print ts_groups
+        print "Running _sync_ts_group_db()"
         userid = Teamspeak3Manager._get_userid(uid)
-        act_groups = []
+        addgroups = {}
+        remgroups = {}
         if userid is not None:
-            user_ts_groups = set(Teamspeak3Manager._user_group_list(userid))
+            user_ts_groups = Teamspeak3Manager._user_group_list(userid)
             for key in user_ts_groups:
-                for group in l_groups:
-                    if group.auth_group.id = user_ts_groups[key]:
-                        act_groups += group
-
-            addgroups = act_groups - l_groups
-            remgroups = l_groups - act_groups
+                user_ts_groups[key] = long(user_ts_groups[key])
+            print("user_ts_groups = {0}").format(user_ts_groups)
+            for ts_group_key in ts_groups:
+                print("(For addgroups) {0} not in {1}").format(ts_groups[ts_group_key], user_ts_groups.values())
+                if ts_groups[ts_group_key] not in user_ts_groups.values():
+                    print("Adding {0}").format(ts_group_key)
+                    addgroups[ts_group_key] = ts_groups[ts_group_key]
+            for user_ts_group_key in user_ts_groups:
+                print("(For remgroups) {0}").format(user_ts_group_key)
+                if user_ts_groups[user_ts_group_key] not in ts_groups.values():
+                    print("Value {0} not found").format(user_ts_groups[user_ts_group_key])
+                    remgroups[user_ts_group_key] = user_ts_groups[user_ts_group_key]
 
             print userid
             print addgroups

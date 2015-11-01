@@ -73,11 +73,19 @@ def update_ipboard_groups(user):
 
 
 def update_teamspeak3_groups(user):
-    usergroups = User.objects.filter(id=user.id).first().groups.all()
+    print "Running update_teamspeak3_groups"
+    print("user = {0}").format(user)
+    usergroups = User.objects.get(id=user.id).groups.all()
+    print("usergroups = {0}").format(usergroups)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
-    groups = []
+    groups = {}
     for usergroup in usergroups:
-        groups += list(AuthTS.objects.filter(auth_group=usergroup))
+        print("usergroup = {0}").format(usergroup)
+        filtered_groups = AuthTS.objects.filter(auth_group=usergroup)
+        if filtered_groups:
+            for filtered_group in filtered_groups:
+                for ts_group in filtered_group.ts_group.all():
+                    groups[ts_group.ts_group_name] = ts_group.ts_group_id
 
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
@@ -98,6 +106,9 @@ def remove_all_syncgroups_for_service(user, servicename):
 
 
 def add_to_databases(user, groups, syncgroups):
+    print user
+    print groups
+    print syncgroups
     authserviceinfo = None
     try:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -108,6 +119,7 @@ def add_to_databases(user, groups, syncgroups):
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
 
         for group in groups:
+            print group
 
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
@@ -126,9 +138,7 @@ def add_to_databases(user, groups, syncgroups):
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                if syncgroups.filter(groupname=group.name).filter(servicename="teamspeak3").exists() is not True:
-                    create_syncgroup_for_user(user, group.name, "teamspeak3")
-                    update_teamspeak3_groups(user)
+                update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -167,6 +177,7 @@ def run_databaseUpdate():
     for user in users:
         groups = user.groups.all()
         syncgroups = SyncGroupCache.objects.filter(user=user)
+        Teamspeak3Manager._sync_ts_group_db()
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
 

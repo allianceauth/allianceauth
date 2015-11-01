@@ -57,3 +57,4 @@ target/
 alliance_auth/settings.py
 requirements.txt
 static/admin/img/Thumbs.db
+nginx_config.txt

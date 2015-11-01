@@ -10,5 +10,9 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 class TSgroupAdmin(admin.ModelAdmin):
 	fields = ['ts_group_name']
 
+class UserTSgroupAdmin(admin.ModelAdmin):
+	fields = ['user','ts_group']
+	filter_horizontal = ('ts_group',)
+
 admin.site.register(AuthTS, AuthTSgroupAdmin)
 admin.site.register(TSgroup, TSgroupAdmin)
