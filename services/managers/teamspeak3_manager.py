@@ -218,7 +218,6 @@ class Teamspeak3Manager:
         print "Running update_groups" 
         print uid
         print ts_groups
-        print "Running _sync_ts_group_db()"
         userid = Teamspeak3Manager._get_userid(uid)
         addgroups = {}
         remgroups = {}
@@ -228,12 +227,12 @@ class Teamspeak3Manager:
                 user_ts_groups[key] = long(user_ts_groups[key])
             print("user_ts_groups = {0}").format(user_ts_groups)
             for ts_group_key in ts_groups:
-                print("(For addgroups) {0} not in {1}").format(ts_groups[ts_group_key], user_ts_groups.values())
+				print("(For addgroups) GID {0}").format(user_ts_group_key)
                 if ts_groups[ts_group_key] not in user_ts_groups.values():
                     print("Adding {0}").format(ts_group_key)
                     addgroups[ts_group_key] = ts_groups[ts_group_key]
             for user_ts_group_key in user_ts_groups:
-                print("(For remgroups) {0}").format(user_ts_group_key)
+                print("(For remgroups) GID {0}").format(user_ts_group_key)
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     print("Value {0} not found").format(user_ts_groups[user_ts_group_key])
                     remgroups[user_ts_group_key] = user_ts_groups[user_ts_group_key]
