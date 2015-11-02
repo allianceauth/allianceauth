@@ -109,7 +109,7 @@ class Teamspeak3Manager:
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
 
-        if groupname in user_groups:
+        if groupid in user_groups:
             server.send_command('servergroupdelclient',
                                 {'sgid': groupid, 'cldbid': uid})
 
