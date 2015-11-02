@@ -101,7 +101,7 @@ class Teamspeak3Manager:
         
         if not groupid in user_groups.values():
             server.send_command('servergroupaddclient',
-                                {'sgid': groupid, 'cldbid': uid})
+                                {'sgid': str(groupid), 'cldbid': uid})
 
     @staticmethod
     def _remove_user_from_group(uid, groupid):
@@ -111,7 +111,7 @@ class Teamspeak3Manager:
 
         if groupid in user_groups:
             server.send_command('servergroupdelclient',
-                                {'sgid': groupid, 'cldbid': uid})
+                                {'sgid': str(groupid), 'cldbid': uid})
 
     @staticmethod
     def _sync_ts_group_db():
