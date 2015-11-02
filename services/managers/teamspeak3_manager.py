@@ -94,23 +94,14 @@ class Teamspeak3Manager:
         return outlist
 
     @staticmethod
-    def _add_user_to_group(uid, groupname):
-        print("--RUNNING _add_user_to_groups()--")
-        groupname = groupname[:30]
-        print("groupname = {0}").format(groupname)
+    def _add_user_to_group(uid, groupid):
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
-        print("server_groups = {0}").format(server_groups)
         user_groups = Teamspeak3Manager._user_group_list(uid)
-        print("user_groups = {0}").format(user_groups)
-
-        if not groupname in server_groups:
-            #Teamspeak3Manager._create_group(groupname)
-            print("----GROUP NAME WAS NOT FOUND IN SERVER GROUPS----")
-        if not groupname in user_groups:
-            resp = server.send_command('servergroupaddclient',
-                                {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
-            print(resp)
+        
+        if not groupid in user_groups.values():
+            server.send_command('servergroupaddclient',
+                                {'sgid': groupid, 'cldbid': uid})
 
     @staticmethod
     def _remove_user_from_group(uid, groupname):
@@ -129,6 +120,9 @@ class Teamspeak3Manager:
     def _sync_ts_group_db():
         remote_groups = Teamspeak3Manager._group_list()
         local_groups = TSgroup.objects.all()
+        for group in local_groups:
+            if group.ts_group_id not in remote_groups.values()
+            TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
             TSgroup.objects.update_or_create(ts_group_id=remote_groups[key],ts_group_name=key)
 
@@ -225,8 +219,8 @@ class Teamspeak3Manager:
         print uid
         print ts_groups
         userid = Teamspeak3Manager._get_userid(uid)
-        addgroups = {}
-        remgroups = {}
+        addgroups = []
+        remgroups = []
         if userid is not None:
             user_ts_groups = Teamspeak3Manager._user_group_list(userid)
             for key in user_ts_groups:
@@ -236,12 +230,12 @@ class Teamspeak3Manager:
                 print("(For addgroups) GID {0}").format(ts_group_key)
                 if ts_groups[ts_group_key] not in user_ts_groups.values():
                     print("Adding {0}").format(ts_group_key)
-                    addgroups[ts_group_key] = ts_groups[ts_group_key]
+                    addgroups.append(ts_groups[ts_group_key])
             for user_ts_group_key in user_ts_groups:
                 print("(For remgroups) GID {0}").format(user_ts_group_key)
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     print("Value {0} not found").format(user_ts_groups[user_ts_group_key])
-                    remgroups[user_ts_group_key] = user_ts_groups[user_ts_group_key]
+                    remgroups.append(user_ts_groups[user_ts_group_key])
 
             print userid
             print addgroups
