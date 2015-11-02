@@ -104,17 +104,14 @@ class Teamspeak3Manager:
                                 {'sgid': groupid, 'cldbid': uid})
 
     @staticmethod
-    def _remove_user_from_group(uid, groupname):
-        groupname = groupname[:30]
+    def _remove_user_from_group(uid, groupid):
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
 
-        if groupname in server_groups:
-            Teamspeak3Manager._create_group(groupname)
         if groupname in user_groups:
             server.send_command('servergroupdelclient',
-                                {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
+                                {'sgid': groupid, 'cldbid': uid})
 
     @staticmethod
     def _sync_ts_group_db():
