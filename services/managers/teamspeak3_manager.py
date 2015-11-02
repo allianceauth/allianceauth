@@ -121,8 +121,8 @@ class Teamspeak3Manager:
         remote_groups = Teamspeak3Manager._group_list()
         local_groups = TSgroup.objects.all()
         for group in local_groups:
-            if group.ts_group_id not in remote_groups.values()
-            TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
+            if group.ts_group_id not in remote_groups.values():
+                TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
             TSgroup.objects.update_or_create(ts_group_id=remote_groups[key],ts_group_name=key)
 
