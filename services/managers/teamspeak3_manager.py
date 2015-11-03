@@ -122,7 +122,7 @@ class Teamspeak3Manager:
                 TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
             g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
-            q = TSgroup.objects.filters(ts_group_id=g.ts_group_id)
+            q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
             if not q:
                 g.save()
 
