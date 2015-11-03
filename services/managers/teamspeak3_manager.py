@@ -132,6 +132,7 @@ class Teamspeak3Manager:
             print("(For Adds) Processing {0}").format(key)
             g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
             q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
+            print("Is {0} in {1}?").format(g,q)
             if not q:
                 print("Saving {0} to DB").format(g.ts_group_name)
                 g.save()
