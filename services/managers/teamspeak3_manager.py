@@ -117,11 +117,14 @@ class Teamspeak3Manager:
     def _sync_ts_group_db():
         remote_groups = Teamspeak3Manager._group_list()
         local_groups = TSgroup.objects.all()
+        print("--Doing group sync--")
         for group in local_groups:
+            print("(For Removals) Processing {0}").format(group.ts_group_name)
             if group.ts_group_id not in remote_groups.values():
                 print("Removing {0} from DB").format(group.ts_group_name)
                 TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
+            print("(For Adds) Processing {0}").format(key)
             g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
             q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
             if not q:
