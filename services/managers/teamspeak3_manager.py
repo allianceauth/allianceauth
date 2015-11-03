@@ -122,7 +122,7 @@ class Teamspeak3Manager:
         for group in local_groups:
             print("(For Removals) Processing {0}").format(group.ts_group_name)
             if group.ts_group_id not in remote_groups.values():
-                print("GroupID={}:")
+                print("GroupID={0}").format(group.ts_group_id)
                 print("Removing {0} from DB").format(group.ts_group_name)
                 TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
