@@ -119,11 +119,13 @@ class Teamspeak3Manager:
         local_groups = TSgroup.objects.all()
         for group in local_groups:
             if group.ts_group_id not in remote_groups.values():
+                print("Removing {0} from DB").format(group.ts_group_name)
                 TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
         for key in remote_groups:
             g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
             q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
             if not q:
+                print("Saving {0} to DB").format(g.ts_group_name)
                 g.save()
 
     @staticmethod
