@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from services.managers.util.ts3 import TS3Server
+from services.models import TSgroup
 
 
 class Teamspeak3Manager:
@@ -93,30 +94,40 @@ class Teamspeak3Manager:
         return outlist
 
     @staticmethod
-    def _add_user_to_group(uid, groupname):
-        groupname = groupname[:30]
+    def _add_user_to_group(uid, groupid):
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
-
-        if not groupname in server_groups:
-            Teamspeak3Manager._create_group(groupname)
-        if not groupname in user_groups:
+        
+        if not groupid in user_groups.values():
             server.send_command('servergroupaddclient',
-                                {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
+                                {'sgid': str(groupid), 'cldbid': uid})
 
     @staticmethod
-    def _remove_user_from_group(uid, groupname):
-        groupname = groupname[:30]
+    def _remove_user_from_group(uid, groupid):
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
 
-        if groupname in server_groups:
-            Teamspeak3Manager._create_group(groupname)
-        if groupname in user_groups:
+        if str(groupid) in user_groups.values():
             server.send_command('servergroupdelclient',
-                                {'sgid': Teamspeak3Manager._group_id_by_name(groupname), 'cldbid': uid})
+                                {'sgid': str(groupid), 'cldbid': uid})
+
+    @staticmethod
+    def _sync_ts_group_db():
+        remote_groups = Teamspeak3Manager._group_list()
+        local_groups = TSgroup.objects.all()
+        for key in remote_groups:
+            remote_groups[key] = int(remote_groups[key])
+            
+        for group in local_groups:
+            if group.ts_group_id not in remote_groups.values():
+                TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
+        for key in remote_groups:
+            g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
+            q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
+            if not q:
+                g.save()
 
     @staticmethod
     def add_user(username, corp_ticker):
@@ -206,28 +217,26 @@ class Teamspeak3Manager:
         return Teamspeak3Manager.add_blue_user(username, corpticker)
 
     @staticmethod
-    def update_groups(uid, l_groups):
-        print uid
-        print l_groups
+    def update_groups(uid, ts_groups):
         userid = Teamspeak3Manager._get_userid(uid)
+        addgroups = []
+        remgroups = []
         if userid is not None:
-            server_groups = Teamspeak3Manager._group_list()
-            user_groups = set(Teamspeak3Manager._user_group_list(userid))
-            groups = []
-            for l_group in l_groups:
-                groups.append(l_group[:30])
-
-            act_groups = set([g.replace(' ', '-') for g in groups])
-            addgroups = act_groups - user_groups
-            remgroups = user_groups - act_groups
+            user_ts_groups = Teamspeak3Manager._user_group_list(userid)
+            for key in user_ts_groups:
+                user_ts_groups[key] = int(user_ts_groups[key])
+            for ts_group_key in ts_groups:
+                if ts_groups[ts_group_key] not in user_ts_groups.values():
+                    addgroups.append(ts_groups[ts_group_key])
+            for user_ts_group_key in user_ts_groups:
+                if user_ts_groups[user_ts_group_key] not in ts_groups.values():
+                    remgroups.append(user_ts_groups[user_ts_group_key])
 
             print userid
             print addgroups
             print remgroups
 
             for g in addgroups:
-                if not g in server_groups.keys():
-                    Teamspeak3Manager._create_group(g)
                 Teamspeak3Manager._add_user_to_group(userid, g)
 
             for g in remgroups:

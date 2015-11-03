@@ -12,6 +12,15 @@ sudo apt-get -y install python-dev libyaml-dev libffi-dev
 sudo apt-get -y install python-pip
 sudo apt-get -y install mysql-server mysql-client
 
+#Python 3 stuff
+sudo apt-get -y install python-software-properties
+sudo add-apt-repository ppa:fkrull/deadsnakes
+sudo apt-get -y update
+sudo apt-get -y install python3.3
+
+#virtualenv stuff
+sudo apt-get -y install python-virtualenv
+
 cd /vagrant/
 
 sudo pip install --upgrade pip
