@@ -123,7 +123,7 @@ class Teamspeak3Manager:
         for key in remote_groups:
             g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
             q = TSgroup.objects.filters(ts_group_id=g.ts_group_id)
-            if !q:
+            if not q:
                 g.save()
 
     @staticmethod
