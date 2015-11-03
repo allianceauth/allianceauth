@@ -117,8 +117,9 @@ class Teamspeak3Manager:
     def _sync_ts_group_db():
         remote_groups = Teamspeak3Manager._group_list()
         local_groups = TSgroup.objects.all()
-        remote_groups = [ int(id) for id in remote_groups ]
-        
+        for key in remote_groups:
+            remote_groups[key] = int(remote_groups[key])
+            
         print("--Doing group sync--")
         print("Remote groups {0}").format(remote_groups.values())
         for group in local_groups:
