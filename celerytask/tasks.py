@@ -167,8 +167,8 @@ def remove_from_databases(user, groups, syncgroups):
                 update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
                 update_ipboard_groups(user)
-            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                update_teamspeak3_groups(user)
+            #if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+            #    update_teamspeak3_groups(user)
 
 
 # Run every minute
