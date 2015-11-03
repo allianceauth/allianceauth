@@ -73,14 +73,10 @@ def update_ipboard_groups(user):
 
 
 def update_teamspeak3_groups(user):
-    print "Running update_teamspeak3_groups"
-    print("user = {0}").format(user)
     usergroups = User.objects.get(id=user.id).groups.all()
-    print("usergroups = {0}").format(usergroups)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = {}
     for usergroup in usergroups:
-        print("usergroup = {0}").format(usergroup)
         filtered_groups = AuthTS.objects.filter(auth_group=usergroup)
         if filtered_groups:
             for filtered_group in filtered_groups:
@@ -167,8 +163,8 @@ def remove_from_databases(user, groups, syncgroups):
                 update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
                 update_ipboard_groups(user)
-            #if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-            #    update_teamspeak3_groups(user)
+            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                update_teamspeak3_groups(user)
 
 
 # Run every minute
