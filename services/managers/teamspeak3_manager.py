@@ -110,6 +110,7 @@ class Teamspeak3Manager:
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
 
+        print("Is {0} in {1}?").format(str(groupid), user_groups)
         if str(groupid) in user_groups:
             server.send_command('servergroupdelclient',
                                 {'sgid': str(groupid), 'cldbid': uid})
