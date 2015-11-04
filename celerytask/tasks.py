@@ -212,7 +212,7 @@ def run_api_refresh():
                 if authserviceinfo.main_char_id:
                     if authserviceinfo.main_char_id != "":
                         #preserve old corp ID for corp change test on members
-                        oldcorp_id = EveCharacter.objects.get(character_id=authservicesinfo.main_char_id).corporation_id
+                        oldcorp_id = EveCharacter.objects.get(character_id=authserviceinfo.main_char_id).corporation_id
                         for api_key_pair in api_key_pairs:
                             print 'Running on ' + api_key_pair.api_id + ':' + api_key_pair.api_key
                             if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
