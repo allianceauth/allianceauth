@@ -21,6 +21,7 @@ from util.common_task import remove_user_from_group
 from util.common_task import generate_corp_group_name
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
+from authentication.managers import AuthServicesInfoManager
 
 def generate_corp_group_name(corpname):
     return 'Corp_' + corpname.replace(' ', '_')
@@ -37,6 +38,7 @@ def disable_blue_member(user):
     remove_member_permission(user, 'blue_member')
     remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
     deactivate_services(user)
+    AuthServicesInfoManager.update_is_blue(False, user)
 
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -238,6 +240,7 @@ def run_api_refresh():
                                         #strip blue status
                                         remove_member_permission(user, "blue_member")
                                         remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
+                                        AuthServicesInfoManager.update_is_blue(False, user)
                                     #add to auth group
                                     add_member_permission(user, "member")
                                     add_user_to_group(user, settings.DEFAULT_AUTH_GROUP)
@@ -269,6 +272,7 @@ def run_api_refresh():
                                         #perform nobody to blue transition
                                         add_member_permission(user, "blue_member")
                                         add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
+                                        AuthServicesInfoManager.update_is_blue(True, user)
 
                             else:
                                 # disable accounts with missing corp model (not blue or member)
