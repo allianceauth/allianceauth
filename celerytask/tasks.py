@@ -442,6 +442,13 @@ def run_corp_update():
 
         # Check the alliances
         for all_alliance_info in EveManager.get_all_alliance_info():
-            if not settings.IS_CORP and all_alliance_info.alliance_id != settings.ALLIANCE_ID:
+            if settings.IS_CORP:
+                if all_alliance_info.is_blue is not True:
+                    if corpinfo.alliance is not None:
+                        if all_alliance_info.alliance_id != corpinfo.alliance.alliance_id:
+                            all_alliance_info.delete()
+                    else:
+                        all_alliance_info.delete()
+            elif all_alliance_info.alliance_id != settings.ALLIANCE_ID:
                 if all_alliance_info.is_blue is not True:
                     all_alliance_info.delete()
