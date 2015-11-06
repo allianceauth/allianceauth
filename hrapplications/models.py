@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from eveonline.models import EveCorporationInfo
 from eveonline.models import EveCharacter
+from eveonline.models import EveCorporationInfo
 
 
 class HRApplication(models.Model):

@@ -36,7 +36,11 @@
             <div class="navbar-header ">
                 <a class="navbar-brand ">
                     <div class="fa fa-cog fa-spin"></div>
-                    {{ ALLIANCE_NAME }}
+                    {% if IS_CORP %}
+                        <title>{{ CORP_NAME }}</title>
+                    {% else %}
+                        <title>{{ ALLIANCE_NAME }}</title>
+                    {% endif %}
                 </a>
             </div>
 
@@ -76,7 +80,7 @@
                                     class="fa fa-users fa-fw grayiconecolor"></i> Characters</a>
                         </li>
 
-                        {% if  perms.auth.alliance_member %}
+                        {% if  perms.auth.member %}
                             <li>
                                 <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
                                                                          href="{% url 'auth_groups' %}"><i
@@ -94,15 +98,15 @@
                         <li class="text-center divider-horizontal">
                             <h5>Aux Navigation</h5>
                         </li>
-                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+                        {% if  perms.auth.member or perms.auth.blue_member %}
                             <li>
                                 <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
                                                                            href="{% url 'auth_services' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Alliance Services</a>
+                                        class="fa fa-cogs fa-fw grayiconecolor"></i>Services</a>
                             </li>
                         {% endif %}
 
-                        {% if not perms.auth.alliance_member and not perms.auth.blue_member or perms.auth.human_resources %}
+                        {% if not perms.auth.member and not perms.auth.blue_member or perms.auth.human_resources %}
                             <li>
                                 <a {% ifequal request.path "/hr_application_management/" %}
                                     class="active" {% endifequal %}
@@ -127,7 +131,7 @@
                             </li>
                         {% endif %}
 
-                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+                        {% if  perms.auth.member or perms.auth.blue_member %}
 							<li>
                                 <a {% ifequal request.path "/fits" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_fleet_fits' %}"><i
@@ -158,7 +162,7 @@
                                     class="fa fa-lock fa-fw grayiconecolor"></i>Change Password</a>
                         </li>
 
-                        {% if  perms.auth.alliance_member or perms.auth.blue_member %}
+                        {% if  perms.auth.member or perms.auth.blue_member %}
                             <li>
                                 <a {% ifequal request.path "/tool/fleet_formatter_tool/" %}
                                     class="active" {% endifequal %}

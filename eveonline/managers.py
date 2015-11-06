@@ -206,3 +206,8 @@ class EveManager:
     @staticmethod
     def get_all_alliance_info():
         return EveAllianceInfo.objects.all()
+
+    @staticmethod
+    def get_charater_corporation_id_by_id(char_id):
+        if EveCharacter.objects.filter(character_id=char_id).exists():
+            return EveCharacter.objects.get(character_id=char_id).corporation_id

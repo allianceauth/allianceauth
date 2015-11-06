@@ -9,7 +9,7 @@
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">Available Groups</h1>
-        {% if perms.auth.alliance_member %}
+        {% if perms.auth.member %}
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">GroupID</th>
@@ -52,7 +52,11 @@
                 {% endfor %}
             </table>
         {% else %}
-            <div class="alert alert-danger" role="alert">You are not in the alliance</div>
+            {% if IS_CORP %}
+                <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
+            {% endif %}
         {% endif %}
     </div>
 
