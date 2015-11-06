@@ -60,9 +60,9 @@
             </div>
         {% else %}
             {% if IS_CORP %}
-                <p> Not part of the corporation.</p>
+                <div class="alert alert-danger" role="alert">Not a part of the corporation.</div> 
             {% else %}
-                <p> Not part of the alliance.</p>
+                <div class="alert alert-danger" role="alert">Not a part of the alliance.</div>
             {% endif %}
         {% endif %}
     </div>
