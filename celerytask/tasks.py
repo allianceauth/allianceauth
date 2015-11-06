@@ -95,7 +95,7 @@ def update_ipboard_groups(user):
 
 
 def update_teamspeak3_groups(user):
-    usergroups = User.objects.get(id=user.id).groups.all()
+    usergroups = user.groups.all()
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = {}
     for usergroup in usergroups:
