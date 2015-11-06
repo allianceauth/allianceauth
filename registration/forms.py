@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=32, required=True)
+    username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(widget=forms.PasswordInput(), required=True)
     password_again = forms.CharField(widget=forms.PasswordInput(), required=True, label="Password Again")
     email = forms.CharField(max_length=254, required=True)
