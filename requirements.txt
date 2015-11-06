@@ -4,10 +4,10 @@ evelink
 dnspython
 passlib
 xmpppy==0.5.0rc1
-# python-openfire==0.2.3-beta
+python-openfire==0.2.3-beta
 
 # Django Stuff #
-django==1.7.0
+django==1.6.5
 django-evolution
 django-bootstrap-form
 django-celery
