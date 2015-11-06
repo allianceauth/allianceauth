@@ -9,7 +9,7 @@
 
 {% block content %}
     <div class="col-lg-12">
-        {% if not perms.auth.alliance_member %}
+        {% if not perms.auth.member %}
             <h1 class="page-header text-center">Personal Applications
                 <div class="text-right">
                     <a href="{% url 'auth_hrapplication_create_view' %}">

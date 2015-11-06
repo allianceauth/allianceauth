@@ -7,7 +7,7 @@ from eveonline.managers import EveManager
 class UpdateKeyForm(forms.Form):
     api_id = forms.CharField(max_length=254, required=True, label="Key ID")
     api_key = forms.CharField(max_length=254, required=True, label="Verification Code")
-    is_blue = forms.BooleanField(label="Blue to alliance", required=False)
+    is_blue = forms.BooleanField(label="Blue to corp/alliance", required=False)
 
     def clean(self):
         if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):

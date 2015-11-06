@@ -127,7 +127,7 @@ class Teamspeak3Manager:
 
         server_groups = Teamspeak3Manager._group_list()
 
-        if not settings.DEFAULT_ALLIANCE_GROUP in server_groups:
+        if not settings.DEFAULT_AUTH_GROUP in server_groups:
             Teamspeak3Manager._create_group(settings.DEFAULT_ALLIANCE_GROUP)
 
         alliance_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_ALLIANCE_GROUP)

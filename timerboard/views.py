@@ -15,7 +15,7 @@ from models import Timer
 
 
 def timer_util_test(user):
-    return check_if_user_has_permission(user, 'alliance_member') or check_if_user_has_permission(user, 'blue_member')
+    return check_if_user_has_permission(user, 'member') or check_if_user_has_permission(user, 'blue_member')
 
 
 @login_required

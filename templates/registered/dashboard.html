@@ -1,12 +1,12 @@
 {% extends "public/base.html" %}
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}Something something here{% endblock page_title %}
+{% block page_title %}Dashboard{% endblock page_title %}
 
 {% block content %}
 
     <div class="col-lg-12">
         <h1 class="page-header text-center">Dashboard</h1>
-        {% if perms.auth.alliance_member %}
+        {% if perms.auth.member %}
             <div class="col-lg-12 container" id="example">
 
 
@@ -59,7 +59,11 @@
                 </div>
             </div>
         {% else %}
-            <p> Not part of the alliance</p>
+            {% if IS_CORP %}
+                <p> Not part of the corporation.</p>
+            {% else %}
+                <p> Not part of the alliance.</p>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock content %}
