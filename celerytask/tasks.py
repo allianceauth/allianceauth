@@ -50,8 +50,6 @@ def update_jabber_groups(user):
     if len(groups) == 0:
         groups.append('empty')
 
-    print groups
-
     OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
 
 
@@ -124,9 +122,6 @@ def remove_all_syncgroups_for_service(user, servicename):
 
 
 def add_to_databases(user, groups, syncgroups):
-    print user
-    print groups
-    print syncgroups
     authserviceinfo = None
     try:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -140,8 +135,6 @@ def add_to_databases(user, groups, syncgroups):
                 update_teamspeak3_groups(user)
 				
         for group in groups:
-            print group
-
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "openfire")
