@@ -313,7 +313,7 @@ def run_corp_update():
             if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
                 EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
                                              alliance_info['executor_id'], alliance_info['member_count'], False)
-                alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
+            alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
             # Create the corps in the alliance
             for alliance_corp in alliance_info['member_corps']:
                 corpinfo = EveApiManager.get_corporation_information(alliance_corp)
@@ -419,7 +419,7 @@ def run_corp_update():
         # Remove irrelevent corp and alliance models
         # Check the corps
         for all_corp_info in EveManager.get_all_corporation_info():
-            if (settings.IS_CORP and all_corp_info.corporation_id != settings.CORP_ID) or (not settings.IS_CORP and all_corp_info.alliance_id != settings.ALLIANCE_ID):
+            if (settings.IS_CORP and all_corp_info.corporation_id != settings.CORP_ID) or (not settings.IS_CORP and all_corp_info.alliance.alliance_id != settings.ALLIANCE_ID):
                 if not all_corp_info.is_blue:
                     all_corp_info.delete()
 
@@ -428,7 +428,3 @@ def run_corp_update():
             if (not settings.IS_CORP and all_alliance_info.alliance_id != settings.ALLIANCE_ID):
                 if all_alliance_info.is_blue is not True:
                     all_alliance_info.delete()
-            if all_alliance_info.is_blue is not True:
-                all_alliance_info.delete()
-
-
