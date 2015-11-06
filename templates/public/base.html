@@ -36,7 +36,11 @@
             <div class="navbar-header ">
                 <a class="navbar-brand ">
                     <div class="fa fa-cog fa-spin"></div>
-                    {{ CORP_NAME }}
+                    {% if IS_CORP %}
+                        <title>{{ CORP_NAME }}</title>
+                    {% else %}
+                        <title>{{ ALLIANCE_NAME }}</title>
+                    {% endif %}
                 </a>
             </div>
 
