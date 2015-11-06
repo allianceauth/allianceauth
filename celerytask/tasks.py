@@ -23,9 +23,6 @@ from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from authentication.managers import AuthServicesInfoManager
 
-def generate_corp_group_name(corpname):
-    return 'Corp_' + corpname.replace(' ', '_')
-
 def disable_alliance_member(user, char_id):
     remove_member_permission(user, 'member')
     remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
