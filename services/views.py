@@ -91,7 +91,7 @@ def services_view(request):
 
 
 def service_blue_alliance_test(user):
-    return check_if_user_has_permission(user, 'alliance_member') or check_if_user_has_permission(user, 'blue_member')
+    return check_if_user_has_permission(user, 'member') or check_if_user_has_permission(user, 'blue_member')
 
 
 @login_required
