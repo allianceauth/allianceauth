@@ -9,6 +9,8 @@ from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
+from services.models import AuthTS
+from services.models import TSgroup
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from services.managers.eve_api_manager import EveApiManager
@@ -47,8 +49,6 @@ def update_jabber_groups(user):
 
     if len(groups) == 0:
         groups.append('empty')
-
-    print groups
 
     OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
 
@@ -93,14 +93,15 @@ def update_ipboard_groups(user):
 
 
 def update_teamspeak3_groups(user):
-    syncgroups = SyncGroupCache.objects.filter(user=user)
+    usergroups = user.groups.all()
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
-    groups = []
-    for syncgroup in syncgroups:
-        groups.append(str(syncgroup.groupname))
-
-    if len(groups) == 0:
-        groups.append('empty')
+    groups = {}
+    for usergroup in usergroups:
+        filtered_groups = AuthTS.objects.filter(auth_group=usergroup)
+        if filtered_groups:
+            for filtered_group in filtered_groups:
+                for ts_group in filtered_group.ts_group.all():
+                    groups[ts_group.ts_group_name] = ts_group.ts_group_id
 
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
@@ -129,9 +130,11 @@ def add_to_databases(user, groups, syncgroups):
 
     if authserviceinfo:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
-
+		
+	if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                update_teamspeak3_groups(user)
+				
         for group in groups:
-
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "openfire")
@@ -148,10 +151,6 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
-            if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                if syncgroups.filter(groupname=group.name).filter(servicename="teamspeak3").exists() is not True:
-                    create_syncgroup_for_user(user, group.name, "teamspeak3")
-                    update_teamspeak3_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -190,6 +189,7 @@ def run_databaseUpdate():
     for user in users:
         groups = user.groups.all()
         syncgroups = SyncGroupCache.objects.filter(user=user)
+        Teamspeak3Manager._sync_ts_group_db()
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
 
