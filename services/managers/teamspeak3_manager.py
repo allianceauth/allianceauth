@@ -139,9 +139,9 @@ class Teamspeak3Manager:
         server_groups = Teamspeak3Manager._group_list()
 
         if not settings.DEFAULT_AUTH_GROUP in server_groups:
-            Teamspeak3Manager._create_group(settings.DEFAULT_ALLIANCE_GROUP)
+            Teamspeak3Manager._create_group(settings.DEFAULT_AUTH_GROUP)
 
-        alliance_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_ALLIANCE_GROUP)
+        alliance_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_AUTH_GROUP)
 
         ret = server.send_command('tokenadd', {'tokentype': 0, 'tokenid1': alliance_group_id, 'tokenid2': 0,
                                                'tokendescription': username_clean,
