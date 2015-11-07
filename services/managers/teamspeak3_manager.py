@@ -115,19 +115,22 @@ class Teamspeak3Manager:
 
     @staticmethod
     def _sync_ts_group_db():
-        remote_groups = Teamspeak3Manager._group_list()
-        local_groups = TSgroup.objects.all()
-        for key in remote_groups:
-            remote_groups[key] = int(remote_groups[key])
+        try:
+            remote_groups = Teamspeak3Manager._group_list()
+            local_groups = TSgroup.objects.all()
+            for key in remote_groups:
+                remote_groups[key] = int(remote_groups[key])
             
-        for group in local_groups:
-            if group.ts_group_id not in remote_groups.values():
-                TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
-        for key in remote_groups:
-            g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
-            q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
-            if not q:
-                g.save()
+            for group in local_groups:
+                if group.ts_group_id not in remote_groups.values():
+                    TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
+            for key in remote_groups:
+                g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
+                q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
+                if not q:
+                    g.save()
+        except:
+            pass
 
     @staticmethod
     def add_user(username, corp_ticker):
