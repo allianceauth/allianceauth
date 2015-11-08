@@ -219,7 +219,7 @@ class Phpbb3Manager:
         if Phpbb3Manager.check_user(username):
             pwhash = Phpbb3Manager.__gen_hash(password)
             cursor.execute(Phpbb3Manager.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
-            Phpbb3Manager.__add_avater(username, characterid)
+            Phpbb3Manager.__add_avatar(username, characterid)
             return password
 
         return ""
