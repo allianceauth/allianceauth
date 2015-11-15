@@ -100,7 +100,7 @@ def activate_forum(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
-    result = Phpbb3Manager.add_user(character.character_name, request.user.email, ['REGISTERED'])
+    result = Phpbb3Manager.add_user(character.character_name, request.user.email, ['REGISTERED'], authinfo.main_char_id)
     # if empty we failed
     if result[0] != "":
         AuthServicesInfoManager.update_user_forum_info(result[0], result[1], request.user)
@@ -126,7 +126,7 @@ def deactivate_forum(request):
 @user_passes_test(service_blue_alliance_test)
 def reset_forum_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = Phpbb3Manager.update_user_password(authinfo.forum_username)
+    result = Phpbb3Manager.update_user_password(authinfo.forum_username, authonfo.main_char_id)
     # false we failed
     if result != "":
         AuthServicesInfoManager.update_user_forum_info(authinfo.forum_username, result, request.user)
