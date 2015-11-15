@@ -41,7 +41,7 @@ class Phpbb3Manager:
     def __add_avatar(username, characterid):
         avatar_url = "http://image.eveonline.com/Character/" + characterid + "_64.jpg"
         cursor = connections['phpbb3'].cursor()
-        userid = Phpbb3Manager__get_user_id(username)
+        userid = Phpbb3Manager.__get_user_id(username)
         cursor.execute(Phpbb3Manager.SQL_ADD_USER_AVATAR, [avatar_url, userid])
 
     @staticmethod
