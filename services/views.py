@@ -126,7 +126,7 @@ def deactivate_forum(request):
 @user_passes_test(service_blue_alliance_test)
 def reset_forum_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = Phpbb3Manager.update_user_password(authinfo.forum_username, authonfo.main_char_id)
+    result = Phpbb3Manager.update_user_password(authinfo.forum_username, authinfo.main_char_id)
     # false we failed
     if result != "":
         AuthServicesInfoManager.update_user_forum_info(authinfo.forum_username, result, request.user)
