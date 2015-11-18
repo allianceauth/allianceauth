@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <style>
     html {
-        background: url("{% static 'img/index_images/index_bg.jpg' %}") no-repeat center center fixed;
+        background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -17,15 +17,29 @@
         margin-top: -100px;
         margin-left: -200px;
     }
+    #logo {
+        height: 200px;
+        width: 900px;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        margin-top: -100px;
+        margin-left: -450px;
+    }
 
 </style>
 
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>The 99 Percent Eve Alliance</title>
+    <title>My Corp and/or Alliance Name</title>
 </head>
 <body>
+<div id="logo">
+    <p style="text-align:center">
+        <img src="{% static 'img/index_images/logo.png' %}" border="0">
+    </p>
+</div>
 <div id="content">
     <p style="text-align:center">
         <a href="/dashboard/">
@@ -42,12 +56,6 @@
     <p style="text-align:center">
         <a href="/killboard/">
             <img src="{% static 'img/index_images/killboard.png' %}" border="0">
-        </a>
-    </p>
-
-    <p style="text-align:center">
-        <a href="https://www.youtube.com/playlist?list=PLXM5OIn59G5Gn7eri-lWkXvE15oP5yUUk">
-            <img src="{% static 'img/index_images/media.png' %}" border="0">
         </a>
     </p>
 </div>

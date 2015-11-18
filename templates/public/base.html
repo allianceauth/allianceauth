@@ -37,9 +37,9 @@
                 <a class="navbar-brand ">
                     <div class="fa fa-cog fa-spin"></div>
                     {% if IS_CORP %}
-                        <title>{{ CORP_NAME }}</title>
+                        {{ CORP_NAME }}
                     {% else %}
-                        <title>{{ ALLIANCE_NAME }}</title>
+                        {{ ALLIANCE_NAME }}
                     {% endif %}
                 </a>
             </div>
@@ -102,7 +102,7 @@
                             <li>
                                 <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
                                                                            href="{% url 'auth_services' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i>Services</a>
+                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
                             </li>
                         {% endif %}
 

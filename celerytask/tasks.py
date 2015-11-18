@@ -211,7 +211,9 @@ def run_api_refresh():
                 if authserviceinfo.main_char_id:
                     if authserviceinfo.main_char_id != "":
                         #preserve old corp ID for corp change test on members
-                        oldcorp_id = EveCharacter.objects.get(character_id=authserviceinfo.main_char_id).corporation_id
+                        oldcorp_id = 0
+                        if EveManager.get_character_by_id(authserviceinfo.main_char_id):
+                            oldcorp_id = EveCharacter.objects.get(character_id=authserviceinfo.main_char_id).corporation_id
                         for api_key_pair in api_key_pairs:
                             print 'Running on ' + api_key_pair.api_id + ':' + api_key_pair.api_key
                             if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
@@ -227,59 +229,66 @@ def run_api_refresh():
                         if valid_key:
                             # Check our main character
                             character = EveManager.get_character_by_id(authserviceinfo.main_char_id)
-                            corp = EveManager.get_corporation_info_by_id(character.corporation_id)
-                            main_corp_id = EveManager.get_charater_corporation_id_by_id(authserviceinfo.main_char_id)
-                            main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
-                            if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
-                                if not check_if_user_has_permission(user, "member"):
-                                    #transition from none or blue to member
-                                    if check_if_user_has_permission(user, "blue_member"):
-                                        #strip blue status
-                                        remove_member_permission(user, "blue_member")
-                                        remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
-                                        AuthServicesInfoManager.update_is_blue(False, user)
-                                    #add to auth group
-                                    add_member_permission(user, "member")
-                                    add_user_to_group(user, settings.DEFAULT_AUTH_GROUP)
-                                    #add to required corp group
-                                    add_user_to_group(user, generate_corp_group_name(character.corporation_name))
-                                elif corp.corporation_id != oldcorp_id:
-                                    #changed corps, both corps auth'd, need to change group assignment
-                                    oldcorp = EveCorporationInfo.objects.get(corporation_id=oldcorp_id)
-                                    remove_user_from_group(user, generate_corp_group_name(oldcorp.corporation_name))
-                                    add_user_to_group(user, generate_corp_group_name(character.corporation_name))
-                                    #reset services to force new mumble names and group assignments
-                                    deactivate_services(user)
-                            elif corp is not None:
-                                if corp.is_blue is not True:
+                            if character is not None and EveManager.check_if_corporation_exists_by_id(character.corporation_id):
+                                corp = EveManager.get_corporation_info_by_id(character.corporation_id)
+                                main_corp_id = EveManager.get_charater_corporation_id_by_id(authserviceinfo.main_char_id)
+                                main_alliance_id = EveManager.get_charater_alliance_id_by_id(authserviceinfo.main_char_id)
+                                if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
+                                    if not check_if_user_has_permission(user, "member"):
+                                        #transition from none or blue to member
+                                        if check_if_user_has_permission(user, "blue_member"):
+                                            #strip blue status
+                                            remove_member_permission(user, "blue_member")
+                                            remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
+                                            AuthServicesInfoManager.update_is_blue(False, user)
+                                        #add to auth group
+                                        add_member_permission(user, "member")
+                                        add_user_to_group(user, settings.DEFAULT_AUTH_GROUP)
+                                        #add to required corp group
+                                        add_user_to_group(user, generate_corp_group_name(character.corporation_name))
+                                    elif corp.corporation_id != oldcorp_id:
+                                        #changed corps, both corps auth'd, need to change group assignment
+                                        oldcorp = EveCorporationInfo.objects.get(corporation_id=oldcorp_id)
+                                        remove_user_from_group(user, generate_corp_group_name(oldcorp.corporation_name))
+                                        add_user_to_group(user, generate_corp_group_name(character.corporation_name))
+                                        #reset services to force new mumble names and group assignments
+                                        deactivate_services(user)
+                                elif corp is not None:
+                                    if corp.is_blue is not True:
+                                        if check_if_user_has_permission(user, "member"):
+                                            #transition from member to nobody
+                                            disable_alliance_member(user, authserviceinfo.main_char_id)
+                                        elif check_if_user_has_permission(user, "blue_member"):
+                                            #transition from blue to nobody
+                                            disable_blue_member(user)
+                                        else:
+                                            #stay nobody, make sure no services
+                                            deactivate_services(user)
+                                    else:
+                                        if check_if_user_has_permission(user, "member"):
+                                            #remove auth member to prepare for member to blue transition
+                                            disable_alliance_member(user, authserviceinfo.main_char_id)
+                                        if not check_if_user_has_permission(user, "blue_member"):
+                                            #perform nobody to blue transition
+                                            add_member_permission(user, "blue_member")
+                                            add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
+                                            AuthServicesInfoManager.update_is_blue(True, user)
+
+                                else:
+                                    # disable accounts with missing corp model (not blue or member)
                                     if check_if_user_has_permission(user, "member"):
-                                        #transition from member to nobody
                                         disable_alliance_member(user, authserviceinfo.main_char_id)
                                     elif check_if_user_has_permission(user, "blue_member"):
-                                        #transition from blue to nobody
                                         disable_blue_member(user)
                                     else:
-                                        #stay nobody, make sure no services
                                         deactivate_services(user)
-                                else:
-                                    if check_if_user_has_permission(user, "member"):
-                                        #remove auth member to prepare for member to blue transition
-                                        disable_alliance_member(user, authserviceinfo.main_char_id)
-                                    if not check_if_user_has_permission(user, "blue_member"):
-                                        #perform nobody to blue transition
-                                        add_member_permission(user, "blue_member")
-                                        add_user_to_group(user, settings.DEFAULT_BLUE_GROUP)
-                                        AuthServicesInfoManager.update_is_blue(True, user)
-
                             else:
-                                # disable accounts with missing corp model (not blue or member)
                                 if check_if_user_has_permission(user, "member"):
                                     disable_alliance_member(user, authserviceinfo.main_char_id)
                                 elif check_if_user_has_permission(user, "blue_member"):
                                     disable_blue_member(user)
                                 else:
                                     deactivate_services(user)
-
                         else:
                             # disable accounts with invalid keys
                             if check_if_user_has_permission(user, "member"):
@@ -313,7 +322,7 @@ def run_corp_update():
             if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
                 EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
                                              alliance_info['executor_id'], alliance_info['member_count'], False)
-                alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
+            alliance = EveManager.get_alliance_info_by_id(settings.ALLIANCE_ID)
             # Create the corps in the alliance
             for alliance_corp in alliance_info['member_corps']:
                 corpinfo = EveApiManager.get_corporation_information(alliance_corp)
@@ -419,7 +428,7 @@ def run_corp_update():
         # Remove irrelevent corp and alliance models
         # Check the corps
         for all_corp_info in EveManager.get_all_corporation_info():
-            if (settings.IS_CORP and all_corp_info.corporation_id != settings.CORP_ID) or (not settings.IS_CORP and all_corp_info.alliance_id != settings.ALLIANCE_ID):
+            if (settings.IS_CORP and all_corp_info.corporation_id != settings.CORP_ID) or (not settings.IS_CORP and all_corp_info.alliance.alliance_id != settings.ALLIANCE_ID):
                 if not all_corp_info.is_blue:
                     all_corp_info.delete()
 
@@ -428,7 +437,3 @@ def run_corp_update():
             if (not settings.IS_CORP and all_alliance_info.alliance_id != settings.ALLIANCE_ID):
                 if all_alliance_info.is_blue is not True:
                     all_alliance_info.delete()
-            if all_alliance_info.is_blue is not True:
-                all_alliance_info.delete()
-
-
