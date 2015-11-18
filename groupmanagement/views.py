@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 
 from models import GroupDescription
 from models import GroupRequest
+from models import HiddenGroup
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 
@@ -96,9 +97,11 @@ def groups_view(request):
         # Check if group is a corp
         if "Corp_" in group.name:
             pass
-        elif settings.DEFAULT_ALLIANCE_GROUP in group.name:
+        elif settings.DEFAULT_AUTH_GROUP in group.name:
             pass
         elif settings.DEFAULT_BLUE_GROUP in group.name:
+            pass
+        elif HiddenGroup.objects.filter(group=group).exists():
             pass
         else:
             # Get the descriptionn

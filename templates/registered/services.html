@@ -153,7 +153,7 @@
                 </tr>
             {% endif %}
         </table>
-    {% elif perms.auth.alliance_member %}
+    {% elif perms.auth.member %}
         <table class="table table-bordered">
             <tr>
                 <th class="text-center">Service</th>
@@ -162,7 +162,7 @@
                 <th class="text-center">Domain</th>
                 <th class="text-center">Action</th>
             </tr>
-            {% if ENABLE_ALLIANCE_FORUM %}
+            {% if ENABLE_AUTH_FORUM %}
                 <tr>
                     <td class="text-center">Forums</td>
                     <td class="text-center">{{ authinfo.forum_username }}</td>
@@ -187,7 +187,7 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_ALLIANCE_IPBOARD %}
+            {% if ENABLE_AUTH_IPBOARD %}
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
                 <td class="text-center">{{ authinfo.ipboard_password }}</td>
@@ -210,7 +210,7 @@
                     {% endifequal %}
                 </td>
             {% endif %}
-            {% if ENABLE_ALLIANCE_JABBER %}
+            {% if ENABLE_AUTH_JABBER %}
                 <tr>
                     <td class="text-center">Jabber</td>
                     <td class="text-center">{{ authinfo.jabber_username }}</td>
@@ -235,7 +235,7 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_ALLIANCE_MUMBLE %}
+            {% if ENABLE_AUTH_MUMBLE %}
                 <tr>
                     <td class="text-center">Mumble</td>
                     <td class="text-center">{{ authinfo.mumble_username }}</td>
@@ -260,7 +260,7 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_ALLIANCE_TEAMSPEAK3 %}
+            {% if ENABLE_AUTH_TEAMSPEAK3 %}
                 <tr>
                     <th class="text-center">Service</th>
                     <th class="text-center">Unique ID</th>
@@ -300,7 +300,11 @@
             {% endif %}
         </table>
     {% else %}
-        <div class="alert alert-danger" role="alert">You are not in the alliance</div>
+        {% if IS_CORP %}
+            <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
+        {% endif %}
     {% endif %}
     </div>
 

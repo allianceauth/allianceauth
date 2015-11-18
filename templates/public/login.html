@@ -10,9 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <title>{{ ALLIANCE_NAME }} - Login</title>
-
+    {% if IS_CORP %}
+        <title>{{ CORP_NAME }} - Login</title>
+    {% else %}
+        <title>{{ ALLIANCE_NAME }} - Login</title>
+    {% endif %}
+    
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom Fonts -->
@@ -20,7 +23,10 @@
     <style>
         body {
             background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
-            background-size: 100% 100%;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
         }
 
         .panel-transparent {

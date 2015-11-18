@@ -22,3 +22,9 @@ class GroupRequest(models.Model):
 
     def __str__(self):
         return self.user.username + ":" + self.group.name
+
+class HiddenGroup(models.Model):
+    group = models.ForeignKey(Group, unique=True)
+
+    def __str__(self):
+        return self.group.name + " - Hidden"
