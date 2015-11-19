@@ -43,8 +43,6 @@ sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_killboard
 
 sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'password'"
 sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'allianceserver'@'localhost'";
-sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'alliancemumble'@'localhost' IDENTIFIED BY 'alliancemumble'"
-sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'alliancemumble'@'localhost'";
 
 sudo mysqladmin -p$MYSQL_ROOT_PASS flush-privileges
 
