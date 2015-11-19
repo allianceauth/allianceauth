@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export DEBIAN_FRONTEND=noninteractive
 
 sudo add-apt-repository ppa:upubuntu-com/xampp
 
@@ -10,16 +11,7 @@ sudo apt-get -y install libtool
 sudo apt-get -y install git
 sudo apt-get -y install python-dev libyaml-dev libffi-dev
 sudo apt-get -y install python-pip
-sudo apt-get -y install mysql-server mysql-client
-
-#Python 3 stuff
-sudo apt-get -y install python-software-properties
-sudo add-apt-repository ppa:fkrull/deadsnakes
-sudo apt-get -y update
-sudo apt-get -y install python3.3
-
-#virtualenv stuff
-sudo apt-get -y install python-virtualenv
+sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev
 
 cd /vagrant/
 
@@ -27,8 +19,6 @@ sudo pip install --upgrade pip
 
 # Pip moved location after upgrade from 1.0
 sudo ln -s /usr/local/bin/pip /usr/bin/pip 2>/dev/null
-
-sudo apt-get -y install libmysqlclient-dev 
 
 sudo pip install --allow-external mysql-connector-python mysql-connector-python
 sudo pip install --allow-external python-openfire python-openfire==0.2.3-beta
@@ -51,8 +41,8 @@ sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_jabber
 sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_mumble
 sudo mysqladmin -p$MYSQL_ROOT_PASS create alliance_killboard
 
-sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'allianceauth'@'localhost' IDENTIFIED BY 'allianceauth'"
-sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'allianceauth'@'localhost'";
+sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'password'"
+sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'allianceserver'@'localhost'";
 sudo mysql -u root -p$MYSQL_ROOT_PASS -e "CREATE USER 'alliancemumble'@'localhost' IDENTIFIED BY 'alliancemumble'"
 sudo mysql -u root -p$MYSQL_ROOT_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'alliancemumble'@'localhost'";
 
@@ -72,5 +62,6 @@ echo 'Next steps:\n'
 echo '1. Adjust mysql root password if you feel so inclined.'
 echo '2. Adjust all the stuff in ./alliance_auth/settings.py.'
 echo '3. Run sudo python manage.py syncdb to set up the database tables'
-echo "4. run cd /vagrant/; ./startup.sh to start, and ./shutdown.sh to stop."
+echo '4. Run python manage.py shell < run_alliance_corp_update.py'
+echo "5. run cd /vagrant/; ./startup.sh to start, and ./shutdown.sh to stop."
 echo '--------'
