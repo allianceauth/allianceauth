@@ -57,3 +57,6 @@ target/
 alliance_auth/settings.py
 *Thumbs.db
 nginx_config.txt
+
+# custom staticfiles
+static/*
