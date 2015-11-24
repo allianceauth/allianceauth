@@ -122,12 +122,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = (
-    'custom_templates',
+    'customization/templates',
     'templates',
 )
 
 STATICFILES_DIRS = (
-    'custom_static',
+    'customization/static',
     'static',
 )
 
