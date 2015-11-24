@@ -179,3 +179,38 @@ class EveApiManager():
             return False
 
         return False
+
+    @staticmethod
+    def check_if_alliance_exists(alliance_id):
+        try:
+            api = evelink.api.API()
+            eve = evelink.eve.EVE(api=api)
+            alliances = eve.alliances()
+            if int(alliance_id) in alliances[0]:
+                return True
+            else:
+                return False
+        except evelink.api.APIError as error:
+            print error
+            return False
+        except ValueError as error:
+            #attempts to catch error resulting from checking alliance_of nonetype models
+            print error
+            return False
+        return False
+
+    @staticmethod
+    def check_if_corp_exists(corp_id):
+        try:
+            api = evelink.api.API()
+            corp = evelink.corp.Corp(api=api)
+            corpinfo = corp.corporation_sheet(corp_id=corp_id)
+            if corpinfo[0]['members']['current'] > 0:
+                return True
+            else:
+                return False
+        except evelink.api.APIError as error:
+            #could be smart and check for error code523 to verify error due to no corp instead of catch-all
+            print error
+            return False
+        return False
