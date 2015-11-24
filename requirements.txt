@@ -1,5 +1,6 @@
 # Python Stuff # - see bootstrap.sh
 mysql-python
+mysqlclient
 evelink
 dnspython
 passlib
