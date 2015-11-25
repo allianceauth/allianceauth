@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 
 from services.managers.eve_api_manager import EveApiManager
 from eveonline.managers import EveManager
@@ -19,13 +20,24 @@ class UpdateKeyForm(forms.Form):
         except:
             pass
 
-        if not check_blue:
-            if not EveApiManager.check_api_is_type_account(self.cleaned_data['api_id'],
+        if check_blue:
+            if settings.BLUE_API_ACCOUNT:
+                if not EveApiManager.check_api_is_type_account(self.cleaned_data['api_id'],
+                                                               self.cleaned_data['api_key']):
+                    raise forms.ValidationError(u'API not of type account')
+
+            if not EveApiManager.check_blue_api_is_full(self.cleaned_data['api_id'],
+                                                   self.cleaned_data['api_key']):
+                raise forms.ValidationError(u'API supplied is too restricted. Minimum access mask is ' + str(settings.BLUE_API_MASK))
+
+        else:
+            if settings.MEMBER_API_ACCOUNT:
+                if not EveApiManager.check_api_is_type_account(self.cleaned_data['api_id'],
                                                            self.cleaned_data['api_key']):
-                raise forms.ValidationError(u'API not of type account')
+                    raise forms.ValidationError(u'API not of type account')
 
             if not EveApiManager.check_api_is_full(self.cleaned_data['api_id'],
                                                    self.cleaned_data['api_key']):
-                raise forms.ValidationError(u'API supplied is not a full api key')
+                raise forms.ValidationError(u'API supplied is too restricted. Minimum access mask is ' + str(settings.MEMBER_API_MASK))
 
         return self.cleaned_data

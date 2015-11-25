@@ -81,12 +81,23 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] == 268435455
+            return info[0]['access_mask'] >= int(settings.MEMBER_API_MASK)
 
         except evelink.api.APIError as error:
             print error
 
         return False
+
+    @staticmethod
+    def check_blue_api_is_full(api_id, api_key):
+        try:
+            api = evelink.api.API(api_key=(api_id, api_key))
+            account = evelink.account.Account(api=api)
+            info = account.key_info()
+            return info[0]['access_mask'] >= int(settings.BLUE_API_MASK)
+ 
+        except evelink.api.APIError as error:
+            print error
 
 
     @staticmethod

@@ -217,14 +217,32 @@ def run_api_refresh():
                         for api_key_pair in api_key_pairs:
                             print 'Running on ' + api_key_pair.api_id + ':' + api_key_pair.api_key
                             if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
-                                # Update characters
-                                characters = EveApiManager.get_characters_from_api(api_key_pair.api_id,
-                                                                                   api_key_pair.api_key)
-                                EveManager.update_characters_from_list(characters)
-                                valid_key = True
+                                #check to ensure API key meets min spec
+                                still_valid = True
+                                if authserviceinfo.is_blue:
+                                    if settings.BLUE_API_ACCOUNT:
+                                        if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
+                                            still_valid = False
+                                    if not EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
+                                            still_valid = False
+                                else:
+                                    if settings.MEMBER_API_ACCOUNT:
+                                        if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
+                                            still_valid = False
+                                    if not EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
+                                            still_valid = False
+                                if still_valid is not True:
+                                    EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+                                    EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+                                else:                                    
+                                    # Update characters
+                                    characters = EveApiManager.get_characters_from_api(api_key_pair.api_id,
+                                                                                       api_key_pair.api_key)
+                                    EveManager.update_characters_from_list(characters)
+                                    valid_key = True
                             else:
-                                EveManager.delete_characters_by_api_id(api_key_pair.api_id, user)
-                                EveManager.delete_api_key_pair(api_key_pair.api_id, api_key_pair.api_key)
+                                EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+                                EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
 
                         if valid_key:
                             # Check our main character
