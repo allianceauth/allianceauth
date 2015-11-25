@@ -118,7 +118,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'util.context_processors.alliance_id',
     'util.context_processors.alliance_name',
     'util.context_processors.jabber_url',
-    'util.context_processors.domain_url'
+    'util.context_processors.domain_url',
+    'util.context_processors.member_api_mask',
+    'util.context_processors.blue_api_mask',
 )
 
 TEMPLATE_DIRS = (
@@ -153,7 +155,7 @@ STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
 
 #####################################################
 ##
-## Alliance configuration starts here
+## Auth configuration starts here
 ##
 #####################################################
 
@@ -247,6 +249,18 @@ CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
 ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
 ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
 
+########################
+# API Configuration
+########################
+# MEMBER_API_MASK - Numeric value of minimum API mask required for members
+# MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
+# BLUE_API_MASK - Numeric value of minimum API mask required for blues
+# BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
+#######################
+MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
+MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
+BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
+BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
 
 #####################
 # HR Configuration
