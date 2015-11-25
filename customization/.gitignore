@@ -1,0 +1,7 @@
+#Ignore everything
+*
+#Except these
+!.gitignore
+!README.md
+!templates
+!static
