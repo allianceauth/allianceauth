@@ -81,7 +81,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] >= int(settings.MEMBER_API_MASK)
+            return info[0]['access_mask'] & settings.MEMBER_API_MASK == int(settings.MEMBER_API_MASK)
 
         except evelink.api.APIError as error:
             print error
@@ -94,7 +94,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] >= int(settings.BLUE_API_MASK)
+            return info[0]['access_mask'] & settings.BLUE_API_MASK == int(settings.BLUE_API_MASK)
  
         except evelink.api.APIError as error:
             print error
