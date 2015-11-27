@@ -328,10 +328,20 @@ def run_corp_update():
 
         if settings.IS_CORP:
             # Create the corp
-            corpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
-            if not EveManager.check_if_corporation_exists_by_id(corpinfo['id']):
-                EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
-                                                   corpinfo['members']['current'], False, None)
+            ownercorpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
+            if not EveManager.check_if_corporation_exists_by_id(ownercorpinfo['id']):
+                if ownercorpinfo['alliance']['id'] is None:
+                    EveManager.create_corporation_info(ownercorpinfo['id'], ownercorpinfo['name'], ownercorpinfo['ticker'],
+                                                       ownercorpinfo['members']['current'], False, None)
+                else:
+                    alliance_info = EveApiManager.get_alliance_information(ownercorpinfo['alliance']['id'])
+                    if not EveManager.check_if_alliance_exists_by_id(settings.ALLIANCE_ID):
+                        EveManager.create_alliance_info(settings.ALLIANCE_ID, alliance_info['name'], alliance_info['ticker'],
+                                                        alliance_info['executor_id'], alliance_info['member_count'], False)
+                    alliance = EveManager.get_alliance_info_by_id(ownercorpinfo['alliance']['id'])
+                    EveManager.create_corporation_info(ownercorpinfo['id'], ownercorpinfo['name'], ownercorpinfo['ticker'],
+                                                       ownercorpinfo['members']['current'], False, alliance)
+
         else:
             # Updated alliance info
             alliance_info = EveApiManager.get_alliance_information(settings.ALLIANCE_ID)
@@ -470,8 +480,8 @@ def run_corp_update():
         for all_alliance_info in EveManager.get_all_alliance_info():
             if settings.IS_CORP:
                 if all_alliance_info.is_blue is not True:
-                    if corpinfo.alliance is not None:
-                        if all_alliance_info.alliance_id != corpinfo.alliance.alliance_id:
+                    if ownercorpinfo['alliance']['id'] is not None:
+                        if all_alliance_info.alliance_id != ownercorpinfo['alliance']['id']:
                             all_alliance_info.delete()
                     else:
                         all_alliance_info.delete()
