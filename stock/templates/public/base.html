@@ -137,12 +137,13 @@
                                                                                   href="{% url 'auth_fleet_fits' %}"><i
                                         class="fa fa-bolt fa-fw grayiconecolor"></i> Fleet Doctrines</a>
                             </li>
-                            <li>
-                                <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_timer_view' %}"><i
-                                        class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
-                            </li>
-
+                            {% if perms.auth.timer_view %}
+                                <li>
+                                    <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
+                                                                                      href="{% url 'auth_timer_view' %}"><i
+                                            class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
+                                </li>
+                            {% endif %}
 
                             <li>
                                 <a {% ifequal request.path "/srp/" %} class="active" {% endifequal %}

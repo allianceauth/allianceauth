@@ -20,6 +20,7 @@ def timer_util_test(user):
 
 @login_required
 @user_passes_test(timer_util_test)
+@permission_required('auth.timer_view')
 def timer_view(request):
     timer_list = Timer.objects.all()
     closest_timer = None
