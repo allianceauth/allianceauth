@@ -481,7 +481,7 @@ def run_corp_update():
             if settings.IS_CORP:
                 if all_alliance_info.is_blue is not True:
                     if ownercorpinfo['alliance']['id'] is not None:
-                        if all_alliance_info.alliance_id != ownercorpinfo['alliance']['id']:
+                        if int(all_alliance_info.alliance_id) != ownercorpinfo['alliance']['id']:
                             all_alliance_info.delete()
                     else:
                         all_alliance_info.delete()
