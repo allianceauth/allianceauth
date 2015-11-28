@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 
 class TimerForm(forms.Form):
@@ -11,5 +13,7 @@ class TimerForm(forms.Form):
     planet_moon = forms.CharField(max_length=254, label="Planet/Moon", required=False, initial="")
     structure = forms.ChoiceField(choices=structure_choices, required=True, label="Structure Type")
     fleet_type = forms.ChoiceField(choices=fleet_type_choices, required=True, label="Fleet Type")
-    eve_time = forms.DateTimeField(required=True, label="Eve Time")
+    days_left = forms.IntegerField(required=False, label="Reinforced Days Remaining", validators=[MinValueValidator(0)])
+    hours_left = forms.IntegerField(required=False, label="Reinforced Hours Remaining", validators=[MinValueValidator(0), MaxValueValidator(23)])
+    minutes_left = forms.IntegerField(required=False, label="Required Minutes Remaining", validators=[MinValueValidator(0), MaxValueValidator(59)])
     important = forms.BooleanField(label="Important", required=False)
