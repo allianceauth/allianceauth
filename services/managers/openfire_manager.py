@@ -103,27 +103,11 @@ class OpenfireManager:
         client.connect(server=(settings.JABBER_SERVER, settings.JABBER_PORT))
         client.auth(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, 'broadcast')
 
-        if group_name != 'all':
-            group = Group.objects.get(name=group_name)
-            for user in group.user_set.all():
-                auth_info = AuthServicesInfoManager.get_auth_service_info(user)
-                if auth_info:
-                    if auth_info.jabber_username != "":
-                        to_address = auth_info.jabber_username + '@' + settings.JABBER_URL
-                        message = xmpp.Message(to_address, broadcast_message)
-                        message.setAttr('type', 'chat')
-                        client.send(message)
-                        client.Process(1)
-        else:
-            for user in User.objects.all():
-                auth_info = AuthServicesInfoManager.get_auth_service_info(user)
-                if auth_info:
-                    if auth_info.jabber_username != "":
-                        to_address = auth_info.jabber_username + '@' + settings.JABBER_URL
-                        message = xmpp.Message(to_address, broadcast_message)
-                        message.setAttr('type', 'chat')
-                        client.send(message)
-                        client.Process(1)
+        to_address = group_name + '@' + settings.BROADCAST_SERVICE_NAME + '.' + settings.JABBER_URL
+        message = xmpp.Message(to_address, broadcast_message)
+        message.setAttr('type', 'chat')
+        client.send(message)
+        client.Process(1)
 
         client.disconnect()
 
