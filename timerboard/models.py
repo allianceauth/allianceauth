@@ -8,11 +8,11 @@ from eveonline.models import EveCorporationInfo
 class Timer(models.Model):
     class Meta:
         ordering = ['eve_time']
-    name = models.CharField(max_length=254, default="")
+    details = models.CharField(max_length=254, default="")
     system = models.CharField(max_length=254, default="")
     planet_moon = models.CharField(max_length=254, default="")
     structure = models.CharField(max_length=254, default="")
-    fleet_type = models.CharField(max_length=254, default="")
+    objective = models.CharField(max_length=254, default="")
     eve_time = models.DateTimeField()
     important = models.BooleanField(default=False)
     eve_character = models.ForeignKey(EveCharacter)

@@ -25,8 +25,8 @@
         <h4><b>Next Timer</b></h4>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th style="width:150px" class="text-center">Fleet Name</th>
-                <th class="text-center">Fleet Type</th>
+                <th style="width:150px" class="text-center">Details</th>
+                <th class="text-center">Objective</th>
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
@@ -42,21 +42,21 @@
                         {% else %}
                     <tr class="info">
                 {% endifequal %}
-                <td style="width:150px" class="text-center">{{ closest_timer.name }}</td>
+                <td style="width:150px" class="text-center">{{ closest_timer.details }}</td>
                 <td class="text-center">
-                    {% ifequal closest_timer.fleet_type "Armor" %}
+                    {% ifequal closest_timer.objective "Hostile" %}
                         <div class="label label-danger">
-                            Armor
+                            Hostile
                         </div>
                     {% endifequal %}
-                    {% ifequal closest_timer.fleet_type "Shield" %}
+                    {% ifequal closest_timer.objective "Friendly" %}
                         <div class="label label-primary">
-                            Shield
+                            Friendly
                         </div>
                     {% endifequal %}
-                    {% ifequal closest_timer.fleet_type "Other" %}
+                    {% ifequal closest_timer.objective "Neutral" %}
                         <div class="label label-default">
-                            Other
+                            Neutral
                         </div>
                     {% endifequal %}
                 </td>
@@ -119,8 +119,8 @@
         <h4><b>Future Timers</b></h4>
         <table class="table table-bordered">
             <tr>
-                <th style="width:150px" class="text-center">Fleet Name</th>
-                <th class="text-center">Fleet Type</th>
+                <th style="width:150px" class="text-center">Details</th>
+                <th class="text-center">Objective</th>
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
@@ -137,21 +137,21 @@
                             {% else %}
                         <tr class="info">
                     {% endifequal %}
-                <td style="width:150px" class="text-center">{{ timer.name }}</td>
+                <td style="width:150px" class="text-center">{{ timer.details }}</td>
                 <td class="text-center">
-                    {% ifequal timer.fleet_type "Armor" %}
+                    {% ifequal timer.objective "Hostile" %}
                         <div class="label label-danger">
-                            Armor
+                            Hostile
                         </div>
                     {% endifequal %}
-                    {% ifequal timer.fleet_type "Shield" %}
+                    {% ifequal timer.objective "Friendly" %}
                         <div class="label label-primary">
-                            Shield
+                            Friendly
                         </div>
                     {% endifequal %}
-                    {% ifequal timer.fleet_type "Other" %}
+                    {% ifequal timer.objective "Neutral" %}
                         <div class="label label-default">
-                            Other
+                            Neutral
                         </div>
                     {% endifequal %}
                 </td>
