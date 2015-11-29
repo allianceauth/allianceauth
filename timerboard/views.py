@@ -54,11 +54,11 @@ def add_timer_view(request):
 
             # handle valid form
             timer = Timer()
-            timer.name = form.cleaned_data['name']
+            timer.details = form.cleaned_data['details']
             timer.system = form.cleaned_data['system']
             timer.planet_moon = form.cleaned_data['planet_moon']
             timer.structure = form.cleaned_data['structure']
-            timer.fleet_type = form.cleaned_data['fleet_type']
+            timer.objective = form.cleaned_data['objective']
             timer.eve_time = eve_time
             timer.important = form.cleaned_data['important']
             timer.eve_character = character
