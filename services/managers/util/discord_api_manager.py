@@ -132,7 +132,7 @@ class DiscordManager:
 
     @staticmethod
     def delete_invite(invite_id):
-        custom_headers = {'accept': 'application/json'}
+        custom_headers = {'authorization': DiscordManager.get_auth_token()}
         path = DISCORD_URL + "/invite/" + str(invite_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
