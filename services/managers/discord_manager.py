@@ -227,13 +227,12 @@ class DiscordManager:
     def delete_user(username):
         try:
             user_id = DiscordAPIManager.get_user_id(username)
-        except:
+            DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
+        except KeyError:
             #user does not exist
             return True
-        try:
-            DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
-            return True
         except:
+            #something went wrong
             return False
 
     @staticmethod

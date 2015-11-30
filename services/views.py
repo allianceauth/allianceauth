@@ -337,11 +337,23 @@ def activate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.delete_user(authinfo.jabber_username)
+    result = DiscordManager.delete_user(authinfo.discord_username)
     remove_all_syncgroups_for_service(request.user, "discord")
-    # If our username is blank means we failed
     if result:
         AuthServicesInfoManager.update_user_discord_info("", "", request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def reset_discord(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = DiscordManager.delete_user(authinfo.discord_username)
+    if result:
+        # ensures succesful deletion
+        new_result = DiscordManager.add_user(authinfo.discord_username)
+        if new_result:
+            # ensures succesful creation
+            AuthServicesInfoManager.update_user_discord_info(new_result[0], new_result[1], request.user)
+            return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/services/")
