@@ -34,11 +34,13 @@ def domain_url(request):
             'ENABLE_AUTH_MUMBLE': settings.ENABLE_AUTH_MUMBLE,
             'ENABLE_AUTH_IPBOARD': settings.ENABLE_AUTH_IPBOARD,
             'ENABLE_AUTH_TEAMSPEAK3': settings.ENABLE_AUTH_TEAMSPEAK3,
+            'ENABLE_AUTH_DISCORD': settings.ENABLE_AUTH_DISCORD,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
             'ENABLE_BLUE_IPBOARD': settings.ENABLE_BLUE_IPBOARD,
             'ENABLE_BLUE_TEAMSPEAK3': settings.ENABLE_BLUE_TEAMSPEAK3,
+            'ENABLE_BLUE_DISCORD': settings.ENABLE_BLUE_DISCORD,
             'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'CURRENT_UTC_TIME': timezone.now()}

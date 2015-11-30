@@ -152,6 +152,32 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_BLUE_DISCORD %}
+                <tr>
+                    <th class="text-center">Service</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">User ID</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Discord</td>
+                    <td class="text-center">{{ authinfo.discord_username }}</td>
+                    <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.discord_username "" %}
+                            <a href="{% url 'auth_activate_discord' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_deactivate_discord' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
         </table>
     {% elif perms.auth.member %}
         <table class="table table-bordered">
@@ -291,6 +317,32 @@
                                         class="glyphicon glyphicon-refresh"></span></button>
                             </a>
                             <a href="{% url 'auth_deactivate_teamspeak3' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_DISCORD %}
+                <tr>
+                    <th class="text-center">Service</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">User ID</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Discord</td>
+                    <td class="text-center">{{ authinfo.discord_username }}</td>
+                    <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center">
+                        {% ifequal authinfo.discord_username "" %}
+                            <a href="{% url 'auth_activate_discord' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_deactivate_discord' %}">
                                 <button type="button" class="btn btn-danger"><span
                                         class="glyphicon glyphicon-remove"></span></button>
                             </a>

@@ -125,6 +125,10 @@ urlpatterns = patterns('',
                        url(r'reset_teamspeak3_perm/$', 'services.views.reset_teamspeak3_perm',
                            name='auth_reset_teamspeak3_perm'),
 
+                       # Discord Service Control
+                       url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
+                       url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),
