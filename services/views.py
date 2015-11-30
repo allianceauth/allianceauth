@@ -12,6 +12,7 @@ from managers.phpbb3_manager import Phpbb3Manager
 from managers.mumble_manager import MumbleManager
 from managers.ipboard_manager import IPBoardManager
 from managers.teamspeak3_manager import Teamspeak3Manager
+from managers.discord_manager import DiscordManager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from celerytask.tasks import remove_all_syncgroups_for_service
@@ -317,3 +318,29 @@ def fleet_fits(request):
     context = {}
     return render_to_response('registered/fleetfits.html', context,
 context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_discord(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    info = DiscordManager.add_user(character.character_name)
+    # If our username is blank means we already had a user
+    if info[0] is not "":
+        AuthServicesInfoManager.update_user_discord_info(info[0], info[1], request.user)
+        update_discord_groups(request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_discord(request):
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = DiscordManager.delete_user(authinfo.jabber_username)
+    remove_all_syncgroups_for_service(request.user, "discord")
+    # If our username is blank means we failed
+    if result:
+        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+

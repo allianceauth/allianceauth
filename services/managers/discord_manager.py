@@ -237,18 +237,17 @@ class DiscordManager:
         group_ids = []
         for g in groups:
             try:
-                group_id = DiscordAPIManager.get_group_id(settings.DISCORD_SERVER_ID, g.name)
+                group_id = DiscordAPIManager.get_group_id(settings.DISCORD_SERVER_ID, g)
                 group_ids.append(group_id)
             except:
                 # need to create role on server for group
-                group_ids.append(DiscordManager.create_group(g.name))
+                group_ids.append(DiscordManager.create_group(g))
         DiscordAPIManager.set_roles(settings.DISCORD_SERVER_ID, user_id, group_ids)
 
     @staticmethod
     def create_group(groupname):
-        safe_groupname = DiscordManager.__sanatize_username(groupname)
         new_group = DiscordAPIManager.generate_role(settings.DISCORD_SERVER_ID)
-        named_group = DiscordAPIManager.edit_role(settings.DISCORD_SERVER_ID, new_group['id'], safe_groupname)
+        named_group = DiscordAPIManager.edit_role(settings.DISCORD_SERVER_ID, new_group['id'], groupname)
         return named_group['id']
 
     @staticmethod
