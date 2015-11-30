@@ -330,3 +330,14 @@ TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', '
 TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
 TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
 TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.com')
+
+######################################
+# Discord Configuration
+######################################
+# DISCORD_SERVER_ID - ID of the server to manage
+# DISCORD_USER_EMAIL - email of the server management user
+# DISCORD_USER_PASSWORD - password of the server management user
+######################################
+DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
+DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
+DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
