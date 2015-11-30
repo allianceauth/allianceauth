@@ -351,9 +351,11 @@ def reset_discord(request):
     result = DiscordManager.delete_user(authinfo.discord_username)
     if result:
         # ensures succesful deletion
+        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
         new_result = DiscordManager.add_user(authinfo.discord_username)
         if new_result:
             # ensures succesful creation
             AuthServicesInfoManager.update_user_discord_info(new_result[0], new_result[1], request.user)
+            update_discord_groups(request.user)
             return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/services/")
