@@ -21,6 +21,7 @@ from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
 from celerytask.tasks import update_ipboard_groups
 from celerytask.tasks import update_teamspeak3_groups
+from celerytask.tasks import update_discord_groups
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 from util import check_if_user_has_permission

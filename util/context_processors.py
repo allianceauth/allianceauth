@@ -43,4 +43,5 @@ def domain_url(request):
             'ENABLE_BLUE_DISCORD': settings.ENABLE_BLUE_DISCORD,
             'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
+            'DISCORD_SERVER_ID': settings.DISCORD_SERVER_ID,
             'CURRENT_UTC_TIME': timezone.now()}

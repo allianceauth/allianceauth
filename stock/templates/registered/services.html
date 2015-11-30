@@ -157,12 +157,14 @@
                     <th class="text-center">Service</th>
                     <th class="text-center">Username</th>
                     <th class="text-center">User ID</th>
+                    <th class="text-center">Domain</th>
                     <th class="text-center">Action</th>
                 </tr>
                 <tr>
                     <td class="text-center">Discord</td>
                     <td class="text-center">{{ authinfo.discord_username }}</td>
                     <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.discord_username "" %}
                             <a href="{% url 'auth_activate_discord' %}">
@@ -329,12 +331,14 @@
                     <th class="text-center">Service</th>
                     <th class="text-center">Username</th>
                     <th class="text-center">User ID</th>
+                    <th class="text-center">Domain</th>
                     <th class="text-center">Action</th>
                 </tr>
                 <tr>
                     <td class="text-center">Discord</td>
                     <td class="text-center">{{ authinfo.discord_username }}</td>
                     <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.discord_username "" %}
                             <a href="{% url 'auth_activate_discord' %}">

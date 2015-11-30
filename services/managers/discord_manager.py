@@ -168,7 +168,7 @@ class DiscordAPIManager:
     def kick_user(server_id, user_id):
         custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
         path = DISCORD_URL + "/guilds/" + str(server_id) + "/members/" + str(user_id)
-        r = requests.delete(path, custom_headers)
+        r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
     @staticmethod
@@ -218,7 +218,7 @@ class DiscordManager:
             username_clean = DiscordManager.__sanatize_username(username)
             invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
             DiscordAPIManager.register_user(settings.DISCORD_SERVER_ID, username_clean, invite_code)
-            user_id = DiscordAPIManager.get_user_id(username_clean)      
+            user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username_clean)      
             return username_clean, user_id
         except:
             return "", ""
@@ -226,7 +226,12 @@ class DiscordManager:
     @staticmethod
     def delete_user(username):
         try:
-            DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, username)
+            user_id = DiscordAPIManager.get_user_id(username)
+        except:
+            #user does not exist
+            return True
+        try:
+            DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
             return True
         except:
             return False
