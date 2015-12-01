@@ -266,10 +266,18 @@ class DiscordManager:
 
     @staticmethod
     def lock_user(username):
-        user_id = DiscordAPIManager.get_user_id(username)
-        DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
+        try:
+            user_id = DiscordAPIManager.get_user_id(username)
+            DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
+            return True
+        except:
+            return False
 
     @staticmethod
     def unlock_user(username):
-        user_id = DiscordAPIManager.get_user_id(username)
-        DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
+        try:
+            user_id = DiscordAPIManager.get_user_id(username)
+            DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
+            return True
+        except:
+            return False

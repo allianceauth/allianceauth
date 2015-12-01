@@ -43,7 +43,7 @@ def deactivate_services(user):
         Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
         AuthServicesInfoManager.update_user_teamspeak3_info("", "", user)
     if authinfo.discord_username and authinfo.discord_username != "":
-        DiscordManager.delete_user(authinfo.discord_username)
+        DiscordManager.lock_user(authinfo.discord_username)
         AuthServicesInfoManager.update_user_discord_info("", "", user)
 
 
