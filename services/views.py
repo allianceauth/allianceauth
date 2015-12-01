@@ -337,9 +337,10 @@ def activate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.lock_user(authinfo.discord_username)
+    result = DiscordManager.delete_user(authinfo.discord_username)
     remove_all_syncgroups_for_service(request.user, "discord")
     if result:
+        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 
@@ -347,8 +348,14 @@ def deactivate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def reset_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.unlock_user(authinfo.discord_username)
-    update_discord_groups(request.user)
+    result = DiscordManager.delete_user(authinfo.discord_username)
     if result:
-        return HttpResponseRedirect("/services/")
-    return HttpResponseRedirect("/dashboard/")
+        # ensures succesful deletion
+        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
+        new_result = DiscordManager.add_user(authinfo.discord_username, request.user.email)
+        if new_result:
+            # ensures succesful creation
+            AuthServicesInfoManager.update_user_discord_info(new_result[0], new_result[1], request.user)
+            update_discord_groups(request.user)
+            return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/services/")
