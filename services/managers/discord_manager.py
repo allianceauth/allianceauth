@@ -160,7 +160,7 @@ class DiscordAPIManager:
             'fingerprint': None,
             'username': username,
             'invite': invite_code,
-            'passowrd': password,
+            'password': password,
             'email': email,
         }
         path = DISCORD_URL + "/auth/register"
