@@ -325,7 +325,7 @@ context_instance=RequestContext(request))
 def activate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
-    info = DiscordManager.add_user(character.character_name)
+    info = DiscordManager.add_user(character.character_name, request.user.email)
     # If our username is blank means we already had a user
     if info[0] is not "":
         AuthServicesInfoManager.update_user_discord_info(info[0], info[1], request.user)
@@ -352,7 +352,7 @@ def reset_discord(request):
     if result:
         # ensures succesful deletion
         AuthServicesInfoManager.update_user_discord_info("", "", request.user)
-        new_result = DiscordManager.add_user(authinfo.discord_username)
+        new_result = DiscordManager.add_user(authinfo.discord_username, request.user.email)
         if new_result:
             # ensures succesful creation
             AuthServicesInfoManager.update_user_discord_info(new_result[0], new_result[1], request.user)

@@ -2,6 +2,7 @@ import requests
 import json
 from django.conf import settings
 import re
+import os
 
 DISCORD_URL = "https://discordapp.com/api"
 
@@ -153,12 +154,14 @@ class DiscordAPIManager:
         r.raise_for_status()
 
     @staticmethod
-    def register_user(server_id, username, invite_code):
+    def register_user(server_id, username, invite_code, password, email):
         custom_headers = {'content-type': 'application/json'}
         data = {
             'fingerprint': None,
             'username': username,
             'invite': invite_code,
+            'passowrd': password,
+            'email': email,
         }
         path = DISCORD_URL + "/auth/register"
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
@@ -213,14 +216,19 @@ class DiscordManager:
         return clean
 
     @staticmethod
-    def add_user(username):
+    def __generate_random_pass():
+        return os.urandom(8).encode('hex')
+
+    @staticmethod
+    def add_user(username, email):
         try:
             username_clean = DiscordManager.__sanatize_username(username)
             invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
-            DiscordAPIManager.register_user(settings.DISCORD_SERVER_ID, username_clean, invite_code)
+            password = DiscordManager.__generate_random_pass()
+            DiscordAPIManager.register_user(server_id=settings.DISCORD_SERVER_ID, username=username_clean, invite=invite_code, password=password, email=email)
             user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username_clean)
             DiscordAPIManager.delete_invite(invite_code)
-            return username_clean, user_id
+            return username_clean, password
         except:
             return "", ""
 
