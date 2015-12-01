@@ -81,9 +81,9 @@ class AuthServicesInfoManager:
             authserviceinfo.save(update_fields=['is_blue'])
 
     @staticmethod
-    def update_user_discord_info(username, user_id, user):
+    def update_user_discord_info(username, password, user):
         if User.objects.filter(username=user.username).exists():
             authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
             authserviceinfo.discord_username = username
-            authserviceinfo.discord_uid = user_id
-            authserviceinfo.save(update_fields=['discord_username', 'discord_uid'])
+            authserviceinfo.discord_password = password
+            authserviceinfo.save(update_fields=['discord_username', 'discord_password'])
