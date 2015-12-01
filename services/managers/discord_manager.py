@@ -245,6 +245,20 @@ class DiscordAPIManager:
         r.raise_for_status()
         return r.json()
 
+    @staticmethod
+    def destroy_user(email, current_password):
+        data = {
+            'avatar': None,
+            'username': os.urandom(8).encode('hex'),
+            'password': current_password,
+            'email': os.urandom(8).encode('hex') + '@test.com',
+        }
+        path = DISCORD_URL + "/users/@me"
+        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_token_by_user(email, current_password)}
+        r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        r.raise_for_status
+        return r.json()
+
 class DiscordManager:
     def __init__(self):
         pass
@@ -272,17 +286,16 @@ class DiscordManager:
             return "", ""
 
     @staticmethod
-    def delete_user(username):
+    def delete_user(username, email, password):
         try:
             user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username)
             DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
-            return True
-        except KeyError:
-            #user does not exist
+            DiscordAPIManager.destroy_user(email, password)
             return True
         except:
             #something went wrong
             return False
+        return False
 
     @staticmethod
     def update_groups(username, groups):

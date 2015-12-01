@@ -337,7 +337,7 @@ def activate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.delete_user(authinfo.discord_username)
+    result = DiscordManager.delete_user(authinfo.discord_username, request.user.email, authinfo.discord_password)
     remove_all_syncgroups_for_service(request.user, "discord")
     if result:
         AuthServicesInfoManager.update_user_discord_info("", "", request.user)
