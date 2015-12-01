@@ -124,12 +124,12 @@ class DiscordAPIManager:
         return r.json()
 
     @staticmethod
-    def create_invite(server_id, max_age=0, max_users=1, temporary=True, xkcdpass=False):
+    def create_invite(server_id, max_age=600, max_uses=1, temporary=True, xkcdpass=False):
         custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
         path = DISCORD_URL + "/channels/" + str(server_id) + "/invites"
         data = {
             'max_age': max_age,
-            'max_users': max_users,
+            'max_uses': max_uses,
             'temporary': temporary,
             'xkcdpass': xkcdpass,
         }
