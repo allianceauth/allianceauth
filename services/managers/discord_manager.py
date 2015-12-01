@@ -225,7 +225,7 @@ class DiscordManager:
             username_clean = DiscordManager.__sanatize_username(username)
             invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
             password = DiscordManager.__generate_random_pass()
-            DiscordAPIManager.register_user(server_id=settings.DISCORD_SERVER_ID, username=username_clean, invite=invite_code, password=password, email=email)
+            DiscordAPIManager.register_user(server_id=settings.DISCORD_SERVER_ID, username=username_clean, invite_code=invite_code, password=password, email=email)
             user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username_clean)
             DiscordAPIManager.delete_invite(invite_code)
             return username_clean, password
