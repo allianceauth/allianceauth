@@ -128,7 +128,7 @@ urlpatterns = patterns('',
                        # Discord Service Control
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
-#                       url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
+                       url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
 
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',

@@ -348,14 +348,9 @@ def deactivate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def reset_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.delete_user(authinfo.discord_username)
+    result = DiscordManager.update_user_password(request.user.email, authinfo.discord_password)
     if result:
-        # ensures succesful deletion
-        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
-        new_result = DiscordManager.add_user(authinfo.discord_username, request.user.email)
-        if new_result:
-            # ensures succesful creation
-            AuthServicesInfoManager.update_user_discord_info(new_result[0], new_result[1], request.user)
-            update_discord_groups(request.user)
-            return HttpResponseRedirect("/services/")
+        AuthServicesInfoManager.update_user_discord_info(authinfo.discord_username, result, request.user)
+        update_discord_groups(request.user)
+        return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/services/")

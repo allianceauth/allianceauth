@@ -206,6 +206,45 @@ class DiscordAPIManager:
                 return role['id']
         raise KeyError('Group not found on server: ' + group_name)
 
+    @staticmethod
+    def get_token_by_user(email, password):
+        data = {
+            "email" : email,
+            "password": password,
+        }
+        custom_headers = {'content-type':'application/json'}
+        path = DISCORD_URL + "/auth/login"
+        r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+        r.raise_for_status()
+        return r.json()['token']
+
+    @staticmethod
+    def get_user_profile(email, password):
+        token = DiscordAPIManager.get_token_by_user(email, password)
+        custom_headers = {'accept': 'application/json', 'authorization': token}
+        path = DISCORD_URL + "/users/@me"
+        r = requests.get(path, headers=custom_headers)
+        r.raise_for_status()
+        return r.json()
+
+    @staticmethod
+    def set_user_password(email, current_password, new_password):
+        profile = DiscordAPIManager.get_user_profile(email, current_password)
+        avatar = profile['avatar']
+        username = profile['username']
+        data = {
+            'avatar': avatar,
+            'username': username,
+            'password': current_password,
+            'new_password': new_password,
+            'email': email,
+        }
+        path = DISCORD_URL + "/users/@me"
+        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_token_by_user(email, current_password)}
+        r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        r.raise_for_status()
+        return r.json()
+
 class DiscordManager:
     def __init__(self):
         pass
@@ -281,3 +320,12 @@ class DiscordManager:
             return True
         except:
             return False
+
+    @staticmethod
+    def update_user_password(email, current_password):
+        new_password = DiscordManager.__generate_random_pass()
+        try:
+            profile = DiscordAPIManager.set_user_password(email, current_password, new_password)
+            return new_password
+        except:
+            return current_password
