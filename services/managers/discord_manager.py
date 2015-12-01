@@ -86,7 +86,7 @@ class DiscordAPIManager:
         return r.json()
 
     @staticmethod
-    def edit_role(server_id, role_id, name, color=0, hoist=True, permissions=36953089):
+    def edit_role(server_id, role_id, name, color=0, hoist=True, permissions=36785152):
         custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
         data = {
             'color': color,
