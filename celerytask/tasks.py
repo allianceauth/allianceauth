@@ -34,6 +34,12 @@ def disable_alliance_member(user, char_id):
                                EveManager.get_character_by_id(char_id).corporation_name))
     deactivate_services(user)
 
+def disable_expired_member(user):
+    deactivate_services(user)
+    user.user_permissions.clear()
+    user.groups.clear()
+    user.save()
+
 def disable_blue_member(user):
     remove_member_permission(user, 'blue_member')
     remove_user_from_group(user, settings.DEFAULT_BLUE_GROUP)
@@ -167,6 +173,7 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="discord").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "discord")
                     update_discord_groups(user)
+                    print 'add'	
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -198,6 +205,7 @@ def remove_from_databases(user, groups, syncgroups):
                 update_teamspeak3_groups(user)
             if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
                 update_discord_groups(user)
+                print 'remove'
 
 
 # Run every minute
@@ -257,6 +265,13 @@ def run_api_refresh():
                                     characters = EveApiManager.get_characters_from_api(api_key_pair.api_id,
                                                                                        api_key_pair.api_key)
                                     EveManager.update_characters_from_list(characters)
+                                    new_character = False
+                                    for char in characters.result:
+                                        # Ensure we have a model for all characters on key
+                                        if not EveManager.check_if_character_exist(characters.result[char]['name']):
+                                            new_character = True
+                                    if new_character:
+                                        EveManager.create_characters_from_list(characters, user, api_key_pair.api_key)
                                     valid_key = True
                             else:
                                 EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
@@ -319,12 +334,8 @@ def run_api_refresh():
                                     else:
                                         deactivate_services(user)
                             else:
-                                if check_if_user_has_permission(user, "member"):
-                                    disable_alliance_member(user, authserviceinfo.main_char_id)
-                                elif check_if_user_has_permission(user, "blue_member"):
-                                    disable_blue_member(user)
-                                else:
-                                    deactivate_services(user)
+                                # nuke it, the hard way
+                                disable_expired_member(user)                                
                         else:
                             # disable accounts with invalid keys
                             if check_if_user_has_permission(user, "member"):
