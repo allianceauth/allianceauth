@@ -163,7 +163,7 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
-            if authserviceinfo.discord_username and authserviceinfo.discord_username != "":
+            if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="discord").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "discord")
                     update_discord_groups(user)
