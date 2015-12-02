@@ -326,8 +326,8 @@ context_instance=RequestContext(request))
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = DiscordManager.delete_user(authinfo.discord_uid)
-    remove_all_syncgroups_for_service(request.user, "discord")
     if result:
+        remove_all_syncgroups_for_service(request.user, "discord")
         AuthServicesInfoManager.update_user_discord_info("", request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
