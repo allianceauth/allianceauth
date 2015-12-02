@@ -27,4 +27,4 @@ class FleetFormatterForm(forms.Form):
 
 class DiscordForm(forms.Form):
     email = forms.CharField(label="Email Address", required=True)
-    password = forms.CharField(label="Password", required=True)
+    password = forms.CharField(label="Password", required=True, widget=forms.PasswordInput)

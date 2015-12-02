@@ -283,13 +283,16 @@ class DiscordManager:
     @staticmethod
     def update_groups(user_id, groups):
         group_ids = []
-        for g in groups:
-            try:
-                group_id = DiscordAPIManager.get_group_id(settings.DISCORD_SERVER_ID, g)
-                group_ids.append(group_id)
-            except:
-                # need to create role on server for group
-                group_ids.append(DiscordManager.create_group(g))
+        if len(groups) == 0:
+            group_ids = []
+        else:
+            for g in groups:
+                try:
+                    group_id = DiscordAPIManager.get_group_id(settings.DISCORD_SERVER_ID, g)
+                    group_ids.append(group_id)
+                except:
+                    # need to create role on server for group
+                    group_ids.append(DiscordManager.create_group(g))
         DiscordAPIManager.set_roles(settings.DISCORD_SERVER_ID, user_id, group_ids)
 
     @staticmethod
@@ -340,6 +343,7 @@ class DiscordManager:
     @staticmethod
     def delete_user(user_id):
         try:
+            DiscordManager.update_groups(user_id, [])
             DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
             return True
         except:
