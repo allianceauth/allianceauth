@@ -17,7 +17,8 @@
                     {% if success %}
                         <div class="alert alert-success" role="alert">Account Linked</div>
                     {% endif %}
-                    <p>Enter your discord account credentials below. These are not stored: they are needed to determine your user ID and make you join the server.</p>
+                    <p>Enter your Discord account credentials below. These are not stored: they are needed to determine your user ID and make you join the server.</p>
+                    <p>If you do not have a Discord account, please create one <a href="https://discordapp.com">on their site</a> and report back with the credentials.</p>
                     <form class="form-signin" role="form" action="" method="POST"
                           onsubmit="submitbutton.disabled = true; return true;">
                         {% csrf_token %}
