@@ -354,7 +354,3 @@ class DiscordManager:
             return True
         except:
             return False
-
-    @staticmethod
-    def generate_group_map(groups, roles):
-        
