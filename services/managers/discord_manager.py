@@ -8,8 +8,28 @@ DISCORD_URL = "https://discordapp.com/api"
 
 class DiscordAPIManager:
 
-    def __init__(self):
-        pass
+    def __init__(self, server_id, email, password):
+        data = {
+            "email" : email,
+            "password": password,
+        }
+        custom_headers = {'content-type':'application/json'}
+        path = DISCORD_URL + "/auth/login"
+        r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+        r.raise_for_status()
+        self.token = r.json()['token']
+        self.email = email
+        self.password = password
+        self.server_id = server_id
+
+    def __del__(self):
+        if hasattr(self, 'token'):
+            if self.token and self.token != "":
+                data = {'token': self.token}
+                path = DISCORD_URL + "/auth/logout"
+                custom_headers = {'content-type':'application/json'}
+                r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+                r.raise_for_status()
 
     @staticmethod
     def get_auth_token():
@@ -23,88 +43,77 @@ class DiscordAPIManager:
         r.raise_for_status()
         return r.json()['token']
 
-    @staticmethod
-    def add_server(name):
+    def add_server(self, name):
         data = {"name": name}
-        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
+        custom_headers = {'content-type':'application/json', 'authorization': self.token}
         path = DISCORD_URL + "/guilds"
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def rename_server(server_id, name):
+    def rename_server(self, name):
         data = {"name": name}
-        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id)
+        custom_headers = {'content-type':'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id)
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def delete_server(server_id):
-        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id)
+    def delete_server(self):
+        custom_headers = {'content-type':'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
-    @staticmethod
-    def get_members(server_id):
-        custom_headers = {'accept':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/members"
+    def get_members(self):
+        custom_headers = {'accept':'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members"
         r = requests.get(path, headers=custom_headers)
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def get_bans(server_id):
-        custom_headers = {'accept':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/bans"
+    def get_bans(self):
+        custom_headers = {'accept':'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/bans"
         r = requests.get(path, headers=custom_headers)
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def ban_user(server_id, user_id, delete_message_age=0):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/bans/" + str(user_id) + "?delete-message-days=" + str(delete_message_age)
+    def ban_user(self, user_id, delete_message_age=0):
+        custom_headers = {'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/bans/" + str(user_id) + "?delete-message-days=" + str(delete_message_age)
         r = requests.put(path, headers=custom_headers)
         r.raise_for_status()
 
-    @staticmethod
-    def unban_user(server_id, user_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/bans/" + str(user_id)
+    def unban_user(self, user_id):
+        custom_headers = {'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/bans/" + str(user_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
-    @staticmethod
-    def generate_role(server_id):
-        custom_headers = {'accept':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/roles"
+    def generate_role(self):
+        custom_headers = {'accept':'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles"
         r = requests.post(path, headers=custom_headers)
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def edit_role(server_id, role_id, name, color=0, hoist=True, permissions=36785152):
-        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_auth_token()}
+    def edit_role(self, role_id, name, color=0, hoist=True, permissions=36785152):
+        custom_headers = {'content-type':'application/json', 'authorization': self.token}
         data = {
             'color': color,
             'hoist': hoist,
             'name':  name,
             'permissions': permissions,
         }
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/roles/" + str(role_id)
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles/" + str(role_id)
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
         return r.json()
 
-    
-    @staticmethod
-    def delete_role(server_id, role_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/roles/" + str(role_id)
+    def delete_role(self, role_id):
+        custom_headers = {'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles/" + str(role_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
@@ -124,10 +133,9 @@ class DiscordAPIManager:
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def create_invite(server_id, max_age=600, max_uses=1, temporary=True, xkcdpass=False):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/channels/" + str(server_id) + "/invites"
+    def create_invite(self, max_age=600, max_uses=1, temporary=True, xkcdpass=False):
+        custom_headers = {'authorization': self.token}
+        path = DISCORD_URL + "/channels/" + str(self.server_id) + "/invites"
         data = {
             'max_age': max_age,
             'max_uses': max_uses,
@@ -138,17 +146,15 @@ class DiscordAPIManager:
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def delete_invite(invite_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
+    def delete_invite(self, invite_id):
+        custom_headers = {'authorization': self.token}
         path = DISCORD_URL + "/invite/" + str(invite_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
-    @staticmethod
-    def set_roles(server_id, user_id, role_ids):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token(), 'content-type':'application/json'}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/members/" + str(user_id)
+    def set_roles(self, user_id, role_ids):
+        custom_headers = {'authorization': self.token, 'content-type':'application/json'}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members/" + str(user_id)
         data = { 'roles': role_ids }
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
@@ -167,40 +173,35 @@ class DiscordAPIManager:
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
 
-    @staticmethod
-    def kick_user(server_id, user_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token()}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/members/" + str(user_id)
+    def kick_user(self, user_id):
+        custom_headers = {'authorization': self.token}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members/" + str(user_id)
         r = requests.delete(path, headers=custom_headers)
         r.raise_for_status()
 
-    @staticmethod
-    def get_members(server_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token(), 'accept':'application/json'}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/members"
+    def get_members(self):
+        custom_headers = {'authorization': self.token, 'accept':'application/json'}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members"
         r = requests.get(path, headers=custom_headers)
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def get_user_id(server_id, username):
-        all_members = DiscordAPIManager.get_members(server_id)
+    def get_user_id(self, username):
+        all_members = self.get_members()
         for member in all_members:
             if member['user']['username'] == username:
                 return member['user']['id']
         raise KeyError('User not found on server: ' + username)
 
-    @staticmethod
-    def get_roles(server_id):
-        custom_headers = {'authorization': DiscordAPIManager.get_auth_token(), 'accept':'application/json'}
-        path = DISCORD_URL + "/guilds/" + str(server_id) + "/roles"
+    def get_roles(self):
+        custom_headers = {'authorization': self.token, 'accept':'application/json'}
+        path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles"
         r = requests.get(path, headers=custom_headers)
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def get_group_id(server_id, group_name):
-        all_roles = DiscordAPIManager.get_roles(server_id)
+    def get_group_id(self, group_name):
+        all_roles = self.get_roles()
         for role in all_roles:
             if role['name'] == group_name:
                 return role['id']
@@ -259,9 +260,8 @@ class DiscordAPIManager:
         r.raise_for_status
         return r.json()
 
-    @staticmethod
-    def check_if_user_banned(server_id, user_id):
-        bans = DiscordAPIManager.get_bans(server_id)
+    def check_if_user_banned(self, user_id):
+        bans = self.get_bans()
         for b in bans:
             if b['user']['id'] == str(user_id):
                 return True
@@ -283,28 +283,31 @@ class DiscordManager:
     @staticmethod
     def update_groups(user_id, groups):
         group_ids = []
+        api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
         if len(groups) == 0:
             group_ids = []
         else:
             for g in groups:
                 try:
-                    group_id = DiscordAPIManager.get_group_id(settings.DISCORD_SERVER_ID, g)
+                    group_id = api.get_group_id(g)
                     group_ids.append(group_id)
                 except:
                     # need to create role on server for group
-                    group_ids.append(DiscordManager.create_group(g))
-        DiscordAPIManager.set_roles(settings.DISCORD_SERVER_ID, user_id, group_ids)
+                    group_ids.append(api.create_group(g))
+        api.set_roles(user_id, group_ids)
 
     @staticmethod
     def create_group(groupname):
-        new_group = DiscordAPIManager.generate_role(settings.DISCORD_SERVER_ID)
-        named_group = DiscordAPIManager.edit_role(settings.DISCORD_SERVER_ID, new_group['id'], groupname)
+        api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
+        new_group = api.generate_role()
+        named_group = api.edit_role(new_group['id'], groupname)
         return named_group['id']
 
     @staticmethod
     def lock_user(user_id):
         try:
-            DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
+            api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
+            api.ban_user(user_id)
             return True
         except:
             return False
@@ -312,7 +315,8 @@ class DiscordManager:
     @staticmethod
     def unlock_user(user_id):
         try:
-            DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
+            api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
+            api.unban_user(user_id)
             return True
         except:
             return False
@@ -329,11 +333,12 @@ class DiscordManager:
     @staticmethod
     def add_user(email, password):
         try:
+            api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
             profile = DiscordAPIManager.get_user_profile(email, password)
             user_id = profile['id']
-            if DiscordAPIManager.check_if_user_banned(settings.DISCORD_SERVER_ID, user_id):
-                DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
-            invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
+            if api.check_if_user_banned(user_id):
+                api.unban_user(user_id)
+            invite_code = api.create_invite()['code']
             token = DiscordAPIManager.get_token_by_user(email, password)
             DiscordAPIManager.accept_invite(invite_code, token)
             return user_id
@@ -343,8 +348,9 @@ class DiscordManager:
     @staticmethod
     def delete_user(user_id):
         try:
+            api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
             DiscordManager.update_groups(user_id, [])
-            DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
+            api.ban_user(user_id)
             return True
         except:
             return False
