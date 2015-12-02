@@ -28,18 +28,20 @@ def hr_application_management_view(request):
 		# Get the corp the member is in
 		auth_info = AuthServicesInfo.objects.get(user=request.user)
 		if auth_info.main_char_id != "":
-			main_corp_id = EveManager.get_charater_corporation_id_by_id(auth_info.main_char_id)
-                        main_alliance_id = EveManager.get_charater_alliance_id_by_id(auth_info.main_char_id)
-			if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
-				main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-				if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
-                                    corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
-                                    corp_applications = HRApplication.objects.filter(corp=corp).filter(approved_denied=None)
-                                else:
-                                    corp_applications = None
-			else:
+			try:
+				main_corp_id = EveManager.get_charater_corporation_id_by_id(auth_info.main_char_id)
+        	                main_alliance_id = EveManager.get_charater_alliance_id_by_id(auth_info.main_char_id)
+				if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
+					main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+					if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
+	                                    corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
+        	                            corp_applications = HRApplication.objects.filter(corp=corp).filter(approved_denied=None)
+                	                else:
+                        	            corp_applications = None
+				else:
+					corp_applications = None
+			except:
 				corp_applications = None
-
 	context = {'personal_apps': HRApplication.objects.all().filter(user=request.user),
 			   'applications': corp_applications,
 			   'search_form': HRApplicationSearchForm()}

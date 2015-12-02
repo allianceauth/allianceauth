@@ -138,22 +138,23 @@ def main_character_change(request, char_id):
 def corp_stats_view(request):
     # Get the corp the member is in
     auth_info = AuthServicesInfo.objects.get(user=request.user)
-    main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-    if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
-        current_count = 0
-        allcharacters = {}
-        corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
-        all_characters = EveCharacter.objects.all()
-        for char in all_characters:
-            if char:
-                try:
-                    if char.corporation_id == corp.corporation_id:
-                        current_count = current_count + 1
-                        allcharacters[char.character_name] = EveApiKeyPair.objects.get(api_id=char.api_id)
-                except:
-                    pass
-        context = {"corp": corp,
-                   "currentCount": current_count,
-                   "characters": allcharacters}
-        return render_to_response('registered/corpstats.html', context, context_instance=RequestContext(request))
+    if EveCharacter.objects.filter(character_id=auth_info.main_char_id).exists():
+        main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+        if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
+            current_count = 0
+            allcharacters = {}
+            corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
+            all_characters = EveCharacter.objects.all()
+            for char in all_characters:
+                if char:
+                    try:
+                        if char.corporation_id == corp.corporation_id:
+                            current_count = current_count + 1
+                            allcharacters[char.character_name] = EveApiKeyPair.objects.get(api_id=char.api_id)
+                    except:
+                        pass
+            context = {"corp": corp,
+                       "currentCount": current_count,
+                       "characters": allcharacters}
+            return render_to_response('registered/corpstats.html', context, context_instance=RequestContext(request))
     return render_to_response('registered/corpstats.html', None, context_instance=RequestContext(request))
