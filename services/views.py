@@ -323,25 +323,12 @@ context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(service_blue_alliance_test)
-def old_activate_discord(request):
-    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    character = EveManager.get_character_by_id(authinfo.main_char_id)
-    info = DiscordManager.add_user(character.character_name, request.user.email)
-    # If our username is blank means we already had a user
-    if info[0] is not "":
-        AuthServicesInfoManager.update_user_discord_info(info[0], info[1], request.user)
-        update_discord_groups(request.user)
-        return HttpResponseRedirect("/services/")
-    return HttpResponseRedirect("/dashboard")
-
-@login_required
-@user_passes_test(service_blue_alliance_test)
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = DiscordManager.delete_user(authinfo.discord_uid)
     remove_all_syncgroups_for_service(request.user, "discord")
     if result:
-        AuthServicesInfoManager.update_user_discord_info("",request.user)
+        AuthServicesInfoManager.update_user_discord_info("", request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 

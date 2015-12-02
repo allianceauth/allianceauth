@@ -281,31 +281,6 @@ class DiscordManager:
         return os.urandom(8).encode('hex')
 
     @staticmethod
-    def old_add_user(username, email):
-        try:
-            username_clean = DiscordManager.__sanatize_username(username)
-            invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
-            password = DiscordManager.__generate_random_pass()
-            DiscordAPIManager.register_user(server_id=settings.DISCORD_SERVER_ID, username=username_clean, invite_code=invite_code, password=password, email=email)
-            user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username_clean)
-            DiscordAPIManager.delete_invite(invite_code)
-            return username_clean, password
-        except:
-            return "", ""
-
-    @staticmethod
-    def old_delete_user(username, email, password):
-        try:
-            user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username)
-            DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
-            DiscordAPIManager.destroy_user(email, password)
-            return True
-        except:
-            #something went wrong
-            return False
-        return False
-
-    @staticmethod
     def update_groups(user_id, groups):
         group_ids = []
         for g in groups:
@@ -347,14 +322,6 @@ class DiscordManager:
             return new_password
         except:
             return current_password
-
-    @staticmethod
-    def get_user_id(email, password):
-        try:
-            profile = DiscordAPIManager.get_user_profile(email, password)
-            return profile['user']['id']
-        except:
-            return ""
 
     @staticmethod
     def add_user(email, password):
