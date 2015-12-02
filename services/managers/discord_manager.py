@@ -287,11 +287,11 @@ class DiscordManager:
         if len(groups) == 0:
             group_ids = []
         else:
+            roles = api.get_roles()
             for g in groups:
-                try:
-                    group_id = api.get_group_id(g)
-                    group_ids.append(group_id)
-                except:
+                if g in roles:
+                    group_ids.append(roles[g]['id'])
+                else:
                     # need to create role on server for group
                     group_ids.append(DiscordManager.create_group(g))
         api.set_roles(user_id, group_ids)
@@ -354,3 +354,7 @@ class DiscordManager:
             return True
         except:
             return False
+
+    @staticmethod
+    def generate_group_map(groups, roles):
+        
