@@ -293,7 +293,7 @@ class DiscordManager:
                     group_ids.append(group_id)
                 except:
                     # need to create role on server for group
-                    group_ids.append(api.create_group(g))
+                    group_ids.append(DiscordManager.create_group(g))
         api.set_roles(user_id, group_ids)
 
     @staticmethod
