@@ -117,11 +117,11 @@
             {% if ENABLE_BLUE_DISCORD %}
                 <tr>
                     <td class="text-center">Discord</td>
-                    <td class="text-center">{{ authinfo.discord_username }}</td>
-                    <td class="text-center">{{ authinfo.discord_password }}</td>
+                    <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center"></td>
                     <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
                     <td class="text-center">
-                        {% ifequal authinfo.discord_username "" %}
+                        {% ifequal authinfo.discord_uid "" %}
                             <a href="{% url 'auth_activate_discord' %}">
                                 <button type="button" class="btn btn-warning"><span
                                         class="glyphicon glyphicon-ok"></span></button>
@@ -288,11 +288,11 @@
             {% if ENABLE_AUTH_DISCORD %}
                 <tr>
                     <td class="text-center">Discord</td>
-                    <td class="text-center">{{ authinfo.discord_username }}</td>
-                    <td class="text-center">{{ authinfo.discord_password }}</td>
+                    <td class="text-center">{{ authinfo.discord_uid }}</td>
+                    <td class="text-center"></td>
                     <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
                     <td class="text-center">
-                        {% ifequal authinfo.discord_username "" %}
+                        {% ifequal authinfo.discord_uid "" %}
                             <a href="{% url 'auth_activate_discord' %}">
                                 <button type="button" class="btn btn-warning"><span
                                         class="glyphicon glyphicon-ok"></span></button>

@@ -117,8 +117,8 @@ class DiscordAPIManager:
         return r.json()
 
     @staticmethod
-    def accept_invite(invite_id):
-        custom_headers = {'accept': 'application/json'}
+    def accept_invite(invite_id, token):
+        custom_headers = {'accept': 'application/json', 'authorization': token}
         path = DISCORD_URL + "/invite/" + str(invite_id)
         r = requests.post(path, headers=custom_headers)
         r.raise_for_status()
@@ -259,6 +259,14 @@ class DiscordAPIManager:
         r.raise_for_status
         return r.json()
 
+    @staticmethod
+    def check_if_user_banned(server_id, user_id):
+        bans = DiscordAPIManager.get_bans(server_id)
+        for b in bans:
+            if b['user']['id'] == str(user_id):
+                return True
+        return False
+
 class DiscordManager:
     def __init__(self):
         pass
@@ -273,7 +281,7 @@ class DiscordManager:
         return os.urandom(8).encode('hex')
 
     @staticmethod
-    def add_user(username, email):
+    def old_add_user(username, email):
         try:
             username_clean = DiscordManager.__sanatize_username(username)
             invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
@@ -286,7 +294,7 @@ class DiscordManager:
             return "", ""
 
     @staticmethod
-    def delete_user(username, email, password):
+    def old_delete_user(username, email, password):
         try:
             user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username)
             DiscordAPIManager.kick_user(settings.DISCORD_SERVER_ID, user_id)
@@ -298,8 +306,7 @@ class DiscordManager:
         return False
 
     @staticmethod
-    def update_groups(username, groups):
-        user_id = DiscordAPIManager.get_user_id(settings.DISCORD_SERVER_ID, username)
+    def update_groups(user_id, groups):
         group_ids = []
         for g in groups:
             try:
@@ -317,18 +324,16 @@ class DiscordManager:
         return named_group['id']
 
     @staticmethod
-    def lock_user(username):
+    def lock_user(user_id):
         try:
-            user_id = DiscordAPIManager.get_user_id(username)
             DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
             return True
         except:
             return False
 
     @staticmethod
-    def unlock_user(username):
+    def unlock_user(user_id):
         try:
-            user_id = DiscordAPIManager.get_user_id(username)
             DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
             return True
         except:
@@ -342,3 +347,33 @@ class DiscordManager:
             return new_password
         except:
             return current_password
+
+    @staticmethod
+    def get_user_id(email, password):
+        try:
+            profile = DiscordAPIManager.get_user_profile(email, password)
+            return profile['user']['id']
+        except:
+            return ""
+
+    @staticmethod
+    def add_user(email, password):
+        try:
+            profile = DiscordAPIManager.get_user_profile(email, password)
+            user_id = profile['id']
+            if DiscordAPIManager.check_if_user_banned(settings.DISCORD_SERVER_ID, user_id):
+                DiscordAPIManager.unban_user(settings.DISCORD_SERVER_ID, user_id)
+            invite_code = DiscordAPIManager.create_invite(settings.DISCORD_SERVER_ID)['code']
+            token = DiscordAPIManager.get_token_by_user(email, password)
+            DiscordAPIManager.accept_invite(invite_code, token)
+            return user_id
+        except:
+            return ""
+
+    @staticmethod
+    def delete_user(user_id):
+        try:
+            DiscordAPIManager.ban_user(settings.DISCORD_SERVER_ID, user_id)
+            return True
+        except:
+            return False

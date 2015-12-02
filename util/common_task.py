@@ -42,9 +42,9 @@ def deactivate_services(user):
     if authinfo.teamspeak3_uid and authinfo.teamspeak3_uid != "":
         Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
         AuthServicesInfoManager.update_user_teamspeak3_info("", "", user)
-    if authinfo.discord_username and authinfo.discord_username != "":
-        DiscordManager.lock_user(authinfo.discord_username)
-        AuthServicesInfoManager.update_user_discord_info("", "", user)
+    if authinfo.discord_uid and authinfo.discord_uid != "":
+        DiscordManager.delete_user(authinfo.discord_uid)
+        AuthServicesInfoManager.update_user_discord_info("", user)
 
 
 def generate_corp_group_name(corpname):

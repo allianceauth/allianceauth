@@ -24,6 +24,7 @@ from celerytask.tasks import update_teamspeak3_groups
 from celerytask.tasks import update_discord_groups
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
+from forms import DiscordForm
 from util import check_if_user_has_permission
 
 import threading
@@ -322,7 +323,7 @@ context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(service_blue_alliance_test)
-def activate_discord(request):
+def old_activate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     info = DiscordManager.add_user(character.character_name, request.user.email)
@@ -337,10 +338,10 @@ def activate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def deactivate_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.delete_user(authinfo.discord_username, request.user.email, authinfo.discord_password)
+    result = DiscordManager.delete_user(authinfo.discord_uid)
     remove_all_syncgroups_for_service(request.user, "discord")
     if result:
-        AuthServicesInfoManager.update_user_discord_info("", "", request.user)
+        AuthServicesInfoManager.update_user_discord_info("",request.user)
         return HttpResponseRedirect("/services/")
     return HttpResponseRedirect("/dashboard")
 
@@ -348,9 +349,31 @@ def deactivate_discord(request):
 @user_passes_test(service_blue_alliance_test)
 def reset_discord(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscordManager.update_user_password(request.user.email, authinfo.discord_password)
+    result = DiscordManager.delete_user(authinfo.discord_uid)
     if result:
-        AuthServicesInfoManager.update_user_discord_info(authinfo.discord_username, result, request.user)
-        update_discord_groups(request.user)
-        return HttpResponseRedirect("/services/")
+        AuthServicesInfoManager.update_user_discord_info("",request.user)
+        return HttpResponseRedirect("/activate_discord/")
     return HttpResponseRedirect("/services/")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_discord(request):
+    success = False
+    if request.method == 'POST':
+        form = DiscordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            try:
+                user_id = DiscordManager.add_user(email, password)
+                AuthServicesInfoManager.update_user_discord_info(user_id, request.user)
+                update_discord_groups(request.user)
+                success = True
+                return HttpResponseRedirect("/services/")
+            except:
+                pass
+    else:
+        form = DiscordForm()
+
+    context = {'form': form, 'success': success}
+    return render_to_response('registered/discord.html', context, context_instance=RequestContext(request))

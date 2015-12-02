@@ -116,7 +116,7 @@ def update_discord_groups(user):
     if len(groups) == 0:
         groups.append('empty')
 
-    DiscordManager.update_groups(authserviceinfo.discord_username, groups)
+    DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
 
 def create_syncgroup_for_user(user, groupname, servicename):
     synccache = SyncGroupCache()
@@ -196,7 +196,7 @@ def remove_from_databases(user, groups, syncgroups):
                 update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
                 update_teamspeak3_groups(user)
-            if authserviceinfo.discord_username and authserviceinfo.discord_username != "":
+            if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
                 update_discord_groups(user)
 
 
