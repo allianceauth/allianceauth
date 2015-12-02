@@ -24,3 +24,7 @@ class FleetFormatterForm(forms.Form):
     reimbursable = forms.ChoiceField(label='Reimbursable?*', choices=[('Yes', 'Yes'), ('No', 'No')], required=True)
     important = forms.ChoiceField(label='Important?*', choices=[('Yes', 'Yes'), ('No', 'No')], required=True)
     comments = forms.CharField(widget=forms.Textarea, required=False)
+
+class DiscordForm(forms.Form):
+    email = forms.CharField(label="Email Address", required=True)
+    password = forms.CharField(label="Password", required=True, widget=forms.PasswordInput)

@@ -9,6 +9,7 @@ from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
+from services.managers.discord_manager import DiscordManager
 from services.models import AuthTS
 from services.models import TSgroup
 from authentication.models import AuthServicesInfo
@@ -105,6 +106,17 @@ def update_teamspeak3_groups(user):
 
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
+def update_discord_groups(user):
+    syncgroups = SyncGroupCache.objects.filter(user=user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
+    for syncgroup in syncgroups:
+        groups.append(str(syncgroup.groupname))
+
+    if len(groups) == 0:
+        groups.append('empty')
+
+    DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
 
 def create_syncgroup_for_user(user, groupname, servicename):
     synccache = SyncGroupCache()
@@ -151,6 +163,10 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
+            if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
+                if syncgroups.filter(groupname=group.name).filter(servicename="discord").exists() is not True:
+                    create_syncgroup_for_user(user, group.name, "discord")
+                    update_discord_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -180,6 +196,8 @@ def remove_from_databases(user, groups, syncgroups):
                 update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
                 update_teamspeak3_groups(user)
+            if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
+                update_discord_groups(user)
 
 
 # Run every minute
