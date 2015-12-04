@@ -338,12 +338,7 @@ def run_api_refresh():
                                 disable_expired_member(user)                                
                         else:
                             # disable accounts with invalid keys
-                            if check_if_user_has_permission(user, "member"):
-                                disable_alliance_member(user, authserviceinfo.main_char_id)
-                            elif check_if_user_has_permission(user, "blue_member"):
-                                disable_blue_member(user)
-                            else:
-                                deactivate_services(user)
+                            disable_expired_member(user)
 
                 else:
                     print 'No main_char_id set'
