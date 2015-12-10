@@ -70,8 +70,17 @@ def fleet_formatter_view(request):
 def jabber_broadcast_view(request):
     logger.debug("jabber_broadcast_view called by user %s" % request.user)
     success = False
+    allchoices = []
+    if check_if_user_has_permission(request.user, 'jabber_broadcast_all'):
+        allchoices.append(('all', 'all'))
+        for g in Group.objects.all():
+            allchoices.append((str(g.name), str(g.name)))
+    else:
+        for g in request.user.groups.all():
+            allchoices.append((str(g.name), str(g.name)))
     if request.method == 'POST':
         form = JabberBroadcastForm(request.POST)
+        form.fields['group'].choices = allchoices
         logger.debug("Received POST request containing form, valid: %s" % form.is_valid())
         if form.is_valid():
             user_info = AuthServicesInfo.objects.get(user=request.user)
@@ -92,7 +101,8 @@ def jabber_broadcast_view(request):
             success = True
             logger.info("Sent jabber broadcast on behalf of user %s" % request.user)
     else:
-        form = JabberBroadcastForm(request.user)
+        form = JabberBroadcastForm()
+        form.fields['group'].choices = allchoices
         logger.debug("Generated broadcast form for user %s containing %s groups" % (request.user, len(form.fields['group'].choices)))
 
     context = {'form': form, 'success': success}

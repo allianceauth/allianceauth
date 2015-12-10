@@ -1,20 +1,7 @@
 from django import forms
-from django.contrib.auth.models import Group
-from util import check_if_user_has_permission
-
 
 class JabberBroadcastForm(forms.Form):
-    def __init__(self, user, *args, **kwargs):
-        super(JabberBroadcastForm, self).__init__(*args, **kwargs)
-        allchoices = []
-        if check_if_user_has_permission(user, 'jabber_broadcast_all'):
-            allchoices.append(('all', 'all'))
-            for g in Group.objects.all():
-                allchoices.append((str(g.name), str(g.name)))
-        else:
-            for g in user.groups.all():
-                allchoices.append((str(g.name), str(g.name)))
-        self.fields['group'] = forms.ChoiceField(choices=allchoices, widget=forms.Select)
+    group = forms.ChoiceField(widget=forms.Select)
     message = forms.CharField(widget=forms.Textarea)
 
 
