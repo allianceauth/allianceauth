@@ -212,10 +212,10 @@ def remove_from_databases(user, groups, syncgroups):
 @periodic_task(run_every=crontab(minute="*/1"))
 def run_databaseUpdate():
     users = User.objects.all()
+    Teamspeak3Manager._sync_ts_group_db()
     for user in users:
         groups = user.groups.all()
         syncgroups = SyncGroupCache.objects.filter(user=user)
-        Teamspeak3Manager._sync_ts_group_db()
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
 
