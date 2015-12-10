@@ -321,25 +321,57 @@ def run_api_refresh():
                                 still_valid = True
                                 if authserviceinfo.is_blue:
                                     if settings.BLUE_API_ACCOUNT:
-                                        if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
+                                        type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
+                                        if type == None:
+                                            api_key_pair.error_count += 1
+                                            api_key_pair.save()
+                                            logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                                            still_valid = None
+                                        elif type == False:
                                             logger.info("Determined api key %s for blue user %s is no longer type account as requred." % (api_key_pair.api_id, user))
                                             still_valid = False
-                                    if not EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
+                                    full = EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
+                                    if full == None:
+                                        api_key_pair.error_count += 1
+                                        api_key_pair.save()
+                                        logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                                        still_valid = None
+                                    elif full == False:
                                             logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                                             still_valid = False
                                 else:
                                     if settings.MEMBER_API_ACCOUNT:
-                                        if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
+                                        type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
+                                        if type == None:
+                                            api_key_pair.error_count += 1
+                                            api_key_pair.save()
+                                            logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                                            still_valid = None
+                                        elif type == False:
                                             logger.info("Determined api key %s for user %s is no longer type account as required." % (api_key_pair.api_id, user))
                                             still_valid = False
-                                    if not EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
+                                    full = EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
+                                    if full == None:
+                                        api_key_pair.error_count += 1
+                                        api_key_pair.save()
+                                        logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                                        still_valid = None
+                                    elif full == False:
                                             logger.info("Determined api key %s for user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                                             still_valid = False
-                                if still_valid is not True:
+                                if still_valid == None:
+                                    if api_key_pair.error_count >= 3:
+                                        logger.info("API key %s has incurred 3 or more errors. Assuming invalid." % api_key_pair.api_id)
+                                        still_valid = False
+                                if still_valid == False:
                                     logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
                                     EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
                                     EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
                                 else:
+                                    if api_key_pair.error_count != 0:
+                                        logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
+                                        api_key_pair.error_count = 0
+                                        api_key_pair.save()
                                     logger.info("Determined api key %s still meets requirements." % api_key_pair.api_id)
                                     # Update characters
                                     characters = EveApiManager.get_characters_from_api(api_key_pair.api_id,
