@@ -312,6 +312,7 @@ def run_api_refresh():
                         oldcorp_id = 0
                         if EveManager.get_character_by_id(authserviceinfo.main_char_id):
                             oldcorp_id = EveCharacter.objects.get(character_id=authserviceinfo.main_char_id).corporation_id
+                            oldcorp_name = EveCharacter.objects.get(character_id=authserviceinfo.main_char_id).corporation_name
                             logger.debug("Determined user %s current main corp id %s" % (user, oldcorp_id))
                         for api_key_pair in api_key_pairs:
                             logger.debug("Running update on api key %s" % api_key_pair.api_id)
@@ -367,7 +368,7 @@ def run_api_refresh():
                                     logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
                                     EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
                                     EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
-                                else:
+                                elif still_valid == True:
                                     if api_key_pair.error_count != 0:
                                         logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
                                         api_key_pair.error_count = 0
@@ -420,8 +421,7 @@ def run_api_refresh():
                                     elif corp.corporation_id != oldcorp_id:
                                         #changed corps, both corps auth'd, need to change group assignment
                                         logger.debug("User %s main character changed corp from id %s to %s, both meet membership requirements. Updating corp group." % (user, oldcorp_id, corp.corporation_id))
-                                        oldcorp = EveCorporationInfo.objects.get(corporation_id=oldcorp_id)
-                                        remove_user_from_group(user, generate_corp_group_name(oldcorp.corporation_name))
+                                        remove_user_from_group(user, generate_corp_group_name(oldcorp_name))
                                         add_user_to_group(user, generate_corp_group_name(character.corporation_name))
                                         #reset services to force new mumble names and group assignments
                                         deactivate_services(user)
