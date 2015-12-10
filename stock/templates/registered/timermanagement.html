@@ -120,7 +120,105 @@
             {% endif %}
             </tr>
         </table>
-
+        {% if corp_timers %}
+            <h4><b>Corp Timers</b></h4>
+            <table class="table table-bordered">
+                <tr>
+                    <th style="width:150px" class="text-center">Details</th>
+                    <th class="text-center">Objective</th>
+                    <th class="text-center">System</th>
+                    <th class="text-center">Structure</th>
+                    <th class="text-center">Eve Time</th>
+                    <th class="text-center">Local Time</th>
+                    <th class="text-center">Creator</th>
+                    {% if perms.auth.timer_management %}
+                        <th class="text-center">Action</th>
+                    {% endif %}
+                </tr>
+                {% for timer in corp_timers %}
+                    {% ifequal timer.important True %}
+                        <tr class="danger">
+                            {% else %}
+                        <tr class="info">
+                    {% endifequal %}
+                <td style="width:150px" class="text-center">{{ timer.details }}</td>
+                <td class="text-center">
+                    {% ifequal timer.objective "Hostile" %}
+                        <div class="label label-danger">
+                            Hostile
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.objective "Friendly" %}
+                        <div class="label label-primary">
+                            Friendly
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.objective "Neutral" %}
+                        <div class="label label-default">
+                            Neutral
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center"><a
+                        href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
+                </td>
+                <td class="text-center">
+                    {% ifequal timer.structure "I-HUB" %}
+                        <div class="label label-warning">
+                            I-HUB
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POCO" %}
+                        <div class="label label-success">
+                            POCO
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[S]" %}
+                        <div class="label label-info">
+                            POS [S]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[M]" %}
+                        <div class="label label-info">
+                            POS [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[L]" %}
+                        <div class="label label-info">
+                            POS [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Station" %}
+                        <div class="label label-danger">
+                            Station
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "TCU" %}
+                        <div class="label label-danger">
+                            TCU
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
+                </td>
+                <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
+                <td class="text-center" nowrap><div id="countdown{{ timer.id }}"></div></td>
+                <td class="text-center">{{ timer.eve_character.character_name }}</td>
+                {% if perms.auth.timer_management %}
+                    <td class="text-center">
+                        <a href="/remove_timer/{{ timer.id }}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    </td>
+                {% endif %}
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
         <h4><b>Future Timers</b></h4>
         <table class="table table-bordered">
             <tr>
@@ -231,6 +329,7 @@ var clock{{ timer.id }} = document.getElementById("countdown{{ timer.id }}"), ta
 
 setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
 {% for timer in timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+{% for timer in corp_timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
 
 setInterval(function(){updateClock()}, 1000);
 

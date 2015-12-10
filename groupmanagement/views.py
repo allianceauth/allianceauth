@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from models import GroupDescription
 from models import GroupRequest
 from models import HiddenGroup
+from models import OpenGroup
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 
@@ -145,10 +146,15 @@ def groups_view(request):
 @login_required
 def group_request_add(request, group_id):
     logger.debug("group_request_add called by user %s for group id %s" % (request.user, group_id))
+    group = Group.objects.get(id=group_id)
+    if OpenGroup.objects.filter(group=group).exists():
+        logger.info("%s joining %s as is an open group" % (request.user, group))
+        request.user.groups.add(group)
+        return HttpResponseRedirect("/groups")
     auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
     grouprequest = GroupRequest()
     grouprequest.status = 'pending'
-    grouprequest.group = Group.objects.get(id=group_id)
+    grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)
     grouprequest.leave_request = False
@@ -161,10 +167,15 @@ def group_request_add(request, group_id):
 @login_required
 def group_request_leave(request, group_id):
     logger.debug("group_request_leave called by user %s for group id %s" % (request.user, group_id))
+    group = Group.objects.get(id=group_id)
+    if OpenGroup.objects.filter(group=group).exists():
+        logger.info("%s leaving %s as is an open group" % (request.user, group))
+        request.user.groups.remove(group)
+        return HttpResponseRedirect("/groups")
     auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
     grouprequest = GroupRequest()
     grouprequest.status = 'pending'
-    grouprequest.group = Group.objects.get(id=group_id)
+    grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)
     grouprequest.leave_request = True
