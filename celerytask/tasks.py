@@ -173,7 +173,6 @@ def add_to_databases(user, groups, syncgroups):
                 if syncgroups.filter(groupname=group.name).filter(servicename="discord").exists() is not True:
                     create_syncgroup_for_user(user, group.name, "discord")
                     update_discord_groups(user)
-                    print 'add'	
 
 
 def remove_from_databases(user, groups, syncgroups):
@@ -205,7 +204,6 @@ def remove_from_databases(user, groups, syncgroups):
                 update_teamspeak3_groups(user)
             if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
                 update_discord_groups(user)
-                print 'remove'
 
 
 # Run every minute
