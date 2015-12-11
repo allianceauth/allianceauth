@@ -260,6 +260,105 @@ def remove_from_databases(user, groups, syncgroups):
                 logger.debug("User %s has discord uid %s - updating groups." % (user, authserviceinfo.discord_uid))
                 update_discord_groups(user)
 
+def make_member(user):
+    logger.debug("Ensuring user %s has member permissions and groups." % user)
+    # ensure member is not blue right now
+    if check_if_user_has_permission(user, 'blue_member'):
+        logger.info("Removing user %s blue permission to transition to member" % user)
+        remove_member_permission(user, 'blue_member')
+    blue_group, c = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
+    if blue_group in user.groups.all():
+        logger.info("Removing user %s blue group" % user)
+        user.groups.remove(blue_group)
+    # make member
+    if check_if_user_has_permission(user, 'member') is False:
+        logger.info("Adding user %s member permission" % user)
+        add_member_permission(user, 'member')
+    member_group, c = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
+    if member_group in user.groups.all() is False:
+        logger.info("Adding user %s to member group" % user)
+        user.groups.add(member_group)
+    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    if auth.is_blue:
+        logger.info("Marking user %s as non-blue" % user)
+        auth.is_blue = False
+        auth.save()
+    if auth.main_character_id:
+        if EveCharacter.objects.filter(character_id=auth.main_character_id).exists():
+            char = EveCharacter.objects.get(character_id=auth.main_character_id)
+            corpname = generate_corp_group_name(char.corporation_name)
+            corp_group, c = Group.objects.get_or_create(name=corpname)
+            if not corp_group in user.groups.all():
+                logger.info("Adding user %s to corp group %s" % (user, corp_group))
+                user.groups.add(corp_group)
+            for g in user.groups.all():
+                if str.startswith(g.name, "Corp_"):
+                    if g != corp_group:
+                        logger.info("Removing user %s from old corpgroup %s" % (user, g))
+                        user.groups.remove(g)
+
+def make_blue(user):
+    logger.debug("Ensuring user %s has blue permissions and groups." % user)
+    # ensure user is not a member
+    if check_if_user_has_permission(user, 'member'):
+        logger.info("Removing user %s member permission to transition to blue" % user)
+        remove_member_permission(user, 'blue_member')
+    member_group, c = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
+    if member_group in user.groups.all():
+        logger.info("Removing user %s member group" % user)
+        user.groups.remove(member_group)
+    # make blue
+    if check_if_user_has_permission(user, 'blue_member') is False:
+        logger.info("Adding user %s blue permission" % user)
+        add_member_permission(user, 'blue_member')
+    blue_group, c = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
+    if blue_group in user.groups.all() is False:
+        logger.info("Adding user %s to blue group" % user)
+        user.groups.add(blue_group)
+    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    if auth.is_blue is False:
+        logger.info("Marking user %s as blue" % user)
+        auth.is_blue = True
+        auth.save()
+    for g in user.groups.all():
+        if str.startswith(g.name, 'Corp_'):
+            logger.info("Removing blue user %s from corp group %s" % (user, g))
+            user.groups.remove(g)
+
+def determine_membership_by_character(char):
+    if settings.IS_CORP:
+        if char.corporation_id == settings.CORP_ID:
+            logger.debug("User %s main character %s in owning corp id %s" % (user, char, char.corporation_id))
+            return "MEMBER"
+    else:
+        if char.alliance_id == settings.ALLIANCE_ID:
+            logger.debug("User %s main character %s in owning alliance id %s" % (user, char, char.alliance_id))
+            return "MEMBER"
+    if EveCorporation.objects.filter(corporation_id=char.corporation_id).exists() is False:
+         logger.debug("No corp model for user %s main character %s corp id %s. Unable to check standings. Non-member." % (user, char, char.corporation_id))
+         return False
+    else:
+         corp = EveCorporation.objects.get(corporation_id=char.corporation_id)
+         if corp.is_blue:
+             logger.debug("User %s main character %s member of blue corp %s" % (user, char, corp))
+             return "BLUE"
+         else:
+             logger.debug("User %s main character %s member of non-blue corp %s. Non-member." % (user, char, corp))
+             return False
+
+def determine_membership_by_user(user):
+    logger.debug("Determining membership of user %s" % user)
+    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    if auth.main_character_id:
+        if EveCharacter.objects.filter(character_id=auth.main_character_id).exists():
+            char = EveCharacter.objects.get(character_id=auth.main_character_id)
+            return determine_membership_by_character(char)
+        else:
+            logger.debug("Character model matching user %s main character id %s does not exist. Non-member." % (user, auth.main_character_id))
+            return False
+    else:
+        logger.debug("User %s has no main character set. Non-member." % user)
+        return False
 
 # Run every minute
 @periodic_task(run_every=crontab(minute="*/1"))

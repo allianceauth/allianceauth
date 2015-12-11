@@ -3,49 +3,43 @@ from django.conf import settings
 
 from services.managers.eve_api_manager import EveApiManager
 from eveonline.managers import EveManager
+from eveonline.models import EveCharacter
+
+from celerytask.tasks import determine_membership_by_character
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 class UpdateKeyForm(forms.Form):
+    def __init__(self, user_state=None, *args, **kwargs):
+        super(UpdateKeyForm, self).__init__(args, kwargs)
+        self.user_state=user_state
+
     api_id = forms.CharField(max_length=254, required=True, label="Key ID")
     api_key = forms.CharField(max_length=254, required=True, label="Verification Code")
-    is_blue = forms.BooleanField(label="Blue to corp/alliance", required=False)
 
     def clean(self):
         if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
             logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
             raise forms.ValidationError(u'API key already exist')
 
-        check_blue = False
-        try:
-            check_blue = self.cleaned_data['is_blue']
-        except:
-            pass
+        chars = EveApiManager.get_characters_from_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']).result
+        states = []
+        states.append(self.user_state)
+        for char in chars:
+            evechar = EveCharacter()
+            evechar.character_name = chars[char]['name']
+            evechar.corporation_id = chars[char]['corp']['id']
+            evechar.alliance_id = chars[char]['alliance']['id']
+            state = determine_membership_by_character(evechar)
+            logger.debug("API ID %s character %s has state %s" % (self.cleaned_data['api_id'], evechar, state)
+            states.append(state)
 
-        if check_blue:
-            if settings.BLUE_API_ACCOUNT:
-                if not EveApiManager.check_api_is_type_account(self.cleaned_data['api_id'],
-                                                               self.cleaned_data['api_key']):
-                    logger.debug("UpdateKeyForm failed cleaning as API id %s does not meet blue api key account requirement." % self.cleaned_data['api_id'])
-                    raise forms.ValidationError(u'API not of type account')
-
-            if not EveApiManager.check_blue_api_is_full(self.cleaned_data['api_id'],
-                                                   self.cleaned_data['api_key']):
-                logger.debug("UpdateKeyForm failed cleaning as API id %s does not meet minimum blue api access mask requirement." % self.cleaned_data['api_id'])
-                raise forms.ValidationError(u'API supplied is too restricted. Minimum access mask is ' + str(settings.BLUE_API_MASK))
-
-        else:
-            if settings.MEMBER_API_ACCOUNT:
-                if not EveApiManager.check_api_is_type_account(self.cleaned_data['api_id'],
-                                                           self.cleaned_data['api_key']):
-                    logger.debug("UpdateKeyForm failed cleaning as API id %s does not meet member api key account requirement." % self.cleaned_data['api_id'])
-                    raise forms.ValidationError(u'API not of type account')
-
-            if not EveApiManager.check_api_is_full(self.cleaned_data['api_id'],
-                                                   self.cleaned_data['api_key']):
-                logger.debug("UpdateKeyForm failed cleaning as API id %s does not meet minimum member api access mask requirement." % self.cleaned_data['api_id'])
-                raise forms.ValidationError(u'API supplied is too restricted. Minimum access mask is ' + str(settings.MEMBER_API_MASK))
-
+        if 'MEMBER' in states:
+            if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
+                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s" % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK)
+        if 'BLUE' in states:
+            if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
+                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s" % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK)
         return self.cleaned_data
