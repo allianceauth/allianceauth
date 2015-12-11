@@ -1,6 +1,7 @@
 from django.conf import settings
 from celery.task import periodic_task
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 from models import SyncGroupCache
 from celery.task.schedules import crontab
@@ -31,7 +32,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def disable_member(user, char_id):
+def disable_member(user):
     logger.debug("Disabling member %s" % user)
     if user.user_permissions.all().exists():
         logger.info("Clearning user %s permission to deactivate user." % user)
@@ -276,7 +277,7 @@ def make_member(user):
                 logger.info("Adding user %s to corp group %s" % (user, corp_group))
                 user.groups.add(corp_group)
             for g in user.groups.all():
-                if str.startswith(g.name, "Corp_"):
+                if str.startswith(str(g.name), "Corp_"):
                     if g != corp_group:
                         logger.info("Removing user %s from old corpgroup %s" % (user, g))
                         user.groups.remove(g)
@@ -305,29 +306,29 @@ def make_blue(user):
         auth.is_blue = True
         auth.save()
     for g in user.groups.all():
-        if str.startswith(g.name, 'Corp_'):
+        if str.startswith(str(g.name), 'Corp_'):
             logger.info("Removing blue user %s from corp group %s" % (user, g))
             user.groups.remove(g)
 
 def determine_membership_by_character(char):
     if settings.IS_CORP:
         if char.corporation_id == settings.CORP_ID:
-            logger.debug("User %s main character %s in owning corp id %s" % (user, char, char.corporation_id))
+            logger.debug("Character %s in owning corp id %s" % (char, char.corporation_id))
             return "MEMBER"
     else:
         if char.alliance_id == settings.ALLIANCE_ID:
-            logger.debug("User %s main character %s in owning alliance id %s" % (user, char, char.alliance_id))
+            logger.debug("Character %s in owning alliance id %s" % (char, char.alliance_id))
             return "MEMBER"
-    if EveCorporation.objects.filter(corporation_id=char.corporation_id).exists() is False:
-         logger.debug("No corp model for user %s main character %s corp id %s. Unable to check standings. Non-member." % (user, char, char.corporation_id))
+    if EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists() is False:
+         logger.debug("No corp model for character %s corp id %s. Unable to check standings. Non-member." % (char, char.corporation_id))
          return False
     else:
-         corp = EveCorporation.objects.get(corporation_id=char.corporation_id)
+         corp = EveCorporationInfo.objects.get(corporation_id=char.corporation_id)
          if corp.is_blue:
-             logger.debug("User %s main character %s member of blue corp %s" % (user, char, corp))
+             logger.debug("Character %s member of blue corp %s" % (char, corp))
              return "BLUE"
          else:
-             logger.debug("User %s main character %s member of non-blue corp %s. Non-member." % (user, char, corp))
+             logger.debug("Character %s member of non-blue corp %s. Non-member." % (char, corp))
              return False
 
 def determine_membership_by_user(user):
@@ -338,11 +339,20 @@ def determine_membership_by_user(user):
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
             return determine_membership_by_character(char)
         else:
-            logger.debug("Character model matching user %s main character id %s does not exist. Non-member." % (user, auth.main_character_id))
+            logger.debug("Character model matching user %s main character id %s does not exist. Non-member." % (user, auth.main_char_id))
             return False
     else:
         logger.debug("User %s has no main character set. Non-member." % user)
         return False
+
+def set_state(user):
+    state = determine_membership_by_user(user)
+    if state == "MEMBER":
+        make_member(user)
+    elif state == "BLUE":
+        make_blue(user)
+    else:
+        disable_member(user)
 
 # Run every minute
 @periodic_task(run_every=crontab(minute="*/1"))
@@ -460,6 +470,10 @@ def run_api_refresh():
                             if new_character:
                                 logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
                                 EveManager.create_characters_from_list(characters, user, api_key_pair.api_key)
+                    else:
+                        logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
+                        EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+                        EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
                 # Check our main character
                 if EveCharacter.objects.filter(character_id=authserviceinfo.main_char_id).exists() is False:
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))

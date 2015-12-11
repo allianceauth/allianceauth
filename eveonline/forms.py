@@ -12,34 +12,36 @@ import logging
 logger = logging.getLogger(__name__)
 
 class UpdateKeyForm(forms.Form):
-    def __init__(self, user_state=None, *args, **kwargs):
-        super(UpdateKeyForm, self).__init__(args, kwargs)
-        self.user_state=user_state
+    user_state = None
 
     api_id = forms.CharField(max_length=254, required=True, label="Key ID")
     api_key = forms.CharField(max_length=254, required=True, label="Verification Code")
 
     def clean(self):
-        if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
-            logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
-            raise forms.ValidationError(u'API key already exist')
+        super(UpdateKeyForm, self).clean()
 
-        chars = EveApiManager.get_characters_from_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']).result
-        states = []
-        states.append(self.user_state)
-        for char in chars:
-            evechar = EveCharacter()
-            evechar.character_name = chars[char]['name']
-            evechar.corporation_id = chars[char]['corp']['id']
-            evechar.alliance_id = chars[char]['alliance']['id']
-            state = determine_membership_by_character(evechar)
-            logger.debug("API ID %s character %s has state %s" % (self.cleaned_data['api_id'], evechar, state))
-            states.append(state)
+        if 'api_id' in self.cleaned_data and 'api_key' in self.cleaned_data:
+            logger.debug("Form has id and key")
+            if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
+                logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
+                raise forms.ValidationError(u'API key already exist')
 
-        if 'MEMBER' in states:
-            if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
-        if 'BLUE' in states:
-            if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
+            chars = EveApiManager.get_characters_from_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']).result
+            states = []
+            states.append(self.user_state)
+            for char in chars:
+                evechar = EveCharacter()
+                evechar.character_name = chars[char]['name']
+                evechar.corporation_id = chars[char]['corp']['id']
+                evechar.alliance_id = chars[char]['alliance']['id']
+                state = determine_membership_by_character(evechar)
+                logger.debug("API ID %s character %s has state %s" % (self.cleaned_data['api_id'], evechar, state))
+                states.append(state)
+
+            if 'MEMBER' in states:
+                if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
+                    raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
+            if 'BLUE' in states:
+                if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
+                    raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
         return self.cleaned_data
