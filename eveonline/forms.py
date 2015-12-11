@@ -33,13 +33,13 @@ class UpdateKeyForm(forms.Form):
             evechar.corporation_id = chars[char]['corp']['id']
             evechar.alliance_id = chars[char]['alliance']['id']
             state = determine_membership_by_character(evechar)
-            logger.debug("API ID %s character %s has state %s" % (self.cleaned_data['api_id'], evechar, state)
+            logger.debug("API ID %s character %s has state %s" % (self.cleaned_data['api_id'], evechar, state))
             states.append(state)
 
         if 'MEMBER' in states:
             if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s" % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK)
+                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
         if 'BLUE' in states:
             if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s" % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK)
+                raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
         return self.cleaned_data
