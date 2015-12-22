@@ -83,7 +83,10 @@ class OpenfireManager:
     def update_user_groups(username, password, groups):
         try:
             api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-            remote_groups = api.get_user_groups(username)['groupname']
+            response = api.get_user_groups(username)
+            remote_groups = []
+            if response:
+                remote_groups = response['groupname']
             add_groups = []
             del_groups = []
             for g in groups:
@@ -96,7 +99,7 @@ class OpenfireManager:
                 api.add_user_groups(username, add_groups)
             if del_groups:
                 api.delete_user_groups(username, del_groups)
-        except exception.HTTPException as e:
+        except e:
             print e
 
     @staticmethod
