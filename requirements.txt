@@ -15,3 +15,4 @@ django-bootstrap-form
 django-celery
 
 git+git://github.com/nikdoof/python-ts3.git
+git+git://github.com/seamus-45/openfire-restapi.git
