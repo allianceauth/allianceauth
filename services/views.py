@@ -353,10 +353,11 @@ def activate_discord(request):
             password = form.cleaned_data['password']
             try:
                 user_id = DiscordManager.add_user(email, password)
-                AuthServicesInfoManager.update_user_discord_info(user_id, request.user)
-                update_discord_groups(request.user)
-                success = True
-                return HttpResponseRedirect("/services/")
+                if user_id != "":
+                    AuthServicesInfoManager.update_user_discord_info(user_id, request.user)
+                    update_discord_groups(request.user)
+                    success = True
+                    return HttpResponseRedirect("/services/")
             except:
                 pass
     else:
