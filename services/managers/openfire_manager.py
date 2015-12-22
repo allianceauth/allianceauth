@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.conf import settings
 import threading
 from ofrestapi.users import Users as ofUsers
+from ofrestapi import exception
 
 
 class OpenfireManager:
