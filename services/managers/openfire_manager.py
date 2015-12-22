@@ -5,14 +5,8 @@ import xmpp
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.conf import settings
-from openfire import exception
-from openfire import UserService
-
-from authentication.managers import AuthServicesInfoManager
-
 import threading
-
-import ofrestapi
+from ofrestapi.users import Users as ofUsers
 
 
 class OpenfireManager:
@@ -46,7 +40,7 @@ class OpenfireManager:
         try:
             sanatized_username = OpenfireManager.__santatize_username(username)
             password = OpenfireManager.__generate_random_pass()
-            api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+            api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.add_user(sanatized_username, password)
 
         except exception.UserAlreadyExistsException:
@@ -58,7 +52,7 @@ class OpenfireManager:
     @staticmethod
     def delete_user(username):
         try:
-            api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+            api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.delete_user(username)
             return True
         except exception.UserNotFoundException:
@@ -66,19 +60,19 @@ class OpenfireManager:
 
     @staticmethod
     def lock_user(username):
-        api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         api.lock_user(username)
 
     @staticmethod
     def unlock_user(username):
-        api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         api.unlock_user(username)
 
     @staticmethod
     def update_user_pass(username):
         try:
             password = OpenfireManager.__generate_random_pass()
-            api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+            api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.update_user(username, password=password)
             return password
         except exception.UserNotFoundException:
@@ -87,8 +81,8 @@ class OpenfireManager:
     @staticmethod
     def update_user_groups(username, password, groups):
         try:
-            api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-            remote_groups = api.get_user_groups(username)
+            api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+            remote_groups = api.get_user_groups(username)['groupname']
             add_groups = []
             del_groups = []
             for g in groups:
@@ -107,7 +101,7 @@ class OpenfireManager:
     @staticmethod
     def delete_user_groups(username, groups):
 
-        api = ofrestapi.users(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         api.delete_user_groups(username, groups)
 
     @staticmethod
