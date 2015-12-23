@@ -81,27 +81,24 @@ class OpenfireManager:
 
     @staticmethod
     def update_user_groups(username, password, groups):
-        try:
-            api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-            response = api.get_user_groups(username)
-            remote_groups = []
-            if response:
-                remote_groups = response['groupname']
-            add_groups = []
-            del_groups = []
-            for g in groups:
-                if not g in remote_groups:
-                    add_groups.append(g)
-            for g in remote_groups:
-                if not g in groups:
-                    del_groups.append(g)
-            if add_groups:
-                api.add_user_groups(username, add_groups)
-            if del_groups:
-                api.delete_user_groups(username, del_groups)
-        except e:
-            print e
-
+        api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
+        response = api.get_user_groups(username)
+        remote_groups = []
+        if response:
+            remote_groups = response['groupname']
+        add_groups = []
+        del_groups = []
+        for g in groups:
+            if not g in remote_groups:
+                add_groups.append(g)
+        for g in remote_groups:
+            if not g in groups:
+                del_groups.append(g)
+        if add_groups:
+            api.add_user_groups(username, add_groups)
+        if del_groups:
+            api.delete_user_groups(username, del_groups)
+        
     @staticmethod
     def delete_user_groups(username, groups):
 
