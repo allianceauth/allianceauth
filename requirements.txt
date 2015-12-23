@@ -5,7 +5,6 @@ evelink
 dnspython
 passlib
 xmpppy==0.5.0rc1
-python-openfire==0.2.3-beta
 requests
 
 # Django Stuff #
@@ -15,3 +14,4 @@ django-bootstrap-form
 django-celery
 
 git+git://github.com/nikdoof/python-ts3.git
+git+git://github.com/seamus-45/openfire-restapi.git
