@@ -20,22 +20,29 @@
 
                     <p class="text-center">
                         <a target="_blank"
-                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=268435455">Create
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{MEMBER_API_MASK}}">Create
                             a full API key</a>
                     </p>
-
-                    <p class="text-center">
-                        NOTE: If you are part of the alliance do not check "Blue" this is for people who are blue to the
-                        alliance
-                        but are not in it. Blue access is limited.
-                    </p>
+                    {% if IS_CORP %}
+                        <p class="text-center">
+                            NOTE: If you are part of the corp do not check "Blue", this is for people who are blue to the
+                            corp
+                            but are not in it. Blue access is limited.
+                        </p>
+                    {% else %}
+                        <p class="text-center">
+                            NOTE: If you are part of the alliance do not check "Blue", this is for people who are blue to the
+                            alliance
+                            but are not in it. Blue access is limited.
+                        </p>
+                    {% endif %}
 
                     <p class="text-center"><b>Do not change the accessmask or deselect options or it will not work </b>
                     </p>
 
                     <p class="text-center">
                         <a target="_blank"
-                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=8388608">Create
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{BLUE_API_MASK}}">Create
                             a blue key</a>
                     </p>
 

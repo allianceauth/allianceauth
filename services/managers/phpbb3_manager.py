@@ -32,8 +32,17 @@ class Phpbb3Manager:
     SQL_GET_USER_GROUPS = r"SELECT phpbb_groups.group_name FROM phpbb_groups , phpbb_user_group WHERE " \
                           r"phpbb_user_group.group_id = phpbb_groups.group_id AND user_id=%s"
 
+    SQL_ADD_USER_AVATAR = r"UPDATE phpbb_users SET user_avatar_type=2, user_avatar_width=64, user_avatar_height=64, user_avatar=%s WHERE user_id = %s"
+
     def __init__(self):
         pass
+
+    @staticmethod
+    def __add_avatar(username, characterid):
+        avatar_url = "http://image.eveonline.com/Character/" + characterid + "_64.jpg"
+        cursor = connections['phpbb3'].cursor()
+        userid = Phpbb3Manager.__get_user_id(username)
+        cursor.execute(Phpbb3Manager.SQL_ADD_USER_AVATAR, [avatar_url, userid])
 
     @staticmethod
     def __generate_random_pass():
@@ -113,7 +122,7 @@ class Phpbb3Manager:
             pass
 
     @staticmethod
-    def add_user(username, email, groups):
+    def add_user(username, email, groups, characterid):
         cursor = connections['phpbb3'].cursor()
 
         username_clean = Phpbb3Manager.__santatize_username(username)
@@ -130,6 +139,7 @@ class Phpbb3Manager:
                                                             email, 2, Phpbb3Manager.__get_current_utc_date(),
                                                             "", ""])
                 Phpbb3Manager.update_groups(username_clean, groups)
+                Phpbb3Manager.__add_avatar(username_clean, characterid)
             except:
                 pass
 
@@ -203,12 +213,13 @@ class Phpbb3Manager:
         return False
 
     @staticmethod
-    def update_user_password(username):
+    def update_user_password(username, characterid):
         cursor = connections['phpbb3'].cursor()
         password = Phpbb3Manager.__generate_random_pass()
         if Phpbb3Manager.check_user(username):
             pwhash = Phpbb3Manager.__gen_hash(password)
             cursor.execute(Phpbb3Manager.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
+            Phpbb3Manager.__add_avatar(username, characterid)
             return password
 
         return ""

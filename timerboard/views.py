@@ -15,11 +15,12 @@ from models import Timer
 
 
 def timer_util_test(user):
-    return check_if_user_has_permission(user, 'alliance_member') or check_if_user_has_permission(user, 'blue_member')
+    return check_if_user_has_permission(user, 'member') or check_if_user_has_permission(user, 'blue_member')
 
 
 @login_required
 @user_passes_test(timer_util_test)
+@permission_required('auth.timer_view')
 def timer_view(request):
     timer_list = Timer.objects.all()
     closest_timer = None
@@ -46,14 +47,19 @@ def add_timer_view(request):
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
 
+            # calculate future time
+            future_time = datetime.timedelta(days=form.cleaned_data['days_left'], hours=form.cleaned_data['hours_left'], minutes=form.cleaned_data['minutes_left'])
+            current_time = datetime.datetime.utcnow()
+            eve_time = current_time + future_time
+
             # handle valid form
             timer = Timer()
-            timer.name = form.cleaned_data['name']
+            timer.details = form.cleaned_data['details']
             timer.system = form.cleaned_data['system']
             timer.planet_moon = form.cleaned_data['planet_moon']
             timer.structure = form.cleaned_data['structure']
-            timer.fleet_type = form.cleaned_data['fleet_type']
-            timer.eve_time = form.cleaned_data['eve_time']
+            timer.objective = form.cleaned_data['objective']
+            timer.eve_time = eve_time
             timer.important = form.cleaned_data['important']
             timer.eve_character = character
             timer.eve_corp = corporation

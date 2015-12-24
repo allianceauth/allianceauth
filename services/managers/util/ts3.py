@@ -139,11 +139,12 @@ class TS3Proto():
                     v = [v[0], '='.join(v[1:])]
                 key, value = v
                 keys[key] = self._unescape_str(value)
-            elif v[0][0] and v[0][0] == '-':
-                # Option
-                opts.append(v[0][1:])
-            else:
-                command = v[0]
+            elif (not v == ['']): 
+                if v[0][0] and v[0][0] == '-':
+                    # Option
+                    opts.append(v[0][1:])
+                else:
+                    command = v[0]
 
         d = {'keys': keys, 'opts': opts}
         if command:

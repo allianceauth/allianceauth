@@ -1,4 +1,5 @@
 """
+vim: set filetype=python:
 Django settings for alliance_auth project.
 
 For more information on this file, see
@@ -6,6 +7,7 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
+
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,6 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Generate a new key here: http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = os.environ.get('AA_SECRET_KEY', '5xvh4e0x&@-$6(kj%4^80pdo1n5v-!mtx(e(1tw@kn-1le*ts@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -77,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_auth',
-        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceauth'),
-        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'allianceauth'),
+        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_DEFAULT_PORT', '3306'),
     },
@@ -86,8 +89,8 @@ DATABASES = {
     'phpbb3': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_forum',
-        'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceauth'),
-        'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'allianceauth'),
+        'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
     },
@@ -95,8 +98,8 @@ DATABASES = {
     'mumble': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_mumble',
-        'USER': os.environ.get('AA_DB_MUMBLE_USER', 'alliancemumble'),
-        'PASSWORD': os.environ.get('AA_DB_MUMBLE_PASSWORD', 'alliancemumble'),
+        'USER': os.environ.get('AA_DB_MUMBLE_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_MUMBLE_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_MUMBLE_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_MUMBLE_PORT', '3306'),
     }
@@ -111,18 +114,25 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'util.context_processors.is_corp',
+    'util.context_processors.corp_id',
+    'util.context_processors.corp_name',
     'util.context_processors.alliance_id',
     'util.context_processors.alliance_name',
     'util.context_processors.jabber_url',
-    'util.context_processors.domain_url'
+    'util.context_processors.domain_url',
+    'util.context_processors.member_api_mask',
+    'util.context_processors.blue_api_mask',
 )
 
 TEMPLATE_DIRS = (
-    'templates',
+    'customization/templates',
+    'stock/templates',
 )
 
 STATICFILES_DIRS = (
-    'static',
+    'customization/static',
+    'stock/static',
 )
 
 LOGIN_URL = '/login_user/'
@@ -143,12 +153,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
 
 #####################################################
 ##
-## Alliance configuration starts here
+## Auth configuration starts here
 ##
 #####################################################
+
+###########################
+# ALLIANCE / CORP TOGGLE
+###########################
+# Specifies to run membership checks against corp or alliance
+# Set to FALSE for alliance
+# Set to TRUE for corp
+###########################
+IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
+
 
 #################
 # EMAIL SETTINGS
@@ -156,11 +177,11 @@ STATIC_URL = '/static/'
 # DOMAIN - The alliance auth domain_url
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
-# EMAIL_HOST_USER - Email Username
+# EMAIL_HOST_USER - Email Username (for gmail, the part before @gmail.com)
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
-DOMAIN = os.environ.get('AA_DOMAIN', 'https://the99eve.com')
+DOMAIN = os.environ.get('AA_DOMAIN', 'https://yourdomain.com')
 EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
@@ -170,54 +191,82 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 #########################
 # Default Group Settings
 #########################
-# DEFAULT_ALLIANCE_GROUP - Default group alliance members are put in
+# DEFAULT_AUTH_GROUP - Default group members are put in
 # DEFAULT_BLUE_GROUP - Default group for blue members
 #########################
-DEFAULT_ALLIANCE_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'AllianceMember')
-DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'BlueMember')
+DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
+DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
 
 #########################
 # Alliance Service Setup
 #########################
-# ENABLE_ALLIANCE_FORUM - Enable forum support in the auth for alliance members
-# ENABLE_ALLIANCE_JABBER - Enable jabber support in the auth for alliance members
-# ENABLE_ALLIANCE_MUMBLE - Enable mumble support in the auth for alliance members
-# ENABLE_ALLIANCE_IPBOARD - Enable IPBoard forum support in the auth for alliance members
+# ENABLE_AUTH_FORUM - Enable forum support in the auth for auth'd members
+# ENABLE_AUTH_JABBER - Enable jabber support in the auth for auth'd members
+# ENABLE_AUTH_MUMBLE - Enable mumble support in the auth for auth'd members
+# ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
+# ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
 #########################
-ENABLE_ALLIANCE_FORUM = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_FORUM', 'True')
-ENABLE_ALLIANCE_JABBER = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_JABBER', 'True')
-ENABLE_ALLIANCE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_MUMBLE', 'True')
-ENABLE_ALLIANCE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_IPBOARD', 'False')
-ENABLE_ALLIANCE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_ALLIANCE_TEAMSPEAK3', 'False')
+ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
+ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
+ENABLE_AUTH_MUMBLE = 'True' == os.environ.get('AA_ENABLE_AUTH_MUMBLE', 'False')
+ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'False')
+ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'False')
+ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
 
 #####################
 # Blue service Setup
 #####################
+# BLUE_STANDING - The default lowest standings setting to consider blue
 # ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
 # ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
+# ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
 #####################
+BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
 ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'False')
-ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'True')
+ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'False')
 ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False')
 ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
+ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
+
+#########################
+# Corp Configuration
+#########################
+# If running in alliance mode, the following should be for the executor corp#
+# CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
+# CORP_NAME - Set this to your Corporation Name
+# CORP_API_ID - Set this to the api id for the corp API key
+# CORP_API_VCODE - Set this to the api vcode for the corp API key
+########################
+CORP_ID = os.environ.get('AA_CORP_ID', '')
+CORP_NAME = os.environ.get('AA_CORP_NAME', '')
+CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
+CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
+
 
 #########################
 # Alliance Configuration
 #########################
-# ALLIANCE_ID - Set this to your AllianceID 
+# ALLIANCE_ID - Set this to your Alliance ID (get this from https://zkillboard.com/alliance/#######)
 # ALLIANCE_NAME - Set this to your Alliance Name
-# ALLIANCE_EXEC_CORP_ID - Set this to the api id for the exec corp
-# ALLIANCE_EXEC_CORP_VCODE - Set this to the api vcode for the exe corp
-# ALLIANCE_BLUE_STANDING - The default lowest standings setting to consider blue
 ########################
-ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '99001336')
-ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', 'Somealliance')
-ALLIANCE_EXEC_CORP_ID = os.environ.get('AA_ALLIANCE_EXEC_CORP_ID', '')
-ALLIANCE_EXEC_CORP_VCODE = os.environ.get('AA_ALLIANCE_EXEC_CORP_VCODE', '')
-ALLIANCE_BLUE_STANDING = float(os.environ.get('AA_ALLIANCE_BLUE_STANDING', '5.0'))
+ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
+ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
+
+########################
+# API Configuration
+########################
+# MEMBER_API_MASK - Numeric value of minimum API mask required for members
+# MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
+# BLUE_API_MASK - Numeric value of minimum API mask required for blues
+# BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
+#######################
+MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
+MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
+BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
+BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
 
 #####################
 # HR Configuration
@@ -235,8 +284,8 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-FORUM_URL = os.environ.get('AA_FORUM_URL', "http://someaddress.com")
-IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'someaddress.com/interface/board/index.php')
+FORUM_URL = os.environ.get('AA_FORUM_URL', "http://yourdomain.com")
+IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
 
@@ -246,18 +295,20 @@ IPBOARD_APIMODULE = 'aa'
 # JABBER_URL - Jabber address url
 # JABBER_PORT - Jabber service portal
 # JABBER_SERVER - Jabber server url
-# OPENFIRE_ADDRESS - Address of the openfire admin console
-# OPENFIRE_SECRET_KEY - Openfire userservice secret key
+# OPENFIRE_ADDRESS - Address of the openfire admin console including port
+#                    Please use http with 9090 or https with 9091
+# OPENFIRE_SECRET_KEY - Openfire REST API secret key
 # BROADCAST_USER - Broadcast user JID
 # BROADCAST_USER_PASSWORD - Broadcast user password
 ######################
-JABBER_URL = os.environ.get('AA_JABBER_URL', "someaddress.com")
+JABBER_URL = os.environ.get('AA_JABBER_URL', "yourdomain.com")
 JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
-JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "someadddress.com")
-OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://someaddress.com:9090/")
+JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "yourdomain.com")
+OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://yourdomain.com:9090")
 OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
 BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
 BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
+BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast")
 
 ######################################
 # Mumble Configuration
@@ -265,7 +316,7 @@ BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepass
 # MUMBLE_URL - Mumble server url
 # MUMBLE_SERVER_ID - Mumble server id
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "someurl.com")
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "yourdomain.com")
 MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 
 ######################################
@@ -284,4 +335,15 @@ TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'
 TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
 TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
 TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
-TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'someaddress.com')
+TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.com')
+
+######################################
+# Discord Configuration
+######################################
+# DISCORD_SERVER_ID - ID of the server to manage
+# DISCORD_USER_EMAIL - email of the server management user
+# DISCORD_USER_PASSWORD - password of the server management user
+######################################
+DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
+DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
+DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')

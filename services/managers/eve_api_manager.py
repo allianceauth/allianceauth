@@ -81,12 +81,23 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] == 268435455
+            return info[0]['access_mask'] & settings.MEMBER_API_MASK == int(settings.MEMBER_API_MASK)
 
         except evelink.api.APIError as error:
             print error
 
         return False
+
+    @staticmethod
+    def check_blue_api_is_full(api_id, api_key):
+        try:
+            api = evelink.api.API(api_key=(api_id, api_key))
+            account = evelink.account.Account(api=api)
+            info = account.key_info()
+            return info[0]['access_mask'] & settings.BLUE_API_MASK == int(settings.BLUE_API_MASK)
+ 
+        except evelink.api.APIError as error:
+            print error
 
 
     @staticmethod
@@ -140,10 +151,10 @@ class EveApiManager():
         return False
 
     @staticmethod
-    def get_alliance_standings():
-        if settings.ALLIANCE_EXEC_CORP_ID != "":
+    def get_corp_standings():
+        if settings.CORP_API_ID != "":
             try:
-                api = evelink.api.API(api_key=(settings.ALLIANCE_EXEC_CORP_ID, settings.ALLIANCE_EXEC_CORP_VCODE))
+                api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
                 corp = evelink.corp.Corp(api=api)
                 corpinfo = corp.contacts()
                 results = corpinfo[0]
@@ -178,4 +189,39 @@ class EveApiManager():
         except evelink.api.APIError as error:
             return False
 
+        return False
+
+    @staticmethod
+    def check_if_alliance_exists(alliance_id):
+        try:
+            api = evelink.api.API()
+            eve = evelink.eve.EVE(api=api)
+            alliances = eve.alliances()
+            if int(alliance_id) in alliances[0]:
+                return True
+            else:
+                return False
+        except evelink.api.APIError as error:
+            print error
+            return False
+        except ValueError as error:
+            #attempts to catch error resulting from checking alliance_of nonetype models
+            print error
+            return False
+        return False
+
+    @staticmethod
+    def check_if_corp_exists(corp_id):
+        try:
+            api = evelink.api.API()
+            corp = evelink.corp.Corp(api=api)
+            corpinfo = corp.corporation_sheet(corp_id=corp_id)
+            if corpinfo[0]['members']['current'] > 0:
+                return True
+            else:
+                return False
+        except evelink.api.APIError as error:
+            #could be smart and check for error code523 to verify error due to no corp instead of catch-all
+            print error
+            return False
         return False

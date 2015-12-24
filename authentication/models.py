@@ -13,6 +13,7 @@ class AuthServicesInfo(models.Model):
     mumble_password = models.CharField(max_length=254, default="")
     teamspeak3_uid = models.CharField(max_length=254, default="")
     teamspeak3_perm_key = models.CharField(max_length=254, default="")
+    discord_uid = models.CharField(max_length=254, default="")
     main_char_id = models.CharField(max_length=64, default="")
     is_blue = models.BooleanField(default=False)
     user = models.ForeignKey(User)
