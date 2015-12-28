@@ -2,7 +2,9 @@ from django.conf import settings
 
 from services.managers.util.ts3 import TS3Server
 from services.models import TSgroup
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Teamspeak3Manager:
     def __init__(self):
@@ -13,6 +15,7 @@ class Teamspeak3Manager:
         server = TS3Server(settings.TEAMSPEAK3_SERVER_IP, settings.TEAMSPEAK3_SERVER_PORT)
         server.login(settings.TEAMSPEAK3_SERVERQUERY_USER, settings.TEAMSPEAK3_SERVERQUERY_PASSWORD)
         server.use(settings.TEAMSPEAK3_VIRTUAL_SERVER)
+        logger.debug("Got TS3 server instance based on settings.")
         return server
 
     @staticmethod
@@ -31,27 +34,34 @@ class Teamspeak3Manager:
 
     @staticmethod
     def _get_userid(uid):
+        logger.debug("Looking for uid %s on TS3 server." % uid)
         server = Teamspeak3Manager.__get_created_server()
         ret = server.send_command('customsearch', {'ident': 'sso_uid', 'pattern': uid})
         if ret and 'keys' in ret and 'cldbid' in ret['keys']:
+            logger.debug("Got userid %s for uid %s" % (ret['keys']['cldbid'], uid))
             return ret['keys']['cldbid']
 
     @staticmethod
     def _group_id_by_name(groupname):
         server = Teamspeak3Manager.__get_created_server()
+        logger.debug("Looking for group %s on TS3 server." % groupname)
         group_cache = server.send_command('servergrouplist')
-
+        logger.debug("Received group cache from server: %s" % group_cache)
         for group in group_cache:
+            logger.debug("Checking group %s" % group)
             if group['keys']['name'] == groupname:
+                logger.debug("Found group %s, returning id %s" % (groupname, group['keys']['sgid']))
                 return group['keys']['sgid']
-
+        logger.debug("Group %s not found on server." % groupname)
         return None
 
     @staticmethod
     def _create_group(groupname):
+        logger.debug("Creating group %s on TS3 server." % groupname)
         server = Teamspeak3Manager.__get_created_server()
         sgid = Teamspeak3Manager._group_id_by_name(groupname)
         if not sgid:
+            logger.debug("Group does not yet exist. Proceeding with creation.")
             ret = server.send_command('servergroupadd', {'name': groupname})
             Teamspeak3Manager.__group_cache = None
             sgid = ret['keys']['sgid']
@@ -64,72 +74,94 @@ class Teamspeak3Manager:
             server.send_command('servergroupaddperm',
                                 {'sgid': sgid, 'permsid': 'i_group_needed_member_remove_power', 'permvalue': 100,
                                  'permnegated': 0, 'permskip': 0})
+        logger.debug("Returning group id %s" % sqid)
         return sgid
 
     @staticmethod
     def _user_group_list(cldbid):
+        logger.debug("Retrieving group list for user with id %s" % cldbid)
         server = Teamspeak3Manager.__get_created_server()
         groups = server.send_command('servergroupsbyclientid', {'cldbid': cldbid})
+        logger.debug("Retrieved group list: %s" % groups)
         outlist = {}
 
         if type(groups) == list:
+            logger.debug("Recieved multiple groups. Iterating.")
             for group in groups:
+                logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         elif type(groups) == dict:
+            logger.debug("Recieved single group.")
+            logger.debug("Assigning name/id dict: %s = %s" % (groups['keys']['name'], groups['keys']['sgid']))
             outlist[groups['keys']['name']] = groups['keys']['sgid']
-
+        logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
 
     @staticmethod
     def _group_list():
+        logger.debug("Retrieving group list on TS3 server.")
         server = Teamspeak3Manager.__get_created_server()
         group_cache = server.send_command('servergrouplist')
+        logger.debug("Received group cache from server: %s" % group_cache)
         outlist = {}
         if group_cache:
             for group in group_cache:
+                logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
+            logger.debug("Received empty group cache. 1024 error.")
             print '1024 error'
-
+        logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
 
     @staticmethod
     def _add_user_to_group(uid, groupid):
+        logger.debug("Adding group id %s to TS3 user id %s" % (groupid, uid))
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
         
         if not groupid in user_groups.values():
+            logger.debug("User does not have group already. Issuing command to add.")
             server.send_command('servergroupaddclient',
                                 {'sgid': str(groupid), 'cldbid': uid})
 
     @staticmethod
     def _remove_user_from_group(uid, groupid):
+        logger.debug("Removing group id %s from TS3 user id %s" % (groupid, uid))
         server = Teamspeak3Manager.__get_created_server()
         server_groups = Teamspeak3Manager._group_list()
         user_groups = Teamspeak3Manager._user_group_list(uid)
 
         if str(groupid) in user_groups.values():
+            logger.debug("User is in group. Issuing command to remove.")
             server.send_command('servergroupdelclient',
                                 {'sgid': str(groupid), 'cldbid': uid})
 
     @staticmethod
     def _sync_ts_group_db():
+        logger.debug("_sync_ts_group_db function called.")
         try:
             remote_groups = Teamspeak3Manager._group_list()
             local_groups = TSgroup.objects.all()
+            logger.debug("Comparing remote groups to TSgroup objects: %s" % local_groups)
             for key in remote_groups:
+                logger.debug("Typecasting remote_group value at position %s to int: %s" % (key, remote_groups[key]))
                 remote_groups[key] = int(remote_groups[key])
             
             for group in local_groups:
+                logger.debug("Checking local group %s" % group)
                 if group.ts_group_id not in remote_groups.values():
+                    logger.debug("Local group id %s not found on server. Deleting model %s" % (group.ts_group_id, group))
                     TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
             for key in remote_groups:
                 g = TSgroup(ts_group_id=remote_groups[key],ts_group_name=key)
                 q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
                 if not q:
+                    logger.debug("Local group does not exist for TS group %s. Creating TSgroup model %s" % (remote_groups[key], g))
                     g.save()
         except:
+            logger.debug("An unhandled exception has occured while syncinc TS groups.", exc_info=True)
             pass
 
     @staticmethod
