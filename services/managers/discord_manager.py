@@ -25,6 +25,7 @@ class DiscordAPIManager:
         self.email = email
         self.password = password
         self.server_id = server_id
+        logger.debug("Initialized DiscordAPIManager with server id %s" % self.server_id)
 
     def __del__(self):
         if hasattr(self, 'token'):

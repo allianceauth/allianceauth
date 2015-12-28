@@ -366,20 +366,26 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
             'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         }
     },
     'loggers': {
         'celerytask': {
-            'handlers': ['debug_file'],
-            'level': 'DEBUG',
-        },
-        'services.views': {
-            'handlers': ['debug_file'],
+            'handlers': ['debug_file', 'console'],
             'level': 'DEBUG',
         },
         'services.managers': {
-            'handlers': ['debug_file'],
+            'handlers': ['debug_file', 'console'],
             'level': 'DEBUG',
-        }
+        },
+        'services.views': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
     }
 }
+
