@@ -30,6 +30,9 @@ from util import check_if_user_has_permission
 import threading
 import datetime 
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def fleet_formatter_view(request):
@@ -345,23 +348,34 @@ def reset_discord(request):
 @login_required
 @user_passes_test(service_blue_alliance_test)
 def activate_discord(request):
+    logger.debug("activate_discord called.")
     success = False
     if request.method == 'POST':
+        logger.debug("Received POST request with form.")
         form = DiscordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
         if form.is_valid():
             email = form.cleaned_data['email']
+            logger.debug("Form contains email address beginning with %s" % email[0:3])
             password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
             try:
                 user_id = DiscordManager.add_user(email, password)
+                logger.debug("Received user_id %s" % user_id)
                 if user_id != "":
                     AuthServicesInfoManager.update_user_discord_info(user_id, request.user)
+                    logger.debug("Updated discord id %s for user %s" % (user_id, request.user))
                     update_discord_groups(request.user)
+                    logger.debug("Updated discord groups for user %s. Succesful activation." % request.user)
                     success = True
                     return HttpResponseRedirect("/services/")
             except:
+                logger.exception("An unhandled exception has occured.", exc_info=True)
                 pass
     else:
+        logger.debug("Request is not type POST - providing empty form.")
         form = DiscordForm()
 
+    logger.debug("Rendering form for user with success %s" % success)
     context = {'form': form, 'success': success}
     return render_to_response('registered/discord.html', context, context_instance=RequestContext(request))

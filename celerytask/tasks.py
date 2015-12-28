@@ -26,6 +26,10 @@ from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from authentication.managers import AuthServicesInfoManager
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def disable_alliance_member(user, char_id):
     remove_member_permission(user, 'member')
     remove_user_from_group(user, settings.DEFAULT_AUTH_GROUP)
@@ -113,13 +117,16 @@ def update_teamspeak3_groups(user):
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
 def update_discord_groups(user):
+    logger.debug("Updating discord groups for user %s" % user)
     syncgroups = SyncGroupCache.objects.filter(user=user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
     for syncgroup in syncgroups:
         groups.append(str(syncgroup.groupname))
 
+    logger.debug("Found %s syncgroups." % len(groups))
     if len(groups) == 0:
+        logger.debug("No syncgroups found for user. Adding empty group.")
         groups.append('empty')
 
     DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
@@ -140,80 +147,106 @@ def remove_all_syncgroups_for_service(user, servicename):
 
 
 def add_to_databases(user, groups, syncgroups):
+    logger.debug("add_to_database for user %s called. groups %s - syncgroups %s" % (user, groups, syncgroups))
     authserviceinfo = None
     try:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
+        logger.debug("Got authservicesinfo object %s" % authserviceinfo)
     except:
+        logger.debug("No authservicesinfo object found for user %s" % user)
         pass
 
     if authserviceinfo:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
 		
 	if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
-                update_teamspeak3_groups(user)
+            logger.debug("Updating user TS groups.")
+            update_teamspeak3_groups(user)
 				
         for group in groups:
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="openfire").exists() is not True:
+                    logger.debug("User %s has jabber username %s - missing group %s." % (user, authserviceinfo.jabber_username, group.name))
                     create_syncgroup_for_user(user, group.name, "openfire")
                     update_jabber_groups(user)
             if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="mumble").exists() is not True:
+                    logger.debug("User %s has mumble username %s - missing group %s." % (user, authserviceinfo.mumble_username, group.name))
                     create_syncgroup_for_user(user, group.name, "mumble")
                     update_mumble_groups(user)
             if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="phpbb3").exists() is not True:
+                    logger.debug("User %s has phpbb username %s - missing group %s." % (user, authserviceinfo.forum_username, group.name))
                     create_syncgroup_for_user(user, group.name, "phpbb3")
                     update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="ipboard").exists() is not True:
+                    logger.debug("User %s has ipboard username %s - missing group %s." % (user, authserviceinfo.ipboard_username, group.name))
                     create_syncgroup_for_user(user, group.name, "ipboard")
                     update_ipboard_groups(user)
             if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
                 if syncgroups.filter(groupname=group.name).filter(servicename="discord").exists() is not True:
+                    logger.debug("User %s has discord uid %s - missing group %s." % (user, authserviceinfo.discord_uid, group.name))
                     create_syncgroup_for_user(user, group.name, "discord")
                     update_discord_groups(user)
 
 
 def remove_from_databases(user, groups, syncgroups):
+    logger.debug("remove_from_database for user %s called. groups %s - syncgroups %s" % (user, groups, syncgroups))
     authserviceinfo = None
     try:
         authserviceinfo = AuthServicesInfo.objects.get(user=user)
+        logger.debug("Got authservicesinfo object %s" % authserviceinfo)
     except:
+        logger.debug("No authservicesinfo object found for user %s" % user)
         pass
 
     if authserviceinfo:
         update = False
         for syncgroup in syncgroups:
             group = groups.filter(name=syncgroup.groupname)
-
+            logger.debug("Got group %s for syncgroup %s" % (group, syncgroup))
             if not group:
+                logger.debug("Deleting syncgroup %s" % syncgroup)
                 syncgroup.delete()
                 update = True
 
         if update:
+            logger.debug("Syncgroups updated. Propogating to services for user %s" % user)
             if authserviceinfo.jabber_username and authserviceinfo.jabber_username != "":
+                logger.debug("User %s has jabber username %s - updating groups." % (user, authserviceinfo.jabber_username))
                 update_jabber_groups(user)
             if authserviceinfo.mumble_username and authserviceinfo.mumble_username != "":
+                logger.debug("User %s has mumble username %s - updating groups." % (user, authserviceinfo.mumble_username))
                 update_mumble_groups(user)
             if authserviceinfo.forum_username and authserviceinfo.forum_username != "":
+                logger.debug("User %s has forum username %s - updating groups." % (user, authserviceinfo.forum_username))
                 update_forum_groups(user)
             if authserviceinfo.ipboard_username and authserviceinfo.ipboard_username != "":
+                logger.debug("User %s has ipboard username %s - updating groups." % (user, authserviceinfo.ipboard_username))
                 update_ipboard_groups(user)
             if authserviceinfo.teamspeak3_uid and authserviceinfo.teamspeak3_uid != "":
+                logger.debug("User %s has ts3 uid %s - updating groups." % (user, authserviceinfo.teamspeak3_uid))
                 update_teamspeak3_groups(user)
             if authserviceinfo.discord_uid and authserviceinfo.discord_uid != "":
+                logger.debug("User %s has discord uid %s - updating groups." % (user, authserviceinfo.discord_uid))
                 update_discord_groups(user)
 
 
 # Run every minute
 @periodic_task(run_every=crontab(minute="*/1"))
 def run_databaseUpdate():
+    logger.debug("Starting database update.")
     users = User.objects.all()
+    logger.debug("Syncing TS groups.")
     Teamspeak3Manager._sync_ts_group_db()
+    logger.debug("Finished syncing TS groups.")
     for user in users:
+        logger.debug("Initiating database update for user %s" % user)
         groups = user.groups.all()
+        logger.debug("User has groups %s" % groups)
         syncgroups = SyncGroupCache.objects.filter(user=user)
+        logger.debug("User has syncgroups %s" % syncgroups)
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
 

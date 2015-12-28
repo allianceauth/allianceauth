@@ -4,6 +4,10 @@ from django.conf import settings
 import re
 import os
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 DISCORD_URL = "https://discordapp.com/api"
 
 class DiscordAPIManager:
@@ -40,6 +44,7 @@ class DiscordAPIManager:
         custom_headers = {'content-type':'application/json'}
         path = DISCORD_URL + "/auth/login"
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+        logger.debug("Received status code %s during token generation for settings discord user." % r.status_code)
         r.raise_for_status()
         return r.json()['token']
 
@@ -89,12 +94,14 @@ class DiscordAPIManager:
         custom_headers = {'authorization': self.token}
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/bans/" + str(user_id)
         r = requests.delete(path, headers=custom_headers)
+        logger.debug("Received status code %s after deleting ban for user %s" % (r.status_code, user_id))
         r.raise_for_status()
 
     def generate_role(self):
         custom_headers = {'accept':'application/json', 'authorization': self.token}
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles"
         r = requests.post(path, headers=custom_headers)
+        logger.debug("Received status code %s after generating new role." % r.status_code)
         r.raise_for_status()
         return r.json()
 
@@ -108,6 +115,7 @@ class DiscordAPIManager:
         }
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles/" + str(role_id)
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        logger.debug("Received status code %s after editing role id %s" % (r.status_code, role_id))
         r.raise_for_status()
         return r.json()
 
@@ -130,6 +138,7 @@ class DiscordAPIManager:
         custom_headers = {'accept': 'application/json', 'authorization': token}
         path = DISCORD_URL + "/invite/" + str(invite_id)
         r = requests.post(path, headers=custom_headers)
+        logger.debug("Received status code %s after accepting invite." % r.status_code)
         r.raise_for_status()
         return r.json()
 
@@ -143,6 +152,7 @@ class DiscordAPIManager:
             'xkcdpass': xkcdpass,
         }
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+        logger.debug("Received status code %s after creating invite." % r.status_code)
         r.raise_for_status()
         return r.json()
 
@@ -157,6 +167,7 @@ class DiscordAPIManager:
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members/" + str(user_id)
         data = { 'roles': role_ids }
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        logger.debug("Received status code %s after setting roles of user %s to %s" % (user_id, role_ids))
         r.raise_for_status()
 
     @staticmethod
@@ -197,14 +208,20 @@ class DiscordAPIManager:
         custom_headers = {'authorization': self.token, 'accept':'application/json'}
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/roles"
         r = requests.get(path, headers=custom_headers)
+        logger.debug("Received status code %s after retrieving role list from server." % r.status_code)
         r.raise_for_status()
         return r.json()
 
     def get_group_id(self, group_name):
+        logger.debug("Determining role id for group name %s" % group_name)
         all_roles = self.get_roles()
+        logger.debug("Retrieved role list for server: %s" % all_roles)
         for role in all_roles:
+            logger.debug("Checking role %s" % role)
             if role['name'] == group_name:
+                logger.debug("Found role matching name: %s" % role['id'])
                 return role['id']
+        logger.debug("Role not found on server. Raising KeyError")
         raise KeyError('Group not found on server: ' + group_name)
 
     @staticmethod
@@ -216,6 +233,7 @@ class DiscordAPIManager:
         custom_headers = {'content-type':'application/json'}
         path = DISCORD_URL + "/auth/login"
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+        logger.debug("Received status code %s after generating auth token for custom user." % r.status_code)
         r.raise_for_status()
         return r.json()['token']
 
@@ -225,6 +243,7 @@ class DiscordAPIManager:
         custom_headers = {'accept': 'application/json', 'authorization': token}
         path = DISCORD_URL + "/users/@me"
         r = requests.get(path, headers=custom_headers)
+        logger.debug("Received status code %s after retrieving user profile with email %s" % (r.status_code, email[0:3]))
         r.raise_for_status()
         return r.json()
 
@@ -282,24 +301,33 @@ class DiscordManager:
 
     @staticmethod
     def update_groups(user_id, groups):
+        logger.debug("Updating groups for user_id %s: %s" % user_id, groups)
         group_ids = []
         api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
         if len(groups) == 0:
+            logger.debug("No groups provided - generating empty array of group ids.")
             group_ids = []
         else:
             for g in groups:
                 try:
+                    logger.debug("Retrieving group id for group %s" % g)
                     group_id = api.get_group_id(g)
                     group_ids.append(group_id)
+                    logger.debug("Got id %s" % group_id)
                 except:
+                    logger.debug("Group id retrieval generated exception - generating new group on discord server.", exc_info=True)
                     group_ids.append(DiscordManager.create_group(g))
+        logger.debug("Setting groups for user %s to %s" % (user_id, group_ids))
         api.set_roles(user_id, group_ids)
 
     @staticmethod
     def create_group(groupname):
+        logger.debug("Creating new group %s" % groupname)
         api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
         new_group = api.generate_role()
+        logger.debug("Created new role on server with id %s: %s" % (new_group['id'], new_group))
         named_group = api.edit_role(new_group['id'], groupname)
+        logger.debug("Renamed group id %s to %s" % (new_group['id'], groupname))
         return named_group['id']
 
     @staticmethod
@@ -332,16 +360,24 @@ class DiscordManager:
     @staticmethod
     def add_user(email, password):
         try:
+            logger.debug("Adding new user to discord with email %s and password of length %s" % (email[0:3], len(password)))
             api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
             profile = DiscordAPIManager.get_user_profile(email, password)
+            logger.debug("Got profile for user: %s" % profile)
             user_id = profile['id']
+            logger.debug("Determined user id: %s" % user_id)
             if api.check_if_user_banned(user_id):
+                logger.debug("User is currently banned. Unbanning %s" % user_id)
                 api.unban_user(user_id)
             invite_code = api.create_invite()['code']
+            logger.debug("Generated invite code beginning with %s" % invite_code[0:5])
             token = DiscordAPIManager.get_token_by_user(email, password)
+            logger.debug("Got auth token for supplied credentials beginning with %s" % token[0:5])
             DiscordAPIManager.accept_invite(invite_code, token)
+            logger.debug("Added user to server with id %s" % user_id)
             return user_id
         except:
+            logger.exception("An unhandled exception has occured.", exc_info=True)
             return ""
 
     @staticmethod
