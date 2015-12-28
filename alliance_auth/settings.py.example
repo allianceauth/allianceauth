@@ -373,7 +373,11 @@ LOGGING = {
             'handlers': ['debug_file'],
             'level': 'DEBUG',
         },
-        'services': {
+        'services.views': {
+            'handlers': ['debug_file'],
+            'level': 'DEBUG',
+        },
+        'services.managers': {
             'handlers': ['debug_file'],
             'level': 'DEBUG',
         }
