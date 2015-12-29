@@ -329,7 +329,7 @@ class DiscordManager:
 
     @staticmethod
     def update_groups(user_id, groups):
-        logger.debug("Updating groups for user_id %s: %s" % user_id, groups)
+        logger.debug("Updating groups for user_id %s: %s" % (user_id, groups))
         group_ids = []
         api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
         if len(groups) == 0:
