@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 import re
 import os
+from services.models import DiscordAuthToken
 
 import logging
 
@@ -13,15 +14,15 @@ DISCORD_URL = "https://discordapp.com/api"
 class DiscordAPIManager:
 
     def __init__(self, server_id, email, password):
-        data = {
-            "email" : email,
-            "password": password,
-        }
-        custom_headers = {'content-type':'application/json'}
-        path = DISCORD_URL + "/auth/login"
-        r = requests.post(path, headers=custom_headers, data=json.dumps(data))
-        r.raise_for_status()
-        self.token = r.json()['token']
+#        data = {
+#            "email" : email,
+#            "password": password,
+#        }
+#        custom_headers = {'content-type':'application/json'}
+#        path = DISCORD_URL + "/auth/login"
+#        r = requests.post(path, headers=custom_headers, data=json.dumps(data))
+#        r.raise_for_status()
+        self.token = DiscordAPIManager.get_token_by_user(email, password)
         self.email = email
         self.password = password
         self.server_id = server_id
@@ -35,6 +36,18 @@ class DiscordAPIManager:
                 custom_headers = {'content-type':'application/json'}
                 r = requests.post(path, headers=custom_headers, data=json.dumps(data))
                 r.raise_for_status()
+
+    @staticmethod
+    def validate_token(token):
+        custom_headers = {'accept': 'application/json', 'authorization': token}
+        path = DISCORD_URL + "/users/@me"
+        r = requests.get(path, headers=custom_headers)
+        if r.status_code == 200:
+            logger.debug("Token starting with %s still valid." % token[0:5])
+            return True
+        else:
+            logger.debug("Token starting with %s vailed validation with status code %s" % (token[0:5], r.status_code))
+            return False        
 
     @staticmethod
     def get_auth_token():
@@ -227,6 +240,16 @@ class DiscordAPIManager:
 
     @staticmethod
     def get_token_by_user(email, password):
+        if DiscordAuthToken.objects.filter(email=email).exists():
+            logger.debug("Discord auth token cached for supplied email starting with %s" % email[0:3])
+            auth = DiscordAuthToken.objects.get(email=email)
+            if DiscordAPIManager.validate_token(auth.token):
+                logger.debug("Token still valid. Returning token starting with %s" % auth.token[0:5])
+                return auth.token
+            else:
+                logger.debug("Token has expired. Deleting.")
+                auth.delete()
+        logger.debug("Generating auth token for email starting with %s and password of length %s" % (email[0:3], len(password)))
         data = {
             "email" : email,
             "password": password,
@@ -236,7 +259,11 @@ class DiscordAPIManager:
         r = requests.post(path, headers=custom_headers, data=json.dumps(data))
         logger.debug("Received status code %s after generating auth token for custom user." % r.status_code)
         r.raise_for_status()
-        return r.json()['token']
+        token = r.json()['token']
+        auth = DiscordAuthToken(email=email, token=token)
+        auth.save()
+        logger.debug("Created cached token for email starting with %s" % email[0:3])
+        return token
 
     @staticmethod
     def get_user_profile(email, password):

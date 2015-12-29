@@ -30,3 +30,9 @@ class UserTSgroup(models.Model):
 
     def __str__(self):
         return self.user.name
+
+class DiscordAuthToken(models.Model):
+    email = models.CharField(max_length=254, primary_key=True)
+    token = models.CharField(max_length=254)
+    def __str__(self):
+        return self.email
