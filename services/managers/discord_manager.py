@@ -14,28 +14,11 @@ DISCORD_URL = "https://discordapp.com/api"
 class DiscordAPIManager:
 
     def __init__(self, server_id, email, password):
-#        data = {
-#            "email" : email,
-#            "password": password,
-#        }
-#        custom_headers = {'content-type':'application/json'}
-#        path = DISCORD_URL + "/auth/login"
-#        r = requests.post(path, headers=custom_headers, data=json.dumps(data))
-#        r.raise_for_status()
         self.token = DiscordAPIManager.get_token_by_user(email, password)
         self.email = email
         self.password = password
         self.server_id = server_id
         logger.debug("Initialized DiscordAPIManager with server id %s" % self.server_id)
-
-    def __del__(self):
-        if hasattr(self, 'token'):
-            if self.token and self.token != "":
-                data = {'token': self.token}
-                path = DISCORD_URL + "/auth/logout"
-                custom_headers = {'content-type':'application/json'}
-                r = requests.post(path, headers=custom_headers, data=json.dumps(data))
-                r.raise_for_status()
 
     @staticmethod
     def validate_token(token):
@@ -102,6 +85,7 @@ class DiscordAPIManager:
         custom_headers = {'authorization': self.token}
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/bans/" + str(user_id) + "?delete-message-days=" + str(delete_message_age)
         r = requests.put(path, headers=custom_headers)
+        logger.debug("Received status code %s after banning user %s" % (r.status_code, user_id))
         r.raise_for_status()
 
     def unban_user(self, user_id):
@@ -345,7 +329,7 @@ class DiscordManager:
                 except:
                     logger.debug("Group id retrieval generated exception - generating new group on discord server.", exc_info=True)
                     group_ids.append(DiscordManager.create_group(g))
-        logger.debug("Setting groups for user %s to %s" % (user_id, group_ids))
+        logger.info("Setting discord groups for user %s to %s" % (user_id, group_ids))
         api.set_roles(user_id, group_ids)
 
     @staticmethod
@@ -356,6 +340,7 @@ class DiscordManager:
         logger.debug("Created new role on server with id %s: %s" % (new_group['id'], new_group))
         named_group = api.edit_role(new_group['id'], groupname)
         logger.debug("Renamed group id %s to %s" % (new_group['id'], groupname))
+        logger.info("Created new group on discord server with name %s" % groupname)
         return named_group['id']
 
     @staticmethod
@@ -402,7 +387,7 @@ class DiscordManager:
             token = DiscordAPIManager.get_token_by_user(email, password)
             logger.debug("Got auth token for supplied credentials beginning with %s" % token[0:5])
             DiscordAPIManager.accept_invite(invite_code, token)
-            logger.debug("Added user to server with id %s" % user_id)
+            logger.info("Added user to discord server %s with id %s" % (settings.DISCORD_SERVER_ID, user_id))
             return user_id
         except:
             logger.exception("An unhandled exception has occured.", exc_info=True)
@@ -411,9 +396,11 @@ class DiscordManager:
     @staticmethod
     def delete_user(user_id):
         try:
+            logger.debug("Deleting user with id %s from discord server." % user_id)
             api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
             DiscordManager.update_groups(user_id, [])
             api.ban_user(user_id)
+            logger.info("Deleted user with id %s from discord server id %s" % (user_id, settings.DISCORD_SERVER_ID))
             return True
         except:
             return False

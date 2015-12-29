@@ -74,7 +74,7 @@ class Teamspeak3Manager:
             server.send_command('servergroupaddperm',
                                 {'sgid': sgid, 'permsid': 'i_group_needed_member_remove_power', 'permvalue': 100,
                                  'permnegated': 0, 'permskip': 0})
-        logger.debug("Returning group id %s" % sqid)
+        logger.info("Created group on TS3 server with name %s and id %s" % (groupname, sqid))
         return sgid
 
     @staticmethod
@@ -109,7 +109,7 @@ class Teamspeak3Manager:
                 logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
-            logger.debug("Received empty group cache. 1024 error.")
+            logger.error("Received empty group cache while retrieving group cache from TS3 server. 1024 error.", exc_info=True)
             print '1024 error'
         logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
@@ -125,6 +125,7 @@ class Teamspeak3Manager:
             logger.debug("User does not have group already. Issuing command to add.")
             server.send_command('servergroupaddclient',
                                 {'sgid': str(groupid), 'cldbid': uid})
+            logger.info("Added user id %s to group id %s on TS3 server." % (uid, groupid))
 
     @staticmethod
     def _remove_user_from_group(uid, groupid):
@@ -137,6 +138,7 @@ class Teamspeak3Manager:
             logger.debug("User is in group. Issuing command to remove.")
             server.send_command('servergroupdelclient',
                                 {'sgid': str(groupid), 'cldbid': uid})
+            logger.info("Removed user id %s from group id %s on TS3 server." % (uid, groupid))
 
     @staticmethod
     def _sync_ts_group_db():
@@ -170,7 +172,7 @@ class Teamspeak3Manager:
                                                                corp_ticker))
         server = Teamspeak3Manager.__get_created_server()
         token = ""
-
+        logger.debug("Adding user to TS3 server with cleaned username %s" % username_clean)
         server_groups = Teamspeak3Manager._group_list()
 
         if not settings.DEFAULT_AUTH_GROUP in server_groups:
@@ -188,6 +190,7 @@ class Teamspeak3Manager:
                     token = ret['keys']['token']
         except:
             pass
+        logger.info("Created user %s on TS3 server, got token %s" % (username_clean, token))
 
         return username_clean, token
 
@@ -197,7 +200,7 @@ class Teamspeak3Manager:
                                                                     corp_ticker))
         server = Teamspeak3Manager.__get_created_server()
         token = ""
-
+        logger.debug("Adding user to TS3 server with cleaned username %s" % username_clean)
         server_groups = Teamspeak3Manager._group_list()
         if not settings.DEFAULT_BLUE_GROUP in server_groups:
             Teamspeak3Manager._create_group(settings.DEFAULT_BLUE_GROUP)
@@ -215,6 +218,7 @@ class Teamspeak3Manager:
 
         except:
             pass
+        logger.info("Created blue user %s on TS3 server, got token %s" % (username_clean, token))
 
         return username_clean, token
 
@@ -222,16 +226,20 @@ class Teamspeak3Manager:
     def delete_user(uid):
         server = Teamspeak3Manager.__get_created_server()
         user = Teamspeak3Manager._get_userid(uid)
+        logger.debug("Deleting user %s with id %s from TS3 server." % (user, uid))
         if user:
             for client in server.send_command('clientlist'):
                 if client['keys']['client_database_id'] == user:
+                    logger.debug("Found user %s on TS3 server - issuing deletion command." % user)
                     server.send_command('clientkick', {'clid': client['keys']['clid'], 'reasonid': 5,
                                                        'reasonmsg': 'Auth service deleted'})
 
             ret = server.send_command('clientdbdelete', {'cldbid': user})
             if ret == '0':
+                logger.info("Deleted user with id %s from TS3 server." % uid)
                 return True
         else:
+            logger.warn("User with id %s not found on TS3 server. Assuming succesful deletion." % uid)
             return True
 
     @staticmethod
@@ -243,37 +251,42 @@ class Teamspeak3Manager:
 
     @staticmethod
     def generate_new_permissionkey(uid, username, corpticker):
+        logger.debug("Re-issuing permission key for user id %s." % uid)
         Teamspeak3Manager.delete_user(uid)
         return Teamspeak3Manager.add_user(username, corpticker)
 
     @staticmethod
     def generate_new_blue_permissionkey(uid, username, corpticker):
+        logger.debug("Re-issuing blue permission key for user id %s" % uid)
         Teamspeak3Manager.delete_user(uid)
         return Teamspeak3Manager.add_blue_user(username, corpticker)
 
     @staticmethod
     def update_groups(uid, ts_groups):
+        logger.debug("Updating uid %s groups %s" % (uid, ts_groups))
         userid = Teamspeak3Manager._get_userid(uid)
         addgroups = []
         remgroups = []
         if userid is not None:
             user_ts_groups = Teamspeak3Manager._user_group_list(userid)
+            logger.debug("User has groups on TS3 server: %s" % user_ts_groups)
             for key in user_ts_groups:
                 user_ts_groups[key] = int(user_ts_groups[key])
             for ts_group_key in ts_groups:
+                logger.debug("Checking if user has group %s on TS3 server." % ts_group_key)
                 if ts_groups[ts_group_key] not in user_ts_groups.values():
                     addgroups.append(ts_groups[ts_group_key])
             for user_ts_group_key in user_ts_groups:
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     remgroups.append(user_ts_groups[user_ts_group_key])
 
-            print userid
-            print addgroups
-            print remgroups
+            logger.info("Finished checking user id %s groups. Adding %s, removing %s." % (uid, addgroups, remgroups))
 
             for g in addgroups:
+                logger.debug("Issuing add command for group %s" % g)
                 Teamspeak3Manager._add_user_to_group(userid, g)
 
             for g in remgroups:
+                logger.debug("Issuing remove command for group %s" % g)
                 Teamspeak3Manager._remove_user_from_group(userid, g)
 
