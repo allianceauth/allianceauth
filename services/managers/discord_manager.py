@@ -181,7 +181,7 @@ class DiscordAPIManager:
         path = DISCORD_URL + "/guilds/" + str(self.server_id) + "/members/" + str(user_id)
         data = { 'roles': role_ids }
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
-        logger.debug("Received status code %s after setting roles of user %s to %s" % (user_id, role_ids))
+        logger.debug("Received status code %s after setting roles of user %s to %s" % (r.status_code, user_id, role_ids))
         r.raise_for_status()
 
     @staticmethod
