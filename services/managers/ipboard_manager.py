@@ -89,7 +89,7 @@ class IPBoardManager:
         if type(ret) is list:
             for group in ret:
                 groups.append(group["g_title"])
-        logger.info("Got user %s IPBoard groups %s" % username, groups)
+        logger.info("Got user %s IPBoard groups %s" % (username, groups))
         return groups
 
     @staticmethod

@@ -94,7 +94,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            logger.debug("API has mask %s, required is %s." % (info[0]['access_mask'], settings.MEMBER_API_MASK)
+            logger.debug("API has mask %s, required is %s." % (info[0]['access_mask'], settings.MEMBER_API_MASK))
             return info[0]['access_mask'] & int(settings.MEMBER_API_MASK) == int(settings.MEMBER_API_MASK))
 
         except evelink.api.APIError as error:
@@ -109,7 +109,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            logger.debug("API has mask %s, required is %s." % (info[0]['access_mask'], settings.BLUE_API_MASK)
+            logger.debug("API has mask %s, required is %s." % (info[0]['access_mask'], settings.BLUE_API_MASK))
             return info[0]['access_mask'] & int(settings.BLUE_API_MASK) == int(settings.BLUE_API_MASK)
  
         except evelink.api.APIError as error:
@@ -148,7 +148,7 @@ class EveApiManager():
 
     @staticmethod
     def check_if_api_server_online():
-        logger.debug("Checkin if API server online.")
+        logger.debug("Checking if API server online.")
         try:
             api = evelink.api.API()
             server = evelink.server.Server(api=api)
