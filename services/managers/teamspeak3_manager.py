@@ -110,7 +110,6 @@ class Teamspeak3Manager:
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
             logger.error("Received empty group cache while retrieving group cache from TS3 server. 1024 error.", exc_info=True)
-            print '1024 error'
         logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
 
@@ -280,7 +279,7 @@ class Teamspeak3Manager:
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     remgroups.append(user_ts_groups[user_ts_group_key])
 
-            logger.info("Finished checking user id %s groups. Adding %s, removing %s." % (uid, addgroups, remgroups))
+            logger.info("Finished checking user id %s groups. Adding %s, removing %s." % (userid, addgroups, remgroups))
 
             for g in addgroups:
                 logger.debug("Issuing add command for group %s" % g)

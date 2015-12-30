@@ -79,7 +79,7 @@ class Phpbb3Manager:
             logger.debug("Got phpbb user id %s for username %s" % (row[0], username))
             return row[0]
         else:
-            logger.warn("Username %s not found on phpbb." % username)
+            logger.warn("Username %s not found on phpbb. Unable to determine user id." % username)
             return None
 
     @staticmethod
@@ -119,7 +119,7 @@ class Phpbb3Manager:
         try:
             cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
-            logger.info("Added phpbb user id to group id %s" % (userid, groupid))
+            logger.info("Added phpbb user id %s to group id %s" % (userid, groupid))
         except:
             logger.exception("Unable to add phpbb user id %s to group id %s" % (userid, groupid), exc_info=True)
             pass
@@ -262,5 +262,5 @@ class Phpbb3Manager:
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [email, password, username])
             logger.info("Updated phpbb user %s info" % username)
         except:
-            logger.exception("Unable to update phpbb user %s info." % username, exc_info=True
+            logger.exception("Unable to update phpbb user %s info." % username, exc_info=True)
             pass
