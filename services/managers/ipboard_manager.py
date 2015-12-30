@@ -138,7 +138,7 @@ class IPBoardManager:
 
     @staticmethod
     def update_user_password(username, email):
-        logger.debug("Settings new IPBoard password for user %s" % username))
+        logger.debug("Settings new IPBoard password for user %s" % username)
         plain_password = IPBoardManager.__generate_random_pass()
         IPBoardManager.update_user(username, email, plain_password)
         return plain_password

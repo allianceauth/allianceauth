@@ -110,7 +110,7 @@ class MumbleManager:
         row = dbcursor.fetchone()
         groupid = row[0]
         dbcursor.execute(MumbleManager.SQL_ADD_GROUP, [groupid, settings.MUMBLE_SERVER_ID, name])
-        logger.info("Created group %s on mumble server with id %s" % (name, groupid)
+        logger.info("Created group %s on mumble server with id %s" % (name, groupid))
         return groupid
 
     @staticmethod
@@ -256,4 +256,4 @@ class MumbleManager:
                 logger.debug("Deleting mumble user %s from group %s" % (userid, mumble_groups[g]))
                 MumbleManager._del_user_from_group(userid, mumble_groups[g])
             except:
-                logger.exception("Exception occured whule removing mumble user %s with id %s from group %s with id %s" % (username, userid, g, mumble_groups[g]), exc_info=True))
+                logger.exception("Exception occured while removing mumble user %s with id %s from group %s with id %s" % (username, userid, g, mumble_groups[g]), exc_info=True)

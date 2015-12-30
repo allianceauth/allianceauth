@@ -95,7 +95,7 @@ class EveApiManager():
             account = evelink.account.Account(api=api)
             info = account.key_info()
             logger.debug("API has mask %s, required is %s." % (info[0]['access_mask'], settings.MEMBER_API_MASK))
-            return info[0]['access_mask'] & int(settings.MEMBER_API_MASK) == int(settings.MEMBER_API_MASK))
+            return info[0]['access_mask'] & int(settings.MEMBER_API_MASK) == int(settings.MEMBER_API_MASK)
 
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
