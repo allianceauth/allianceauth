@@ -94,6 +94,11 @@
                             Station
                         </div>
                     {% endifequal %}
+                    {% ifequal closest_timer.structure "Station" %}
+                        <div class="label label-danger">
+                            TCU
+                        </div>
+                    {% endifequal %}
                     {% ifequal closest_timer.structure "Other" %}
                         <div class="label label-default">
                             Other
