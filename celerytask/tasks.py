@@ -487,7 +487,7 @@ def run_corp_update():
         #refer to https://github.com/eve-val/evelink/blob/master/evelink/parsing/contact_list.py#L43
         standing_level = 'alliance'
         if settings.IS_CORP:
-            logger.debug("Switching statings check to corp level.")
+            logger.debug("Switching standings check to corp level.")
             standing_level = 'corp'
 
         # Create the corps in the standings
