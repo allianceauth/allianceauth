@@ -362,7 +362,7 @@ LOGGING = {
     },
     'handlers': {
         'debug_file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
             'formatter': 'verbose'
@@ -374,11 +374,47 @@ LOGGING = {
         }
     },
     'loggers': {
+        'authentication': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
         'celerytask': {
             'handlers': ['debug_file', 'console'],
             'level': 'DEBUG',
         },
+        'eveonline': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'groupmanagement': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'hrapplications': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'portal': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'registration': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
         'services': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'srp': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'timerboard': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'util': {
             'handlers': ['debug_file', 'console'],
             'level': 'DEBUG',
         },
