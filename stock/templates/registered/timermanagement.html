@@ -193,7 +193,12 @@
                         <div class="label label-danger">
                             Station
                         </div>
-                    {% endifequal %}
+                   {% endifequal %}
+                   {% ifequal timer.structure "TCU" %}
+                        <div class="label label-danger">
+                            TCU
+                        </div>
+                   {% endifequal %}
                     {% ifequal timer.structure "Other" %}
                         <div class="label label-default">
                             Other
