@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class TimerForm(forms.Form):
     structure_choices = [('POCO', 'POCO'), ('I-HUB', 'I-HUB'), ('POS[S]', 'POS[S]'),
-                         ('POS[M]', 'POS[M]'), ('POS[L]', 'POS[L]'), ('Station', 'Station'), ('Other', 'Other')]
+                         ('POS[M]', 'POS[M]'), ('POS[L]', 'POS[L]'), ('Station', 'Station'), ('TCU', 'TCU'), ('Other', 'Other')]
     objective_choices = [('Friendly', 'Friendly'), ('Hostile', 'Hostile'), ('Neutral', 'Neutral')]
 
     details = forms.CharField(max_length=254, required=True, label='Details')
