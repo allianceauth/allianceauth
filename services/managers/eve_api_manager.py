@@ -24,7 +24,7 @@ class EveApiManager():
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
 
-        logger.info("Retrieved characters %s from api id %s" % (chars, api_id))
+        logger.debug("Retrieved characters %s from api id %s" % (chars, api_id))
         return chars
 
     @staticmethod
@@ -40,7 +40,7 @@ class EveApiManager():
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
 
-        logger.info("Determined corp id %s ticker: %s" % (corp_id, ticker))
+        logger.debug("Determined corp id %s ticker: %s" % (corp_id, ticker))
         return ticker
 
     @staticmethod
@@ -169,7 +169,7 @@ class EveApiManager():
             corp = evelink.corp.Corp(api=api)
             corpinfo = corp.corporation_sheet(corp_id=int(corp_id))
             results = corpinfo[0]
-            logger.info("Confirmed id %s is a corp." % corp_id)
+            logger.debug("Confirmed id %s is a corp." % corp_id)
             return True
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
@@ -186,7 +186,7 @@ class EveApiManager():
                 corp = evelink.corp.Corp(api=api)
                 corpinfo = corp.contacts()
                 results = corpinfo[0]
-                logger.info("Got corp standings from settings: %s" % results)
+                logger.debug("Got corp standings from settings: %s" % results)
                 return results
             except evelink.api.APIError as error:
                 logger.exception("Unhandled APIError occured.", exc_info=True)
@@ -203,12 +203,12 @@ class EveApiManager():
             alliance = eve.alliances()
             results = alliance[0][int(alliance_id)]
             if results:
-                logger.info("Confirmed id %s is an alliance." % alliance_id)
+                logger.debug("Confirmed id %s is an alliance." % alliance_id)
                 return True
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
 
-        logger.info("Unable to verify id %s is an alliance." % alliance_id)
+        logger.debug("Unable to verify id %s is an alliance." % alliance_id)
         return False
 
     @staticmethod
@@ -219,12 +219,12 @@ class EveApiManager():
             eve = evelink.eve.EVE(api=api)
             results = eve.character_info_from_id(character_id)
             if results:
-                logger.info("Confirmed id %s is a character." % character_id)
+                logger.debug("Confirmed id %s is a character." % character_id)
                 return True
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
 
-        logger.info("Unable to verify id %s is a character." % character_id)
+        logger.debug("Unable to verify id %s is a character." % character_id)
         return False
 
     @staticmethod
@@ -235,10 +235,10 @@ class EveApiManager():
             eve = evelink.eve.EVE(api=api)
             alliances = eve.alliances()
             if int(alliance_id) in alliances[0]:
-                logger.info("Verified alliance id %s exists." % alliance_id)
+                logger.debug("Verified alliance id %s exists." % alliance_id)
                 return True
             else:
-                logger.info("Verified alliance id %s does not exist." % alliance_id)
+                logger.debug("Verified alliance id %s does not exist." % alliance_id)
                 return False
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
@@ -258,10 +258,10 @@ class EveApiManager():
             corp = evelink.corp.Corp(api=api)
             corpinfo = corp.corporation_sheet(corp_id=corp_id)
             if corpinfo[0]['members']['current'] > 0:
-                logger.info("Verified corp id %s exists with member count %s" % (corp_id, corpinfo[0]['members']['current']))
+                logger.debug("Verified corp id %s exists with member count %s" % (corp_id, corpinfo[0]['members']['current']))
                 return True
             else:
-                logger.info("Verified corp id %s has closed. Member count %s" % (corp_id, corpinfo[0]['members']['current']))
+                logger.debug("Verified corp id %s has closed. Member count %s" % (corp_id, corpinfo[0]['members']['current']))
                 return False
         except evelink.api.APIError as error:
             #could be smart and check for error code523 to verify error due to no corp instead of catch-all
