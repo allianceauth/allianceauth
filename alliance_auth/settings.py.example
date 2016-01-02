@@ -348,6 +348,19 @@ DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
 DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
 DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
 
+#####################################
+# Logging Configuration
+#####################################
+# Set log_file and console level to desired state:
+# DEBUG - basically stack trace, explains every step
+# INFO - model creation, deletion, updates, etc
+# WARN - unexpected function outcomes that do not impact user
+# ERROR - unexcpeted function outcomes which prevent user from achieving desired outcome
+# EXCEPTION - something critical went wrong, unhandled
+#####################################
+# Recommended level for log_file is INFO, console is DEBUG
+# Change log level of individual apps below to narrow your debugging
+#####################################
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -361,61 +374,63 @@ LOGGING = {
         },
     },
     'handlers': {
-        'debug_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-            'formatter': 'verbose'
+        'log_file': {
+            'level': 'INFO',         # edit this line to change logging level to file
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR,'allianceauth.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*5, # edit this line to change max log file size
+            'backupCount': 5,        # edit this line to change number of log backups
         },
         'console': {
-            'level': 'DEBUG',
+            'level': 'DEBUG',        # edit this line to change logging level to console
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         }
     },
     'loggers': {
         'authentication': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'celerytask': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'eveonline': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'groupmanagement': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'hrapplications': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'portal': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'registration': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'services': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'srp': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'timerboard': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
         'util': {
-            'handlers': ['debug_file', 'console'],
+            'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
     }
