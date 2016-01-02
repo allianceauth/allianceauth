@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 @login_required
 def fleet_formatter_view(request):
     logger.debug("fleet_formatter_view called by user %s" % request.user)
+    generated = ""
     if request.method == 'POST':
         form = FleetFormatterForm(request.POST)
         logger.debug("Received POST request containing form, valid: %s" % form.is_valid())
@@ -56,7 +57,6 @@ def fleet_formatter_view(request):
             logger.info("Formatted fleet broadcast for user %s" % request.user)
     else:
         form = FleetFormatterForm()
-        generated = ""
         logger.debug("Returning empty form to user %s" % request.user)
 
     context = {'form': form, 'generated': generated}

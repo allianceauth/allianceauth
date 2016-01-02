@@ -144,7 +144,7 @@ def groups_view(request):
 
 @login_required
 def group_request_add(request, group_id):
-    logger.debug("group_request_add called by user %s for group_id" % (request.user, group_id))
+    logger.debug("group_request_add called by user %s for group id %s" % (request.user, group_id))
     auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
     grouprequest = GroupRequest()
     grouprequest.status = 'pending'

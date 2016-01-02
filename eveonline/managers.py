@@ -29,13 +29,13 @@ class EveManager:
             eve_char.user = user
             eve_char.api_id = api_id
             eve_char.save()
-            logger.info("Created new character model %s for user" % (eve_char, user))
+            logger.info("Created new character model %s for user %s" % (eve_char, user))
         else:
             logger.warn("Attempting to create existing character model with id %s" % character_id)
 
     @staticmethod
     def create_characters_from_list(chars, user, api_id):
-        logger.debug("Creating characters from batch: %s" % chars)
+        logger.debug("Creating characters from batch: %s" % chars.result)
         for char in chars.result:
             if not EveManager.check_if_character_exist(chars.result[char]['name']):
                 EveManager.create_character(chars.result[char]['id'],
@@ -123,7 +123,7 @@ class EveManager:
             if alliance:
                 corp_info.alliance = alliance
             corp_info.save()
-            logger.info("Created corp model for %s" % corp)
+            logger.info("Created corp model for %s" % corp_info)
         else:
             logger.warn("Attempting to create existing corp model with id %s" % corp_id)
 

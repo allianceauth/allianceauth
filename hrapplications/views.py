@@ -230,6 +230,11 @@ def hr_application_search(request):
 
 			return render_to_response('registered/hrapplicationsearchview.html',
 									  context, context_instance=RequestContext(request))
+		else:
+			context = {'applications': None, 'search_form': form}
+			return render_to_response('registered/hrapplicationsearchview.html',
+                                                                          context, context_instance=RequestContext(request))
+	
 	else:
 		logger.debug("Returning empty search form for user %s" % request.user)
 		return HttpResponseRedirect("/hr_application_management/")

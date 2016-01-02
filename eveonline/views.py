@@ -148,7 +148,7 @@ def main_character_change(request, char_id):
 
             if check_if_user_has_permission(request.user, 'blue_member'):
                 disable_blue_member(request.user)
-            logger.info("User %s disabled as new main character %s does not have corp model to check." % (request.user, character_indo))
+            logger.info("User %s disabled as new main character %s does not have corp model to check." % (request.user, character_info))
 
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
