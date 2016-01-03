@@ -74,7 +74,7 @@ class Teamspeak3Manager:
             server.send_command('servergroupaddperm',
                                 {'sgid': sgid, 'permsid': 'i_group_needed_member_remove_power', 'permvalue': 100,
                                  'permnegated': 0, 'permskip': 0})
-        logger.info("Created group on TS3 server with name %s and id %s" % (groupname, sqid))
+        logger.info("Created group on TS3 server with name %s and id %s" % (groupname, sgid))
         return sgid
 
     @staticmethod
@@ -109,7 +109,7 @@ class Teamspeak3Manager:
                 logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
-            logger.error("Received empty group cache while retrieving group cache from TS3 server. 1024 error.", exc_info=True)
+            logger.error("Received empty group cache while retrieving group cache from TS3 server. 1024 error.")
         logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
 
@@ -162,7 +162,7 @@ class Teamspeak3Manager:
                     logger.debug("Local group does not exist for TS group %s. Creating TSgroup model %s" % (remote_groups[key], g))
                     g.save()
         except:
-            logger.debug("An unhandled exception has occured while syncinc TS groups.", exc_info=True)
+            logger.exception("An unhandled exception has occured while syncing TS groups.", exc_info=True)
             pass
 
     @staticmethod
@@ -189,7 +189,7 @@ class Teamspeak3Manager:
                     token = ret['keys']['token']
         except:
             pass
-        logger.info("Created user %s on TS3 server, got token %s" % (username_clean, token))
+        logger.info("Created permission token for user %s on TS3 server" % username_clean)
 
         return username_clean, token
 
@@ -217,7 +217,7 @@ class Teamspeak3Manager:
 
         except:
             pass
-        logger.info("Created blue user %s on TS3 server, got token %s" % (username_clean, token))
+        logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
 
         return username_clean, token
 
@@ -250,7 +250,7 @@ class Teamspeak3Manager:
 
     @staticmethod
     def generate_new_permissionkey(uid, username, corpticker):
-        logger.debug("Re-issuing permission key for user id %s." % uid)
+        logger.debug("Re-issuing permission key for user id %s" % uid)
         Teamspeak3Manager.delete_user(uid)
         return Teamspeak3Manager.add_user(username, corpticker)
 
@@ -262,7 +262,7 @@ class Teamspeak3Manager:
 
     @staticmethod
     def update_groups(uid, ts_groups):
-        logger.debug("Updating uid %s groups %s" % (uid, ts_groups))
+        logger.debug("Updating uid %s TS3 groups %s" % (uid, ts_groups))
         userid = Teamspeak3Manager._get_userid(uid)
         addgroups = []
         remgroups = []
@@ -279,7 +279,7 @@ class Teamspeak3Manager:
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     remgroups.append(user_ts_groups[user_ts_group_key])
 
-            logger.info("Finished checking user id %s groups. Adding %s, removing %s." % (userid, addgroups, remgroups))
+            logger.info("Finished checking user id %s TS3 groups - adding %s, removing %s." % (userid, addgroups, remgroups))
 
             for g in addgroups:
                 logger.debug("Issuing add command for group %s" % g)

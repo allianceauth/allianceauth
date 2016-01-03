@@ -79,7 +79,7 @@ class IPBoardManager:
         ret = IPBoardManager.exec_xmlrpc('getAllGroups')
         for group in ret:
             groups.append(group["g_title"])
-        logger.info("Retrieved group list from IPBoard: %s" % groups)
+        logger.debug("Retrieved group list from IPBoard: %s" % groups)
         return groups
 
     @staticmethod
@@ -89,25 +89,25 @@ class IPBoardManager:
         if type(ret) is list:
             for group in ret:
                 groups.append(group["g_title"])
-        logger.info("Got user %s IPBoard groups %s" % (username, groups))
+        logger.debug("Got user %s IPBoard groups %s" % (username, groups))
         return groups
 
     @staticmethod
     def add_group(group):
         ret = IPBoardManager.exec_xmlrpc('addGroup', group=group)
-        logger.info("Added IPBoard group %s, response %s" % (group, ret))
+        logger.info("Added IPBoard group %s" % group)
         return ret
 
     @staticmethod
     def add_user_to_group(username, group):
         ret = IPBoardManager.exec_xmlrpc('addUserToGroup', username=username, group=group)
-        logger.info("Added IPBoard user %s to group %s, response %s" % (username, group, ret))
+        logger.info("Added IPBoard user %s to group %s" % (username, group))
         return ret
 
     @staticmethod
     def remove_user_from_group(username, group):
         ret = IPBoardManager.exec_xmlrpc('removeUserFromGroup', username=username, group=group)
-        logger.info("Removed IPBoard user %s from group %s, reponse %s" % (username, group, ret))
+        logger.info("Removed IPBoard user %s from group %s" % (username, group))
         return ret
 
     @staticmethod

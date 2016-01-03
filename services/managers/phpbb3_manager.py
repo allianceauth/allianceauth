@@ -7,6 +7,8 @@ from django.db import connections
 
 import logging
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 class Phpbb3Manager:
@@ -64,6 +66,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __get_group_id(groupname):
+        logger.debug("Getting phpbb3 group id for groupname %s" % groupname)
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_GET_GROUP_ID, [groupname])
         row = cursor.fetchone()
@@ -72,6 +75,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __get_user_id(username):
+        logger.debug("Getting phpbb3 user id for username %s" % username)
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [username])
         row = cursor.fetchone()
@@ -79,11 +83,12 @@ class Phpbb3Manager:
             logger.debug("Got phpbb user id %s for username %s" % (row[0], username))
             return row[0]
         else:
-            logger.warn("Username %s not found on phpbb. Unable to determine user id." % username)
+            logger.error("Username %s not found on phpbb. Unable to determine user id." % username)
             return None
 
     @staticmethod
     def __get_all_groups():
+        logger.debug("Getting all phpbb3 groups.")
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_GET_ALL_GROUPS)
         rows = cursor.fetchall()
@@ -95,6 +100,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __get_user_groups(userid):
+        logger.debug("Getting phpbb3 user id %s groups" % userid)
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_GET_USER_GROUPS, [userid])
         out = [row[0] for row in cursor.fetchall()]
@@ -109,6 +115,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __create_group(groupname):
+        logger.debug("Creating phpbb3 group %s" % groupname)
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_ADD_GROUP, [groupname, groupname])
         logger.info("Created phpbb group %s" % groupname)
@@ -116,6 +123,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __add_user_to_group(userid, groupid):
+        logger.debug("Adding phpbb3 user id %s to group id %s" % (userid, groupid))
         try:
             cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
@@ -126,6 +134,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __remove_user_from_group(userid, groupid):
+        logger.debug("Removing phpbb3 user id %s from group id %s" % (userid, groupid))
         cursor = connections['phpbb3'].cursor()
         try:
             cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
@@ -155,9 +164,9 @@ class Phpbb3Manager:
                                                             "", ""])
                 Phpbb3Manager.update_groups(username_clean, groups)
                 Phpbb3Manager.__add_avatar(username_clean, characterid)
-                logger.info("Added phpbb user %s" % username)
+                logger.info("Added phpbb user %s" % username_clean)
             except:
-                logger.exception("Unable to add phpbb user %s" % username, exc_info=True)
+                logger.exception("Unable to add phpbb user %s" % username_clean, exc_info=True)
                 pass
 
         return username_clean, password
@@ -168,7 +177,7 @@ class Phpbb3Manager:
         cursor = connections['phpbb3'].cursor()
 
         password = Phpbb3Manager.__gen_hash(Phpbb3Manager.__generate_random_pass())
-        revoke_email = "revoked@the99eve.com"
+        revoke_email = "revoked@" + settings.DOMAIN
         try:
             pwhash = Phpbb3Manager.__gen_hash(password)
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [revoke_email, pwhash, username])
@@ -187,7 +196,7 @@ class Phpbb3Manager:
             cursor.execute(Phpbb3Manager.SQL_DEL_USER, [username])
             logger.info("Deleted phpbb user %s" % username)
             return True
-        logger.warn("Unable to delete phpbb user %s - user not found on phpbb." % username)
+        logger.error("Unable to delete phpbb user %s - user not found on phpbb." % username)
         return False
 
     @staticmethod
@@ -230,7 +239,6 @@ class Phpbb3Manager:
     def check_user(username):
         logger.debug("Checking phpbb username %s" % username)
         cursor = connections['phpbb3'].cursor()
-        """ Check if the username exists """
         cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [Phpbb3Manager.__santatize_username(username)])
         row = cursor.fetchone()
         if row:

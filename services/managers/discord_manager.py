@@ -26,10 +26,10 @@ class DiscordAPIManager:
         path = DISCORD_URL + "/users/@me"
         r = requests.get(path, headers=custom_headers)
         if r.status_code == 200:
-            logger.debug("Token starting with %s still valid." % token[0:5])
+            logger.debug("Token starting with %s passed validation." % token[0:5])
             return True
         else:
-            logger.debug("Token starting with %s vailed validation with status code %s" % (token[0:5], r.status_code))
+            logger.debug("Token starting with %s failed validation with status code %s" % (token[0:5], r.status_code))
             return False        
 
     @staticmethod
@@ -403,4 +403,5 @@ class DiscordManager:
             logger.info("Deleted user with id %s from discord server id %s" % (user_id, settings.DISCORD_SERVER_ID))
             return True
         except:
+            logger.exception("An unhandled exception has occured.", exc_info=True)
             return False

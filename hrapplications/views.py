@@ -96,7 +96,7 @@ def hr_application_personal_view(request, app_id):
 			logger.warn("HRApplication id %s user %s does not match request user %s - returning blank application." % (app_id, application.user, request.user))
 			application = HRApplication()
 	else:
-		logger.warn("Unable to locate HRApplication matching id %s - returning blank application to user %s" % (app_id, request.user))
+		logger.error("Unable to locate HRApplication matching id %s - returning blank application to user %s" % (app_id, request.user))
 		application = HRApplication()
 	context = {'application': application}
 
@@ -113,7 +113,7 @@ def hr_application_personal_removal(request, app_id):
 			application.delete()
 			logger.info("Deleted HRApplication with id %s for user %s to corp %s" % (app_id, request.user, application.corp))
 		else:
-			logger.warn("HRapplication id %s user %s does not match request user %s - refusing to delete." % (app_id, application.user, request.user))
+			logger.error("HRapplication id %s user %s does not match request user %s - refusing to delete." % (app_id, application.user, request.user))
 	return HttpResponseRedirect("/hr_application_management/")
 
 
@@ -142,7 +142,7 @@ def hr_application_view(request, app_id):
 	if HRApplication.objects.filter(id=app_id).exists():
 		application = HRApplication.objects.get(id=app_id)
 		comments = HRApplicationComment.objects.all().filter(application=application)
-		logger.debug("Retrieved hrpplication id %s for user %s with comments %s" % (app_id, request.user, commends))
+		logger.debug("Retrieved hrpplication id %s on behalf of user %s with comments %s" % (app_id, request.user, commends))
 	else:
 		application = HRApplication()
 		comments = []
@@ -164,9 +164,9 @@ def hr_application_remove(request, app_id):
 			logger.info("Deleted HRApplication id %s on behalf of user %s" % (app_id, request.user))
 			application.delete()
 		else:
-                    logger.error("Unable to delete HRApplication with id %s for user %s: application is NoneType" % (app_id, request.user))
+                    logger.error("Unable to delete HRApplication with id %s on behalf of user %s: application is NoneType" % (app_id, request.user))
 	else:
-		logger.error("Unable to delete HRApplication with id %s for user %s: application not found." % (app_id, request.user))
+		logger.error("Unable to delete HRApplication with id %s on behalf of user %s: application not found." % (app_id, request.user))
 
 	return HttpResponseRedirect("/hr_application_management/")
 
@@ -231,6 +231,7 @@ def hr_application_search(request):
 			return render_to_response('registered/hrapplicationsearchview.html',
 									  context, context_instance=RequestContext(request))
 		else:
+			logger.debug("Form invalid - returning for user %s to retry." % request.user)
 			context = {'applications': None, 'search_form': form}
 			return render_to_response('registered/hrapplicationsearchview.html',
                                                                           context, context_instance=RequestContext(request))

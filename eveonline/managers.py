@@ -167,7 +167,7 @@ class EveManager:
                 logger.info("Deleted user %s api key id %s" % (user_id, api_id))
                 apikeypair.delete()
             else:
-                logger.error("Unable to delete api: user mismatch: key id %s not owned by %s" % (api_id, user_id))
+                logger.error("Unable to delete api: user mismatch: key id %s owned by user id %s, not deleting user id %s" % (api_id, apikeypair.user.id, user_id))
         else:
             logger.warn("Unable to locate api id %s - cannot delete." % api_id)
 
@@ -183,7 +183,7 @@ class EveManager:
                     logger.info("Deleting user %s character %s from api %s" % (user_id, char, api_id))
                     char.delete()
                 else:
-                    logger.error("Unable to delete character %s by api %s: user mismatch: character not owned by %s" % (char, api_id, user_id))
+                    logger.error("Unable to delete character %s by api %s: user mismatch: character owned by user id%s, not deleting user id %s" % (char, api_id, char.user.id, user_id))
 
     @staticmethod
     def check_if_character_exist(char_name):

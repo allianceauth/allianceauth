@@ -35,7 +35,7 @@ def remove_user_from_group(user, groupname):
         user.save()
         logger.info("Removed user %s from group %s" % (user, group))
     else:
-        logger.warn("Unable to remove user %s from groyp %s - user not in group." % (user, group))
+        logger.warn("Unable to remove user %s from group %s - user not in group." % (user, group))
 
 
 def deactivate_services(user):

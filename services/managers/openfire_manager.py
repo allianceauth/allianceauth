@@ -19,7 +19,7 @@ class OpenfireManager:
 
     @staticmethod
     def send_broadcast_threaded(group_name, broadcast_message):
-        logger.info("Starting broadcast to %s with message %s" % (group_name, broadcast_message))
+        logger.debug("Starting broadcast to %s with message %s" % (group_name, broadcast_message))
         broadcast_thread = XmppThread(1, "XMPP Broadcast Thread", 1, group_name, broadcast_message)
         broadcast_thread.start()
 
@@ -50,7 +50,7 @@ class OpenfireManager:
             logger.info("Added openfire user %s" % username)
         except exception.UserAlreadyExistsException:
             # User exist
-            logger.warn("Attempting to add a user %s to openfire which already exists on server." % username)
+            logger.error("Attempting to add a user %s to openfire which already exists on server." % username)
             return "", ""
 
         return sanatized_username, password
@@ -64,7 +64,7 @@ class OpenfireManager:
             logger.info("Deleted user %s from openfire." % username)
             return True
         except exception.UserNotFoundException:
-            logger.warn("Attempting to delete a user %s from openfire which was not found on server." % username)
+            logger.error("Attempting to delete a user %s from openfire which was not found on server." % username)
             return False
 
     @staticmethod
