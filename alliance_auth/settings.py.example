@@ -433,6 +433,10 @@ LOGGING = {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
+        'django': {
+            'handlers': ['debug_file', 'console'],
+            'level': 'ERROR',
+        },
     }
 }
 

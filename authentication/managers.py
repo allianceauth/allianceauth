@@ -38,7 +38,8 @@ class AuthServicesInfoManager:
             authserviceinfo.main_char_id = char_id
             authserviceinfo.save(update_fields=['main_char_id'])
             logger.info("Updated user %s main character to id %s" % (user, char_id))
-        logger.error("Failed to update user %s main character id to %s: user does not exist." % (user, char_id))
+        else:
+            logger.error("Failed to update user %s main character id to %s: user does not exist." % (user, char_id))
 
     @staticmethod
     def update_user_forum_info(username, password, user):
