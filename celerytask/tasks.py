@@ -46,6 +46,9 @@ def disable_blue_member(user):
     deactivate_services(user)
     AuthServicesInfoManager.update_is_blue(False, user)
 
+def is_teamspeak3_active():
+    return settings.ENABLE_AUTH_TEAMSPEAK3 or settings.ENABLE_BLUE_TEAMSPEAK3
+
 def update_jabber_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -109,8 +112,8 @@ def update_teamspeak3_groups(user):
             for filtered_group in filtered_groups:
                 for ts_group in filtered_group.ts_group.all():
                     groups[ts_group.ts_group_name] = ts_group.ts_group_id
-
-    Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
+    if (is_teamspeak3_active()):
+        Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
 
 def update_discord_groups(user):
     syncgroups = SyncGroupCache.objects.filter(user=user)
@@ -210,7 +213,8 @@ def remove_from_databases(user, groups, syncgroups):
 @periodic_task(run_every=crontab(minute="*/1"))
 def run_databaseUpdate():
     users = User.objects.all()
-    Teamspeak3Manager._sync_ts_group_db()
+    if (is_teamspeak3_active()):
+        Teamspeak3Manager._sync_ts_group_db()
     for user in users:
         groups = user.groups.all()
         syncgroups = SyncGroupCache.objects.filter(user=user)
