@@ -193,9 +193,11 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 ####################
 # KILLBOARD_URL - URL for your killboard. Blank to hide link
 # MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
+# FORUM_URL - URL for your forums. Blank to hide link
 ####################
 KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', DOMAIN + '/killboard')
 MEDIA_URL = os.environ.get('AA_MEDIA_URL', '')
+FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 
 #########################
 # Default Group Settings
@@ -288,12 +290,10 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 #####################
 # Forum Configuration
 #####################
-# FORUM_URL - Forum url location
 # IPBOARD_ENDPOINT - Api endpoint if using ipboard
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-FORUM_URL = os.environ.get('AA_FORUM_URL', "http://yourdomain.com")
 IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
