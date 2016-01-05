@@ -44,4 +44,6 @@ def domain_url(request):
             'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'DISCORD_SERVER_ID': settings.DISCORD_SERVER_ID,
+            'KILLBOARD_URL': settings.KILLBOARD_URL,
+            'MEDIA_URL': settings.MEDIA_URL,
             'CURRENT_UTC_TIME': timezone.now()}
