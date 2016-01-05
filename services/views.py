@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import Group
 
 from eveonline.models import EveCharacter
 from authentication.models import AuthServicesInfo
@@ -90,8 +91,8 @@ def jabber_broadcast_view(request):
             success = True
             logger.info("Sent jabber broadcast on behalf of user %s" % request.user)
     else:
-        form = JabberBroadcastForm()
-        logger.debug("Returning blank form to user %s" % request.user)
+        form = JabberBroadcastForm(request.user)
+        logger.debug("Generated broadcast form for user %s containing %s groups" % (request.user, len(form.fields['group'].choices)))
 
     context = {'form': form, 'success': success}
     return render_to_response('registered/jabberbroadcast.html', context, context_instance=RequestContext(request))
