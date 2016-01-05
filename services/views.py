@@ -436,7 +436,7 @@ def activate_discord(request):
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
             try:
-                user_id = DiscordManager.add_user(email, password)
+                user_id = DiscordManager.add_user(email, password, request.user)
                 logger.debug("Received discord uid %s" % user_id)
                 if user_id != "":
                     AuthServicesInfoManager.update_user_discord_info(user_id, request.user)

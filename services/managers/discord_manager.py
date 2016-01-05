@@ -13,8 +13,8 @@ DISCORD_URL = "https://discordapp.com/api"
 
 class DiscordAPIManager:
 
-    def __init__(self, server_id, email, password):
-        self.token = DiscordAPIManager.get_token_by_user(email, password)
+    def __init__(self, server_id, email, password, user=None):
+        self.token = DiscordAPIManager.get_token_by_user(email, password, user)
         self.email = email
         self.password = password
         self.server_id = server_id
@@ -131,9 +131,8 @@ class DiscordAPIManager:
         r.raise_for_status()
         return r.json()
 
-    @staticmethod
-    def accept_invite(invite_id, token):
-        custom_headers = {'accept': 'application/json', 'authorization': token}
+    def accept_invite(self, invite_id):
+        custom_headers = {'accept': 'application/json', 'authorization': self.token}
         path = DISCORD_URL + "/invite/" + str(invite_id)
         r = requests.post(path, headers=custom_headers)
         logger.debug("Received status code %s after accepting invite." % r.status_code)
@@ -223,17 +222,20 @@ class DiscordAPIManager:
         raise KeyError('Group not found on server: ' + group_name)
 
     @staticmethod
-    def get_token_by_user(email, password):
+    def get_token_by_user(email, password, user):
         if DiscordAuthToken.objects.filter(email=email).exists():
-            logger.debug("Discord auth token cached for supplied email starting with %s" % email[0:3])
             auth = DiscordAuthToken.objects.get(email=email)
+            if not auth.user == user:
+                raise ValueError("User mismatch while validating DiscordAuthToken for email %s - user %s, requesting user %s" % (email, auth.user, user))                
+            logger.debug("Discord auth token cached for supplied email starting with %s" % email[0:3])
+            auth = DiscordAuthToken.objects.get(email=email, user=user)
             if DiscordAPIManager.validate_token(auth.token):
                 logger.debug("Token still valid. Returning token starting with %s" % auth.token[0:5])
                 return auth.token
             else:
                 logger.debug("Token has expired. Deleting.")
                 auth.delete()
-        logger.debug("Generating auth token for email starting with %s and password of length %s" % (email[0:3], len(password)))
+        logger.debug("Generating auth token for email starting with %s user %s and password of length %s" % (email[0:3], user, len(password)))
         data = {
             "email" : email,
             "password": password,
@@ -244,10 +246,18 @@ class DiscordAPIManager:
         logger.debug("Received status code %s after generating auth token for custom user." % r.status_code)
         r.raise_for_status()
         token = r.json()['token']
-        auth = DiscordAuthToken(email=email, token=token)
+        auth = DiscordAuthToken(email=email, token=token, user=user)
         auth.save()
         logger.debug("Created cached token for email starting with %s" % email[0:3])
         return token
+
+    def get_profile(self):
+        custom_headers = {'accept': 'application/json', 'authorization': self.token}
+        path = DISCORD_URL + "/users/@me"
+        r = requests.get(path, headers=custom_headers)
+        logger.debug("Received status code %s after retrieving user profile with email %s" % (r.status_code, self.email[0:3]))
+        r.raise_for_status()
+        return r.json()
 
     @staticmethod
     def get_user_profile(email, password):
@@ -371,22 +381,21 @@ class DiscordManager:
             return current_password
 
     @staticmethod
-    def add_user(email, password):
+    def add_user(email, password, user):
         try:
-            logger.debug("Adding new user to discord with email %s and password of length %s" % (email[0:3], len(password)))
-            api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
-            profile = DiscordAPIManager.get_user_profile(email, password)
+            logger.debug("Adding new user %s to discord with email %s and password of length %s" % (user, email[0:3], len(password)))
+            server_api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
+            user_api = DiscordAPIManager(settings.DISCORD_SERVER_ID, email, password, user=user)
+            profile = user_api.get_profile()
             logger.debug("Got profile for user: %s" % profile)
             user_id = profile['id']
             logger.debug("Determined user id: %s" % user_id)
-            if api.check_if_user_banned(user_id):
+            if server_api.check_if_user_banned(user_id):
                 logger.debug("User is currently banned. Unbanning %s" % user_id)
-                api.unban_user(user_id)
-            invite_code = api.create_invite()['code']
+                server_api.unban_user(user_id)
+            invite_code = server_api.create_invite()['code']
             logger.debug("Generated invite code beginning with %s" % invite_code[0:5])
-            token = DiscordAPIManager.get_token_by_user(email, password)
-            logger.debug("Got auth token for supplied credentials beginning with %s" % token[0:5])
-            DiscordAPIManager.accept_invite(invite_code, token)
+            user_api.accept_invite(invite_code)
             logger.info("Added user to discord server %s with id %s" % (settings.DISCORD_SERVER_ID, user_id))
             return user_id
         except:

@@ -9,7 +9,7 @@ from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
-from services.managers.discord_manager import DiscordManager
+from services.managers.discord_manager import DiscordManager, DiscordAPIManager
 from services.models import AuthTS
 from services.models import TSgroup
 from authentication.models import AuthServicesInfo
@@ -25,6 +25,7 @@ from util.common_task import generate_corp_group_name
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from authentication.managers import AuthServicesInfoManager
+from services.models import DiscordAuthToken
 
 import logging
 
@@ -277,6 +278,17 @@ def run_databaseUpdate():
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
 
+# Run every 2 hours
+@periodic_task(run_every=crontab(minute="0", hour="*/2"))
+def run_discord_token_cleanup():
+    logger.debug("Running validation of all DiscordAuthTokens")
+    for auth in DiscordAuthToken.objects.all():
+        logger.debug("Testing DiscordAuthToken %s" % auth)
+        if DiscordAPIManager.validate_token(auth.token):
+            logger.debug("Token passes validation. Retaining %s" % auth)
+        else:
+            logger.debug("DiscordAuthToken failed validation. Deleting %s" % auth)
+            auth.delete()
 
 # Run every 3 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/3"))
