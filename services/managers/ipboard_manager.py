@@ -137,8 +137,9 @@ class IPBoardManager:
             IPBoardManager.remove_user_from_group(username, g)
 
     @staticmethod
-    def update_user_password(username, email):
+    def update_user_password(username, email, plain_password=None):
         logger.debug("Settings new IPBoard password for user %s" % username)
-        plain_password = IPBoardManager.__generate_random_pass()
+        if not plain_password:
+            plain_password = IPBoardManager.__generate_random_pass()
         IPBoardManager.update_user(username, email, plain_password)
         return plain_password

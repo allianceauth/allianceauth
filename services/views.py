@@ -26,6 +26,7 @@ from celerytask.tasks import update_discord_groups
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 from forms import DiscordForm
+from forms import ServicePasswordForm
 from util import check_if_user_has_permission
 
 import threading
@@ -457,3 +458,128 @@ def activate_discord(request):
     logger.debug("Rendering form for user %s with success %s" % (request.user, success))
     context = {'form': form, 'success': success}
     return render_to_response('registered/discord.html', context, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_forum_password(request):
+    logger.debug("set_forum_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = Phpbb3Manager.update_user_password(authinfo.forum_username, authinfo.main_char_id, password=password)
+            if result != "":
+                AuthServicesInfoManager.update_user_forum_info(authinfo.forum_username, result, request.user)
+                logger.info("Succesfully reset forum password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom forum password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Forum'}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_mumble_password(request):
+    logger.debug("set_mumble_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = MumbleManager.update_user_password(authinfo.mumble_username, password=password)
+            if result != "":
+                AuthServicesInfoManager.update_user_mumble_info(authinfo.mumble_username, result, request.user)
+                logger.info("Succesfully reset forum password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom mumble password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Mumble', 'error': error}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_jabber_password(request):
+    logger.debug("set_jabber_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = OpenfireManager.update_user_pass(authinfo.jabber_username, password=password)
+            if result != "":
+                AuthServicesInfoManager.update_user_jabber_info(authinfo.jabber_username, result, request.user)
+                logger.info("Succesfully reset forum password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom jabber password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Jabber', 'error': error}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_ipboard_password(request):
+    logger.debug("set_ipboard_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = IPBoardManager.update_user_password(authinfo.ipboard_username, request.user.email, plain_password=password)
+            if result != "":
+                AuthServicesInfoManager.update_user_ipboard_info(authinfo.ipboard_username, result, request.user)
+                logger.info("Succesfully reset forum password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom ipboard password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'IPBoard', 'error': error}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
+

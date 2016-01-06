@@ -248,10 +248,11 @@ class Phpbb3Manager:
         return False
 
     @staticmethod
-    def update_user_password(username, characterid):
+    def update_user_password(username, characterid, password=None):
         logger.debug("Updating phpbb user %s password" % username)
         cursor = connections['phpbb3'].cursor()
-        password = Phpbb3Manager.__generate_random_pass()
+        if not password:
+            password = Phpbb3Manager.__generate_random_pass()
         if Phpbb3Manager.check_user(username):
             pwhash = Phpbb3Manager.__gen_hash(password)
             logger.debug("Proceeding to update phpbb user %s password with pwhash starting with %s" % (username, pwhash[0:5]))

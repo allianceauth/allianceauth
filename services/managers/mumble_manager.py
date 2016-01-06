@@ -213,10 +213,11 @@ class MumbleManager:
         return False
 
     @staticmethod
-    def update_user_password(username):
+    def update_user_password(username, password=None):
         logger.debug("Updating mumble user %s password." % username)
         dbcursor = connections['mumble'].cursor()
-        password = MumbleManager.__generate_random_pass()
+        if not password:
+            password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
         logger.debug("Proceeding with mumble user %s password update - pwhash starts with %s" % (username, pwhash[0:5]))
         if MumbleManager.check_user_exist(username):
