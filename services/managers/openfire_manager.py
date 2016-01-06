@@ -82,10 +82,11 @@ class OpenfireManager:
         logger.info("Unlocked openfire user %s" % username)
 
     @staticmethod
-    def update_user_pass(username):
+    def update_user_pass(username, password=None):
         logger.debug("Updating openfire user %s password." % username)
         try:
-            password = OpenfireManager.__generate_random_pass()
+            if not password:
+                password = OpenfireManager.__generate_random_pass()
             api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
             api.update_user(username, password=password)
             logger.info("Updated openfire user %s password." % username)
