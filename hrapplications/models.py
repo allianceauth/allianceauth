@@ -27,6 +27,7 @@ class HRApplication(models.Model):
 
 
 class HRApplicationComment(models.Model):
+    created_on = models.DateTimeField(auto_now_add=True)
     comment = models.CharField(max_length=254, default="")
     application = models.ForeignKey(HRApplication)
     commenter_user = models.ForeignKey(User)

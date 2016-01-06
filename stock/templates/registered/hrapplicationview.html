@@ -164,7 +164,7 @@
                                                 {% for comment in comments %}
                                                     <div class="panel panel-default">
                                                         <div class="panel-heading" role="tab" id="">
-                                                            <div class="panel-title">{{ comment.commenter_character.character_name }}
+                                                            <div class="panel-title">{{comment.commenter_character.created_on}} - {{ comment.commenter_character.character_name }}
                                                                 - {{ comment.commenter_character.corporation_name }}</div>
                                                         </div>
                                                         <div class="panel-body">{{ comment.comment }}</div>
