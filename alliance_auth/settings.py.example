@@ -196,7 +196,7 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 # FORUM_URL - URL for your forums. Blank to hide link
 ####################
 KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
-MEDIA_URL = os.environ.get('AA_MEDIA_URL', '')
+EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 
 #########################

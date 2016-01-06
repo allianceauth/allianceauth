@@ -45,5 +45,5 @@ def domain_url(request):
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'DISCORD_SERVER_ID': settings.DISCORD_SERVER_ID,
             'KILLBOARD_URL': settings.KILLBOARD_URL,
-            'MEDIA_URL': settings.MEDIA_URL,
+            'EXTERNAL_MEDIA_URL': settings.EXTERNAL_MEDIA_URL,
             'CURRENT_UTC_TIME': timezone.now()}
