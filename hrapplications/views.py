@@ -133,7 +133,7 @@ def hr_application_view(request, app_id):
 			comment.commenter_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
 			comment.comment = form.cleaned_data['comment']
 			comment.save()
-			logger.info("Saved comment by user %s to hrapplication %s" % (request.user, comment.hrapplication))
+			logger.info("Saved comment by user %s to hrapplication %s" % (request.user, comment.application))
 
 	else:
 		logger.debug("Returning blank HRApplication comment form.")
@@ -142,7 +142,7 @@ def hr_application_view(request, app_id):
 	if HRApplication.objects.filter(id=app_id).exists():
 		application = HRApplication.objects.get(id=app_id)
 		comments = HRApplicationComment.objects.all().filter(application=application)
-		logger.debug("Retrieved hrpplication id %s on behalf of user %s with comments %s" % (app_id, request.user, commends))
+		logger.debug("Retrieved hrpplication id %s on behalf of user %s with comments %s" % (app_id, request.user, len(comments)))
 	else:
 		application = HRApplication()
 		comments = []
