@@ -195,7 +195,7 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 # MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
 # FORUM_URL - URL for your forums. Blank to hide link
 ####################
-KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', DOMAIN + '/killboard')
+KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
 MEDIA_URL = os.environ.get('AA_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 
