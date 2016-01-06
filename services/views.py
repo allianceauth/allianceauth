@@ -555,7 +555,7 @@ def set_jabber_password(request):
 @login_required
 @user_passes_test(service_blue_alliance_test)
 def set_ipboard_password(request):
-    logger.debug("set_forum_password called by user %s" % request.user)
+    logger.debug("set_ipboard_password called by user %s" % request.user)
     error = None
     if request.method == 'POST':
         logger.debug("Received POST request with form.")
