@@ -4,7 +4,7 @@ Alliance Auth
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
-[NEW Documentation and Setup Guides](http://allianceauth.com)
+[Documentation and Setup Guides](http://allianceauth.com)
 
 [Project Website](http://r4stl1n.github.io/allianceauth/)
 
@@ -62,7 +62,8 @@ Special Permissions In Admin:
     auth | user | alliance_member ( Added auto by auth when a member is verified )
     auth | user | group_management ( Access to add members to groups within the alliance )
     auth | user | human_resources ( Corp only access to view applications )
-    auth | user | jabber_broadcast ( Access to broadcast a message over jabber to specific groups or all)
+    auth | user | jabber_broadcast ( Access to broadcast a message over jabber to own groups)
+    auth | user | jabber_broadcast_all ( Can choose from all groups and the 'all' option when broadcasting)
     auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats ( View basic corp auth stats *who is authed etc*)
     auth | user | timer_management ( Access to create and remove timers)
@@ -76,5 +77,6 @@ Active Developers
 
 Beta Testers/ Bug Fixers:
 
+    TrentBartlem ( Testing and Bug Fixes)
     IskFiend ( Bug Fixes and Server Configuration )
     Mr McClain (Bug Fixes and server configuration)
