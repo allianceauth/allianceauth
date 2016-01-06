@@ -188,6 +188,17 @@ EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('AA_EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 
+####################
+# Front Page Links
+####################
+# KILLBOARD_URL - URL for your killboard. Blank to hide link
+# MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
+# FORUM_URL - URL for your forums. Blank to hide link
+####################
+KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
+MEDIA_URL = os.environ.get('AA_MEDIA_URL', '')
+FORUM_URL = os.environ.get('AA_FORUM_URL', '')
+
 #########################
 # Default Group Settings
 #########################
@@ -279,12 +290,10 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 #####################
 # Forum Configuration
 #####################
-# FORUM_URL - Forum url location
 # IPBOARD_ENDPOINT - Api endpoint if using ipboard
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-FORUM_URL = os.environ.get('AA_FORUM_URL', "http://yourdomain.com")
 IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
@@ -347,3 +356,96 @@ TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.c
 DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
 DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
 DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
+
+#####################################
+# Logging Configuration
+#####################################
+# Set log_file and console level to desired state:
+# DEBUG - basically stack trace, explains every step
+# INFO - model creation, deletion, updates, etc
+# WARN - unexpected function outcomes that do not impact user
+# ERROR - unexcpeted function outcomes which prevent user from achieving desired outcome
+# EXCEPTION - something critical went wrong, unhandled
+#####################################
+# Recommended level for log_file is INFO, console is DEBUG
+# Change log level of individual apps below to narrow your debugging
+#####################################
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'log_file': {
+            'level': 'INFO',         # edit this line to change logging level to file
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR,'allianceauth.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*5, # edit this line to change max log file size
+            'backupCount': 5,        # edit this line to change number of log backups
+        },
+        'console': {
+            'level': 'DEBUG',        # edit this line to change logging level to console
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'authentication': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'celerytask': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'eveonline': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'groupmanagement': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'hrapplications': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'portal': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'registration': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'services': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'srp': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'timerboard': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'util': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'django': {
+            'handlers': ['log_file', 'console'],
+            'level': 'ERROR',
+        },
+    }
+}
+
