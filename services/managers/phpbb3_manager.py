@@ -38,6 +38,8 @@ class Phpbb3Manager:
                           r"phpbb_user_group.group_id = phpbb_groups.group_id AND user_id=%s"
 
     SQL_ADD_USER_AVATAR = r"UPDATE phpbb_users SET user_avatar_type=2, user_avatar_width=64, user_avatar_height=64, user_avatar=%s WHERE user_id = %s"
+    
+    SQL_CLEAR_USER_PERMISSIONS = r"UPDATE phpbb_users SET user_permissions = '' WHERE user_Id = %s"
 
     def __init__(self):
         pass
@@ -127,6 +129,7 @@ class Phpbb3Manager:
         try:
             cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
+            cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
             logger.info("Added phpbb user id %s to group id %s" % (userid, groupid))
         except:
             logger.exception("Unable to add phpbb user id %s to group id %s" % (userid, groupid), exc_info=True)
@@ -135,9 +138,10 @@ class Phpbb3Manager:
     @staticmethod
     def __remove_user_from_group(userid, groupid):
         logger.debug("Removing phpbb3 user id %s from group id %s" % (userid, groupid))
-        cursor = connections['phpbb3'].cursor()
         try:
+            cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
+            cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
             logger.info("Removed phpbb user id %s from group id %s" % (userid, groupid))
         except:
             logger.exception("Unable to remove phpbb user id %s from group id %s" % (userid, groupid), exc_info=True)
