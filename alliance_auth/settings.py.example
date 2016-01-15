@@ -439,6 +439,10 @@ LOGGING = {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
+        'sigtracker': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
         'util': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
