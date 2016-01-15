@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 class TSgroup(models.Model):
     ts_group_id = models.IntegerField(primary_key=True)
@@ -30,3 +30,11 @@ class UserTSgroup(models.Model):
 
     def __str__(self):
         return self.user.name
+
+class DiscordAuthToken(models.Model):
+    email = models.CharField(max_length=254, unique=True)
+    token = models.CharField(max_length=254)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    def __str__(self):
+        output = "Discord Token for email %s user %s" % (self.email, self.user)
+        return output.encode('utf-8')

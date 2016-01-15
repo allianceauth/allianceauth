@@ -21,9 +21,8 @@
                     </a>
                 </div>
             </h1>
-            <table class="table table-bordered">
+            <table class="table table-bordered table-condensed">
                 <tr>
-                    <th class="text-center">Application ID</th>
                     <th class="text-center">Username</th>
                     <th class="text-center">Main Character</th>
                     <th class="text-center">Corporation
@@ -32,7 +31,6 @@
                 </tr>
                 {% for personal_app in personal_apps %}
                     <tr>
-                        <td class="text-center">{{ personal_app.id }}</td>
                         <td class="text-center">{{ personal_app.user.username }}</td>
                         <td class="text-center">{{ personal_app.character_name }}</td>
                         <td class="text-center">{{ personal_app.corp.corporation_name }}</td>
