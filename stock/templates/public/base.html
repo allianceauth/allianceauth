@@ -117,10 +117,17 @@
 
                         {% if perms.auth.corp_stats %}
                             <li>
-                                <a {% ifequal request.path "/corporation_stats" %} class="active" {% endifequal %}
+                                <a {% ifequal request.path "/corporation_stats/" %} class="active" {% endifequal %}
                                                                                    href="{% url 'auth_corp_stats' %}"><i
                                         class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
                             </li>
+                            {% if IS_CORP %}
+                                <li>
+                                    <a {% ifequal request.path "/corp_utils/" %} class="active" {% endifequal %}
+                                                                                       href="{% url 'auth_corp_stats' %}"><i
+                                            class="fa fa-chain fa-fw grayiconecolor"></i> Corporation Stats</a>
+                                </li>
+                            {% endif  %}
                         {% endif %}
 
                         {% if perms.auth.group_management %}

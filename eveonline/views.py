@@ -25,6 +25,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def disable_member(user, char_id):
     logger.debug("Disabling user %s with character id %s" % (user, char_id))
     remove_member_permission(user, 'member')

@@ -185,7 +185,7 @@ class EveApiManager():
                 api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
                 corp = evelink.corp.Corp(api=api)
                 corpinfo = corp.contacts()
-                results = corpinfo[0]
+                results = corpinfo.result
                 logger.debug("Got corp standings from settings: %s" % results)
                 return results
             except evelink.api.APIError as error:
@@ -195,13 +195,34 @@ class EveApiManager():
         return {}
 
     @staticmethod
+    def get_corp_membertracking():
+        if settings.IS_CORP:
+            if settings.CORP_API_ID and settings.CORP_API_VCODE:
+                try:
+                    logger.debug("Getting corp membertracking with api id %s" % settings.CORP_API_ID)
+                    api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
+                    corp = evelink.corp.Corp(api=api)
+                    membertracking = corp.members()
+                    results = membertracking.result
+                    logger.debug("Got corp membertracking from settings: %s" % results)
+                    return results
+                except evelink.api.APIError as error:
+                    logger.exception("Unhandled APIError occured.", exc_info=True)
+            else:
+                logger.error("No corp API key supplied in settings. Unable to get standings.")
+        else:
+            logger.error("Membertracking function only works in corporation mode.")
+        return {}
+
+
+    @staticmethod
     def check_if_id_is_alliance(alliance_id):
         logger.debug("Checking if id %s is an alliance." % alliance_id)
         try:
             api = evelink.api.API()
             eve = evelink.eve.EVE(api=api)
             alliance = eve.alliances()
-            results = alliance[0][int(alliance_id)]
+            results = alliance.result[int(alliance_id)]
             if results:
                 logger.debug("Confirmed id %s is an alliance." % alliance_id)
                 return True
