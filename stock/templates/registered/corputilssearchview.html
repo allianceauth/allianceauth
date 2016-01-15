@@ -1,0 +1,71 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+{% load corputils_extras %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Corporation Member Tracking{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        {% if perms.auth.corp_stats %}
+            <h1 class="page-header text-center">Member Search Results
+                <div class="text-right">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+                        Search Members
+                    </button>
+                </div>
+            </h1>
+            <div class="container-fluid">
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="text-center">Character</th>
+                        <th class="text-center">Main Character</th>
+                    </tr>
+                    {% for member in members %}
+                        <tr {% if  not member.api_registered%} bgcolor="#DD5500" {% endif %} >
+                            <td class="text-center">{{ member.name }}</td>
+                            <td class="text-center">
+                            {% if  member.api_registered%}
+                                {{ member.main }}
+                            {% else %}
+                                No API registered!
+                            {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if perms.auth.corp_stats %}
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Member Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-signin" role="form"
+                              action={% url 'auth_corputils_search' %} method="POST">
+                            {% csrf_token %}
+                            {{ search_form|bootstrap }}
+                            <br/>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}
