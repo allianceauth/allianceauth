@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'hrapplications',
     'timerboard',
     'srp',
+    'corputils',
 )
 
 MIDDLEWARE_CLASSES = (
