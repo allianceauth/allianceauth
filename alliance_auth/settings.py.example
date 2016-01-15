@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'hrapplications',
     'timerboard',
     'srp',
+    'sigtracker',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -22,6 +22,8 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="timer_management", content_type=ct, name="timer_management")
     Permission.objects.get_or_create(codename="timer_view", content_type=ct, name="timer_view")
     Permission.objects.get_or_create(codename="srp_management", content_type=ct, name="srp_management")
+    Permission.objects.get_or_create(codename="signiture_management", content_type=ct, name="signiture_management")
+    Permission.objects.get_or_create(codename="signiture_view", content_type=ct, name="signiture_view")
     Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
     Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
     logger.info("Bootstrapped permissions for auth and created default groups.")
