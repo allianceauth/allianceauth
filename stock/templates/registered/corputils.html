@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% extends "public/base.html" %}
+{% extends "public/base.html" %}
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}Corporation Stats{% endblock page_title %}
 {% load corputils_extras %}
@@ -30,7 +26,11 @@
 
                                     <p>Ticker: {{ corp.corporation_ticker }}</p>
 
-                                    <p>Member: {{ corp.member_count }}</p>
+                                    <p>Member count: {{ corp.member_count }}</p>
+
+                                    <p>Player count: {{characters_with_api|length}}</p>
+
+                                    <p>Unregistered characters: {{characters_without_api|length}}</p>
                                 </div>
                             </div>
                         </div>
@@ -47,22 +47,22 @@
                                             <th class="text-center">Main character</th>
                                             <th class="text-center">Character list</th>
                                         </tr>
-                                        {% for mainid, alts in characters_with_api.items %}
+                                        {% for main, alts in characters_with_api %}
                                             <tr>
                                                 <td class="text-center">
-                                                    <p class="">{{ alts|get_dict_item:mainid }}</p>
+                                                    <p class="">{{ main }}</p>
                                                 </td>
                                                 <td class="text-center">
-                                                    {% for charid, name in alts.items %}
+                                                    {% for name in alts %}
                                                         <p class="">{{ name}}</p>
                                                     {% endfor %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
-                                        {% for mainid, alts in characters_without_api.items %}
+                                        {% for main, value in characters_without_api %}
                                             <tr bgcolor="#DD5500">
                                                 <td class="text-center">
-                                                    <p class="">{{ alts|get_dict_item:mainid }}</p>
+                                                    <p class="">{{ main }}</p>
                                                 </td>
                                                 <td class="text-center">
                                                     <p class="">No API registered!</p>
@@ -94,9 +94,3 @@
         {% endif %}
     </div>
 {% endblock content %}
-</title>
-</head>
-<body>
-
-</body>
-</html>

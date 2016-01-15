@@ -35,15 +35,15 @@ def corp_member_view(request):
                 char = EveCharacter.objects.get(character_id=char_id)
                 user = char.user
                 mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
-                characters_with_api.setdefault(mainid,{}).update({char_id:char.character_name})
+                mainname = EveCharacter.objects.get(character_id=mainid).character_name
+                characters_with_api.setdefault(mainname,[]).append(char.character_name)
             except EveCharacter.DoesNotExist:
-                mainid = char_id
-                characters_without_api.setdefault(mainid,{}).update({char_id:member_data["name"]})
+                characters_without_api.setdefault(member_data["name"],[]).append(member_data["name"])
 
 
         context = {"corp": corp,
-                   "characters_with_api": characters_with_api,
-                   "characters_without_api": characters_without_api}
+                   "characters_with_api": sorted(characters_with_api.items()),
+                   "characters_without_api": sorted(characters_without_api.items())}
 
         return render_to_response('registered/corputils.html',context, context_instance=RequestContext(request) )
     else:
