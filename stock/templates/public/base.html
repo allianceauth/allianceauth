@@ -124,8 +124,8 @@
                             {% if IS_CORP %}
                                 <li>
                                     <a {% ifequal request.path "/corp_utils/" %} class="active" {% endifequal %}
-                                                                                       href="{% url 'auth_corp_stats' %}"><i
-                                            class="fa fa-chain fa-fw grayiconecolor"></i> Corporation Stats</a>
+                                                                                       href="{% url 'auth_corp_member_view' %}"><i
+                                            class="fa fa-chain fa-fw grayiconecolor"></i> Member Tracking</a>
                                 </li>
                             {% endif  %}
                         {% endif %}
