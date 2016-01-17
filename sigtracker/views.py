@@ -23,19 +23,19 @@ def sigtracker_util_test(user):
 
 @login_required
 @user_passes_test(sigtracker_util_test)
-@permission_required('auth.signiture_view')
+@permission_required('auth.signature_view')
 def sigtracker_view(request):
     logger.debug("sigtracker_view called by user %s" % request.user)
     sigtracker_list = sigtracker.objects.all()
     render_items = {'sigtracker': sigtracker.objects.all()}
 
-    return render_to_response('registered/signituremanagement.html', render_items, context_instance=RequestContext(request))
+    return render_to_response('registered/signaturemanagement.html', render_items, context_instance=RequestContext(request))
 
 
 @login_required
-@permission_required('auth.signiture_management')
+@permission_required('auth.signature_management')
 def add_signiture_view(request):
-    logger.debug("add_signiture_view called by user %s" % request.user)
+    logger.debug("add_signature_view called by user %s" % request.user)
     if request.method == 'POST':
         form = SignitureForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
@@ -51,22 +51,22 @@ def add_signiture_view(request):
             sig.save()
             return HttpResponseRedirect("/sigtracker/")
     else:
-        logger.debug("Returning new SignitureForm")
+        logger.debug("Returning new SignatureForm")
         form = SignitureForm()
 
     render_items = {'form': form}
 
-    return render_to_response('registered/addsigniture.html', render_items, context_instance=RequestContext(request))
+    return render_to_response('registered/addsignature.html', render_items, context_instance=RequestContext(request))
 
 
 @login_required
-@permission_required('auth.signiture_management')
+@permission_required('auth.signature_management')
 def remove_signiture(request, sigtracker_id):
-    logger.debug("remove_signiture called by user %s for signiture id %s" % (request.user, sigtracker_id))
+    logger.debug("remove_signature called by user %s for signature id %s" % (request.user, sigtracker_id))
     if sigtracker.objects.filter(id=sigtracker_id).exists():
         sig = sigtracker.objects.get(id=sigtracker_id)
         sig.delete()
         logger.debug("Deleting sigtracker id %s by user %s" % (sigtracker_id, request.user))
     else:
-        logger.error("Unable to delete signiture id %s for user %s - signiture matching id not found." % (sigtracker_id, request.user))
+        logger.error("Unable to delete signature id %s for user %s - signature matching id not found." % (sigtracker_id, request.user))
     return HttpResponseRedirect("/sigtracker/")
