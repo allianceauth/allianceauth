@@ -167,9 +167,9 @@ urlpatterns = patterns('',
 			url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
 
 			# Sig Tracker
-			url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signiture_view'),
-			url(r'^add_signiture/$', 'sigtracker.views.add_signiture_view', name='auth_add_signiture_view'),
-                	url(r'^remove_signiture/(\w+)', 'sigtracker.views.remove_signiture', name='auth_remove_signiture'),
+			url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
+			url(r'^add_signature/$', 'sigtracker.views.add_signature_view', name='auth_add_signature_view'),
+                	url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
 			
 
 )
