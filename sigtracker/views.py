@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import user_passes_test
 from util import check_if_user_has_permission
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
-from form import SignitureForm
+from form import SignatureForm
 from models import sigtracker
 
 import logging
@@ -34,10 +34,10 @@ def sigtracker_view(request):
 
 @login_required
 @permission_required('auth.signature_management')
-def add_signiture_view(request):
+def add_signature_view(request):
     logger.debug("add_signature_view called by user %s" % request.user)
     if request.method == 'POST':
-        form = SignitureForm(request.POST)
+        form = SignatureForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             # handle valid form
@@ -52,7 +52,7 @@ def add_signiture_view(request):
             return HttpResponseRedirect("/sigtracker/")
     else:
         logger.debug("Returning new SignatureForm")
-        form = SignitureForm()
+        form = SignatureForm()
 
     render_items = {'form': form}
 
@@ -61,7 +61,7 @@ def add_signiture_view(request):
 
 @login_required
 @permission_required('auth.signature_management')
-def remove_signiture(request, sigtracker_id):
+def remove_signature(request, sigtracker_id):
     logger.debug("remove_signature called by user %s for signature id %s" % (request.user, sigtracker_id))
     if sigtracker.objects.filter(id=sigtracker_id).exists():
         sig = sigtracker.objects.get(id=sigtracker_id)
