@@ -170,7 +170,7 @@
                     <td class="text-center">
                         {% ifequal authinfo.teamspeak3_uid "" %}
                         {% else %}
-                            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}">Teamspeak3
+                            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}&nickname={{ authinfo.teamspeak3_uid }}">Teamspeak3
                                 Link</a>
                         {% endifequal %}
                     </td>

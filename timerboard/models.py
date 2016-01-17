@@ -17,4 +17,5 @@ class Timer(models.Model):
     important = models.BooleanField(default=False)
     eve_character = models.ForeignKey(EveCharacter)
     eve_corp = models.ForeignKey(EveCorporationInfo)
+    corp_timer = models.BooleanField(default=False)
     user = models.ForeignKey(User)
