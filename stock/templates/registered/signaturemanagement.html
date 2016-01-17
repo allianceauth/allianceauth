@@ -3,16 +3,16 @@
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Signiture Management{% endblock page_title %}
+{% block page_title %}Signature Management{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Signitures
+        <h1 class="page-header text-center">Signatures
             <div class="text-right">
-                <a href="{% url 'auth_add_signiture_view' %}">
-                    {% if perms.auth.signiture_management %}
-                        <button type="button" class="btn btn-success">Create Signiture</button>
+                <a href="{% url 'auth_add_signature_view' %}">
+                    {% if perms.auth.signature_management %}
+                        <button type="button" class="btn btn-success">Create Signature</button>
                     {% endif %}
                 </a>
             </div>
@@ -22,10 +22,10 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">System</th>
                 <th class="text-center">Destination</th>
-                <th class="text-center">Signiture Type</th>
+                <th class="text-center">Signature Type</th>
 		        <th class="text-center">Status</th>
                 <th class="text-center">Notes</th>
-                {% if perms.auth.signiture_management %}
+                {% if perms.auth.signature_management %}
                     <th class="text-center">Action</th>
                 {% endif %}
             </tr>
@@ -44,7 +44,7 @@
                 
          	   	
       			 
-                {% if perms.auth.signiture_management %}
+                {% if perms.auth.signature_management %}
                     <td class="text-center">
                         <a href="/remove_signiture/{{ sigt.id }}">
                             <button type="button" class="btn btn-danger"><span
