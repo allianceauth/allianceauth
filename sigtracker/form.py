@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
-class SignitureForm(forms.Form):
+class SignatureForm(forms.Form):
     sigtype = [('Wormhole', 'Wormhole'), ('Combat', 'Combat'), ('Data', 'Data'),
                          ('Relic', 'Relic')]
     status = [('Open', 'Open'), ('Started', 'Started'), ('Finished', 'Finished')]
