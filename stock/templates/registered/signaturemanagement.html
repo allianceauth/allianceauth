@@ -23,28 +23,29 @@
                 <th class="text-center">System</th>
                 <th class="text-center">Destination</th>
                 <th class="text-center">Signature Type</th>
-		        <th class="text-center">Status</th>
+		<th class="text-center">Status</th>
                 <th class="text-center">Notes</th>
-                {% if perms.auth.signature_management %}
-                    <th class="text-center">Action</th>
+		<th class="text-center">Post Time</th>
+		{% if perms.auth.signature_management %}
+                   <th class="text-center">Creator</th> 
+		   <th class="text-center">Action</th>
                 {% endif %}
             </tr>
             	              
                 {% for sigt in sigtracker %}
                 <tr>
-       		    <td style="width:150px" class="text-center">{{ sigt.ident }}</td>
+       		<td style="width:150px" class="text-center">{{ sigt.ident }}</td>
                 
                 <td class="text-center">
                 <a href="http://evemaps.dotlan.net/system/{{ sigt.system }}">{{ sigt.system }}</a>
                 </td>
                 <td style="width:150px" class="text-center">{{ sigt.destination }}</td>
                 <td style="width:150px" class="text-center">{{ sigt.sigtype }}</td>
-		   		<td style="width:150px" class="text-center">{{ sigt.status }}</td>
- 	  			<td style="width:150px" class="text-center">{{ sigt.notes }}</td>
-                
-         	   	
-      			 
+		<td style="width:150px" class="text-center">{{ sigt.status }}</td>
+ 	  	<td style="width:150px" class="text-center">{{ sigt.notes }}</td>
+                <td style="width:150px" class="text-center">{{ sigt.post_time}}</td>   			 
                 {% if perms.auth.signature_management %}
+                <td style="width:150px" class="text-center">{{ sigt.eve_character }}</td>
                     <td class="text-center">
                         <a href="/remove_signature/{{ sigt.id }}">
                             <button type="button" class="btn btn-danger"><span
