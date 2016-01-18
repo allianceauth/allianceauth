@@ -34,7 +34,7 @@
             	              
                 {% for sigt in sigtracker %}
                 <tr>
-       		<td style="width:150px" class="text-center">{{ sigt.ident }}</td>
+                <td style="width:150px" class="text-center">{{ sigt.ident }}</td>
                 
                 <td class="text-center">
                 <a href="http://evemaps.dotlan.net/system/{{ sigt.system }}">{{ sigt.system }}</a>
@@ -42,7 +42,7 @@
                 <td style="width:150px" class="text-center">{{ sigt.destination }}</td>
                 <td style="width:150px" class="text-center">{{ sigt.sigtype }}</td>
 		<td style="width:150px" class="text-center">{{ sigt.status }}</td>
- 	  	<td style="width:150px" class="text-center">{{ sigt.notes }}</td>
+		<td style="width:150px" class="text-center">{{ sigt.notes }}</td>
                 <td style="width:150px" class="text-center">{{ sigt.post_time}}</td>   			 
                 {% if perms.auth.signature_management %}
                 <td style="width:150px" class="text-center">{{ sigt.eve_character }}</td>
