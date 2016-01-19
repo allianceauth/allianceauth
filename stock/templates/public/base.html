@@ -106,7 +106,7 @@
                             </li>
                         {% endif %}
 
-                        {% if not perms.auth.member and not perms.auth.blue_member or perms.auth.human_resources %}
+                        {% if not perms.auth.member or perms.auth.human_resources %}
                             <li>
                                 <a {% ifequal request.path "/hr_application_management/" %}
                                     class="active" {% endifequal %}

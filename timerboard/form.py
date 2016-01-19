@@ -17,3 +17,4 @@ class TimerForm(forms.Form):
     hours_left = forms.IntegerField(required=True, label="Hours Remaining", validators=[MinValueValidator(0), MaxValueValidator(23)])
     minutes_left = forms.IntegerField(required=True, label="Minutes Remaining", validators=[MinValueValidator(0), MaxValueValidator(59)])
     important = forms.BooleanField(label="Important", required=False)
+    corp_timer = forms.BooleanField(label="Corp-Restricted", required=False)

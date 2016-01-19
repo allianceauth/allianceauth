@@ -4,7 +4,6 @@ mysqlclient
 evelink
 dnspython
 passlib
-xmpppy==0.5.0rc1
 requests>=2.9.1
 
 # Django Stuff #
@@ -15,3 +14,4 @@ django-celery
 
 git+git://github.com/nikdoof/python-ts3.git
 git+git://github.com/seamus-45/openfire-restapi.git
+git+https://github.com/ArchipelProject/xmpppy
