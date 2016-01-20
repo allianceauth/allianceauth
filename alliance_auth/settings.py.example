@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'hrapplications',
     'timerboard',
     'srp',
+    'sigtracker',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -435,6 +436,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'timerboard': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'sigtracker': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },

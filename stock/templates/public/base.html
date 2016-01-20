@@ -137,6 +137,16 @@
                                                                                   href="{% url 'auth_fleet_fits' %}"><i
                                         class="fa fa-bolt fa-fw grayiconecolor"></i> Fleet Doctrines</a>
                             </li>
+			{% endif %}
+
+                        {% if  perms.auth.member or perms.auth.blue_member %}
+							<li>
+                                <a {% ifequal request.path "/sigtracker" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_signature_view' %}"><i
+                                        class="fa fa-compass fa-fw grayiconecolor"></i> Signature Tracker</a>
+                            </li>
+
+
                             {% if perms.auth.timer_view %}
                                 <li>
                                     <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
