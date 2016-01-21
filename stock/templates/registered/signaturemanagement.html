@@ -43,18 +43,19 @@
                 <td style="width:150px" class="text-center">{{ sigt.sigtype }}</td>
 		<td style="width:150px" class="text-center">{{ sigt.status }}</td>
 		<td style="width:150px" class="text-center">{{ sigt.notes }}</td>
-                <td style="width:150px" class="text-center">{{ sigt.post_time}}</td>   			 
+                <td style="width:150px" class="text-center">{{ sigt.post_time}}</td>
                 {% if perms.auth.signature_management %}
                 <td style="width:150px" class="text-center">{{ sigt.eve_character }}</td>
-                    <td class="text-center">
-                        <a href="/remove_signature/{{ sigt.id }}">
+                <td class="text-center">
+                	<a href="/remove_signature/{{ sigt.id }}">
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>
-                    </td>
-              </tr>
+                    	</td>
+                
               
-              {% endif %}
+		{% endif %}
+		</tr>
               {% endfor %}
             </tr>
         </table>

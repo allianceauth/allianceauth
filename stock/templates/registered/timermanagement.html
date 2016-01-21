@@ -3,16 +3,16 @@
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Timer Management{% endblock page_title %}
+{% block page_title %}Structure Timer Management{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Operation Timers
+        <h1 class="page-header text-center">Structure Timers
             <div class="text-right">
                 <a href="{% url 'auth_add_timer_view' %}">
                     {% if perms.auth.timer_management %}
-                        <button type="button" class="btn btn-success">Create Timer</button>
+                        <button type="button" class="btn btn-success">Create Structure Timer</button>
                     {% endif %}
                 </a>
             </div>

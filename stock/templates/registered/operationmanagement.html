@@ -1,0 +1,71 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Fleet Operation Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Fleet Operation Timers
+            <div class="text-right">
+                <a href="{% url 'auth_add_optimer_view' %}">
+                    {% if perms.auth.optimer_management %}
+                        <button type="button" class="btn btn-success">Create Operation</button>
+                    {% endif %}
+                </a>
+            </div>
+        </h1>
+        <table class="table table-responsive table-bordered">
+            <tr>
+                <th class="text-center">Operation Name</th>
+                <th class="text-center">Form Up System</th>
+                <th class="text-center">Form Up Location</th>
+                <th class="text-center">Start Time</th>
+		<th class="text-center">End Time</th>
+                <th class="text-center">FC</th>
+		<th class="text-center">Details</th>
+		<th class="text-center">Post Time</th>
+		{% if perms.auth.optimer_management %}
+           <th class="text-center">Creator</th> 
+		   <th class="text-center">Action</th>
+                {% endif %}
+            </tr>
+            	              
+                {% for ops in optimer %}
+                <tr>
+       		<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
+                
+                <td class="text-center">
+                <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
+                </td>
+                <td style="width:150px" class="text-center">{{ ops.location }}</td>
+                <td style="width:150px" class="text-center">{{ ops.start_time }}</td>
+				<td style="width:150px" class="text-center">{{ ops.end_time }}</td>
+ 	  			<td style="width:150px" class="text-center">{{ ops.fc }}</td>
+                <td style="width:150px" class="text-center">{{ ops.details }}</td>
+                <td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
+                {% if perms.auth.optimer_management %}
+                <td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
+                    <td class="text-center">
+                        <a href="/remove_optimer/{{ ops.id }}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    </td>
+              
+              
+              {% endif %}
+              </tr>
+              {% endfor %}
+            </tr>
+        </table>
+
+        
+    </div>
+
+
+
+
+{% endblock content %}
