@@ -59,7 +59,7 @@ def add_optimer_view(request):
             op.create_time = post_time
             op.eve_character = character
             op.save()
-            logger.debug("User %s created op timer with name %s" % (request.user, op.operation_name))
+            logger.info("User %s created op timer with name %s" % (request.user, op.operation_name))
             return HttpResponseRedirect("/optimer/")
     else:
         logger.debug("Returning new opForm")
@@ -79,5 +79,5 @@ def remove_optimer(request, optimer_id):
         op.delete()
         logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
     else:
-        logger.error("Unable to delete signature id %s for user %s - operation matching id not found." % (optimer_id, request.user))
+        logger.error("Unable to delete optimer id %s for user %s - operation matching id not found." % (optimer_id, request.user))
     return HttpResponseRedirect("/optimer/")
