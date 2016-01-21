@@ -28,3 +28,9 @@ class HiddenGroup(models.Model):
 
     def __str__(self):
         return self.group.name + " - Hidden"
+
+class OpenGroup(models.Model):
+    group = models.OneToOneField(Group)
+
+    def __str__(self):
+        return self.group.name + " - Open"

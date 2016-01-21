@@ -26,14 +26,25 @@ def timer_util_test(user):
 @permission_required('auth.timer_view')
 def timer_view(request):
     logger.debug("timer_view called by user %s" % request.user)
+    auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
+    char = EveManager.get_character_by_id(auth_info.main_char_id)
+    if char:
+        corp = EveManager.get_corporation_info_by_id(char.corporation_id)
+    else:
+        corp = None
+    if corp:
+        corp_timers = Timer.objects.all().filter(corp_timer=True).filter(eve_corp=corp)
+    else:
+        corp_timers = []
     timer_list = Timer.objects.all()
     closest_timer = None
     if timer_list:
         closest_timer = \
-        sorted(list(Timer.objects.all()), key=lambda d: abs(datetime.datetime.now() - d.eve_time.replace(tzinfo=None)))[
+        sorted(list(Timer.objects.all().filter(corp_timer=False)), key=lambda d: abs(datetime.datetime.now() - d.eve_time.replace(tzinfo=None)))[
             0]
     logger.debug("Determined closest timer is %s" % closest_timer)
-    render_items = {'timers': Timer.objects.all(),
+    render_items = {'timers': Timer.objects.all().filter(corp_timer=False),
+                    'corp_timers': corp_timers,
                     'closest_timer': closest_timer}
 
     return render_to_response('registered/timermanagement.html', render_items, context_instance=RequestContext(request))
@@ -66,6 +77,7 @@ def add_timer_view(request):
             timer.objective = form.cleaned_data['objective']
             timer.eve_time = eve_time
             timer.important = form.cleaned_data['important']
+            timer.corp_timer = form.cleaned_data['corp_timer']
             timer.eve_character = character
             timer.eve_corp = corporation
             timer.user = request.user
