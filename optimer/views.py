@@ -57,7 +57,7 @@ def add_optimer_view(request):
             op.fc = form.cleaned_data['fc']
             op.details = form.cleaned_data['details']
             op.create_time = post_time
-	    op.eve_character = character
+            op.eve_character = character
             op.save()
             return HttpResponseRedirect("/optimer/")
     else:
