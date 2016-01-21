@@ -26,7 +26,7 @@ def optimer_util_test(user):
 @user_passes_test(optimer_util_test)
 @permission_required('auth.optimer_view')
 def optimer_view(request):
-    logger.info("optimer_view called by user %s" % request.user)
+    logger.debug("optimer_view called by user %s" % request.user)
     optimer_list = optimer.objects.all()
     render_items = {'optimer': optimer.objects.all(),}
 
@@ -36,10 +36,10 @@ def optimer_view(request):
 @login_required
 @permission_required('auth.optimer_management')
 def add_optimer_view(request):
-    logger.info("add_optimer_view called by user %s" % request.user)
+    logger.debug("add_optimer_view called by user %s" % request.user)
     if request.method == 'POST':
-        form = opForm(request.POST)
-	logger.info("Request type POST contains form valid: %s" % form.is_valid())
+    	form = opForm(request.POST)
+    	logger.info("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             #Get Current Time
             post_time = timezone.now()
@@ -59,9 +59,10 @@ def add_optimer_view(request):
             op.create_time = post_time
             op.eve_character = character
             op.save()
+            
             return HttpResponseRedirect("/optimer/")
     else:
-        logger.info("Returning new opForm")
+        logger.debug("Returning new opForm")
         form = opForm()
 
     render_items = {'form': form}
@@ -72,7 +73,7 @@ def add_optimer_view(request):
 @login_required
 @permission_required('auth.optimer_management')
 def remove_optimer(request, optimer_id):
-    logger.info("remove_optimer called by user %s for operation id %s" % (request.user, optimer_id))
+    logger.debug("remove_optimer called by user %s for operation id %s" % (request.user, optimer_id))
     if optimer.objects.filter(id=optimer_id).exists():
         op = optimer.objects.get(id=optimer_id)
         op.delete()
