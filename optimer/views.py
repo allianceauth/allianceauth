@@ -59,7 +59,7 @@ def add_optimer_view(request):
             op.create_time = post_time
             op.eve_character = character
             op.save()
-            
+            logger.debug("User %s created op timer with name %s" % (request.user, op.operation_name))
             return HttpResponseRedirect("/optimer/")
     else:
         logger.debug("Returning new opForm")
