@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'timerboard',
     'srp',
     'sigtracker',
+    'optimer',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -440,6 +441,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'sigtracker': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'optimer': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
