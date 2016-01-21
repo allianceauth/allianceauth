@@ -39,7 +39,7 @@ def add_optimer_view(request):
     logger.debug("add_optimer_view called by user %s" % request.user)
     if request.method == 'POST':
     	form = opForm(request.POST)
-    	logger.info("Request type POST contains form valid: %s" % form.is_valid())
+    	logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             #Get Current Time
             post_time = timezone.now()
