@@ -31,23 +31,36 @@ def corp_member_view(request):
     if settings.IS_CORP:
         corp = EveCorporationInfo.objects.get(corporation_id=settings.CORP_ID)
 
+        Player = namedtuple("Player", ["main", "maincorp", "altlist"])
+
         member_list = EveApiManager.get_corp_membertracking()
         characters_with_api = {}
-        characters_without_api = {}
+        characters_without_api = []
+
         for char_id, member_data in member_list.items():
             try:
                 char = EveCharacter.objects.get(character_id=char_id)
                 user = char.user
-                mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
-                mainname = EveCharacter.objects.get(character_id=mainid).character_name
-                characters_with_api.setdefault(mainname,[]).append(char.character_name)
+                try:
+                    mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
+                    mainchar = EveCharacter.objects.get(character_id=mainid)
+                    mainname = mainchar.character_name
+                    maincorp = mainchar.corporation_name
+                except ValueError:
+                    mainname = "User: " + user.username
+                    maincorp = None
+                characters_with_api.setdefault(mainname, Player(main=mainname,
+                                                                maincorp=maincorp,
+                                                                altlist=[])
+                                               ).altlist.append(char.character_name)
+
             except EveCharacter.DoesNotExist:
-                characters_without_api.setdefault(member_data["name"],[]).append(member_data["name"])
+                characters_without_api.append(member_data["name"])
 
 
         context = {"corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
-                   "characters_without_api": sorted(characters_without_api.items()),
+                   "characters_without_api": sorted(characters_without_api),
                    "search_form": CorputilsSearchForm()}
 
         return render_to_response('registered/corputils.html',context, context_instance=RequestContext(request) )

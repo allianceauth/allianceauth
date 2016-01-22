@@ -1,6 +1,5 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
-{% load corputils_extras %}
 
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}Corporation Member Tracking{% endblock page_title %}
@@ -54,24 +53,31 @@
                                     <table class="table table-condensed">
                                         <tr>
                                             <th class="text-center">Main character</th>
+                                            <th class="text-center">Main corporation</th>
                                             <th class="text-center">Character list</th>
                                         </tr>
-                                        {% for main, alts in characters_with_api %}
-                                            <tr>
+                                        {% for mainchar, player  in characters_with_api %}
+                                            <tr >
                                                 <td class="text-center">
-                                                    <p class="">{{ main }}</p>
+                                                    <p class="">{{ mainchar }}</p>
+                                                </td>
+                                                <td class="text-center" {% if not corp.corporation_name ==  player.maincorp%} bgcolor="#FF99AA" {% endif %} >
+                                                    <p class="">{{ player.maincorp }}</p>
                                                 </td>
                                                 <td class="text-center">
-                                                    {% for name in alts %}
-                                                        <p class="">{{ name}}</p>
+                                                    {% for charname in player.altlist %}
+                                                        <p class="">{{ charname }}</p>
                                                     {% endfor %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
-                                        {% for main, value in characters_without_api %}
-                                            <tr bgcolor="#DD5500">
+                                        {% for charname in characters_without_api %}
+                                            <tr bgcolor="#DD8822">
                                                 <td class="text-center">
-                                                    <p class="">{{ main }}</p>
+                                                    <p class="">{{ charname }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <p class=""></p>
                                                 </td>
                                                 <td class="text-center">
                                                     <p class="">No API registered!</p>
