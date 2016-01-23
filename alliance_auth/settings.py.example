@@ -58,6 +58,8 @@ INSTALLED_APPS = (
     'hrapplications',
     'timerboard',
     'srp',
+    'sigtracker',
+    'optimer',
     'corputils',
 )
 

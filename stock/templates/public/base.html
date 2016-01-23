@@ -144,11 +144,27 @@
                                                                                   href="{% url 'auth_fleet_fits' %}"><i
                                         class="fa fa-bolt fa-fw grayiconecolor"></i> Fleet Doctrines</a>
                             </li>
+			{% endif %}
+
+                        {% if  perms.auth.member or perms.auth.blue_member %}
+			      <li>
+                                <a {% ifequal request.path "/sigtracker" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_signature_view' %}"><i
+                                        class="fa fa-compass fa-fw grayiconecolor"></i> Signature Tracker</a>
+                            </li>
+			     
+                            <li>
+                                <a {% ifequal request.path "/optimer" %} class="active" {% endifequal %}
+                                                                                  href="{% url 'auth_optimer_view' %}"><i
+                                        class="fa fa-exclamation  fa-fw grayiconecolor"></i> Fleet Operations</a>
+                            </li>
+			
+
                             {% if perms.auth.timer_view %}
                                 <li>
                                     <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
                                                                                       href="{% url 'auth_timer_view' %}"><i
-                                            class="fa fa-clock-o fa-fw grayiconecolor"></i> OP Timers</a>
+                                            class="fa fa-clock-o fa-fw grayiconecolor"></i> Structure Timers</a>
                                 </li>
                             {% endif %}
 
