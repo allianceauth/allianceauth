@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Because corp-api only exist for the executor corp, this function will only be available in corporation mode.
 @login_required
-@permission_required('auth.corp_stats')
+@permission_required('auth.corputils')
 def corp_member_view(request):
     logger.debug("corp_member_view called by user %s" % request.user)
     # Get the corp the member is in
@@ -70,7 +70,7 @@ def corp_member_view(request):
 
 
 @login_required
-@permission_required('auth.corp_stats')
+@permission_required('auth.corputils')
 def corputils_search(request):
     logger.debug("corputils_search called by user %s" % request.user)
     if request.method == 'POST':

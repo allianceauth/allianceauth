@@ -69,6 +69,7 @@ Special Permissions In Admin:
     auth | user | timer_management ( Access to create and remove timers)
     auth | user | timer_view ( Access to timerboard to view timers)
     auth | user | srp_management ( Allows for an individual to create and remove srp fleets and fleet data)
+    auth | user | corputils ( Allows to look at what character belongs to which user and more. )
 
 Active Developers
 

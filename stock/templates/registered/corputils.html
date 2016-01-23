@@ -8,9 +8,10 @@
 
     <div class="col-lg-12">
         <h1 class="page-header text-center">Corporation Member Data</h1>
-        {% if perms.auth.corp_stats %}
+        {% if perms.auth.corputils %}
             <div class="col-lg-12 container" id="example">
             {% if corp %}
+
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
@@ -109,7 +110,7 @@
         {% endif %}
     </div>
 
-    {% if perms.auth.corp_stats %}
+    {% if perms.auth.corputils %}
         <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
