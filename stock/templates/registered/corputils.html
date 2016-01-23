@@ -1,5 +1,6 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
+{% load staticfiles %}
 
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}Corporation Member Tracking{% endblock page_title %}
@@ -16,7 +17,6 @@
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">Corporation</div>
-
                             <div class="panel-body">
                                 <div class="col-lg-5 col-sm-2"><img class=
                                                                             "ra-avatar img-responsive" src=
@@ -34,8 +34,21 @@
 
                                     <p>Unregistered characters: {{characters_without_api|length}}</p>
                                 </div>
-
                                 <div class="text-right">
+                                    {% if form %}
+                                    <div class="container-fluid">
+                                        <div class="col-md-4 col-md-offset-4">
+                                            <div class="row">
+                                                <form class="form-signin" role="form" action="" method="POST">
+                                                    {% csrf_token %}
+                                                    {{ form|bootstrap }}
+                                                    <br/>
+                                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Select corp</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
                                         Search Members

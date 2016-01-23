@@ -9,10 +9,13 @@ from collections import namedtuple
 
 from authentication.managers import AuthServicesInfoManager
 from services.managers.eve_api_manager import EveApiManager
+from services.managers.evewho_manager import EveWhoManager
 from eveonline.models import EveCorporationInfo
+from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCharacter
 from authentication.models import AuthServicesInfo
 from forms import CorputilsSearchForm
+from forms import SelectCorpForm
 
 import logging
 
@@ -22,51 +25,64 @@ logger = logging.getLogger(__name__)
 # Because corp-api only exist for the executor corp, this function will only be available in corporation mode.
 @login_required
 @permission_required('auth.corputils')
-def corp_member_view(request):
+def corp_member_view(request, corpid = settings.CORP_ID):
     logger.debug("corp_member_view called by user %s" % request.user)
-    # Get the corp the member is in
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
-    logger.debug("Got user %s authservicesinfo model %s" % (request.user, auth_info))
+
+    if request.method == 'POST':
+        form = SelectCorpForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect("/corputils/"+form.cleaned_data["corpid"])
+        else:
+            return HttpResponseRedirect("/corputils/")
+
+    corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+    Player = namedtuple("Player", ["main", "maincorp", "altlist"])
 
     if settings.IS_CORP:
-        corp = EveCorporationInfo.objects.get(corporation_id=settings.CORP_ID)
+        member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+    else:
+        member_list = EveWhoManager.get_corporation_members(corpid)
 
-        Player = namedtuple("Player", ["main", "maincorp", "altlist"])
+    characters_with_api = {}
+    characters_without_api = []
 
-        member_list = EveApiManager.get_corp_membertracking()
-        characters_with_api = {}
-        characters_without_api = []
-
-        for char_id, member_data in member_list.items():
+    for char_id, member_data in member_list.items():
+        try:
+            char = EveCharacter.objects.get(character_id=char_id)
+            user = char.user
             try:
-                char = EveCharacter.objects.get(character_id=char_id)
-                user = char.user
-                try:
-                    mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
-                    mainchar = EveCharacter.objects.get(character_id=mainid)
-                    mainname = mainchar.character_name
-                    maincorp = mainchar.corporation_name
-                except ValueError:
-                    mainname = "User: " + user.username
-                    maincorp = None
-                characters_with_api.setdefault(mainname, Player(main=mainname,
-                                                                maincorp=maincorp,
-                                                                altlist=[])
-                                               ).altlist.append(char.character_name)
+                mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
+                mainchar = EveCharacter.objects.get(character_id=mainid)
+                mainname = mainchar.character_name
+                maincorp = mainchar.corporation_name
+            except ValueError:
+                mainname = "User: " + user.username
+                maincorp = None
+            characters_with_api.setdefault(mainname, Player(main=mainname,
+                                                            maincorp=maincorp,
+                                                            altlist=[])
+                                           ).altlist.append(char.character_name)
 
-            except EveCharacter.DoesNotExist:
-                characters_without_api.append(member_data["name"])
+        except EveCharacter.DoesNotExist:
+            characters_without_api.append(member_data["name"])
 
 
+    if not settings.IS_CORP:
+        form = SelectCorpForm()
+        context = {"form": form,
+                   "corp": corp,
+                   "characters_with_api": sorted(characters_with_api.items()),
+                   "characters_without_api": sorted(characters_without_api),
+                   "search_form": CorputilsSearchForm()}
+    else:
+        logger.debug("corp_member_view running in corportation mode")
         context = {"corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
                    "characters_without_api": sorted(characters_without_api),
                    "search_form": CorputilsSearchForm()}
 
-        return render_to_response('registered/corputils.html',context, context_instance=RequestContext(request) )
-    else:
-        logger.error("Not running in corporation mode. Cannot provide corp member tracking data." % (request.user, auth_info.main_char_id))
-    return render_to_response('registered/corputils.html', None, context_instance=RequestContext(request))
+
+    return render_to_response('registered/corputils.html',context, context_instance=RequestContext(request) )
 
 
 @login_required
@@ -82,7 +98,7 @@ def corputils_search(request):
             searchstring = form.cleaned_data['search_string']
             logger.debug("Searching for player with character name %s for user %s" % (searchstring, request.user))
 
-            member_list = EveApiManager.get_corp_membertracking()
+            member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
 
             Member = namedtuple('Member', ['name', 'main', 'api_registered'])
 

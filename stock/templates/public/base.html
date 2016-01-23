@@ -121,13 +121,13 @@
                                                                                    href="{% url 'auth_corp_stats' %}"><i
                                         class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
                             </li>
-                            {% if IS_CORP %}
-                                <li>
-                                    <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
-                                                                                       href="{% url 'auth_corp_member_view' %}"><i
-                                            class="fa fa-chain fa-fw grayiconecolor"></i> Member Tracking</a>
-                                </li>
-                            {% endif  %}
+                        {% endif %}
+                        {% if perms.auth.corputils %}
+                            <li>
+                                <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
+                                                                                   href="{% url 'auth_corp_member_view' %}"><i
+                                        class="fa fa-chain fa-fw grayiconecolor"></i> Member Tracking</a>
+                            </li>
                         {% endif %}
 
                         {% if perms.auth.group_management %}
