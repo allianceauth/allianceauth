@@ -16,4 +16,4 @@ class EveWhoManager():
         jsondata = requests.get(url).content
         data=json.loads(jsondata.decode())
 
-        return {row["character_id"]:{"name":row["name"]} for row in data["characters"]}
+        return {row["character_id"]:{"name":row["name"], "id":row["character_id"]} for row in data["characters"]}

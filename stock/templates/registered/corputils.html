@@ -66,14 +66,19 @@
                                 <div style="overflow:auto;overflow-y:auto;">
                                     <table class="table table-condensed">
                                         <tr>
+                                            <th class="""></th>
                                             <th class="text-center">Main character</th>
                                             <th class="text-center">Main corporation</th>
                                             <th class="text-center">Character list</th>
                                         </tr>
-                                        {% for mainchar, player  in characters_with_api %}
+                                        {% for maincharname, player  in characters_with_api %}
                                             <tr >
+                                                <td>
+                                                    <img class="ra-avatar img-responsive"
+                                                            src="https://image.eveonline.com/Character/{{ player.main.character_id }}_64.jpg">
+                                                </td>
                                                 <td class="text-center">
-                                                    <p class="">{{ mainchar }}</p>
+                                                    <p class="">{{ maincharname }}</p>
                                                 </td>
                                                 <td class="text-center" {% if not corp.corporation_name ==  player.maincorp%} bgcolor="#FF99AA" {% endif %} >
                                                     <p class="">{{ player.maincorp }}</p>
@@ -85,10 +90,14 @@
                                                 </td>
                                             </tr>
                                         {% endfor %}
-                                        {% for charname in characters_without_api %}
+                                        {% for character_name, character_id in characters_without_api %}
                                             <tr bgcolor="#DD8822">
+                                                <td>
+                                                    <img class="ra-avatar img-responsive"
+                                                            src="https://image.eveonline.com/Character/{{ character_id }}_64.jpg">
+                                                </td>
                                                 <td class="text-center">
-                                                    <p class="">{{ charname }}</p>
+                                                    <p class="">{{ character_name }}</p>
                                                 </td>
                                                 <td class="text-center">
                                                     <p class=""></p>

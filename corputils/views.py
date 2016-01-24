@@ -44,7 +44,7 @@ def corp_member_view(request, corpid = settings.CORP_ID):
         member_list = EveWhoManager.get_corporation_members(corpid)
 
     characters_with_api = {}
-    characters_without_api = []
+    characters_without_api = {}
 
     for char_id, member_data in member_list.items():
         try:
@@ -58,7 +58,9 @@ def corp_member_view(request, corpid = settings.CORP_ID):
                 maincorpid = mainchar.corporation_id
             except (ValueError, EveCharacter.DoesNotExist):
                 mainname = "User: " + user.username
-                maincorp = None
+                mainchar = char
+                maincorp = mainchar.corporation_name
+                maincorpid = mainchar.corporation_id
             characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                             maincorp=maincorp,
                                                             maincorpid=maincorpid,
@@ -66,7 +68,7 @@ def corp_member_view(request, corpid = settings.CORP_ID):
                                            ).altlist.append(char)
 
         except EveCharacter.DoesNotExist:
-            characters_without_api.append(member_data["name"])
+            characters_without_api.update({member_data["name"]: member_data["id"]})
 
 
     if not settings.IS_CORP:
@@ -74,13 +76,13 @@ def corp_member_view(request, corpid = settings.CORP_ID):
         context = {"form": form,
                    "corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
-                   "characters_without_api": sorted(characters_without_api),
+                   "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
     else:
         logger.debug("corp_member_view running in corportation mode")
         context = {"corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
-                   "characters_without_api": sorted(characters_without_api),
+                   "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
 
 
