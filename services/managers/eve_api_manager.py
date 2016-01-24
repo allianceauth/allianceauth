@@ -83,8 +83,7 @@ class EveApiManager():
 
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
-
-        return False
+            return None
 
 
     @staticmethod
@@ -99,8 +98,7 @@ class EveApiManager():
 
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
-
-        return False
+            return None
 
     @staticmethod
     def check_blue_api_is_full(api_id, api_key):
@@ -114,6 +112,7 @@ class EveApiManager():
  
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
+            return None
 
 
     @staticmethod
@@ -128,8 +127,7 @@ class EveApiManager():
 
         except evelink.api.APIError as error:
             logger.exception("Unhandled APIError occured.", exc_info=True)
-
-        return False
+            return None
 
     @staticmethod
     def api_key_is_valid(api_id, api_key):
