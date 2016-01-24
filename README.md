@@ -66,6 +66,7 @@ Special Permissions In Admin:
     auth | user | jabber_broadcast_all ( Can choose from all groups and the 'all' option when broadcasting)
     auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats ( View basic corp auth stats *who is authed etc*)
+    auth | user | corputils ( View who has registered APIs, which alts belong to which main, and more. )
     auth | user | timer_management ( Access to create and remove timers)
     auth | user | timer_view ( Access to timerboard to view timers)
     auth | user | srp_management ( Allows for an individual to create and remove srp fleets and fleet data)

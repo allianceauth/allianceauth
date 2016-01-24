@@ -36,7 +36,7 @@ def corp_member_view(request, corpid = settings.CORP_ID):
             return HttpResponseRedirect("/corputils/")
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
-    Player = namedtuple("Player", ["main", "maincorp", "altlist"])
+    Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist"])
 
     if settings.IS_CORP:
         member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
@@ -55,13 +55,15 @@ def corp_member_view(request, corpid = settings.CORP_ID):
                 mainchar = EveCharacter.objects.get(character_id=mainid)
                 mainname = mainchar.character_name
                 maincorp = mainchar.corporation_name
-            except ValueError:
+                maincorpid = mainchar.corporation_id
+            except (ValueError, EveCharacter.DoesNotExist):
                 mainname = "User: " + user.username
                 maincorp = None
-            characters_with_api.setdefault(mainname, Player(main=mainname,
+            characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                             maincorp=maincorp,
+                                                            maincorpid=maincorpid,
                                                             altlist=[])
-                                           ).altlist.append(char.character_name)
+                                           ).altlist.append(char)
 
         except EveCharacter.DoesNotExist:
             characters_without_api.append(member_data["name"])

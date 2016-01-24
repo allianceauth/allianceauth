@@ -79,8 +79,8 @@
                                                     <p class="">{{ player.maincorp }}</p>
                                                 </td>
                                                 <td class="text-center">
-                                                    {% for charname in player.altlist %}
-                                                        <p class="">{{ charname }}</p>
+                                                    {% for char in player.altlist %}
+                                                        <p class="">{{ char.character_name }}</p>
                                                     {% endfor %}
                                                 </td>
                                             </tr>
