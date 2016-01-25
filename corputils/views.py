@@ -28,13 +28,6 @@ logger = logging.getLogger(__name__)
 def corp_member_view(request, corpid = settings.CORP_ID):
     logger.debug("corp_member_view called by user %s" % request.user)
 
-    if request.method == 'POST':
-        form = SelectCorpForm(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect("/corputils/"+form.cleaned_data["corpid"])
-        else:
-            return HttpResponseRedirect("/corputils/")
-
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist"])
 
@@ -59,8 +52,8 @@ def corp_member_view(request, corpid = settings.CORP_ID):
             except (ValueError, EveCharacter.DoesNotExist):
                 mainname = "User: " + user.username
                 mainchar = char
-                maincorp = mainchar.corporation_name
-                maincorpid = mainchar.corporation_id
+                maincorp = "Not set."
+                maincorpid = None
             characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                             maincorp=maincorp,
                                                             maincorpid=maincorpid,
@@ -72,8 +65,12 @@ def corp_member_view(request, corpid = settings.CORP_ID):
 
 
     if not settings.IS_CORP:
-        form = SelectCorpForm()
-        context = {"form": form,
+        alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
+        alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
+        membercorp_list = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
+        membercorp_list.sort(key=lambda tup: tup[1])
+
+        context = {"membercorp_list": membercorp_list,
                    "corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
                    "characters_without_api": sorted(characters_without_api.items()),
@@ -91,7 +88,7 @@ def corp_member_view(request, corpid = settings.CORP_ID):
 
 @login_required
 @permission_required('auth.corputils')
-def corputils_search(request):
+def corputils_search(request, corpid=settings.CORP_ID):
     logger.debug("corputils_search called by user %s" % request.user)
     if request.method == 'POST':
         form = CorputilsSearchForm(request.POST)
@@ -102,7 +99,10 @@ def corputils_search(request):
             searchstring = form.cleaned_data['search_string']
             logger.debug("Searching for player with character name %s for user %s" % (searchstring, request.user))
 
-            member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+            if settings.IS_CORP:
+                member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+            else:
+                member_list = EveWhoManager.get_corporation_members(corpid)
 
             Member = namedtuple('Member', ['name', 'main', 'api_registered'])
 

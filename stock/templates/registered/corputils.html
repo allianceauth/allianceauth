@@ -35,19 +35,20 @@
                                     <p>Unregistered characters: {{characters_without_api|length}}</p>
                                 </div>
                                 <div class="text-right">
-                                    {% if form %}
-                                    <div class="container-fluid">
-                                        <div class="col-md-4 col-md-offset-4">
-                                            <div class="row">
-                                                <form class="form-signin" role="form" action="" method="POST">
-                                                    {% csrf_token %}
-                                                    {{ form|bootstrap }}
-                                                    <br/>
-                                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Select corp</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                    {% if membercorp_list %}
+                                    <ul class="nav navbar-nav">
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
+                                            <ul class="dropdown-menu scrollable">
+                                                {% for membercorp_id, membercorp_name in membercorp_list %}
+                                                <li>
+                                                    <a href="/corputils/{{ membercorp_id }}">{{ membercorp_name }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    </ul>
                                     {% endif %}
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
@@ -145,7 +146,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-signin" role="form"
-                              action={% url 'auth_corputils_search' %} method="POST">
+                              action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
                             {% csrf_token %}
                             {{ search_form|bootstrap }}
                             <br/>

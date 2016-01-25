@@ -3401,6 +3401,11 @@ tbody.collapse.in {
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175)
 }
 
+.dropdown-menu.scrollable {
+    overflow: auto;
+    max-height: 450px;
+}
+
 .dropdown-menu.pull-right {
     right: 0;
     left: auto

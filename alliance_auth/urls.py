@@ -166,8 +166,8 @@ urlpatterns = patterns('',
                        #corputils
                        url(r'^corputils/$', 'corputils.views.corp_member_view', name='auth_corp_member_view'),
                        url(r'^corputils/(?P<corpid>[0-9]+)/$', 'corputils.views.corp_member_view', name='auth_corp_member_view'),
-                       url(r'^corputils/search/', 'corputils.views.corputils_search',
-                           name="auth_corputils_search"),
+                       url(r'^corputils/search/$', 'corputils.views.corputils_search', name="auth_corputils_search"),
+                       url(r'^corputils/search/(?P<corpid>[0-9]+)/$', 'corputils.views.corputils_search', name="auth_corputils_search"),
 
                        # FLEET FITTINGS
                        url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
