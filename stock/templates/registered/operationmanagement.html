@@ -20,10 +20,11 @@
         <table class="table table-responsive table-bordered">
             <tr>
                 <th class="text-center">Operation Name</th>
+		<th class="text-center">Doctrine</th>
                 <th class="text-center">Form Up System</th>
                 <th class="text-center">Form Up Location</th>
                 <th class="text-center">Start Time</th>
-		<th class="text-center">End Time</th>
+		<th class="text-center">Duration</th>
                 <th class="text-center">FC</th>
 		<th class="text-center">Details</th>
 		<th class="text-center">Post Time</th>
@@ -36,13 +37,13 @@
                 {% for ops in optimer %}
                 <tr>
        		<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
-                
+                <td style="width:150px" class="text-center">{{ ops.doctrine }}</td>
                 <td class="text-center">
                 <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
                 </td>
                 <td style="width:150px" class="text-center">{{ ops.location }}</td>
-                <td style="width:150px" class="text-center">{{ ops.start_time }}</td>
-				<td style="width:150px" class="text-center">{{ ops.end_time }}</td>
+                <td style="width:150px" class="text-center">{{ ops.start }}</td>
+				<td style="width:150px" class="text-center">{{ ops.duration }}</td>
  	  			<td style="width:150px" class="text-center">{{ ops.fc }}</td>
                 <td style="width:150px" class="text-center">{{ ops.details }}</td>
                 <td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
