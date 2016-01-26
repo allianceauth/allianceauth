@@ -78,6 +78,7 @@ Active Developers
 
     Adarnof
     Kaezon Rio
+    Mr McClain
 
 Beta Testers/ Bug Fixers:
 
