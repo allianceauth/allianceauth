@@ -15,7 +15,6 @@ from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCharacter
 from authentication.models import AuthServicesInfo
 from forms import CorputilsSearchForm
-from forms import SelectCorpForm
 
 import logging
 
