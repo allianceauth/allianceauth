@@ -45,11 +45,11 @@
                     </div>
                         <nav class="navbar navbar-default">
                             <div class="container-fluid">
-                                <ul class="nav navbar-nav">
+                                <ul class="nav navbar-nav" style="width: 100%">
                                     {% if membercorp_list %}
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
-                                        <ul class="dropdown-menu columns">  
+                                        <ul class="dropdown-menu scrollable">
                                             {% for membercorp_id, membercorp_name in membercorp_list %}
                                             <li>
                                                 <a href="/corputils/{{ membercorp_id }}">{{ membercorp_name }}</a>
@@ -58,19 +58,19 @@
                                         </ul>
                                     </li>
                                     {% endif %}
-                                    <li>
-                                        <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %} method="POST">
+                                    <li style="float: right">
+                                        <p class="navbar-btn">
+                                            <a href="https://zkillboard.com/corporation/{{ corp.corporation_id }}/" class="btn btn-default" target="_blank">{{ corp.corporation_name }} Killboard</a>
+                                        </p>
+                                    </li>
+                                    <li style="float: right">
+                                        <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
                                             <div class="form-group">
                                             {% csrf_token %}
                                             {{ search_form.as_table }}
                                             </div>
                                             <button class="btn btn-default" type="submit">Search</button>
                                         </form>
-                                    </li>
-                                    <li>
-                                        <p class="navbar-btn">
-                                            <a href="https://zkillboard.com/corporation/{{ corp.corporation_id }}/" class="btn btn-default" target="_blank">{{ corp.corporation_name }} Killboard</a>
-                                        </p>
                                     </li>
                                 </ul> 
                             </div>
@@ -126,7 +126,7 @@
                             </div>
                             {% else %}
                             <div class="alert alert-danger" role="alert">
-                                    <h3>Seems there's no characters in {{ corp.corporation_name }} tied to a registered API!</h3>
+                                    <h3>Seems there are no characters in {{ corp.corporation_name }} tied to a registered API!</h3>
                             </div>
                             {% endif %}
                         </div>
@@ -162,7 +162,7 @@
                             </div>
                         {% else %}
                             <div class="alert alert-success" role="alert">
-                                <h3>Good job! Every char of {{ corp.corporation_name }} seems to be tied to an API!</h3>
+                                <h3>Good job! Every character in {{ corp.corporation_name }} seem to be tied to an API!</h3>
                             </div>
                         {% endif %}
                         </div>

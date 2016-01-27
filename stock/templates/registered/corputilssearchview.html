@@ -19,7 +19,7 @@
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
                         <li>
-                            <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %} method="POST">
+                            <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
                                 <div class="form-group">
                                 {% csrf_token %}
                                 {{ search_form.as_table }}

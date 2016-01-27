@@ -3401,24 +3401,8 @@ tbody.collapse.in {
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175)
 }
 
-@media screen and (max-width: 991px){
-    .columns{
-        height: 200px;
-        overflow:scroll;
-    }
-}
-
-@media screen and (min-width: 992px){
-    .columns{
-        -moz-column-count:2; /* Firefox */
-        -webkit-column-count:2; /* Safari and Chrome */
-        column-count:2;
-        width: 500px;
-    }
-}
-
 .dropdown-menu.scrollable {
-    overflow: auto;
+    overflow: scroll;
     max-height: 450px;
 }
 
