@@ -12,118 +12,172 @@
         {% if perms.auth.corputils %}
             <div class="col-lg-12 container" id="example">
             {% if corp %}
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">Corporation</div>
-                            <div class="panel-body">
-                                <div class="col-lg-5 col-sm-2"><img class=
-                                                                            "ra-avatar img-responsive" src=
-                                                                            "https://image.eveonline.com/Corporation/{{ corp.corporation_id }}_128.png">
-                                </div>
+                                <div class="panel-body">
+                                    <div class="col-lg-5 col-sm-2">
+                                         <img class="ra-avatar img-responsive" src="https://image.eveonline.com/Corporation/{{ corp.corporation_id }}_128.png">
+                                    </div>
+                                    <div class="col-lg-7 col-sm-2">
+                                         <h4 class="">{{ corp.corporation_name }}</h4>
 
-                                <div class="col-lg-7 col-sm-2">
-                                    <h4 class="">Name: {{ corp.corporation_name }}</h4>
+                                         <p>Ticker: {{ corp.corporation_ticker }}</p>
 
-                                    <p>Ticker: {{ corp.corporation_ticker }}</p>
+                                         <p>Member count: {{ corp.member_count }}</p>
 
-                                    <p>Member count: {{ corp.member_count }}</p>
+                                         <p>Player count: {{characters_with_api|length}}</p>
 
-                                    <p>Player count: {{characters_with_api|length}}</p>
-
-                                    <p>Unregistered characters: {{characters_without_api|length}}</p>
-                                </div>
-                                <div class="text-right">
-
-                                    {% if membercorp_list %}
-                                    <ul class="nav navbar-nav">
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
-                                            <ul class="dropdown-menu scrollable">
-                                                {% for membercorp_id, membercorp_name in membercorp_list %}
-                                                <li>
-                                                    <a href="/corputils/{{ membercorp_id }}">{{ membercorp_name }}</a>
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    {% endif %}
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-                                        Search Members
-                                    </button>
+                                         <p>Unregistered characters: {{characters_without_api|length}}</p>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-5">
+                                        <b>API Index:</b>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{characters_with_api|length}}" aria-valuemin="0" aria-valuemax="{{ corp.member_count }}" style="width: {% widthratio characters_with_api|length corp.member_count 100 %}%;">
+                                                {{characters_with_api|length}}/{{ corp.member_count }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">Registered Characters</div>
+                        <nav class="navbar navbar-default">
+                            <div class="container-fluid">
+                                <ul class="nav navbar-nav" style="width: 100%">
+                                    {% if membercorp_list %}
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
+                                        <ul class="dropdown-menu scrollable">
+                                            {% for membercorp_id, membercorp_name in membercorp_list %}
+                                            <li>
+                                                <a href="/corputils/{{ membercorp_id }}">{{ membercorp_name }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                    <li style="float: right">
+                                        <p class="navbar-btn">
+                                            <a href="https://zkillboard.com/corporation/{{ corp.corporation_id }}/" class="btn btn-default" target="_blank">{{ corp.corporation_name }} Killboard</a>
+                                        </p>
+                                    </li>
+                                    <li style="float: right">
+                                        <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
+                                            <div class="form-group">
+                                            {% csrf_token %}
+                                            {{ search_form.as_table }}
+                                            </div>
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                        </form>
+                                    </li>
+                                </ul> 
+                            </div>
+                        </nav>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#gotapi">Registered Main Characters <b>({{characters_with_api|length}})</b></a></li>
+                            <li><a data-toggle="tab" href="#noapi">Characters without API <b>({{characters_without_api|length}})</b></a></li>
+                        </ul>
+                    <div class="tab-content">
+                        <div id="gotapi" class="tab-pane fade in active">
+                            {% if characters_with_api %}
                             <div class="panel-body">
-                                <div style="overflow:auto;overflow-y:auto;">
-                                    <table class="table table-condensed">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed table-hover table-striped">
                                         <tr>
-                                            <th class="""></th>
-                                            <th class="text-center">Main character</th>
-                                            <th class="text-center">Main corporation</th>
-                                            <th class="text-center">Character list</th>
+                                            <th class="col-md-1"></th>
+                                            <th class="col-md-2">Main character</th>
+                                            <th class="col-md-2">Killboard</th>
+                                            <th class="col-md-2">Main corporation</th>
+                                            <th class="col-md-5">Character list</th>
                                         </tr>
                                         {% for maincharname, player  in characters_with_api %}
-                                            <tr >
-                                                <td>
-                                                    <img class="ra-avatar img-responsive"
-                                                            src="https://image.eveonline.com/Character/{{ player.main.character_id }}_64.jpg">
-                                                </td>
-                                                <td class="text-center">
-                                                    <p class="">{{ maincharname }}</p>
-                                                </td>
-                                                <td class="text-center" {% if not corp.corporation_name ==  player.maincorp%} bgcolor="#FF99AA" {% endif %} >
-                                                    <p class="">{{ player.maincorp }}</p>
-                                                </td>
-                                                <td class="text-center">
-                                                    {% for char in player.altlist %}
-                                                        <p class="">{{ char.character_name }}</p>
-                                                    {% endfor %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        {% for character_name, character_id in characters_without_api %}
-                                            <tr bgcolor="#DD8822">
-                                                <td>
-                                                    <img class="ra-avatar img-responsive"
-                                                            src="https://image.eveonline.com/Character/{{ character_id }}_64.jpg">
-                                                </td>
-                                                <td class="text-center">
-                                                    <p class="">{{ character_name }}</p>
-                                                </td>
-                                                <td class="text-center">
-                                                    <p class=""></p>
-                                                </td>
-                                                <td class="text-center">
-                                                    <p class="">No API registered!</p>
-                                                </td>
-                                            </tr>
+                                        <tr >
+                                            <td>
+                                                <img src="http://image.eveonline.com/Character/{{ player.main.character_id }}_32.jpg" class="img-circle">
+                                            </td>
+                                            <td>
+                                                <p>{{ maincharname }}</p>
+                                            </td>
+                                            <td>
+                                                <a href="https://zkillboard.com/character/{{ player.main.character_id }}/" class="label label-danger" target="_blank">Killboard</a>
+                                            </td>
+                                            <td>
+                                                {% if not corp.corporation_name ==  player.maincorp%}
+                                                <span class="label label-danger">
+                                                    {{ player.maincorp }}
+                                                </span>
+                                                {% else %}
+                                                <span class="label label-success">
+                                                    {{ player.maincorp }}
+                                                </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% for char in player.altlist %}
+                                                <p>{{ char.character_name }}</p>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
                                         {% endfor %}
                                     </table>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                    <h3>Seems there are no characters in {{ corp.corporation_name }} tied to a registered API!</h3>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div id="noapi" class="tab-pane fade">
+                        {% if characters_without_api %}
+                            <div class="panel-body">
+                                <div class="table-responsive">    
+                                    <table class="table table-condensed table-hover table-striped">
+                                        <tr>
+                                            <th class="col-md-1"></th>
+                                            <th class="col-md-2">Character</th>
+                                            <th class="col-md-2">Killboard</th>
+                                            <th class="col-md-3">API</th>
+                                        </tr>
+                                        {% for character_name, character_id in characters_without_api %}
+                                        <tr>
+                                            <td>
+                                                <img src="http://image.eveonline.com/Character/{{ character_id }}_32.jpg" class="img-circle">
+                                            </td>
+                                            <td>
+                                                <p>{{ character_name }}</p>
+                                            </td>
+                                            <td>
+                                                <a href="https://zkillboard.com/character/{{ character_id }}/" class="label label-danger" target="_blank">Killboard</a>
+                                            </td>
+                                            <td>
+                                                <span class="label label-danger">No API registered!</span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success" role="alert">
+                                <h3>Good job! Every character in {{ corp.corporation_name }} seem to be tied to an API!</h3>
+                            </div>
+                        {% endif %}
                         </div>
                     </div>
-                {% else %}
-                    <div class="container-fluid">
-                        <div class="col-md-4 col-md-offset-4">
-                            <div class="row">
-                                <div class="alert alert-danger text-center" role="alert">No corporation model found. Contact your admin.</div>
-                            </div>
+            {% else %}
+                <div class="container-fluid">
+                    <div class="col-md-4 col-md-offset-4">
+                        <div class="row">
+                            <div class="alert alert-danger text-center" role="alert">No corporation model found. Contact your admin.</div>
                         </div>
                     </div>
                 </div>
-            {% endif %}
             </div>
+            {% endif %}
+        </div>
         {% else %}
             {% if IS_CORP %}
                 <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
@@ -132,31 +186,4 @@
             {% endif %}
         {% endif %}
     </div>
-
-    {% if perms.auth.corputils %}
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                                class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Member Search</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form-signin" role="form"
-                              action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
-                            {% csrf_token %}
-                            {{ search_form|bootstrap }}
-                            <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
 {% endblock content %}

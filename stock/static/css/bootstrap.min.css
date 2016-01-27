@@ -3402,7 +3402,7 @@ tbody.collapse.in {
 }
 
 .dropdown-menu.scrollable {
-    overflow: auto;
+    overflow: scroll;
     max-height: 450px;
 }
 

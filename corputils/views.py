@@ -89,6 +89,9 @@ def corp_member_view(request, corpid = settings.CORP_ID):
 @permission_required('auth.corputils')
 def corputils_search(request, corpid=settings.CORP_ID):
     logger.debug("corputils_search called by user %s" % request.user)
+
+    corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+
     if request.method == 'POST':
         form = CorputilsSearchForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
@@ -122,13 +125,13 @@ def corputils_search(request, corpid=settings.CORP_ID):
 
             logger.info("Found %s members for user %s matching search string %s" % (len(members), request.user, searchstring))
 
-            context = {'members': members, 'search_form': CorputilsSearchForm()}
+            context = {'corp': corp, 'members': members, 'search_form': CorputilsSearchForm()}
 
             return render_to_response('registered/corputilssearchview.html',
                                       context, context_instance=RequestContext(request))
         else:
             logger.debug("Form invalid - returning for user %s to retry." % request.user)
-            context = {'applications': None, 'search_form': form}
+            context = {'corp': corp, 'members': None, 'search_form': CorputilsSearchForm()}
             return render_to_response('registered/corputilssearchview.html',
                                       context, context_instance=RequestContext(request))
 
