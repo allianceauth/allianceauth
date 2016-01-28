@@ -88,9 +88,9 @@
                                         <tr>
                                             <th class="col-md-1"></th>
                                             <th class="col-md-2">Main character</th>
-                                            <th class="col-md-2">Killboard</th>
                                             <th class="col-md-2">Main corporation</th>
-                                            <th class="col-md-5">Character list</th>
+                                            <th class="col-md-2">Character list</th>
+                                            <th class="col-md-5">Killboard</th>
                                         </tr>
                                         {% for maincharname, player  in characters_with_api %}
                                         <tr >
@@ -99,9 +99,6 @@
                                             </td>
                                             <td>
                                                 <p>{{ maincharname }}</p>
-                                            </td>
-                                            <td>
-                                                <a href="https://zkillboard.com/character/{{ player.main.character_id }}/" class="label label-danger" target="_blank">Killboard</a>
                                             </td>
                                             <td>
                                                 {% if not corp.corporation_name ==  player.maincorp%}
@@ -117,6 +114,11 @@
                                             <td>
                                                 {% for char in player.altlist %}
                                                 <p>{{ char.character_name }}</p>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for char in player.altlist %}
+                                                <p><a href="https://zkillboard.com/character/{{ char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
                                                 {% endfor %}
                                             </td>
                                         </tr>
@@ -138,8 +140,7 @@
                                         <tr>
                                             <th class="col-md-1"></th>
                                             <th class="col-md-2">Character</th>
-                                            <th class="col-md-2">Killboard</th>
-                                            <th class="col-md-3">API</th>
+                                            <th class="col-md-5">Killboard</th>
                                         </tr>
                                         {% for character_name, character_id in characters_without_api %}
                                         <tr>
@@ -151,9 +152,6 @@
                                             </td>
                                             <td>
                                                 <a href="https://zkillboard.com/character/{{ character_id }}/" class="label label-danger" target="_blank">Killboard</a>
-                                            </td>
-                                            <td>
-                                                <span class="label label-danger">No API registered!</span>
                                             </td>
                                         </tr>
                                         {% endfor %}
