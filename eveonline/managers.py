@@ -64,7 +64,7 @@ class EveManager:
                 eve_char.save()
                 logger.info("Updated character model %s" % eve_char)
             else:
-                logger.warn("Attempting to update non-existing character model with name %s" % char['name'])
+                logger.warn("Attempting to update non-existing character model with name %s" % chars.result[char]['name'])
 
 
     @staticmethod
