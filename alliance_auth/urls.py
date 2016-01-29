@@ -172,10 +172,10 @@ urlpatterns = patterns('',
                        # FLEET FITTINGS
                        url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
 
-			           # Sig Tracker
+                       # Sig Tracker
                        url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
                        url(r'^add_signature/$', 'sigtracker.views.add_signature_view', name='auth_add_signature_view'),
-		       url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
+                       url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
 
                        # Fleet Operations Timers
                        url(r'^optimer/$', 'optimer.views.optimer_view', name='auth_optimer_view'),
