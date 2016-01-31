@@ -158,6 +158,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
 
+# Cache directory for EveWho, no ending /
+# by default this becomes ~/<installdir>/alliance_auth/cache
+# This directory needs to be writable by the webserver
+EVEWHO_CACHE_DIR = '{}/cache'.format(BASE_DIR)
+
+
 #####################################################
 ##
 ## Auth configuration starts here
