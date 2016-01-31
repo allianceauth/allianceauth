@@ -271,7 +271,7 @@ class EveApiManager():
     @staticmethod
     def validate_member_api(api_id, api_key):
         if settings.MEMBER_API_ACCOUNT:
-            if EveApiManager.check_if_api_is_type_account(api_id, api_key) is not True:
+            if EveApiManager.check_api_is_type_account(api_id, api_key) is not True:
                 logger.debug("Api id %s is not type account as required for members - failed validation." % api_id)
                 return False
         
@@ -283,7 +283,7 @@ class EveApiManager():
     @staticmethod
     def validate_blue_api(api_id, api_key):
         if settings.BLUE_API_ACCOUNT:
-            if EveApiManager.check_if_api_is_type_account(api_id, api_key) is not True:
+            if EveApiManager.check_api_is_type_account(api_id, api_key) is not True:
                 logger.debug("Api id %s is not type account as required for blues - failed validation." % api_id)
                 return False
         if EveApiManager.check_blue_api_is_full(api_id, api_key) is not True:

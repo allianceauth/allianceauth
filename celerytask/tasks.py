@@ -395,7 +395,6 @@ def run_api_refresh():
             api_key_pairs = EveManager.get_api_key_pairs(user.id)
             logger.debug("User %s has api key pairs %s" % (user, api_key_pairs))
             if api_key_pairs:
-                valid_key = False
                 authserviceinfo, c = AuthServicesInfo.objects.get_or_create(user=user)
                 logger.debug("User %s has api keys. Proceeding to refresh." % user)
                 for api_key_pair in api_key_pairs:

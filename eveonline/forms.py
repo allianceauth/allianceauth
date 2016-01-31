@@ -21,7 +21,6 @@ class UpdateKeyForm(forms.Form):
         super(UpdateKeyForm, self).clean()
 
         if 'api_id' in self.cleaned_data and 'api_key' in self.cleaned_data:
-            logger.debug("Form has id and key")
             if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
                 logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
                 raise forms.ValidationError(u'API key already exist')
@@ -40,8 +39,8 @@ class UpdateKeyForm(forms.Form):
 
             if 'MEMBER' in states:
                 if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                    raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
+                    raise forms.ValidationError(u'API does not meet member requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
             if 'BLUE' in states:
                 if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                    raise forms.ValidationError(u'API does not meet requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
+                    raise forms.ValidationError(u'API does not meet blue requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
         return self.cleaned_data
