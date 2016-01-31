@@ -20,6 +20,8 @@ from eveonline.models import EveCorporationInfo
 from eveonline.models import EveCharacter
 from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
+from celerytask.tasks import determine_membership_by_user
+from celerytask.tasks import set_state
 
 import logging
 
@@ -46,8 +48,10 @@ def disable_blue_member(user):
 @login_required
 def add_api_key(request):
     logger.debug("add_api_key called by user %s" % request.user)
+    user_state = determine_membership_by_user(request.user)
     if request.method == 'POST':
         form = UpdateKeyForm(request.POST)
+        form.user_state=user_state
         logger.debug("Request type POST with form valid: %s" % form.is_valid())
         if form.is_valid():
             EveManager.create_api_keypair(form.cleaned_data['api_id'],
@@ -65,6 +69,7 @@ def add_api_key(request):
     else:
         logger.debug("Providing empty update key form for user %s" % request.user)
         form = UpdateKeyForm()
+        form.user_state = user_state
     context = {'form': form, 'apikeypairs': EveManager.get_api_key_pairs(request.user.id)}
     return render_to_response('registered/addapikey.html', context,
                               context_instance=RequestContext(request))
@@ -115,41 +120,8 @@ def characters_view(request):
 def main_character_change(request, char_id):
     logger.debug("main_character_change called by user %s for character id %s" % (request.user, char_id))
     if EveManager.check_if_character_owned_by_user(char_id, request.user):
-        previousmainid = AuthServicesInfoManager.get_auth_service_info(request.user).main_char_id
         AuthServicesInfoManager.update_main_char_Id(char_id, request.user)
-        # Check if character is in the alliance
-        character_info = EveManager.get_character_by_id(char_id)
-        corporation_info = EveManager.get_corporation_info_by_id(character_info.corporation_id)
-        logger.debug("User %s changing main character to %s in corp %s" % (request.user, character_info, corporation_info))
-        if (settings.IS_CORP and EveManager.get_charater_corporation_id_by_id(char_id) == settings.CORP_ID) or (not settings.IS_CORP and EveManager.get_charater_alliance_id_by_id(char_id) == settings.ALLIANCE_ID):
-            add_member_permission(request.user, 'member')
-            add_user_to_group(request.user, settings.DEFAULT_AUTH_GROUP)
-            add_user_to_group(request.user,
-                              generate_corp_group_name(EveManager.get_character_by_id(char_id).corporation_name))
-            logger.info("User %s transitioned to full member by chaning main character to %s" % (request.user, character_info))
-
-        elif corporation_info != None:
-            if corporation_info.is_blue:
-                add_member_permission(request.user, 'blue_member')
-                add_user_to_group(request.user, settings.DEFAULT_BLUE_GROUP)
-                AuthServicesInfoManager.update_is_blue(True, request.user)
-                logger.info("User %s transitioned to blue by changing main character to %s" % (request.user, character_info))
-            else:
-                if check_if_user_has_permission(request.user, 'member'):
-                    disable_member(request.user, previousmainid)
-
-                if check_if_user_has_permission(request.user, 'blue_member'):
-                    disable_blue_member(request.user)
-                logger.info("User %s disabled as new main character %s not member nor blue." % (request.user, character_info))
-        else:
-            # TODO: disable serivces
-            if check_if_user_has_permission(request.user, 'member'):
-                disable_member(request.user, previousmainid)
-
-            if check_if_user_has_permission(request.user, 'blue_member'):
-                disable_blue_member(request.user)
-            logger.info("User %s disabled as new main character %s does not have corp model to check." % (request.user, character_info))
-
+        set_state(request.user)
         return HttpResponseRedirect("/characters")
     return HttpResponseRedirect("/characters")
 

@@ -21,10 +21,12 @@ def jabber_url(request):
     return {'JABBER_URL': settings.JABBER_URL}
 
 def member_api_mask(request):
-    return {'MEMBER_API_MASK': settings.MEMBER_API_MASK}
+    return {'MEMBER_API_MASK': settings.MEMBER_API_MASK,
+            'MEMBER_API_ACCOUNT': settings.MEMBER_API_ACCOUNT}
 
 def blue_api_mask(request):
-    return {'BLUE_API_MASK': settings.BLUE_API_MASK}
+    return {'BLUE_API_MASK': settings.BLUE_API_MASK,
+            'BLUE_API_ACCOUNT': settings.BLUE_API_ACCOUNT}
 
 def domain_url(request):
     return {'DOMAIN': settings.DOMAIN, 'MUMBLE_URL': settings.MUMBLE_URL,
