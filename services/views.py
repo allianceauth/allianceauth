@@ -459,7 +459,7 @@ def activate_discord(request):
                     logger.info("Succesfully activated discord for user %s" % request.user)
                     return HttpResponseRedirect("/services/")
             except:
-                logger.exception("An unhandled exception has occured.", exc_info=True)
+                logger.exception("An unhandled exception has occured.")
                 pass
     else:
         logger.debug("Request is not type POST - providing empty form.")

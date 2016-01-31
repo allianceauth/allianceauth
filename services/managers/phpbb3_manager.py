@@ -132,7 +132,7 @@ class Phpbb3Manager:
             cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
             logger.info("Added phpbb user id %s to group id %s" % (userid, groupid))
         except:
-            logger.exception("Unable to add phpbb user id %s to group id %s" % (userid, groupid), exc_info=True)
+            logger.exception("Unable to add phpbb user id %s to group id %s" % (userid, groupid))
             pass
 
     @staticmethod
@@ -144,7 +144,7 @@ class Phpbb3Manager:
             cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
             logger.info("Removed phpbb user id %s from group id %s" % (userid, groupid))
         except:
-            logger.exception("Unable to remove phpbb user id %s from group id %s" % (userid, groupid), exc_info=True)
+            logger.exception("Unable to remove phpbb user id %s from group id %s" % (userid, groupid))
             pass
 
     @staticmethod
@@ -170,7 +170,7 @@ class Phpbb3Manager:
                 Phpbb3Manager.__add_avatar(username_clean, characterid)
                 logger.info("Added phpbb user %s" % username_clean)
             except:
-                logger.exception("Unable to add phpbb user %s" % username_clean, exc_info=True)
+                logger.exception("Unable to add phpbb user %s" % username_clean)
                 pass
 
         return username_clean, password
@@ -188,7 +188,7 @@ class Phpbb3Manager:
             logger.info("Disabled phpbb user %s" % username)
             return True
         except TypeError as e:
-            logger.exception("TypeError occured while disabling user %s - failed to disable." % username, exc_info=True)
+            logger.exception("TypeError occured while disabling user %s - failed to disable." % username)
             return False
 
     @staticmethod
@@ -236,7 +236,7 @@ class Phpbb3Manager:
                         cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
                         logger.info("Removed phpbb user %s from group %s" % (username, group))
                     except:
-                        logger.exception("Exception prevented removal of phpbb user %s with id %s from group %s with id %s" % (username, userid, group, groupid), exc_info=True)
+                        logger.exception("Exception prevented removal of phpbb user %s with id %s from group %s with id %s" % (username, userid, group, groupid))
                         pass
 
     @staticmethod
@@ -275,5 +275,5 @@ class Phpbb3Manager:
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [email, password, username])
             logger.info("Updated phpbb user %s info" % username)
         except:
-            logger.exception("Unable to update phpbb user %s info." % username, exc_info=True)
+            logger.exception("Unable to update phpbb user %s info." % username)
             pass
