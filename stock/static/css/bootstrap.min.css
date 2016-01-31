@@ -3401,6 +3401,11 @@ tbody.collapse.in {
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175)
 }
 
+.dropdown-menu.scrollable {
+    overflow: scroll;
+    max-height: 450px;
+}
+
 .dropdown-menu.pull-right {
     right: 0;
     left: auto
@@ -4233,6 +4238,10 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     padding-top: 10px;
     padding-bottom: 10px;
     line-height: 20px
+}
+
+.navbar-wide {
+    width: 100%;
 }
 
 @media (max-width: 767px) {

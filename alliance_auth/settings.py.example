@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'srp',
     'sigtracker',
     'optimer',
+    'corputils',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -445,6 +446,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'optimer': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'corputils': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
