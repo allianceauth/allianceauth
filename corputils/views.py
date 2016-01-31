@@ -15,6 +15,7 @@ from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCharacter
 from authentication.models import AuthServicesInfo
 from forms import CorputilsSearchForm
+from evelink.api import APIError
 
 import logging
 
@@ -24,14 +25,31 @@ logger = logging.getLogger(__name__)
 # Because corp-api only exist for the executor corp, this function will only be available in corporation mode.
 @login_required
 @permission_required('auth.corputils')
-def corp_member_view(request, corpid = settings.CORP_ID):
+def corp_member_view(request, corpid = None):
     logger.debug("corp_member_view called by user %s" % request.user)
+
+    if not settings.IS_CORP:
+        alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
+        alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
+        membercorp_list = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
+        membercorp_list.sort(key=lambda tup: tup[1])
+
+    if not corpid:
+        if(settings.CORP_ID):
+            corpid = settings.CORP_ID
+        else:
+            corpid = membercorp_list[0][0]
+
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist"])
 
     if settings.IS_CORP:
-        member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+        try:
+            member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+        except APIError:
+            logger.debug("Corp API does not have membertracking scope, using EveWho data instead.")
+            member_list = EveWhoManager.get_corporation_members(corpid)
     else:
         member_list = EveWhoManager.get_corporation_members(corpid)
 
@@ -64,11 +82,6 @@ def corp_member_view(request, corpid = settings.CORP_ID):
 
 
     if not settings.IS_CORP:
-        alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
-        alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
-        membercorp_list = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
-        membercorp_list.sort(key=lambda tup: tup[1])
-
         context = {"membercorp_list": membercorp_list,
                    "corp": corp,
                    "characters_with_api": sorted(characters_with_api.items()),
@@ -102,7 +115,11 @@ def corputils_search(request, corpid=settings.CORP_ID):
             logger.debug("Searching for player with character name %s for user %s" % (searchstring, request.user))
 
             if settings.IS_CORP:
-                member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+                try:
+                    member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+                except APIError:
+                    logger.debug("Corp API does not have membertracking scope, using EveWho data instead.")
+                    member_list = EveWhoManager.get_corporation_members(corpid)
             else:
                 member_list = EveWhoManager.get_corporation_members(corpid)
 

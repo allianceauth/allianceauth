@@ -8,18 +8,19 @@
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
-    <div class="col-lg-8">
+    <div class="col-lg-12">
         {% if perms.auth.corputils %}
+            <h1 class="page-header text-center">Member Search Results
+            </h1>
+            <h2 class="text-center"><a href="{% url 'auth_corp_member_view' %}{{ corp.corporation_id }}">{{ corp.corporation_name }}</a></h2>
+            <div class="container-fluid">
          
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Search Results</h3>
-            </div>
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <form class="navbar-form navbar-left" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
+                    <ul class="nav navbar-nav navbar-wide">
+                        <li style="float: right">
+                            <form class="navbar-form navbar-right" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
                                 <div class="form-group">
                                 {% csrf_token %}
                                 {{ search_form.as_table }}

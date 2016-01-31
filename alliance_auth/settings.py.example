@@ -449,7 +449,7 @@ LOGGING = {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },
-        'corputil': {
+        'corputils': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },

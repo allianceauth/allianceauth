@@ -4240,6 +4240,10 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     line-height: 20px
 }
 
+.navbar-wide {
+    width: 100%;
+}
+
 @media (max-width: 767px) {
     .navbar-nav .open .dropdown-menu {
         position: static;
