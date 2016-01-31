@@ -39,8 +39,8 @@ class UpdateKeyForm(forms.Form):
 
             if 'MEMBER' in states:
                 if EveApiManager.validate_member_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                    raise forms.ValidationError(u'API does not meet member requirements: account: %s mask: %s' % (settings.MEMBER_API_ACCOUNT, settings.MEMBER_API_MASK))
+                    raise forms.ValidationError(u'API must meet member requirements')
             if 'BLUE' in states:
                 if EveApiManager.validate_blue_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
-                    raise forms.ValidationError(u'API does not meet blue requirements: account: %s mask: %s' % (settings.BLUE_API_ACCOUNT, settings.BLUE_API_MASK))
+                    raise forms.ValidationError(u'API must meet blue requirements')
         return self.cleaned_data
