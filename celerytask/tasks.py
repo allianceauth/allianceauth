@@ -347,6 +347,7 @@ def determine_membership_by_user(user):
 
 def set_state(user):
     state = determine_membership_by_user(user)
+    logger.debug("Assigning user %s to state %s" % (user, state))
     if state == "MEMBER":
         make_member(user)
     elif state == "BLUE":
@@ -481,14 +482,7 @@ def run_api_refresh():
                     authserviceinfo.save()
                 else:
                     logger.warn("User %s has no main character id, unable to validate membership.")
-        state = determine_membership_by_user(user)
-        logger.debug("Assigning user %s to state %s" % (user, state))
-        if state == "MEMBER":
-            make_member(user)
-        elif state == "BLUE":
-            make_blue(user)
-        else:
-            disable_member(user)
+        set_state(user)
 
 
 # Run Every 2 hours
