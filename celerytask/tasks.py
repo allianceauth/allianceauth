@@ -404,7 +404,8 @@ def run_api_refresh():
                         #check to ensure API key meets min spec
                         logger.info("Determined api key %s is still active." % api_key_pair.api_id)
                         still_valid = True
-                        if authserviceinfo.is_blue:
+                        state = determine_membership_by_user(user)
+                        if state == "BLUE":
                             if settings.BLUE_API_ACCOUNT:
                                 type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
                                 if type == None:
@@ -424,7 +425,7 @@ def run_api_refresh():
                             elif full == False:
                                     logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                                     still_valid = False
-                        else:
+                        elif state == "MEMBER":
                             if settings.MEMBER_API_ACCOUNT:
                                 type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
                                 if type == None:
