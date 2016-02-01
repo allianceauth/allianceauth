@@ -49,7 +49,7 @@ def group_accept_request(request, group_request_id):
         group_request.delete()
         logger.info("User %s accepted group request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
     except:
-        logger.exception("Unhandled exception occured while user %s attempting to accept grouprequest id %s." % (request.user, group_request_id), exc_info=True)
+        logger.exception("Unhandled exception occured while user %s attempting to accept grouprequest id %s." % (request.user, group_request_id))
         pass
 
     return HttpResponseRedirect("/group/management/")
@@ -66,7 +66,7 @@ def group_reject_request(request, group_request_id):
             logger.info("User %s rejected group request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
             group_request.delete()
     except:
-        logger.exception("Unhandled exception occured while user %s attempting to reject group request id %s" % (request.user, group_request_id), exc_info=True)
+        logger.exception("Unhandled exception occured while user %s attempting to reject group request id %s" % (request.user, group_request_id))
         pass
 
     return HttpResponseRedirect("/group/management/")
@@ -84,7 +84,7 @@ def group_leave_accept_request(request, group_request_id):
         group_request.delete()
         logger.info("User %s accepted group leave request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
     except:
-        logger.exception("Unhandled exception occured while user %s attempting to accept group leave request id %s" % (request.user, group_request_id), exc_info=True)
+        logger.exception("Unhandled exception occured while user %s attempting to accept group leave request id %s" % (request.user, group_request_id))
         pass
 
     return HttpResponseRedirect("/group/management/")
@@ -101,7 +101,7 @@ def group_leave_reject_request(request, group_request_id):
             group_request.delete()
             logger.info("User %s rejected group leave request from user %s for group %s" % (request.user, group_request.user, group_request.group.name))
     except:
-        logger.exception("Unhandled exception occured while user %s attempting to reject group leave request id %s" % (request.user, group_request_id), exc_info=True)
+        logger.exception("Unhandled exception occured while user %s attempting to reject group leave request id %s" % (request.user, group_request_id))
         pass
 
     return HttpResponseRedirect("/group/management/")

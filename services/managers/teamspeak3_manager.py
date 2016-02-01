@@ -162,7 +162,7 @@ class Teamspeak3Manager:
                     logger.debug("Local group does not exist for TS group %s. Creating TSgroup model %s" % (remote_groups[key], g))
                     g.save()
         except:
-            logger.exception("An unhandled exception has occured while syncing TS groups.", exc_info=True)
+            logger.exception("An unhandled exception has occured while syncing TS groups.")
             pass
 
     @staticmethod

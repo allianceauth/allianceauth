@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'srp',
     'sigtracker',
     'optimer',
+    'corputils',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -156,6 +157,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
+
+# Cache directory for EveWho, no ending /
+# by default this becomes ~/<installdir>/alliance_auth/cache
+# This directory needs to be writable by the webserver
+EVEWHO_CACHE_DIR = '{}/cache'.format(BASE_DIR)
+
 
 #####################################################
 ##
@@ -445,6 +452,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'optimer': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
+        },
+        'corputils': {
             'handlers': ['log_file', 'console'],
             'level': 'DEBUG',
         },

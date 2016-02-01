@@ -162,18 +162,24 @@ urlpatterns = patterns('',
                        url(r'srp_request_reject/(\w+)', 'srp.views.srp_request_reject', name='auth_srp_request_reject'),
                        url(r'srp_request_amount_update/(\w+)', 'srp.views.srp_request_update_amount_view',
                            name="auth_srp_request_update_amount_view"),
-                       
-			# FLEET FITTINGS
-			url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
 
-			# Sig Tracker
-			url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
-			url(r'^add_signature/$', 'sigtracker.views.add_signature_view', name='auth_add_signature_view'),
-                	url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
+                       #corputils
+                       url(r'^corputils/$', 'corputils.views.corp_member_view', name='auth_corp_member_view'),
+                       url(r'^corputils/(?P<corpid>[0-9]+)/$', 'corputils.views.corp_member_view'),
+                       url(r'^corputils/search/$', 'corputils.views.corputils_search', name="auth_corputils_search"),
+                       url(r'^corputils/search/(?P<corpid>[0-9]+)/$', 'corputils.views.corputils_search'),
+
+                       # FLEET FITTINGS
+                       url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
+
+                       # Sig Tracker
+                       url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
+                       url(r'^add_signature/$', 'sigtracker.views.add_signature_view', name='auth_add_signature_view'),
+                       url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
 
                        # Fleet Operations Timers
                        url(r'^optimer/$', 'optimer.views.optimer_view', name='auth_optimer_view'),
                        url(r'^add_optimer/$', 'optimer.views.add_optimer_view', name='auth_add_optimer_view'),
                        url(r'^remove_optimer/(\w+)', 'optimer.views.remove_optimer', name='auth_remove_optimer'),
-			
+
 )

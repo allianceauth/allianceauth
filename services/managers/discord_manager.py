@@ -399,7 +399,7 @@ class DiscordManager:
             logger.info("Added user to discord server %s with id %s" % (settings.DISCORD_SERVER_ID, user_id))
             return user_id
         except:
-            logger.exception("An unhandled exception has occured.", exc_info=True)
+            logger.exception("An unhandled exception has occured.")
             return ""
 
     @staticmethod
@@ -412,5 +412,5 @@ class DiscordManager:
             logger.info("Deleted user with id %s from discord server id %s" % (user_id, settings.DISCORD_SERVER_ID))
             return True
         except:
-            logger.exception("An unhandled exception has occured.", exc_info=True)
+            logger.exception("An unhandled exception has occured.")
             return False

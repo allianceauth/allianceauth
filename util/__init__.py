@@ -19,6 +19,7 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="human_resources", content_type=ct, name="human_resources")
     Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member")
     Permission.objects.get_or_create(codename="corp_stats", content_type=ct, name="corp_stats")
+    Permission.objects.get_or_create(codename="corputils", content_type=ct, name="corputils")
     Permission.objects.get_or_create(codename="timer_management", content_type=ct, name="timer_management")
     Permission.objects.get_or_create(codename="timer_view", content_type=ct, name="timer_view")
     Permission.objects.get_or_create(codename="srp_management", content_type=ct, name="srp_management")

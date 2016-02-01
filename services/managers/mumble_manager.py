@@ -153,9 +153,9 @@ class MumbleManager:
             logger.info("Added user to mumble with username %s" % username_clean)
             return username_clean, password
         except django.db.utils.IntegrityError as error:
-            logger.exception("IntegrityError during mumble create_user occured.", exc_info=True)
+            logger.exception("IntegrityError during mumble create_user occured.")
         except:
-            logger.exception("Unhandled exception occured.", exc_info=True)
+            logger.exception("Unhandled exception occured.")
         logger.error("Exception prevented creation of mumble user. Returning blank for username, password.")
         return "", ""
 
@@ -177,7 +177,7 @@ class MumbleManager:
             logger.info("Added blue user to mumble with username %s" % username_clean)
             return username_clean, password
         except:
-            logger.exception("Unhandled exception occured.", exc_info=True)
+            logger.exception("Unhandled exception occured.")
         logger.error("Exception prevented creation of mumble blue user. Returning blank for username, password.")
         return "", ""
 
@@ -207,7 +207,7 @@ class MumbleManager:
                 logger.info("Deleted user %s from mumble." % username)
                 return True
             except:
-                logger.exception("Exception prevented deletion of user %s from mumble." % username, exc_info=True)
+                logger.exception("Exception prevented deletion of user %s from mumble." % username)
                 return False
         logger.error("User %s not found on mumble. Unable to delete." % username)
         return False
@@ -228,7 +228,7 @@ class MumbleManager:
                 logger.info("Updated mumble user %s password." % username)
                 return password
             except:
-                logger.exception("Exception prevented updating of mumble user %s password." % username, exc_info=True)
+                logger.exception("Exception prevented updating of mumble user %s password." % username)
                 return ""
         logger.error("User %s not found on mumble. Unable to update password." % username)
         return ""
@@ -250,11 +250,11 @@ class MumbleManager:
                 logger.debug("Adding mumble user %s to group %s" % (userid, mumble_groups[g]))
                 MumbleManager._add_user_to_group(userid, mumble_groups[g])
             except:
-                logger.exception("Exception occured while adding mumble user %s with id %s to group %s with id %s" % (username, userid, g, mumble_groups[g]), exc_info=True)
+                logger.exception("Exception occured while adding mumble user %s with id %s to group %s with id %s" % (username, userid, g, mumble_groups[g]))
 
         for g in remgroups:
             try:
                 logger.debug("Deleting mumble user %s from group %s" % (userid, mumble_groups[g]))
                 MumbleManager._del_user_from_group(userid, mumble_groups[g])
             except:
-                logger.exception("Exception occured while removing mumble user %s with id %s from group %s with id %s" % (username, userid, g, mumble_groups[g]), exc_info=True)
+                logger.exception("Exception occured while removing mumble user %s with id %s from group %s with id %s" % (username, userid, g, mumble_groups[g]))
