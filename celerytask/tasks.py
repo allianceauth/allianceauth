@@ -260,7 +260,7 @@ def make_member(user):
         logger.info("Adding user %s member permission" % user)
         add_member_permission(user, 'member')
     member_group, c = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
-    if member_group in user.groups.all() is False:
+    if not member_group in user.groups.all():
         logger.info("Adding user %s to member group" % user)
         user.groups.add(member_group)
     auth, c = AuthServicesInfo.objects.get_or_create(user=user)
@@ -297,7 +297,7 @@ def make_blue(user):
         logger.info("Adding user %s blue permission" % user)
         add_member_permission(user, 'blue_member')
     blue_group, c = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
-    if blue_group in user.groups.all() is False:
+    if not blue_group in user.groups.all():
         logger.info("Adding user %s to blue group" % user)
         user.groups.add(blue_group)
     auth, c = AuthServicesInfo.objects.get_or_create(user=user)
