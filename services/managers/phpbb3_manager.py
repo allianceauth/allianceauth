@@ -47,7 +47,7 @@ class Phpbb3Manager:
     @staticmethod
     def __add_avatar(username, characterid):
         logger.debug("Adding EVE character id %s portrait as phpbb avater for user %s" % (characterid, username))
-        avatar_url = "http://image.eveonline.com/Character/" + characterid + "_64.jpg"
+        avatar_url = "https://image.eveonline.com/Character/" + characterid + "_64.jpg"
         cursor = connections['phpbb3'].cursor()
         userid = Phpbb3Manager.__get_user_id(username)
         cursor.execute(Phpbb3Manager.SQL_ADD_USER_AVATAR, [avatar_url, userid])
