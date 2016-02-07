@@ -284,6 +284,6 @@ class Teamspeak3Manager:
                 Teamspeak3Manager._add_user_to_group(userid, g)
 
             for g in remgroups:
-                logger.info("Removing Teamspeak user %s for group %s" % (useid, g))
+                logger.info("Removing Teamspeak user %s from group %s" % (userid, g))
                 Teamspeak3Manager._remove_user_from_group(userid, g)
 
