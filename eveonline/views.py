@@ -163,7 +163,7 @@ def corp_stats_view(request):
     return render_to_response('registered/corpstats.html', None, context_instance=RequestContext(request))
 
 @login_required
-def user_refresh_api(request, api_id)
+def user_refresh_api(request, api_id):
     logger.debug("user_refresh_api called by user %s for api id %s" % (request.user, api_id))
     if EveApiKeyPair.objects.filter(api_id=api_id).exists():
         api_key_pair = EveApiKeyPair.objects.get(api_id=api_id)
