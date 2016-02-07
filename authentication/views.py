@@ -40,6 +40,7 @@ def login_user(request):
 
 def logout_user(request):
     logger.debug("logout_user called by user %s" % request.user)
+    logoutUser = request.user
     logout(request)
-    logger.info("Successful logout for user %s" % request.user)
+    logger.info("Successful logout for user %s" % logoutUser)
     return HttpResponseRedirect("/")
