@@ -480,8 +480,6 @@ def run_api_refresh():
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))
                     authserviceinfo.main_char_id = ''
                     authserviceinfo.save()
-                else:
-                    logger.warn("User %s has no main character id, unable to validate membership.")
         set_state(user)
 
 

@@ -279,13 +279,11 @@ class Teamspeak3Manager:
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
                     remgroups.append(user_ts_groups[user_ts_group_key])
 
-            logger.info("Finished checking user id %s TS3 groups - adding %s, removing %s." % (userid, addgroups, remgroups))
-
             for g in addgroups:
-                logger.debug("Issuing add command for group %s" % g)
+                logger.info("Adding Teamspeak user %s into group %s" % (userid, g))
                 Teamspeak3Manager._add_user_to_group(userid, g)
 
             for g in remgroups:
-                logger.debug("Issuing remove command for group %s" % g)
+                logger.info("Removing Teamspeak user %s from group %s" % (userid, g))
                 Teamspeak3Manager._remove_user_from_group(userid, g)
 
