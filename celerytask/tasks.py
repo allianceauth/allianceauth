@@ -245,6 +245,31 @@ def remove_from_databases(user, groups, syncgroups):
                 logger.debug("User %s has discord uid %s - updating groups." % (user, authserviceinfo.discord_uid))
                 update_discord_groups(user)
 
+def assign_corp_group(auth):
+    corp_group = None
+    if auth.main_char_id:
+        if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
+            char = EveCharacter.objects.get(character_id=auth.main_char_id)
+            corpname = generate_corp_group_name(char.corporation_name)
+            state = determine_membership_by_character(char)
+            if state == "BLUE" and settings.BLUE_CORP_GROUPS:
+                logger.debug("Validating blue user %s has corp group assigned." % auth.user)
+                corp_group, c = Group.objects.get_or_create(name=corpname)
+            elif state == "MEMBER" and settings.MEMBER_CORP_GROUPS:
+                logger.debug("Validating member %s has corp group assigned." % auth.user)
+                corp_group, c = Group.objects.get_or_create(name=corpname)
+            else:
+                logger.debug("Ensuring non-member %s has no corp groups assigned." % auth.user)
+    if corp_group:
+        if not corp_group in auth.user.groups.all():
+            logger.info("Adding user %s to corp group %s" % (auth.user, corp_group))
+            auth.user.groups.add(corp_group)
+    for g in auth.user.groups.all():
+        if str.startswith(str(g.name), "Corp_"):
+            if g != corp_group:
+                logger.info("Removing user %s from old corpgroup %s" % (auth.user, g))
+                auth.user.groups.remove(g)
+
 def make_member(user):
     logger.debug("Ensuring user %s has member permissions and groups." % user)
     # ensure member is not blue right now
@@ -268,19 +293,7 @@ def make_member(user):
         logger.info("Marking user %s as non-blue" % user)
         auth.is_blue = False
         auth.save()
-    if auth.main_char_id:
-        if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
-            char = EveCharacter.objects.get(character_id=auth.main_char_id)
-            corpname = generate_corp_group_name(char.corporation_name)
-            corp_group, c = Group.objects.get_or_create(name=corpname)
-            if not corp_group in user.groups.all():
-                logger.info("Adding user %s to corp group %s" % (user, corp_group))
-                user.groups.add(corp_group)
-            for g in user.groups.all():
-                if str.startswith(str(g.name), "Corp_"):
-                    if g != corp_group:
-                        logger.info("Removing user %s from old corpgroup %s" % (user, g))
-                        user.groups.remove(g)
+    assign_corp_group(auth)
 
 def make_blue(user):
     logger.debug("Ensuring user %s has blue permissions and groups." % user)
@@ -305,10 +318,7 @@ def make_blue(user):
         logger.info("Marking user %s as blue" % user)
         auth.is_blue = True
         auth.save()
-    for g in user.groups.all():
-        if str.startswith(str(g.name), 'Corp_'):
-            logger.info("Removing blue user %s from corp group %s" % (user, g))
-            user.groups.remove(g)
+    assign_corp_group(auth)
 
 def determine_membership_by_character(char):
     if settings.IS_CORP:
@@ -384,6 +394,85 @@ def run_discord_token_cleanup():
             logger.debug("DiscordAuthToken failed validation. Deleting %s" % auth)
             auth.delete()
 
+def refresh_api(api_key_pair):
+    logger.debug("Running update on api key %s" % api_key_pair.api_id)
+    user = api_key_pair.user
+    if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
+        #check to ensure API key meets min spec
+        logger.info("Determined api key %s is still active." % api_key_pair.api_id)
+        still_valid = True
+        state = determine_membership_by_user(user)
+        if state == "BLUE":
+            if settings.BLUE_API_ACCOUNT:
+                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
+                if type == None:
+                    api_key_pair.error_count += 1
+                    api_key_pair.save()
+                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                    still_valid = None
+                elif type == False:
+                    logger.info("Determined api key %s for blue user %s is no longer type account as requred." % (api_key_pair.api_id, user))
+                    still_valid = False
+                full = EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
+                if full == None:
+                    api_key_pair.error_count += 1
+                    api_key_pair.save()
+                    logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                    still_valid = None
+                elif full == False:
+                    logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
+                    still_valid = False
+        elif state == "MEMBER":
+            if settings.MEMBER_API_ACCOUNT:
+                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
+                if type == None:
+                    api_key_pair.error_count += 1
+                    api_key_pair.save()
+                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                    still_valid = None
+                elif type == False:
+                    logger.info("Determined api key %s for user %s is no longer type account as required." % (api_key_pair.api_id, user))
+                    still_valid = False
+                full = EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
+                if full == None:
+                    api_key_pair.error_count += 1
+                    api_key_pair.save()
+                    logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
+                    still_valid = None
+                elif full == False:
+                    logger.info("Determined api key %s for user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
+                    still_valid = False
+        if still_valid == None:
+               if api_key_pair.error_count >= 3:
+                   logger.info("API key %s has incurred 3 or more errors. Assuming invalid." % api_key_pair.api_id)
+                   still_valid = False
+        if still_valid == False:
+               logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
+               EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+               EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+        elif still_valid == True:
+               if api_key_pair.error_count != 0:
+                   logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
+                   api_key_pair.error_count = 0
+                   api_key_pair.save()
+               logger.info("Determined api key %s still meets requirements." % api_key_pair.api_id)
+               # Update characters
+               characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
+               EveManager.update_characters_from_list(characters)
+               new_character = False
+               for char in characters.result:
+                   # Ensure we have a model for all characters on key
+                   if not EveManager.check_if_character_exist(characters.result[char]['name']):
+                       new_character = True
+                       logger.debug("API key %s has a new character on the account: %s" % (api_key_pair.api_id, characters.result[char]['name']))
+                   if new_character:
+                       logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
+                       EveManager.create_characters_from_list(characters, user, api_key_pair.api_key)
+    else:
+        logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
+        EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+        EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+
 # Run every 3 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/3"))
 def run_api_refresh():
@@ -399,82 +488,7 @@ def run_api_refresh():
                 authserviceinfo, c = AuthServicesInfo.objects.get_or_create(user=user)
                 logger.debug("User %s has api keys. Proceeding to refresh." % user)
                 for api_key_pair in api_key_pairs:
-                    logger.debug("Running update on api key %s" % api_key_pair.api_id)
-                    if EveApiManager.api_key_is_valid(api_key_pair.api_id, api_key_pair.api_key):
-                        #check to ensure API key meets min spec
-                        logger.info("Determined api key %s is still active." % api_key_pair.api_id)
-                        still_valid = True
-                        state = determine_membership_by_user(user)
-                        if state == "BLUE":
-                            if settings.BLUE_API_ACCOUNT:
-                                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
-                                if type == None:
-                                    api_key_pair.error_count += 1
-                                    api_key_pair.save()
-                                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                                    still_valid = None
-                                elif type == False:
-                                    logger.info("Determined api key %s for blue user %s is no longer type account as requred." % (api_key_pair.api_id, user))
-                                    still_valid = False
-                            full = EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
-                            if full == None:
-                                api_key_pair.error_count += 1
-                                api_key_pair.save()
-                                logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                                still_valid = None
-                            elif full == False:
-                                    logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
-                                    still_valid = False
-                        elif state == "MEMBER":
-                            if settings.MEMBER_API_ACCOUNT:
-                                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
-                                if type == None:
-                                    api_key_pair.error_count += 1
-                                    api_key_pair.save()
-                                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                                    still_valid = None
-                                elif type == False:
-                                    logger.info("Determined api key %s for user %s is no longer type account as required." % (api_key_pair.api_id, user))
-                                    still_valid = False
-                            full = EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
-                            if full == None:
-                                api_key_pair.error_count += 1
-                                api_key_pair.save()
-                                logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                                still_valid = None
-                            elif full == False:
-                                    logger.info("Determined api key %s for user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
-                                    still_valid = False
-                        if still_valid == None:
-                            if api_key_pair.error_count >= 3:
-                                logger.info("API key %s has incurred 3 or more errors. Assuming invalid." % api_key_pair.api_id)
-                                still_valid = False
-                        if still_valid == False:
-                            logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
-                            EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
-                            EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
-                        elif still_valid == True:
-                            if api_key_pair.error_count != 0:
-                                logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
-                                api_key_pair.error_count = 0
-                                api_key_pair.save()
-                            logger.info("Determined api key %s still meets requirements." % api_key_pair.api_id)
-                            # Update characters
-                            characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
-                            EveManager.update_characters_from_list(characters)
-                            new_character = False
-                            for char in characters.result:
-                                # Ensure we have a model for all characters on key
-                                if not EveManager.check_if_character_exist(characters.result[char]['name']):
-                                    new_character = True
-                                    logger.debug("API key %s has a new character on the account: %s" % (api_key_pair.api_id, characters.result[char]['name']))
-                            if new_character:
-                                logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
-                                EveManager.create_characters_from_list(characters, user, api_key_pair.api_key)
-                    else:
-                        logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
-                        EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
-                        EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+                    refresh_api(api_key_pair)
                 # Check our main character
                 if EveCharacter.objects.filter(character_id=authserviceinfo.main_char_id).exists() is False:
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))

@@ -22,6 +22,7 @@ from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
 from celerytask.tasks import determine_membership_by_user
 from celerytask.tasks import set_state
+from celerytask.tasks import refresh_api
 
 import logging
 
@@ -160,3 +161,17 @@ def corp_stats_view(request):
     else:
         logger.error("Unable to locate user %s main character model with id %s. Cannot provide corp stats." % (request.user, auth_info.main_char_id))
     return render_to_response('registered/corpstats.html', None, context_instance=RequestContext(request))
+
+@login_required
+def user_refresh_api(request, api_id):
+    logger.debug("user_refresh_api called by user %s for api id %s" % (request.user, api_id))
+    if EveApiKeyPair.objects.filter(api_id=api_id).exists():
+        api_key_pair = EveApiKeyPair.objects.get(api_id=api_id)
+        if api_key_pair.user == request.user:
+            refresh_api(api_key_pair)
+            set_state(request.user)
+        else:
+            logger.warn("User %s not authorized to refresh api id %s" % (request.user, api_id))
+    else:
+        logger.warn("User %s unable to refresh api id %s - api key not found" % (request.user, api_id))
+    return HttpResponseRedirect("/api_key_management/")
