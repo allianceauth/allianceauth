@@ -213,9 +213,13 @@ FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 #########################
 # DEFAULT_AUTH_GROUP - Default group members are put in
 # DEFAULT_BLUE_GROUP - Default group for blue members
+# MEMBER_CORP_GROUPS - Assign members to a group representing their main corp
+# BLUE_CORP_GROUPS - Assign blues to a group representing their main corp
 #########################
 DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
 DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
+MEMBER_CORP_GROUPS = 'True' == os.environ.get('AA_MEMBER_CORP_GROUPS', 'True')
+BLUE_CORP_GROUPS = 'True' == os.environ.get('AA_BLUE_CORP_GROUPS', 'False')
 
 #########################
 # Alliance Service Setup
