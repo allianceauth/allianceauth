@@ -327,7 +327,7 @@ class DiscordManager:
                     group_ids.append(group_id)
                     logger.debug("Got id %s" % group_id)
                 except:
-                    logger.debug("Group id retrieval generated exception - generating new group on discord server.", exc_info=True)
+                    logger.debug("Group id retrieval generated exception - generating new group on discord server.")
                     group_ids.append(DiscordManager.create_group(g))
         logger.info("Setting discord groups for user %s to %s" % (user_id, group_ids))
         api.set_roles(user_id, group_ids)
@@ -371,7 +371,7 @@ class DiscordManager:
             return current_password
 
     @staticmethod
-    def add_user(email, password):
+    def add_user(email, password, user):
         try:
             logger.debug("Adding new user to discord with email %s and password of length %s" % (email[0:3], len(password)))
             api = DiscordAPIManager(settings.DISCORD_SERVER_ID, settings.DISCORD_USER_EMAIL, settings.DISCORD_USER_PASSWORD)
@@ -388,9 +388,10 @@ class DiscordManager:
             logger.debug("Got auth token for supplied credentials beginning with %s" % token[0:5])
             DiscordAPIManager.accept_invite(invite_code, token)
             logger.info("Added user to discord server %s with id %s" % (settings.DISCORD_SERVER_ID, user_id))
+            token.delete()
             return user_id
         except:
-            logger.exception("An unhandled exception has occured.", exc_info=True)
+            logger.exception("An unhandled exception has occured.")
             return ""
 
     @staticmethod
@@ -403,5 +404,5 @@ class DiscordManager:
             logger.info("Deleted user with id %s from discord server id %s" % (user_id, settings.DISCORD_SERVER_ID))
             return True
         except:
-            logger.exception("An unhandled exception has occured.", exc_info=True)
+            logger.exception("An unhandled exception has occured.")
             return False
