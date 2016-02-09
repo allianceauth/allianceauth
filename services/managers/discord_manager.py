@@ -388,7 +388,7 @@ class DiscordManager:
             logger.debug("Got auth token for supplied credentials beginning with %s" % token[0:5])
             DiscordAPIManager.accept_invite(invite_code, token)
             logger.info("Added user to discord server %s with id %s" % (settings.DISCORD_SERVER_ID, user_id))
-            token.delete()
+            DiscordAuthToken.objects.filter(token=token).delete()
             return user_id
         except:
             logger.exception("An unhandled exception has occured.")
