@@ -43,8 +43,16 @@
 <body>
 <div id="logo">
     <p style="text-align:center">
-        <img src="{% static 'img/index_images/logo.png' %}" border="0">
-    </p>
+<!--Uncomment the below line to use a custom logo-->
+<!--<img src={% static 'img/index_images/logo.png' %}" border="0">-->
+<!--Comment the below block to use a custom logo-->
+    {% if IS_CORP %}
+        <img src="https://image.eveonline.com/Corporation/{{ CORP_ID }}_256.png" border="0">
+    {% else %}
+        <img src="https://image.eveonline.com/Alliance/{{ ALLIANCE_ID }}_128.png" border="0">
+    {% endif %}
+<!--Stop commenting here-->
+</p>
 </div>
 <div id="content">
     <p style="text-align:center">
