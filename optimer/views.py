@@ -7,12 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 from util import check_if_user_has_permission
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from form import opForm
 from models import optimer
+from form import optimerUpdateForm
 
 import logging
 
@@ -81,3 +83,42 @@ def remove_optimer(request, optimer_id):
     else:
         logger.error("Unable to delete optimer id %s for user %s - operation matching id not found." % (optimer_id, request.user))
     return HttpResponseRedirect("/optimer/")
+
+@login_required
+@permission_required('auth.optimer_management')
+def edit_optimer(request, optimer_id):
+    logger.debug("edit_optimer called by user %s for optimer id %s" % (request.user, optimer_id))
+    op = get_object_or_404(optimer, id=optimer_id)
+    if request.method == 'POST':
+        form = optimerUpdateForm(request.POST)
+        logger.debug("Received POST request containing update optimer form, is valid: %s" % form.is_valid())
+        if form.is_valid():
+            auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
+            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            op.doctrine = form.cleaned_data['doctrine']
+            op.system = form.cleaned_data['system']
+            op.location = form.cleaned_data['location']
+            op.start = form.cleaned_data['start']
+            op.duration = form.cleaned_data['duration']
+            op.operation_name = form.cleaned_data['operation_name']
+            op.fc = form.cleaned_data['fc']
+            op.details = form.cleaned_data['details']
+            op.eve_character = character
+            logger.info("User %s updating optimer id %s " % (request.user, optimer_id))
+            op.save()
+
+        logger.debug("Detected no changes between optimer id %s and supplied form." % optimer_id)
+        return HttpResponseRedirect("/optimer/")
+    else:
+        data = {
+         'doctrine': op.doctrine,
+         'system': op.system,
+         'location': op.location,
+         'start': op.start,
+         'duration': op.duration,
+         'operation_name': op.operation_name,
+         'fc': op.fc,
+         'details': op.details,
+         }
+    form = optimerUpdateForm(initial= data)
+    return render_to_response('registered/optimerupdate.html', {'form':form}, context_instance=RequestContext(request))
