@@ -2,10 +2,10 @@ from django.conf import settings
 
 import logging
 import requests
-import requests_cache
+#import requests_cache
 import json
 
-requests_cache.install_cache("{}/evewho".format(settings.EVEWHO_CACHE_DIR), backend="sqlite", expire_after=3600)
+#requests_cache.install_cache("{}/evewho".format(settings.EVEWHO_CACHE_DIR), backend="sqlite", expire_after=3600)
 
 class EveWhoManager():
     def __init__(self):
