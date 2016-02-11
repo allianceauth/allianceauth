@@ -111,14 +111,14 @@ def edit_optimer(request, optimer_id):
         return HttpResponseRedirect("/optimer/")
     else:
         data = {
-         'doctrine': op.doctrine,
-         'system': op.system,
-         'location': op.location,
-         'start': op.start,
-         'duration': op.duration,
-         'operation_name': op.operation_name,
-         'fc': op.fc,
-         'details': op.details,
-         }
+            'doctrine': op.doctrine,
+            'system': op.system,
+            'location': op.location,
+            'start': op.start,
+            'duration': op.duration,
+            'operation_name': op.operation_name,
+            'fc': op.fc,
+            'details': op.details,
+            }
         form = optimerUpdateForm(initial= data)
     return render_to_response('registered/optimerupdate.html', {'form':form}, context_instance=RequestContext(request))
