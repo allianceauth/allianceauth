@@ -182,5 +182,6 @@ urlpatterns = patterns('',
                        url(r'^optimer/$', 'optimer.views.optimer_view', name='auth_optimer_view'),
                        url(r'^add_optimer/$', 'optimer.views.add_optimer_view', name='auth_add_optimer_view'),
                        url(r'^remove_optimer/(\w+)', 'optimer.views.remove_optimer', name='auth_remove_optimer'),
+                       url(r'^edit_optimer/(\w+)$', 'optimer.views.edit_optimer', name='auth_edit_optimer'),
 
 )
