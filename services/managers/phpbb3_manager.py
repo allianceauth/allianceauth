@@ -41,6 +41,10 @@ class Phpbb3Manager:
     
     SQL_CLEAR_USER_PERMISSIONS = r"UPDATE phpbb_users SET user_permissions = '' WHERE user_Id = %s"
 
+    SQL_DEL_SESSION = r"DELETE FROM phpbb_sessions where session_user_id = %s"
+
+    SQL_DEL_AUTOLOGIN = r"DELETE FROM phpbb_sessions_keys where user_id = %s"
+
     def __init__(self):
         pass
 
@@ -185,6 +189,10 @@ class Phpbb3Manager:
         try:
             pwhash = Phpbb3Manager.__gen_hash(password)
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [revoke_email, pwhash, username])
+            userid = Phpbb3Manager.__get_user_id(username)
+            cursor.execute(Phpbb3Manager.SQL_DEL_AUTOLOGIN, [userid])
+            cursor.execute(Phpbb3Manager.SQL_DEL_SESSION, [userid])
+            Phpbb3Manager.update_groups(username, [])
             logger.info("Disabled phpbb user %s" % username)
             return True
         except TypeError as e:
