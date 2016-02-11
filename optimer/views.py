@@ -120,5 +120,5 @@ def edit_optimer(request, optimer_id):
          'fc': op.fc,
          'details': op.details,
          }
-    form = optimerUpdateForm(initial= data)
+        form = optimerUpdateForm(initial= data)
     return render_to_response('registered/optimerupdate.html', {'form':form}, context_instance=RequestContext(request))
