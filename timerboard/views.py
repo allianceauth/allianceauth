@@ -5,13 +5,16 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
+from django.utils import timezone
 
 from util import check_if_user_has_permission
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from form import TimerForm
 from models import Timer
+
 
 import logging
 
@@ -40,8 +43,7 @@ def timer_view(request):
     closest_timer = None
     if timer_list:
         closest_timer = \
-        sorted(list(Timer.objects.all().filter(corp_timer=False)), key=lambda d: abs(datetime.datetime.now() - d.eve_time.replace(tzinfo=None)))[
-            0]
+        sorted(list(Timer.objects.all()), key=lambda d:  (timezone.now()))[0]
     logger.debug("Determined closest timer is %s" % closest_timer)
     render_items = {'timers': Timer.objects.all().filter(corp_timer=False),
                     'corp_timers': corp_timers,
@@ -65,7 +67,7 @@ def add_timer_view(request):
             logger.debug("Determined timer add request on behalf of character %s corporation %s" % (character, corporation))
             # calculate future time
             future_time = datetime.timedelta(days=form.cleaned_data['days_left'], hours=form.cleaned_data['hours_left'], minutes=form.cleaned_data['minutes_left'])
-            current_time = datetime.datetime.utcnow()
+            current_time = timezone.now()
             eve_time = current_time + future_time
             logger.debug("Determined timer eve time is %s - current time %s, adding %s" % (eve_time, current_time, future_time))
             # handle valid form
@@ -104,3 +106,57 @@ def remove_timer(request, timer_id):
     else:
         logger.error("Unable to delete timer id %s for user %s - timer matching id not found." % (timer_id, request.user))
     return HttpResponseRedirect("/timers/")
+
+
+@login_required
+@permission_required('auth.timer_management')
+def edit_timer(request, timer_id):
+    logger.debug("edit_timer called by user %s for timer id %s" % (request.user, timer_id))
+    timer = get_object_or_404(Timer, id=timer_id)
+    if request.method == 'POST':
+        form = TimerForm(request.POST)
+        logger.debug("Received POST request containing updated timer form, is valid: %s" % form.is_valid())
+        if form.is_valid():
+            auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
+            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
+            logger.debug("Determined timer edit request on behalf of character %s corporation %s" % (character, corporation))
+            # calculate future time
+            future_time = datetime.timedelta(days=form.cleaned_data['days_left'], hours=form.cleaned_data['hours_left'], minutes=form.cleaned_data['minutes_left'])
+            current_time = datetime.datetime.utcnow()
+            eve_time = current_time + future_time
+            logger.debug("Determined timer eve time is %s - current time %s, adding %s" % (eve_time, current_time, future_time))
+            timer.details = form.cleaned_data['details']
+            timer.system = form.cleaned_data['system']
+            timer.planet_moon = form.cleaned_data['planet_moon']
+            timer.structure = form.cleaned_data['structure']
+            timer.objective = form.cleaned_data['objective']
+            timer.eve_time = eve_time
+            timer.important = form.cleaned_data['important']
+            timer.corp_timer = form.cleaned_data['corp_timer']
+            timer.eve_character = character
+            timer.eve_corp = corporation
+            logger.info("User %s updating timer id %s " % (request.user, timer_id))
+            timer.save()
+
+        logger.debug("Detected no changes between timer id %s and supplied form." % timer_id)
+        return HttpResponseRedirect("/timers/")
+    else:
+        current_time = timezone.now()
+        td = timer.eve_time - current_time
+        tddays, tdhours, tdminutes = td.days, td.seconds // 3600, td.seconds // 60 % 60
+        data = {
+            'details': timer.details,
+            'system': timer.system,
+            'planet_moon': timer.planet_moon,
+            'structure': timer.structure,
+            'objective': timer.objective,
+            'important': timer.important,
+            'corp_timer': timer.corp_timer,
+            'days_left': tddays,
+            'hours_left': tdhours,
+            'minutes_left': tdminutes,
+
+        }
+        form = TimerForm(initial= data)
+    return render_to_response('registered/timerupdate.html', {'form':form}, context_instance=RequestContext(request))
