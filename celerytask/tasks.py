@@ -513,19 +513,19 @@ def populate_alliance(id, blue=False):
     for member_corp in alliance_info['member_corps']:
         if EveCorporationInfo.objects.filter(corporation_id=member_corp).exists():
             corp = EveCorporationInfo.objects.get(corporation_id=member_corp)
-            if corp.alliance == alliance is not True:
+            if corp.alliance == alliance is False:
                 corp.alliance = alliance
                 corp.save()
         else:
             logger.info("Creating new alliance member corp id %s" % member_corp)
             corpinfo = EveApiManager.get_corporation_information(member_corp)
             EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
-                                                    corpinfo['members']['current'], corp.is_blue, alliance)
+                                                    corpinfo['members']['current'], blue, alliance)
 
 # Run Every 2 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/2"))
 def run_corp_update():
-    if EveApiManager.check_if_api_server_online() is not True:
+    if EveApiManager.check_if_api_server_online() is False:
         logger.warn("Aborted updating corp and alliance models: API server unreachable")
         return
     standing_level = 'alliance'
@@ -640,7 +640,7 @@ def run_corp_update():
                             alliance.save()
                     else:
                         populate_alliance(standing, blue=True)
-                if EveApiManager.check_if_id_is_corp(standing):
+                elif EveApiManager.check_if_id_is_corp(standing):
                     logger.debug("Standing %s is a corp" % standing)
                     if EveCorporationInfo.objects.filter(corporation_id=standing).exists():
                         corp = EveCorporationInfo.objects.get(corporation_id=standing)
@@ -659,22 +659,26 @@ def run_corp_update():
                                                                corpinfo['members']['current'], True, corp_alliance)
                     
 
-    logger.debug(standings)
-
     # update alliance standings
     for alliance in EveAllianceInfo.objects.filter(is_blue=True):
-        if int(alliance.alliance_id) in standings is not True:
+        if int(alliance.alliance_id) in standings:
+            if float(standings[int(alliance.alliance_id)]['standing']) < float(settings.BLUE_STANDING):
+                logger.info("Alliance %s no longer meets minimum blue standing threshold" % alliance)
+                alliance.is_blue = False
+                alliance.save()
+        else:
             logger.info("Alliance %s no longer in standings" % alliance)
-            alliance.is_blue = False
-            alliance.save()
-        elif float(standings[int(alliance.alliance_id)]['standing']) < float(settings.BLUE_STANDING):
-            logger.info("Alliance %s no longer meets minimum blue standing threshold" % alliance)
             alliance.is_blue = False
             alliance.save()
 
     # update corp standings
     for corp in EveCorporationInfo.objects.filter(is_blue=True):
-        if int(corp.corporation_id) in standings is not True:
+        if int(corp.corporation_id) in standings:
+            if float(standings[int(corp.corporation_id)]['standing']) < float(settings.BLUE_STANDING):
+                logger.info("Corp %s no longer meets minimum blue standing threshold" % (corp, corp.alliance))
+                corp.is_blue = False
+                corp.save()
+        else:
             if corp.alliance:
                 if corp.alliance.is_blue is False:
                     logger.info("Corp %s and its alliance %s are no longer blue" % (corp, corp.alliance))
@@ -684,20 +688,16 @@ def run_corp_update():
                 logger.info("Corp %s is no longer blue" % corp)
                 corp.is_blue = False
                 corp.save()
-        elif float(standings[int(corp.corporation_id)]['standing']) < float(settings.BLUE_STANDING):
-            logger.info("Corp %s no longer meets minimum blue standing threshold" % (corp, corp.alliance))
-            corp.is_blue = False
-            corp.save()
 
     # delete unnecessary alliance models
     for alliance in EveAllianceInfo.objects.all():
         if alliance.is_blue is not True:
             if settings.IS_CORP is False:
-                if alliance.alliance_id == settings.ALLIANCE_ID is not True:
+                if alliance.alliance_id == settings.ALLIANCE_ID is False:
                     logger.info("Deleting unnecessary alliance model %s" % alliance)
                     alliance.delete()
             else:
-                if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is not True:
+                if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
                     logger.info("Deleting unnecessary alliance model %s" % alliance)
                     alliance.delete()
 
@@ -706,16 +706,16 @@ def run_corp_update():
         if corp.is_blue is not True:
             if settings.IS_CORP is False:
                 if corp.alliance:
-                    if corp.alliance.alliance_id == settings.ALLIANCE_ID is not True:
+                    if corp.alliance.alliance_id == settings.ALLIANCE_ID is False:
                         logger.info("Deleting unnecessary corp model %s" % corp)
                         corp.delete()
                 else:
                     logger.info("Deleting unnecessary corp model %s" % corp)
                     corp.delete()
             else:
-                if corp.corporation_id == settings.CORP_ID is not True:
+                if corp.corporation_id == settings.CORP_ID is False:
                     if corp.alliance:
-                        if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is not True:
+                        if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
                             logger.info("Deleting unnecessary corp model %s" % corp)
                             corp.delete()
                     else:
