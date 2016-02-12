@@ -220,7 +220,9 @@ class EveApiManager():
                 return True
         except evelink.api.APIError as error:
             logger.exception("APIError occured while checking if id %s is an alliance. Possibly not alliance?" % alliance_id)
-
+        except KeyError:
+            logger.debug("Alliance with id %s not found in active alliance list." % alliance_id)
+            return False
         logger.debug("Unable to verify id %s is an an alliance." % alliance_id)
         return False
 
