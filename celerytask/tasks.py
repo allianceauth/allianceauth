@@ -513,7 +513,7 @@ def populate_alliance(id, blue=False):
     for member_corp in alliance_info['member_corps']:
         if EveCorporationInfo.objects.filter(corporation_id=member_corp).exists():
             corp = EveCorporationInfo.objects.get(corporation_id=member_corp)
-            if corp.alliance == alliance is False:
+            if corp.alliance != alliance:
                 corp.alliance = alliance
                 corp.save()
         else:
@@ -690,34 +690,39 @@ def run_corp_update():
                 corp.save()
 
     # delete unnecessary alliance models
-    for alliance in EveAllianceInfo.objects.all():
-        if alliance.is_blue is not True:
-            if settings.IS_CORP is False:
-                if alliance.alliance_id == settings.ALLIANCE_ID is False:
-                    logger.info("Deleting unnecessary alliance model %s" % alliance)
-                    alliance.delete()
-            else:
-                if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
-                    logger.info("Deleting unnecessary alliance model %s" % alliance)
-                    alliance.delete()
+    for alliance in EveAllianceInfo.objects.filter(is_blue=False):
+        logger.debug("Checking to delete alliance %s" % alliance)
+        if settings.IS_CORP is False:
+            if alliance.alliance_id == settings.ALLIANCE_ID is False:
+                logger.info("Deleting unnecessary alliance model %s" % alliance)
+                alliance.delete()
+        else:
+            if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
+                logger.info("Deleting unnecessary alliance model %s" % alliance)
+                alliance.delete()
 
     # delete unnecessary corp models
-    for corp in EveCorporationInfo.objects.all():
-        if corp.is_blue is not True:
-            if settings.IS_CORP is False:
+    for corp in EveCorporationInfo.objects.filter(is_blue=False):
+        logger.debug("Checking to delete corp %s" % corp)
+        if settings.IS_CORP is False:
+            if corp.alliance:
+                logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
+                if corp.alliance.alliance_id == settings.ALLIANCE_ID is False:
+                    logger.info("Deleting unnecessary corp model %s" % corp)
+                    corp.delete()
+            else:
+                logger.info("Deleting unnecessary corp model %s" % corp)
+                corp.delete()
+        else:
+            if corp.corporation_id != settings.CORP_ID:
+                logger.debug("Corp %s is not owning corp" % corp)
                 if corp.alliance:
-                    if corp.alliance.alliance_id == settings.ALLIANCE_ID is False:
+                    logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
+                    if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
                         logger.info("Deleting unnecessary corp model %s" % corp)
                         corp.delete()
                 else:
                     logger.info("Deleting unnecessary corp model %s" % corp)
                     corp.delete()
             else:
-                if corp.corporation_id == settings.CORP_ID is False:
-                    if corp.alliance:
-                        if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
-                            logger.info("Deleting unnecessary corp model %s" % corp)
-                            corp.delete()
-                    else:
-                        logger.info("Deleting unnecessary corp model %s" % corp)
-                        corp.delete()
+                logger.debug("Corp %s is owning corp" % corp)
