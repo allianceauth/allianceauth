@@ -14,7 +14,7 @@ from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from form import opForm
 from models import optimer
-from form import optimerUpdateForm
+
 
 import logging
 
@@ -90,7 +90,7 @@ def edit_optimer(request, optimer_id):
     logger.debug("edit_optimer called by user %s for optimer id %s" % (request.user, optimer_id))
     op = get_object_or_404(optimer, id=optimer_id)
     if request.method == 'POST':
-        form = optimerUpdateForm(request.POST)
+        form = opForm(request.POST)
         logger.debug("Received POST request containing update optimer form, is valid: %s" % form.is_valid())
         if form.is_valid():
             auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -120,5 +120,5 @@ def edit_optimer(request, optimer_id):
             'fc': op.fc,
             'details': op.details,
         }
-        form = optimerUpdateForm(initial= data)
+        form = opForm(initial= data)
     return render_to_response('registered/optimerupdate.html', {'form':form}, context_instance=RequestContext(request))
