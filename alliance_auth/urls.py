@@ -177,6 +177,7 @@ urlpatterns = patterns('',
                        url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
                        url(r'^add_signature/$', 'sigtracker.views.add_signature_view', name='auth_add_signature_view'),
                        url(r'^remove_signature/(\w+)', 'sigtracker.views.remove_signature', name='auth_remove_signature'),
+                       url(r'^edit_signature/(\w+)$', 'sigtracker.views.edit_signature', name='auth_edit_signature'),
 
                        # Fleet Operations Timers
                        url(r'^optimer/$', 'optimer.views.optimer_view', name='auth_optimer_view'),
