@@ -12,7 +12,7 @@ from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from form import SignatureForm
 from models import sigtracker
-from form import SignatureUpdateForm
+
 
 import logging
 
@@ -86,7 +86,7 @@ def edit_signature(request, sigtracker_id):
     logger.debug("edit_optimer called by user %s for optimer id %s" % (request.user, sigtracker_id))
     sig = get_object_or_404(sigtracker, id=sigtracker_id)
     if request.method == 'POST':
-        form = SignatureUpdateForm(request.POST)
+        form = SignatureForm(request.POST)
         logger.debug("Received POST request containing update sigtracker form, is valid: %s" % form.is_valid())
         if form.is_valid():
             auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -112,5 +112,5 @@ def edit_signature(request, sigtracker_id):
             'status': sig.status,
             'notes': sig.notes,
         }
-        form = SignatureUpdateForm(initial= data)
+        form = SignatureForm(initial= data)
     return render_to_response('registered/signatureupdate.html', {'form':form}, context_instance=RequestContext(request))
