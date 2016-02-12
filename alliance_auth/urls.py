@@ -143,6 +143,7 @@ urlpatterns = patterns('',
                        url(r'^timers/$', 'timerboard.views.timer_view', name='auth_timer_view'),
                        url(r'^add_timer/$', 'timerboard.views.add_timer_view', name='auth_add_timer_view'),
                        url(r'^remove_timer/(\w+)', 'timerboard.views.remove_timer', name='auth_remove_timer'),
+                       url(r'^edit_timer/(\w+)$', 'timerboard.views.edit_timer', name='auth_edit_timer'),
 
                        # SRP URLS
                        url(r'^srp/$', 'srp.views.srp_management', name='auth_srp_management_view'),
