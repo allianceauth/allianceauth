@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Notification(models.Model):
 
@@ -15,8 +18,8 @@ class Notification(models.Model):
     level = models.CharField(choices=LEVEL_CHOICES, max_length=10)
     title = models.CharField(max_length=254)
     message = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    viewed = models.BooleanField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    viewed = models.BooleanField(default=False)
 
     def view(self):
         logger.info("Marking notification as viewed: %s" % self)
@@ -26,3 +29,6 @@ class Notification(models.Model):
     def __unicode__(self):
         output = "%s: %s" % (self.user, self.title)
         return output.encode('utf-8')
+
+    def set_level(self, level):
+        self.level = [item[0] for item in self.LEVEL_CHOICES if item[1] == level][0]

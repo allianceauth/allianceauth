@@ -1,4 +1,4 @@
 from .models import Notification
 
 def user_notification_count(request):
-    return len(Notification.objects.filter(user=request.user).filter(viewed=False))
+    return {'notifications':len(Notification.objects.filter(user__id=request.user.id).filter(viewed=False))}
