@@ -1,0 +1,74 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+   <div class="col-lg-12">
+        <h1 class="page-header text-center">Notifications</h1>
+        <div class="col-lg-12 container" id="example">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#unread">Unread <b>({{unread|length}})</b></a></li>
+                        <li><a data-toggle="tab" href="#read">Read <b>({{read|length}})</b></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="unread" class="tab-pane fade in active">
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed table-hover table-striped">
+                                        <tr>
+                                            <th class="text-center">Timestamp</th>
+                                            <th class="text-center">Title</th>
+                                            <th class="text-center">View</th>
+                                        </tr>
+                                        {% for notif in unread %}
+                                            <tr class="{{ notif.level }}">
+                                                <td class="text-center">{{ notif.timestamp }}</td>
+                                                <td class="text-center">{{ notif.title }}</td>
+                                                <td class="text-center">
+                                                    <a href="{% url 'auth_notification_view' notif.id %}">
+                                                        <button type="button" class="btn btn-success" title="View">
+                                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                                        </button>
+                                                     </a>
+                                                 </td>
+                                             </tr>
+                                         {% endfor %}
+                                     </table>
+                                 </div>
+                             </div>
+                         </div>
+                        <div id="read" class="tab-pane fade">
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed table-hover table-striped">
+                                        <tr>
+                                            <th class="text-center">Timestamp</th>
+                                            <th class="text-center">Title</th>
+                                            <th class="text-center">View</th>
+                                        </tr>
+                                        {% for notif in read %}
+                                            <tr class="{{ notif.level }}">
+                                                <td class="text-center">{{ notif.timestamp }}</td>
+                                                <td class="text-center">{{ notif.title }}</td>
+                                                <td class="text-center">
+                                                    <a href="{% url 'auth_notification_view' notif.id %}">
+                                                        <button type="button" class="btn btn-success" title="View">
+                                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

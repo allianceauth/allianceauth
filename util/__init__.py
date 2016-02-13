@@ -27,6 +27,7 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="signature_view", content_type=ct, name="signature_view")
     Permission.objects.get_or_create(codename="optimer_management", content_type=ct, name="optimer_management")
     Permission.objects.get_or_create(codename="optimer_view", content_type=ct, name="optimer_view")
+    Permission.objects.get_or_create(codename="logging_notifications", content_type=ct, name="logging_notifications")
     Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
     Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
     logger.info("Bootstrapped permissions for auth and created default groups.")

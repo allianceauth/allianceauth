@@ -186,4 +186,7 @@ urlpatterns = patterns('',
                        url(r'^remove_optimer/(\w+)', 'optimer.views.remove_optimer', name='auth_remove_optimer'),
                        url(r'^edit_optimer/(\w+)$', 'optimer.views.edit_optimer', name='auth_edit_optimer'),
 
+                       # Notifications
+                       url(r'^notifications/$', 'notifications.views.notification_list', name='auth_notification_list'),
+                       url(r'^notifications/(\w+)/$', 'notifications.views.notification_view', name='auth_notification_view'),
 )
