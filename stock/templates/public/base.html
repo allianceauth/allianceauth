@@ -49,11 +49,11 @@
             <ul class="nav navbar-top-links navbar-right">
                 {% if notifications %}
                     <li class="nav-link active"><a href="{% url 'auth_notification_list' %}">
-                        <span class="glyphicon glyphicon-alert"></span></a>
+                        <i class="fa fa-flag"></i></a>
                     </li>
                 {% else %}
                     <li class="nav-link"><a href="{% url 'auth_notification_list' %}">
-                        <span class="glyphicon glyphicon-warning-sign"></span></a>
+                        <i class="fa fa-flag-o"></i></a>
                     </li>
                 {% endif %}
                 {% if user.is_authenticated %}
