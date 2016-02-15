@@ -1,0 +1,22 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+
+{% block title %}View Notification{% endblock title %}
+{% block page_title %}View Notification{% endblock page_title %}
+
+{% block content %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">View Notification</h1>
+        <div class="col-lg-12 container" id="example">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-{{ notif.level }}">
+                        <div class="panel-heading">{{ notif.timestamp }} {{ notif.title }}</div>
+                        <div class="panel-body">{{ notif.message }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

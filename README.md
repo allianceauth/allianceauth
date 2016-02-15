@@ -16,7 +16,7 @@ Join us in-game in the channel allianceauth for help and feature requests.
 
 Special Thanks: 
 
-    Thanking [Nikdoof](https://github.com/nikdoof), without his old auth 
+    Thanking Nikdoof, without his old auth 
     implementation this project wouldn't be as far as it is now.
     
     Thanks to Raynaldo for his original work on this system and getting it as far as it is today.
@@ -74,6 +74,7 @@ Special Permissions In Admin:
     auth | user | sigtracker_view ( Allows for an individual view signitures)
     auth | user | optimer_management ( Allows for an individual to create and remove fleet operations)
     auth | user | optimer_view ( Allows for an individual view fleet operations)
+    auth | user | logging_notifications ( Generate notifications from logging)
 
 Active Developers
 

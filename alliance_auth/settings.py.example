@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'sigtracker',
     'optimer',
     'corputils',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,6 +127,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'util.context_processors.domain_url',
     'util.context_processors.member_api_mask',
     'util.context_processors.blue_api_mask',
+    'notifications.context_processors.user_notification_count',
 )
 
 TEMPLATE_DIRS = (
@@ -408,67 +410,72 @@ LOGGING = {
             'level': 'DEBUG',        # edit this line to change logging level to console
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-        }
+        },
+        'notifications': {           # creates notifications for users with logging_notifications permission
+            'level': 'ERROR',        # edit this line to change logging level to notifications
+            'class': 'notifications.handlers.NotificationHandler',
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'authentication': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'celerytask': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'eveonline': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'groupmanagement': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'hrapplications': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'portal': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'registration': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'services': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'srp': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'timerboard': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'sigtracker': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'optimer': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'corputils': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'util': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'django': {
-            'handlers': ['log_file', 'console'],
+            'handlers': ['log_file', 'console', 'notifications'],
             'level': 'ERROR',
         },
     }
