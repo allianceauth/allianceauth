@@ -675,7 +675,7 @@ def run_corp_update():
     for corp in EveCorporationInfo.objects.filter(is_blue=True):
         if int(corp.corporation_id) in standings:
             if float(standings[int(corp.corporation_id)]['standing']) < float(settings.BLUE_STANDING):
-                logger.info("Corp %s no longer meets minimum blue standing threshold" % (corp, corp.alliance))
+                logger.info("Corp %s no longer meets minimum blue standing threshold" % corp)
                 corp.is_blue = False
                 corp.save()
         else:
