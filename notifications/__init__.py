@@ -5,8 +5,8 @@ def notify(user, title, message=None, level='info'):
     notif.user = user
     notif.title = title
     if not message:
-        message = Title
+        message = title
     notif.message = message
     notif.level = level
     notif.save()
-    logger.info("Created notification %s" % notif
+    logger.info("Created notification %s" % notif)

@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect
-
+from notifications import notify
 from models import HRApplication
 from models import HRApplicationComment
 from forms import HRApplicationForm
@@ -162,6 +162,7 @@ def hr_application_remove(request, app_id):
         application = HRApplication.objects.get(id=app_id)
         if application:
             logger.info("Deleted HRApplication id %s on behalf of user %s" % (app_id, request.user))
+            notify(application.user, "Application Deleted", message="Your application to %s was deleted.")
             application.delete()
         else:
                     logger.error("Unable to delete HRApplication with id %s on behalf of user %s: application is NoneType" % (app_id, request.user))
@@ -183,6 +184,7 @@ def hr_application_approve(request, app_id):
         application.reviewer_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
         application.save()
         logger.info("HRApplication for user %s to corp %s approved by %s" % (application.user, application.corp, request.user))
+        notify(application.user, "Application Accepted", message="Your application to %s has been approved." % application.corp, level="success")
     else:
         logger.error("User %s unable to approve HRApplication id %s - hrapplication with that id not found." % (request.user, app_id))
 
@@ -201,6 +203,7 @@ def hr_application_reject(request, app_id):
         application.reviewer_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
         application.save()
         logger.info("HRApplication for user %s to corp %s rejected by %s" % (application.user, application.corp, request.user))
+        notify(application.user, "Application Rejected", message="Your application to %s has been rejected." % application.corp, level="danger")
     else:
         logger.error("User %s unable to reject HRApplication id %s - hrapplication with that id not found." % (request.user, app_id))
 
@@ -251,6 +254,7 @@ def hr_application_mark_in_progress(request, app_id):
         application.reviewer_inprogress_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
         application.save()
         logger.info("Marked HRApplication for user %s to corp %s in progress by user %s" % (application.user, application.corp, request.user))
+        notify(application.user, "Application In Progress", message="Your application to %s is being reviewed by %s" % (application.corp, application.reviewer_inprogress_character))
     else:
         logger.error("Unable to mark HRApplication id %s in progress by user %s - hrapplication matching id not found." % (app_id, request.user))
 
