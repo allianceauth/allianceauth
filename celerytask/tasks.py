@@ -2,11 +2,8 @@ from django.conf import settings
 from celery.task import periodic_task
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-<<<<<<< HEAD
 from notifications import notify
-=======
 from celery import task
->>>>>>> 450f577860abad4644e02eb5a14a58bf047f17b2
 from models import SyncGroupCache
 from celery.task.schedules import crontab
 from services.managers.openfire_manager import OpenfireManager
