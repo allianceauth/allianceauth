@@ -2,7 +2,7 @@ from django.conf import settings
 from celery.task import periodic_task
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-
+from celery import task
 from models import SyncGroupCache
 from celery.task.schedules import crontab
 from services.managers.openfire_manager import OpenfireManager
@@ -522,6 +522,39 @@ def populate_alliance(id, blue=False):
             EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
                                                     corpinfo['members']['current'], blue, alliance)
 
+@task
+def update_alliance(id):
+    alliance = EveAllianceInfo.objects.get(alliance_id=id)
+    corps = EveCorporationInfo.objects.filter(alliance=alliance)
+    logger.debug("Updating alliance %s with %s member corps" % (alliance, len(corps)))
+    allianceinfo = EveApiManager.get_alliance_information(alliance.alliance_id)
+    if allianceinfo:
+        EveManager.update_alliance_info(allianceinfo['id'], allianceinfo['executor_id'],
+                                        allianceinfo['member_count'], alliance.is_blue)
+        for corp in corps:
+            if corp.corporation_id in allianceinfo['member_corps'] is False:
+                logger.info("Corp %s no longer in alliance %s" % (corp, alliance))
+                corp.alliance = None
+                corp.save()
+        populate_alliance(alliance.alliance_id, blue=alliance.is_blue)
+    elif EveApiManager.check_if_alliance_exists(alliance.alliance_id) is False:
+        logger.info("Alliance %s has closed. Deleting model" % alliance)
+        alliance.delete()
+
+@task
+def update_corp(id):
+    corp = EveCorporationInfo.objects.get(corporation_id=id)
+    logger.debug("Updating corp %s" % corp)
+    corpinfo = EveApiManager.get_corporation_information(corp.corporation_id)
+    if corpinfo:
+        alliance = None
+        if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
+            alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
+        EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, corp.is_blue)
+    elif EveApiManager.check_if_corp_exists(corp.corporation_id) is False:
+        logger.info("Corp %s has closed. Deleting model" % corp)
+        corp.delete()    
+
 # Run Every 2 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/2"))
 def run_corp_update():
@@ -595,33 +628,11 @@ def run_corp_update():
 
     # update existing corp models
     for corp in EveCorporationInfo.objects.all():
-        logger.debug("Updating corp %s" % corp)
-        corpinfo = EveApiManager.get_corporation_information(corp.corporation_id)
-        if corpinfo:
-            alliance = None
-            if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
-                alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
-            EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, corp.is_blue)
-        elif EveApiManager.check_if_corp_exists(corp.corporation_id) is False:
-            logger.info("Corp %s has closed. Deleting model" % corp)
-            corp.delete()
+        update_corp.delay(corp.corporation_id)
 
     # update existing alliance models
     for alliance in EveAllianceInfo.objects.all():
-        logger.debug("Updating alliance %s" % alliance)
-        allianceinfo = EveApiManager.get_alliance_information(alliance.alliance_id)
-        if allianceinfo:
-            EveManager.update_alliance_info(allianceinfo['id'], allianceinfo['executor_id'],
-                                            allianceinfo['member_count'], alliance.is_blue)
-            for corp in EveCorporationInfo.objects.filter(alliance=alliance):
-                if corp.corporation_id in allianceinfo['member_corps'] is False:
-                    logger.info("Corp %s no longer in alliance %s" % (corp, alliance))
-                    corp.alliance = None
-                    corp.save()
-            populate_alliance(alliance.alliance_id, blue=alliance.is_blue)
-        elif EveApiManager.check_if_alliance_exists(alliance.alliance_id) is False:
-            logger.info("Alliance %s has closed. Deleting model" % alliance)
-            alliance.delete()
+        update_alliance.delay(alliance.alliance_id)
 
     # create standings
     standings = EveApiManager.get_corp_standings()
