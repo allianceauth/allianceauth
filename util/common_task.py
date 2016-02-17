@@ -70,3 +70,5 @@ def deactivate_services(user):
 def generate_corp_group_name(corpname):
     return 'Corp_' + corpname.replace(' ', '_')
 
+def generate_alliance_group_name(alliancename):
+    return 'Alliance_' + alliancename.replace(' ', '_')

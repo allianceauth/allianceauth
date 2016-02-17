@@ -23,6 +23,7 @@ from util import check_if_user_has_permission
 from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
 from util.common_task import generate_corp_group_name
+from util.common_task import generate_alliance_group_name
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.models import EveAllianceInfo
@@ -271,6 +272,34 @@ def assign_corp_group(auth):
                 logger.info("Removing user %s from old corpgroup %s" % (auth.user, g))
                 auth.user.groups.remove(g)
 
+def assign_alliance_group(auth):
+    alliance_group = None
+    if auth.main_char_id:
+        if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
+            char = EveCharacter.objects.get(character_id=auth.main_char_id)
+            if char.alliance_name:
+                alliancename = generate_alliance_group_name(char.alliance_name)
+                state = determine_membership_by_character(char)
+                if state == "BLUE" and settings.BLUE_ALLIANCE_GROUPS:
+                    logger.debug("Validating blue user %s has alliance group assigned." % auth.user)
+                    alliance_group, c = Group.objects.get_or_create(name=alliancename)
+                elif state == "MEMBER" and settings.MEMBER_ALLIANCE_GROUPS:
+                    logger.debug("Validating member %s has alliance group assigned." % auth.user)
+                    alliance_group, c = Group.objects.get_or_create(name=alliancename)
+                else:
+                    logger.debug("Ensuring non-member %s has no alliance groups assigned." % auth.user)
+            else:
+                logger.debug("User %s main character %s not in an alliance. Ensuring no allinace group assigned." % (auth.user, char))
+    if alliance_group:
+        if not alliance_group in auth.user.groups.all():
+            logger.info("Adding user %s to alliance group %s" % (auth.user, alliance_group))
+            auth.user.groups.add(alliance_group)
+    for g in auth.user.groups.all():
+        if str.startswith(str(g.name), "Alliance_"):
+            if g != alliance_group:
+                logger.info("Removing user %s from old alliancegroup %s" % (auth.user, g))
+                auth.user.groups.remove(g)
+
 def make_member(user):
     logger.debug("Ensuring user %s has member permissions and groups." % user)
     # ensure member is not blue right now
@@ -295,6 +324,7 @@ def make_member(user):
         auth.is_blue = False
         auth.save()
     assign_corp_group(auth)
+    assign_alliance_group(auth)
 
 def make_blue(user):
     logger.debug("Ensuring user %s has blue permissions and groups." % user)
@@ -320,6 +350,7 @@ def make_blue(user):
         auth.is_blue = True
         auth.save()
     assign_corp_group(auth)
+    assign_alliance_group(auth)
 
 def determine_membership_by_character(char):
     if settings.IS_CORP:
