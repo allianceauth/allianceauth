@@ -278,7 +278,7 @@ def assign_alliance_group(auth):
         if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
             if char.alliance_name:
-                alliancename = generate_corp_group_name(char.alliance_name)
+                alliancename = generate_alliance_group_name(char.alliance_name)
                 state = determine_membership_by_character(char)
                 if state == "BLUE" and settings.BLUE_ALLIANCE_GROUPS:
                     logger.debug("Validating blue user %s has alliance group assigned." % auth.user)
