@@ -24,7 +24,8 @@ class UpdateKeyForm(forms.Form):
             if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
                 logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
                 raise forms.ValidationError(u'API key already exist')
-
+            if EveApiManager.api_key_is_valid(self.cleaned_data['api_id'], self.cleaned_data['api_key']) is False:
+                raise forms.ValidationError(u'API key is invalid')
             chars = EveApiManager.get_characters_from_api(self.cleaned_data['api_id'], self.cleaned_data['api_key']).result
             states = []
             states.append(self.user_state)
