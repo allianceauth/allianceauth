@@ -1,4 +1,7 @@
 from .models import Notification
+import logging
+
+logger = logging.getLogger(__name__)
 
 def notify(user, title, message=None, level='info'):
     notif = Notification()
