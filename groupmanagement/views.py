@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
-
+from notifications import notify
 from models import GroupDescription
 from models import GroupRequest
 from models import HiddenGroup
@@ -48,6 +48,7 @@ def group_accept_request(request, group_request_id):
         group_request.user.save()
         group_request.delete()
         logger.info("User %s accepted group request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
+        notify(group_request.user, "Group Application Accepted", level="success", message="Your application to %s has been accepted." % group_request.group)
     except:
         logger.exception("Unhandled exception occured while user %s attempting to accept grouprequest id %s." % (request.user, group_request_id))
         pass
@@ -65,6 +66,7 @@ def group_reject_request(request, group_request_id):
         if group_request:
             logger.info("User %s rejected group request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
             group_request.delete()
+            notify(group_request.user, "Group Application Rejected", level="danger", message="Your application to %s has been rejected." % group_request.group)
     except:
         logger.exception("Unhandled exception occured while user %s attempting to reject group request id %s" % (request.user, group_request_id))
         pass
@@ -83,6 +85,7 @@ def group_leave_accept_request(request, group_request_id):
         group_request.user.save()
         group_request.delete()
         logger.info("User %s accepted group leave request from user %s to group %s" % (request.user, group_request.user, group_request.group.name))
+        notify(group_request.user, "Group Leave Request Accepted", level="success", message="Your request to leave %s has been accepted." % group_request.group)
     except:
         logger.exception("Unhandled exception occured while user %s attempting to accept group leave request id %s" % (request.user, group_request_id))
         pass
@@ -100,6 +103,7 @@ def group_leave_reject_request(request, group_request_id):
         if group_request:
             group_request.delete()
             logger.info("User %s rejected group leave request from user %s for group %s" % (request.user, group_request.user, group_request.group.name))
+            notify(group_request.user, "Group Leave Request Rejected", level="danger", message="Your request to leave %s has been rejected." % group_request.group)
     except:
         logger.exception("Unhandled exception occured while user %s attempting to reject group leave request id %s" % (request.user, group_request_id))
         pass
@@ -160,7 +164,6 @@ def group_request_add(request, group_id):
     grouprequest.leave_request = False
     grouprequest.save()
     logger.info("Created group request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
-
     return HttpResponseRedirect("/groups")
 
 
