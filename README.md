@@ -1,6 +1,8 @@
 Alliance Auth
 ============
 
+[![Join the chat at https://gitter.im/R4stl1n/allianceauth](https://badges.gitter.im/R4stl1n/allianceauth.svg)](https://gitter.im/R4stl1n/allianceauth?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Alliance service auth to help large scale alliances manage services.
 Built for "The 99 Percent" open for anyone to use
 
