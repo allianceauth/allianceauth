@@ -2,7 +2,8 @@ from django.conf import settings
 from celery.task import periodic_task
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-
+from notifications import notify
+from celery import task
 from models import SyncGroupCache
 from celery.task.schedules import crontab
 from services.managers.openfire_manager import OpenfireManager
@@ -23,6 +24,7 @@ from util import check_if_user_has_permission
 from util.common_task import add_user_to_group
 from util.common_task import remove_user_from_group
 from util.common_task import generate_corp_group_name
+from util.common_task import generate_alliance_group_name
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.models import EveAllianceInfo
@@ -34,14 +36,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 def disable_member(user):
+    change = False
     logger.debug("Disabling member %s" % user)
     if user.user_permissions.all().exists():
         logger.info("Clearning user %s permission to deactivate user." % user)
         user.user_permissions.clear()
+        change = True
     if user.groups.all().exists():
         logger.info("Clearing user %s groups to deactivate user." % user)
         user.groups.clear()
+        change = True
     deactivate_services(user)
+    return change
 
 def is_teamspeak3_active():
     return settings.ENABLE_AUTH_TEAMSPEAK3 or settings.ENABLE_BLUE_TEAMSPEAK3
@@ -271,55 +277,99 @@ def assign_corp_group(auth):
                 logger.info("Removing user %s from old corpgroup %s" % (auth.user, g))
                 auth.user.groups.remove(g)
 
+def assign_alliance_group(auth):
+    alliance_group = None
+    if auth.main_char_id:
+        if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
+            char = EveCharacter.objects.get(character_id=auth.main_char_id)
+            if char.alliance_name:
+                alliancename = generate_alliance_group_name(char.alliance_name)
+                state = determine_membership_by_character(char)
+                if state == "BLUE" and settings.BLUE_ALLIANCE_GROUPS:
+                    logger.debug("Validating blue user %s has alliance group assigned." % auth.user)
+                    alliance_group, c = Group.objects.get_or_create(name=alliancename)
+                elif state == "MEMBER" and settings.MEMBER_ALLIANCE_GROUPS:
+                    logger.debug("Validating member %s has alliance group assigned." % auth.user)
+                    alliance_group, c = Group.objects.get_or_create(name=alliancename)
+                else:
+                    logger.debug("Ensuring non-member %s has no alliance groups assigned." % auth.user)
+            else:
+                logger.debug("User %s main character %s not in an alliance. Ensuring no allinace group assigned." % (auth.user, char))
+    if alliance_group:
+        if not alliance_group in auth.user.groups.all():
+            logger.info("Adding user %s to alliance group %s" % (auth.user, alliance_group))
+            auth.user.groups.add(alliance_group)
+    for g in auth.user.groups.all():
+        if str.startswith(str(g.name), "Alliance_"):
+            if g != alliance_group:
+                logger.info("Removing user %s from old alliancegroup %s" % (auth.user, g))
+                auth.user.groups.remove(g)
+
 def make_member(user):
+    change = False
     logger.debug("Ensuring user %s has member permissions and groups." % user)
     # ensure member is not blue right now
     if check_if_user_has_permission(user, 'blue_member'):
         logger.info("Removing user %s blue permission to transition to member" % user)
         remove_member_permission(user, 'blue_member')
+        change = True
     blue_group, c = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
     if blue_group in user.groups.all():
         logger.info("Removing user %s blue group" % user)
         user.groups.remove(blue_group)
+        change = True
     # make member
     if check_if_user_has_permission(user, 'member') is False:
         logger.info("Adding user %s member permission" % user)
         add_member_permission(user, 'member')
+        change = True
     member_group, c = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
     if not member_group in user.groups.all():
         logger.info("Adding user %s to member group" % user)
         user.groups.add(member_group)
+        change = True
     auth, c = AuthServicesInfo.objects.get_or_create(user=user)
     if auth.is_blue:
         logger.info("Marking user %s as non-blue" % user)
         auth.is_blue = False
         auth.save()
+        change = True
     assign_corp_group(auth)
+    assign_alliance_group(auth)
+    return change
 
 def make_blue(user):
+    change = False
     logger.debug("Ensuring user %s has blue permissions and groups." % user)
     # ensure user is not a member
     if check_if_user_has_permission(user, 'member'):
         logger.info("Removing user %s member permission to transition to blue" % user)
         remove_member_permission(user, 'blue_member')
+        change = True
     member_group, c = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
     if member_group in user.groups.all():
         logger.info("Removing user %s member group" % user)
         user.groups.remove(member_group)
+        change = True
     # make blue
     if check_if_user_has_permission(user, 'blue_member') is False:
         logger.info("Adding user %s blue permission" % user)
         add_member_permission(user, 'blue_member')
+        change = True
     blue_group, c = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
     if not blue_group in user.groups.all():
         logger.info("Adding user %s to blue group" % user)
         user.groups.add(blue_group)
+        change = True
     auth, c = AuthServicesInfo.objects.get_or_create(user=user)
     if auth.is_blue is False:
         logger.info("Marking user %s as blue" % user)
         auth.is_blue = True
         auth.save()
+        change = True
     assign_corp_group(auth)
+    assign_alliance_group(auth)
+    return change
 
 def determine_membership_by_character(char):
     if settings.IS_CORP:
@@ -357,14 +407,17 @@ def determine_membership_by_user(user):
         return False
 
 def set_state(user):
+    change = False
     state = determine_membership_by_user(user)
     logger.debug("Assigning user %s to state %s" % (user, state))
     if state == "MEMBER":
-        make_member(user)
+        change = make_member(user)
     elif state == "BLUE":
-        make_blue(user)
+        change = make_blue(user)
     else:
-        disable_member(user)
+        change = disable_member(user)
+    if change:
+        notify(user, "Membership State Change", message="You membership state has been changed to %s" % state)
 
 # Run every minute
 @periodic_task(run_every=crontab(minute="*/1"))
@@ -414,6 +467,7 @@ def refresh_api(api_key_pair):
                 elif type == False:
                     logger.info("Determined api key %s for blue user %s is no longer type account as requred." % (api_key_pair.api_id, user))
                     still_valid = False
+                    notify(user, "API Failed Validation", message="Your API key ID %s is not account-wide as required." % api_key_pair.api_id, level="danger")
                 full = EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
                 if full == None:
                     api_key_pair.error_count += 1
@@ -423,6 +477,7 @@ def refresh_api(api_key_pair):
                 elif full == False:
                     logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                     still_valid = False
+                    notify(user, "API Failed Validation", message="Your API key ID %s does not meet access mask requirements." % api_key_pair.api_id, level="danger")
         elif state == "MEMBER":
             if settings.MEMBER_API_ACCOUNT:
                 type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
@@ -434,6 +489,7 @@ def refresh_api(api_key_pair):
                 elif type == False:
                     logger.info("Determined api key %s for user %s is no longer type account as required." % (api_key_pair.api_id, user))
                     still_valid = False
+                    notify(user, "API Failed Validation", message="Your API key ID %s is not account-wide as required." % api_key_pair.api_id, level="danger")
                 full = EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
                 if full == None:
                     api_key_pair.error_count += 1
@@ -443,14 +499,17 @@ def refresh_api(api_key_pair):
                 elif full == False:
                     logger.info("Determined api key %s for user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                     still_valid = False
+                    notify(user, "API Failed Validation", message="Your API key ID %s does not meet access mask requirements." % api_key_pair.api_id, level="danger")
         if still_valid == None:
                if api_key_pair.error_count >= 3:
                    logger.info("API key %s has incurred 3 or more errors. Assuming invalid." % api_key_pair.api_id)
                    still_valid = False
+                   notify(user, "API Failed Validation", message="Your API key ID %s has accumulated too many errors during refresh and is assumed to be invalid." % api_key_pair.api_id, level="danger")
         if still_valid == False:
                logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
                EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
                EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+               notify(user, "API Key Deleted", message="Your API key ID %s has failed validation. It and its associated characters have been deleted." % api_key_pair.api_id, level="danger")
         elif still_valid == True:
                if api_key_pair.error_count != 0:
                    logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
@@ -473,6 +532,7 @@ def refresh_api(api_key_pair):
         logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
         EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
         EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+        notify(user, "API Key Deleted", message="Your API key ID %s is invalid. It and its associated characters have been deleted." % api_key_pair.api_id, level="danger")
 
 # Run every 3 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/3"))
@@ -495,6 +555,7 @@ def run_api_refresh():
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))
                     authserviceinfo.main_char_id = ''
                     authserviceinfo.save()
+                    notify(user, "Main Character Reset", message="Your specified main character no longer has a model.\nThis could be the result of an invalid API\nYour main character ID has been reset." % api_key_pair.api_id, level="warn")
         set_state(user)
 
 def populate_alliance(id, blue=False):
@@ -521,6 +582,39 @@ def populate_alliance(id, blue=False):
             corpinfo = EveApiManager.get_corporation_information(member_corp)
             EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
                                                     corpinfo['members']['current'], blue, alliance)
+
+@task
+def update_alliance(id):
+    alliance = EveAllianceInfo.objects.get(alliance_id=id)
+    corps = EveCorporationInfo.objects.filter(alliance=alliance)
+    logger.debug("Updating alliance %s with %s member corps" % (alliance, len(corps)))
+    allianceinfo = EveApiManager.get_alliance_information(alliance.alliance_id)
+    if allianceinfo:
+        EveManager.update_alliance_info(allianceinfo['id'], allianceinfo['executor_id'],
+                                        allianceinfo['member_count'], alliance.is_blue)
+        for corp in corps:
+            if corp.corporation_id in allianceinfo['member_corps'] is False:
+                logger.info("Corp %s no longer in alliance %s" % (corp, alliance))
+                corp.alliance = None
+                corp.save()
+        populate_alliance(alliance.alliance_id, blue=alliance.is_blue)
+    elif EveApiManager.check_if_alliance_exists(alliance.alliance_id) is False:
+        logger.info("Alliance %s has closed. Deleting model" % alliance)
+        alliance.delete()
+
+@task
+def update_corp(id):
+    corp = EveCorporationInfo.objects.get(corporation_id=id)
+    logger.debug("Updating corp %s" % corp)
+    corpinfo = EveApiManager.get_corporation_information(corp.corporation_id)
+    if corpinfo:
+        alliance = None
+        if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
+            alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
+        EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, corp.is_blue)
+    elif EveApiManager.check_if_corp_exists(corp.corporation_id) is False:
+        logger.info("Corp %s has closed. Deleting model" % corp)
+        corp.delete()    
 
 # Run Every 2 hours
 @periodic_task(run_every=crontab(minute=0, hour="*/2"))
@@ -595,33 +689,11 @@ def run_corp_update():
 
     # update existing corp models
     for corp in EveCorporationInfo.objects.all():
-        logger.debug("Updating corp %s" % corp)
-        corpinfo = EveApiManager.get_corporation_information(corp.corporation_id)
-        if corpinfo:
-            alliance = None
-            if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
-                alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
-            EveManager.update_corporation_info(corpinfo['id'], corpinfo['members']['current'], alliance, corp.is_blue)
-        elif EveApiManager.check_if_corp_exists(corp.corporation_id) is False:
-            logger.info("Corp %s has closed. Deleting model" % corp)
-            corp.delete()
+        update_corp.delay(corp.corporation_id)
 
     # update existing alliance models
     for alliance in EveAllianceInfo.objects.all():
-        logger.debug("Updating alliance %s" % alliance)
-        allianceinfo = EveApiManager.get_alliance_information(alliance.alliance_id)
-        if allianceinfo:
-            EveManager.update_alliance_info(allianceinfo['id'], allianceinfo['executor_id'],
-                                            allianceinfo['member_count'], alliance.is_blue)
-            for corp in EveCorporationInfo.objects.filter(alliance=alliance):
-                if corp.corporation_id in allianceinfo['member_corps'] is False:
-                    logger.info("Corp %s no longer in alliance %s" % (corp, alliance))
-                    corp.alliance = None
-                    corp.save()
-            populate_alliance(alliance.alliance_id, blue=alliance.is_blue)
-        elif EveApiManager.check_if_alliance_exists(alliance.alliance_id) is False:
-            logger.info("Alliance %s has closed. Deleting model" % alliance)
-            alliance.delete()
+        update_alliance.delay(alliance.alliance_id)
 
     # create standings
     standings = EveApiManager.get_corp_standings()

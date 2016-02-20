@@ -170,7 +170,7 @@ class EveApiManager():
             logger.debug("Confirmed id %s is a corp." % corp_id)
             return True
         except evelink.api.APIError as error:
-            logger.exception("APIError occured while checking if id %s is corp. Possibly not corp?" % corp_id)
+            logger.debug("APIError occured while checking if id %s is corp. Possibly not corp?" % corp_id)
 
         logger.debug("Unable to verify id %s is corp." % corp_id)
         return False

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-
+from notifications import notify
 from authentication.managers import AuthServicesInfoManager
 from services.managers.openfire_manager import OpenfireManager
 from services.managers.phpbb3_manager import Phpbb3Manager
@@ -39,34 +39,44 @@ def remove_user_from_group(user, groupname):
 
 
 def deactivate_services(user):
+    change = False
     logger.debug("Deactivating services for user %s" % user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(user)
     if authinfo.mumble_username and authinfo.mumble_username != "":
         logger.debug("User %s has mumble account %s. Deleting." % (user, authinfo.mumble_username))
         MumbleManager.delete_user(authinfo.mumble_username)
         AuthServicesInfoManager.update_user_mumble_info("", "", user)
+        change = True
     if authinfo.jabber_username and authinfo.jabber_username != "":
         logger.debug("User %s has jabber account %s. Deleting." % (user, authinfo.jabber_username))
         OpenfireManager.delete_user(authinfo.jabber_username)
         AuthServicesInfoManager.update_user_jabber_info("", "", user)
+        change = True
     if authinfo.forum_username and authinfo.forum_username != "":
         logger.debug("User %s has forum account %s. Deleting." % (user, authinfo.forum_username))
         Phpbb3Manager.disable_user(authinfo.forum_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
+        change = True
     if authinfo.ipboard_username and authinfo.ipboard_username != "":
         logger.debug("User %s has ipboard account %s. Deleting." % (user, authinfo.ipboard_username))
         IPBoardManager.disable_user(authinfo.ipboard_username)
         AuthServicesInfoManager.update_user_forum_info("", "", user)
+        change = True
     if authinfo.teamspeak3_uid and authinfo.teamspeak3_uid != "":
         logger.debug("User %s has mumble account %s. Deleting." % (user, authinfo.teamspeak3_uid))
         Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
         AuthServicesInfoManager.update_user_teamspeak3_info("", "", user)
+        change = True
     if authinfo.discord_uid and authinfo.discord_uid != "":
         logger.debug("User %s has discord account %s. Deleting." % (user, authinfo.discord_uid))
         DiscordManager.delete_user(authinfo.discord_uid)
         AuthServicesInfoManager.update_user_discord_info("", user)
-
+        change = True
+    if change:
+        notify(user, "Services Disabled", message="Your services accounts have been disabled.", level="danger")
 
 def generate_corp_group_name(corpname):
     return 'Corp_' + corpname.replace(' ', '_')
 
+def generate_alliance_group_name(alliancename):
+    return 'Alliance_' + alliancename.replace(' ', '_')

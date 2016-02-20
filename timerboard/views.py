@@ -39,7 +39,7 @@ def timer_view(request):
         corp_timers = Timer.objects.all().filter(corp_timer=True).filter(eve_corp=corp)
     else:
         corp_timers = []
-    timer_list = Timer.objects.all()
+    timer_list = Timer.objects.filter(corp_timer=False)
     closest_timer = None
     if timer_list:
         closest_timer = \
