@@ -33,10 +33,11 @@ def notification_view(request, notif_id):
 @login_required
 def remove_notification(request, notif_id):
     logger.debug("remove notification called by user %s for notif_id %s" % (request.user, notif_id))
-    if Notification.objects.filter(id=notif_id).exists():
-        notif = get_object_or_404(Notification, pk=notif_id)
-        notif.delete()
-        logger.info("Deleting notif id %s by user %s" % (notif_id, request.user))
+    notif = get_object_or_404(Notification, pk=notif_id)
+    if notif.user == request.user:
+        if Notification.objects.filter(id=notif_id).exists():
+            notif.delete()
+            logger.info("Deleting notif id %s by user %s" % (notif_id, request.user))
     else:
         logger.error("Unable to delete notif id %s for user %s - notif matching id not found." % (notif_id, request.user))
     return redirect('auth_notification_list')
