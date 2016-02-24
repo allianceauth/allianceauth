@@ -33,6 +33,11 @@
                                                             <span class="glyphicon glyphicon-eye-open"></span>
                                                         </button>
                                                      </a>
+                                                    <a href="{% url 'auth_remove_notification' notif.id %}">
+                                                        <button type="button" class="btn btn-danger" title="remove">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </a>
                                                  </td>
                                              </tr>
                                          {% endfor %}
@@ -57,6 +62,11 @@
                                                     <a href="{% url 'auth_notification_view' notif.id %}">
                                                         <button type="button" class="btn btn-success" title="View">
                                                             <span class="glyphicon glyphicon-eye-open"></span>
+                                                        </button>
+                                                    </a>
+                                                    <a href="{% url 'auth_remove_notification' notif.id %}">
+                                                        <button type="button" class="btn btn-danger" title="remove">
+                                                            <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </a>
                                                 </td>
