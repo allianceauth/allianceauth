@@ -189,4 +189,5 @@ urlpatterns = patterns('',
                        # Notifications
                        url(r'^notifications/$', 'notifications.views.notification_list', name='auth_notification_list'),
                        url(r'^notifications/(\w+)/$', 'notifications.views.notification_view', name='auth_notification_view'),
+                       url(r'^remove_notifications/(\w+)', 'notifications.views.remove_notification', name='auth_remove_notification'),
 )
