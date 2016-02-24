@@ -103,6 +103,8 @@ class OpenfireManager:
         remote_groups = []
         if response:
             remote_groups = response['groupname']
+            if isinstance(remote_groups, basestring):
+                remote_groups = [remote_groups]
         logger.debug("Openfire user %s has groups %s" % (username, remote_groups))
         add_groups = []
         del_groups = []
