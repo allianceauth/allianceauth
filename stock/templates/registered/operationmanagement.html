@@ -42,9 +42,9 @@
                 <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
                 </td>
                 <td style="width:150px" class="text-center">{{ ops.location }}</td>
-                <td style="width:150px" class="text-center">{{ ops.start }}</td>
-				<td style="width:150px" class="text-center">{{ ops.duration }}</td>
- 	  			<td style="width:150px" class="text-center">{{ ops.fc }}</td>
+                <td style="width:150px" class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
+		<td style="width:150px" class="text-center">{{ ops.duration }}</td>
+ 	  	<td style="width:150px" class="text-center">{{ ops.fc }}</td>
                 <td style="width:150px" class="text-center">{{ ops.details }}</td>
                 <td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
                 {% if perms.auth.optimer_management %}
