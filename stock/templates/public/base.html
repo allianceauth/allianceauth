@@ -126,16 +126,9 @@
 
                         {% if perms.auth.corp_stats %}
                             <li>
-                                <a {% ifequal request.path "/corporation_stats/" %} class="active" {% endifequal %}
-                                                                                   href="{% url 'auth_corp_stats' %}"><i
-                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
-                            </li>
-                        {% endif %}
-                        {% if perms.auth.corputils %}
-                            <li>
                                 <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
-                                                                                   href="{% url 'auth_corp_member_view' %}"><i
-                                        class="fa fa-chain fa-fw grayiconecolor"></i> Member Tracking</a>
+                                                                                   href="{% url 'auth_corputils' %}"><i
+                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
                             </li>
                         {% endif %}
 

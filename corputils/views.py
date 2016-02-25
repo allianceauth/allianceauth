@@ -13,7 +13,9 @@ from services.managers.evewho_manager import EveWhoManager
 from eveonline.models import EveCorporationInfo
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCharacter
+from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
+from util import check_if_user_has_permission
 from forms import CorputilsSearchForm
 from evelink.api import APIError
 
@@ -42,7 +44,18 @@ def corp_member_view(request, corpid = None):
 
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
-    Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist"])
+    Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist", "apilist"])
+
+    send_apis = False
+    try:
+        user_main = EveCharacter.objects.get(character_id=AuthServicesInfoManager.get_auth_service_info(user=request.user).main_char_id)
+        if check_if_user_has_permission(request.user, 'alliance_apis') or (check_if_user_has_permission(request.user, 'corp_apis') and (user_main.corporation_id == corpid)):
+            logger.debug("Retreiving and sending API-information")
+            send_apis = True
+    except (ValueError, EveCharacter.DoesNotExist):
+        if check_if_user_has_permission(request.user, 'alliance_apis'):
+            logger.debug("Retreiving and sending API-information")
+            send_apis = True
 
     if settings.IS_CORP:
         try:
@@ -56,26 +69,31 @@ def corp_member_view(request, corpid = None):
     characters_with_api = {}
     characters_without_api = {}
 
+    ncharacters_with_api = 0
     for char_id, member_data in member_list.items():
         try:
             char = EveCharacter.objects.get(character_id=char_id)
-            user = char.user
+            char_owner = char.user
             try:
-                mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
+                mainid = int(AuthServicesInfoManager.get_auth_service_info(user=char_owner).main_char_id)
                 mainchar = EveCharacter.objects.get(character_id=mainid)
                 mainname = mainchar.character_name
                 maincorp = mainchar.corporation_name
                 maincorpid = mainchar.corporation_id
             except (ValueError, EveCharacter.DoesNotExist):
-                mainname = "User: " + user.username
+                mainname = "User: " + char_owner.username
                 mainchar = char
                 maincorp = "Not set."
                 maincorpid = None
+            ncharacters_with_api = ncharacters_with_api + 1
             characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                             maincorp=maincorp,
                                                             maincorpid=maincorpid,
-                                                            altlist=[])
+                                                            altlist=[],
+                                                            apilist=[])
                                            ).altlist.append(char)
+            if send_apis:
+                characters_with_api[mainname].apilist.append(EveApiKeyPair.objects.get(api_id=char.api_id))
 
         except EveCharacter.DoesNotExist:
             characters_without_api.update({member_data["name"]: member_data["id"]})
@@ -84,13 +102,17 @@ def corp_member_view(request, corpid = None):
     if not settings.IS_CORP:
         context = {"membercorp_list": membercorp_list,
                    "corp": corp,
+                   "sent_apis": send_apis,
                    "characters_with_api": sorted(characters_with_api.items()),
+                   'nwithapi': ncharacters_with_api,
                    "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
     else:
         logger.debug("corp_member_view running in corportation mode")
         context = {"corp": corp,
+                   "sent_apis": send_apis,
                    "characters_with_api": sorted(characters_with_api.items()),
+                   'nwithapi': ncharacters_with_api,
                    "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
 
@@ -104,6 +126,17 @@ def corputils_search(request, corpid=settings.CORP_ID):
     logger.debug("corputils_search called by user %s" % request.user)
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+
+    send_apis = False
+    try:
+        user_main = EveCharacter.objects.get(character_id=AuthServicesInfoManager.get_auth_service_info(user=request.user).main_char_id)
+        if check_if_user_has_permission(request.user, 'alliance_apis') or (check_if_user_has_permission(request.user, 'corp_apis') and (user_main.corporation_id == corpid)):
+            logger.debug("Retreiving and sending API-information")
+            send_apis = True
+    except (ValueError, EveCharacter.DoesNotExist):
+        if check_if_user_has_permission(request.user, 'alliance_apis'):
+            logger.debug("Retreiving and sending API-information")
+            send_apis = True
 
     if request.method == 'POST':
         form = CorputilsSearchForm(request.POST)
@@ -123,9 +156,9 @@ def corputils_search(request, corpid=settings.CORP_ID):
             else:
                 member_list = EveWhoManager.get_corporation_members(corpid)
 
-            Member = namedtuple('Member', ['name', 'main', 'api_registered'])
+            SearchResult = namedtuple('SearchResult', ['name', 'id', 'main', 'api_registered', 'character', 'apiinfo'])
 
-            members = []
+            searchresults = []
             for memberid, member_data in member_list.items():
                 if searchstring.lower() in member_data["name"].lower():
                     try:
@@ -136,13 +169,20 @@ def corputils_search(request, corpid=settings.CORP_ID):
                         api_registered = True
                     except EveCharacter.DoesNotExist:
                         api_registered = False
+                        char = None
                         mainname = ""
-                    members.append(Member(name=member_data["name"], main=mainname, api_registered=api_registered))
+                    if api_registered and send_apis:
+                        apiinfo = EveApiKeyPair.objects.get(api_id=char.api_id)
+                    else:
+                        apiinfo = None
+
+                    searchresults.append(SearchResult(name=member_data["name"], id=memberid, main=mainname, api_registered=api_registered,
+                                                character=char, apiinfo=apiinfo))
 
 
-            logger.info("Found %s members for user %s matching search string %s" % (len(members), request.user, searchstring))
+            logger.info("Found %s members for user %s matching search string %s" % (len(searchresults), request.user, searchstring))
 
-            context = {'corp': corp, 'members': members, 'search_form': CorputilsSearchForm()}
+            context = {'corp': corp, 'results': searchresults, 'search_form': CorputilsSearchForm(), 'sent_apis': send_apis}
 
             return render_to_response('registered/corputilssearchview.html',
                                       context, context_instance=RequestContext(request))
