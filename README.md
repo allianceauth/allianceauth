@@ -69,6 +69,8 @@ Special Permissions In Admin:
     auth | user | blue_member ( Auto Added to people who register has a blue when adding api key)
     auth | user | corp_stats ( View basic corp auth stats *who is authed etc*)
     auth | user | corputils ( View who has registered APIs, which alts belong to which main, and more. )
+    auth | user | corp_apis ( View APIs, andjackKnife, of all member in current corp. )
+    auth | user | alliance_apis ( View APIs, andjackKnife, of all member in whole alliance. )
     auth | user | timer_management ( Access to create and remove timers)
     auth | user | timer_view ( Access to timerboard to view timers)
     auth | user | srp_management ( Allows for an individual to create and remove srp fleets and fleet data)
