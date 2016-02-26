@@ -30,32 +30,39 @@ logger = logging.getLogger(__name__)
 def corp_member_view(request, corpid = None):
     logger.debug("corp_member_view called by user %s" % request.user)
 
+    try:
+        user_main = EveCharacter.objects.get(character_id=AuthServicesInfoManager.get_auth_service_info(user=request.user).main_char_id)
+        user_corp_id = int(user_main.corporation_id)
+    except (ValueError, EveCharacter.DoesNotExist):
+        user_corp_id = settings.CORP_ID
+
+
     if not settings.IS_CORP:
         alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
         alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
         membercorp_list = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
         membercorp_list.sort(key=lambda tup: tup[1])
 
+        membercorp_id_list = [int(membercorp.corporation_id) for membercorp in alliancecorps]
+        if user_corp_id not in membercorp_id_list:
+            user_corp_id = None
+
     if not corpid:
-        if(settings.CORP_ID):
+        if(settings.IS_CORP):
             corpid = settings.CORP_ID
+        elif user_corp_id:
+            corpid = user_corp_id
         else:
             corpid = membercorp_list[0][0]
-
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist", "apilist"])
 
     send_apis = False
-    try:
-        user_main = EveCharacter.objects.get(character_id=AuthServicesInfoManager.get_auth_service_info(user=request.user).main_char_id)
-        if check_if_user_has_permission(request.user, 'alliance_apis') or (check_if_user_has_permission(request.user, 'corp_apis') and (user_main.corporation_id == corpid)):
-            logger.debug("Retreiving and sending API-information")
-            send_apis = True
-    except (ValueError, EveCharacter.DoesNotExist):
-        if check_if_user_has_permission(request.user, 'alliance_apis'):
-            logger.debug("Retreiving and sending API-information")
-            send_apis = True
+
+    if check_if_user_has_permission(request.user, 'alliance_apis') or (check_if_user_has_permission(request.user, 'corp_apis') and (user_corp_id == corpid)):
+        logger.debug("Retreiving and sending API-information")
+        send_apis = True
 
     if settings.IS_CORP:
         try:
@@ -69,7 +76,7 @@ def corp_member_view(request, corpid = None):
     characters_with_api = {}
     characters_without_api = {}
 
-    ncharacters_with_api = 0
+    num_registered_characters = 0
     for char_id, member_data in member_list.items():
         try:
             char = EveCharacter.objects.get(character_id=char_id)
@@ -85,7 +92,7 @@ def corp_member_view(request, corpid = None):
                 mainchar = char
                 maincorp = "Not set."
                 maincorpid = None
-            ncharacters_with_api = ncharacters_with_api + 1
+            num_registered_characters = num_registered_characters + 1
             characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                             maincorp=maincorp,
                                                             maincorpid=maincorpid,
@@ -104,7 +111,7 @@ def corp_member_view(request, corpid = None):
                    "corp": corp,
                    "sent_apis": send_apis,
                    "characters_with_api": sorted(characters_with_api.items()),
-                   'nwithapi': ncharacters_with_api,
+                   'n_registered': num_registered_characters,
                    "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
     else:
@@ -112,7 +119,7 @@ def corp_member_view(request, corpid = None):
         context = {"corp": corp,
                    "sent_apis": send_apis,
                    "characters_with_api": sorted(characters_with_api.items()),
-                   'nwithapi': ncharacters_with_api,
+                   'n_registered': num_registered_characters,
                    "characters_without_api": sorted(characters_without_api.items()),
                    "search_form": CorputilsSearchForm()}
 
