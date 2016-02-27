@@ -42,7 +42,6 @@ urlpatterns = patterns('',
                        url(r'^characters/', 'eveonline.views.characters_view', name='auth_characters'),
                        url(r'^main_character_change/(\w+)/$', 'eveonline.views.main_character_change',
                            name='auth_main_character_change'),
-                       url(r'^corporation_stats/$', 'eveonline.views.corp_stats_view', name='auth_corp_stats'),
 
                        # Group management
                        url(r'^groups/', 'groupmanagement.views.groups_view', name='auth_groups'),
@@ -166,7 +165,7 @@ urlpatterns = patterns('',
                            name="auth_srp_request_update_amount_view"),
 
                        #corputils
-                       url(r'^corputils/$', 'corputils.views.corp_member_view', name='auth_corp_member_view'),
+                       url(r'^corputils/$', 'corputils.views.corp_member_view', name='auth_corputils'),
                        url(r'^corputils/(?P<corpid>[0-9]+)/$', 'corputils.views.corp_member_view'),
                        url(r'^corputils/search/$', 'corputils.views.corputils_search', name="auth_corputils_search"),
                        url(r'^corputils/search/(?P<corpid>[0-9]+)/$', 'corputils.views.corputils_search'),
