@@ -34,8 +34,8 @@
                                     <div class="col-lg-12 col-sm-5">
                                         <b>API Index:</b>
                                         <div class="progress">
-                                            <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{characters_with_api|length}}" aria-valuemin="0" aria-valuemax="{{ corp.member_count }}" style="width: {% widthratio characters_with_api|length corp.member_count 100 %}%;">
-                                                {{characters_with_api|length}}/{{ corp.member_count }}
+                                            <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{ n_registered }}" aria-valuemin="0" aria-valuemax="{{ corp.member_count }}" style="width: {% widthratio characters_with_api|length corp.member_count 100 %}%;">
+                                                {{n_registered}}/{{ corp.member_count }}
                                             </div>
                                         </div>
                                     </div>
@@ -46,7 +46,7 @@
                         <nav class="navbar navbar-default">
                             <div class="container-fluid">
                                 <ul class="nav navbar-nav navbar-wide">
-                                    {% if membercorp_list %}
+                                    {% if membercorp_list and perms.auth.alliance_apis %}
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
                                         <ul class="dropdown-menu scrollable">
@@ -90,7 +90,8 @@
                                             <th class="col-md-2">Main character</th>
                                             <th class="col-md-2">Main corporation</th>
                                             <th class="col-md-2">Character list</th>
-                                            <th class="col-md-5">Killboard</th>
+                                            <th class="col-md-3">Killboard</th>
+                                            <th class="col-md-2">API JackKnife</th>
                                         </tr>
                                         {% for maincharname, player  in characters_with_api %}
                                         <tr >
@@ -119,6 +120,17 @@
                                             <td>
                                                 {% for char in player.altlist %}
                                                 <p><a href="https://zkillboard.com/character/{{ char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for apiinfo in player.apilist %}
+                                                <p>
+                                                    <a href="{{ JACK_KNIFE_URL }}?usid={{ apiinfo.api_id }}&apik={{ apiinfo.api_key }}"
+                                                       target="_blank">
+                                                        <button type="button" class="btn btn-primary">API JackKnife
+                                                        </button>
+                                                    </a>
+                                                </p>
                                                 {% endfor %}
                                             </td>
                                         </tr>

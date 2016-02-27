@@ -128,39 +128,6 @@ def main_character_change(request, char_id):
     return HttpResponseRedirect("/characters")
 
 
-@login_required
-@permission_required('auth.corp_stats')
-def corp_stats_view(request):
-    logger.debug("corp_stats_view called by user %s" % request.user)
-    # Get the corp the member is in
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
-    logger.debug("Got user %s authservicesinfo model %s" % (request.user, auth_info))
-    if EveCharacter.objects.filter(character_id=auth_info.main_char_id).exists():
-        main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        logger.debug("Got user %s main character model %s" % (request.user, main_char))
-        if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
-            current_count = 0
-            allcharacters = {}
-            corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
-            logger.debug("Got user %s main character's corp model %s" % (request.user, corp))
-            all_characters = EveCharacter.objects.all()
-            for char in all_characters:
-                if char:
-                    try:
-                        if char.corporation_id == corp.corporation_id:
-                            current_count = current_count + 1
-                            allcharacters[char.character_name] = EveApiKeyPair.objects.get(api_id=char.api_id)
-                    except:
-                        pass
-            context = {"corp": corp,
-                       "currentCount": current_count,
-                       "characters": allcharacters}
-            return render_to_response('registered/corpstats.html', context, context_instance=RequestContext(request))
-        else:
-            logger.error("Unable to locate user %s main character's corp model with id %s. Cannot provide corp stats." % (request.user, main_char.corporation_id))
-    else:
-        logger.error("Unable to locate user %s main character model with id %s. Cannot provide corp stats." % (request.user, auth_info.main_char_id))
-    return render_to_response('registered/corpstats.html', None, context_instance=RequestContext(request))
 
 @login_required
 def user_refresh_api(request, api_id):
