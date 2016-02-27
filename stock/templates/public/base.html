@@ -124,7 +124,7 @@
                             </li>
                         {% endif %}
 
-                        {% if perms.auth.corp_stats %}
+                        {% if perms.auth.corp_apis or perms.auth.alliance_apis %}
                             <li>
                                 <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
                                                                                    href="{% url 'auth_corputils' %}"><i

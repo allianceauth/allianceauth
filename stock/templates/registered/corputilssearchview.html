@@ -38,9 +38,7 @@
                             <th class="col-md-2">Character</th>
                             <th class="col-md-2">Main character</th>
                             <th class="col-md-5">Killboard</th>
-                            {% if sent_apis %}
                             <th class="col-md-2">API JackKnife</th>
-                            {% endif %}
                         </tr>
                         {% for result in results %}
                             <tr >
@@ -59,7 +57,6 @@
                                     <p><a href="https://zkillboard.com/character/{{ result.char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
                                 </td>
 
-                                {% if sent_apis %}
                                 <td>
                                     {% if result.api_registered %}
                                     <a href="{{ JACK_KNIFE_URL }}?usid={{ result.apiinfo.api_id }}&apik={{ result.apiinfo.api_key }}"
@@ -69,7 +66,6 @@
                                     </a>
                                     {% endif %}
                                 </td>
-                                {% endif %}
                             </tr>
                         {% endfor %}
                     </table>

@@ -46,7 +46,7 @@
                         <nav class="navbar navbar-default">
                             <div class="container-fluid">
                                 <ul class="nav navbar-nav navbar-wide">
-                                    {% if membercorp_list %}
+                                    {% if membercorp_list and perms.auth.alliance_apis %}
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose corporation <span class="caret"></span></a>
                                         <ul class="dropdown-menu scrollable">
@@ -91,9 +91,7 @@
                                             <th class="col-md-2">Main corporation</th>
                                             <th class="col-md-2">Character list</th>
                                             <th class="col-md-3">Killboard</th>
-                                            {% if sent_apis %}
                                             <th class="col-md-2">API JackKnife</th>
-                                            {% endif %}
                                         </tr>
                                         {% for maincharname, player  in characters_with_api %}
                                         <tr >
@@ -124,7 +122,6 @@
                                                 <p><a href="https://zkillboard.com/character/{{ char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
                                                 {% endfor %}
                                             </td>
-                                            {% if sent_apis %}
                                             <td>
                                                 {% for apiinfo in player.apilist %}
                                                 <p>
@@ -136,7 +133,6 @@
                                                 </p>
                                                 {% endfor %}
                                             </td>
-                                            {% endif %}
                                         </tr>
                                         {% endfor %}
                                     </table>
