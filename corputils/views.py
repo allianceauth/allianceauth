@@ -95,10 +95,13 @@ def corp_member_view(request, corpid = None):
                                                                 altlist=[],
                                                                 apilist=[])
                                                ).altlist.append(char)
+
                 characters_with_api[mainname].apilist.append(EveApiKeyPair.objects.get(api_id=char.api_id))
+            except(EveApiKeyPair.DoesNotExist):
+                logger.info("User %s EveApiKeyPair does not exist. is main char selected?" % char_owner)
+                pass
 
-
-            except EveCharacter.DoesNotExist:
+            except (EveCharacter.DoesNotExist):
                 characters_without_api.update({member_data["name"]: member_data["id"]})
 
 
