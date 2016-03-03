@@ -9,7 +9,6 @@
 
     <div class="col-lg-12">
         <h1 class="page-header text-center">Corporation Member Data</h1>
-        {% if perms.auth.corputils %}
             <div class="col-lg-12 container" id="example">
             {% if corp %}
                 <div class="row">
@@ -188,12 +187,5 @@
             </div>
             {% endif %}
         </div>
-        {% else %}
-            {% if IS_CORP %}
-                <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
-            {% else %}
-                <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
-            {% endif %}
-        {% endif %}
     </div>
 {% endblock content %}
