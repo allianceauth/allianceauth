@@ -68,8 +68,6 @@ def hr_application_create_view(request):
             application = HRApplication()
             application.user = request.user
             application.character_name = form.cleaned_data['character_name']
-            application.full_api_id = form.cleaned_data['full_api_id']
-            application.full_api_key = form.cleaned_data['full_api_key']
             application.corp = EveCorporationInfo.objects.get(corporation_id=form.cleaned_data['corp'])
             application.is_a_spi = form.cleaned_data['is_a_spi']
             application.about = form.cleaned_data['about']
@@ -98,8 +96,11 @@ def hr_application_personal_view(request, app_id):
     else:
         logger.error("Unable to locate HRApplication matching id %s - returning blank application to user %s" % (app_id, request.user))
         application = HRApplication()
-    context = {'application': application}
-
+    apis = request.user.eveapikeypair_set.all()
+    context = {
+        'application': application,
+        'apis': apis,
+    }
     return render_to_response('registered/hrapplicationview.html',
                               context, context_instance=RequestContext(request))
 
@@ -122,19 +123,21 @@ def hr_application_personal_removal(request, app_id):
 def hr_application_view(request, app_id):
     logger.debug("hr_application_view called by user %s for app id %s" % (request.user, app_id))
     if request.method == 'POST':
-        form = HRApplicationCommentForm(request.POST)
-        logger.debug("Request type POST contains form valid: %s" % form.is_valid())
-        if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
+        if request.user.has_perm('hrapplications.add_hrapplicationcomment'):
+            form = HRApplicationCommentForm(request.POST)
+            logger.debug("Request type POST contains form valid: %s" % form.is_valid())
+            if form.is_valid():
+                auth_info = AuthServicesInfo.objects.get(user=request.user)
 
-            comment = HRApplicationComment()
-            comment.application = HRApplication.objects.get(id=int(form.cleaned_data['app_id']))
-            comment.commenter_user = request.user
-            comment.commenter_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-            comment.comment = form.cleaned_data['comment']
-            comment.save()
-            logger.info("Saved comment by user %s to hrapplication %s" % (request.user, comment.application))
-
+                comment = HRApplicationComment()
+                comment.application = HRApplication.objects.get(id=int(form.cleaned_data['app_id']))
+                comment.commenter_user = request.user
+                comment.commenter_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+                comment.comment = form.cleaned_data['comment']
+                comment.save()
+                logger.info("Saved comment by user %s to hrapplication %s" % (request.user, comment.application))
+        else:
+            logger.warn("User %s does not have permission to add HRApplicationComments" % request.user)
     else:
         logger.debug("Returning blank HRApplication comment form.")
         form = HRApplicationCommentForm()
@@ -148,14 +151,16 @@ def hr_application_view(request, app_id):
         comments = []
         logger.error("HRAppllication with id %s not found - returning blank applicatin to user %s" % request.user)
 
-    context = {'application': application, 'comments': comments, 'comment_form': form}
+    context = {
+        'application': application,
+        'comments': comments, 'comment_form': form}
 
     return render_to_response('registered/hrapplicationview.html',
                               context, context_instance=RequestContext(request))
 
-
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.delete_hrapplication')
 def hr_application_remove(request, app_id):
     logger.debug("hr_application_remove called by user %s for app id %s" % (request.user, app_id))
     if HRApplication.objects.filter(id=app_id).exists():
@@ -174,6 +179,7 @@ def hr_application_remove(request, app_id):
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.approve_hrapplication')
 def hr_application_approve(request, app_id):
     logger.debug("hr_application_approve called by user %s for app id %s" % (request.user, app_id))
     if HRApplication.objects.filter(id=app_id).exists():
@@ -193,6 +199,7 @@ def hr_application_approve(request, app_id):
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.reject_hrapplication')
 def hr_application_reject(request, app_id):
     logger.debug("hr_application_reject called by user %s for app id %s" % (request.user, app_id))
     if HRApplication.objects.filter(id=app_id).exists():

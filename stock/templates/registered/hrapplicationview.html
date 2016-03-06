@@ -56,20 +56,22 @@
                                 <input class=" form-control" value="{{ application.character_name }}" disabled>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label" for="id_full_api_id">API ID</label>
+                        {% for api in apis %}
+                            <div class="form-group">
+                                <label class="control-label" for="id_full_api_id">API ID</label>
 
-                            <div class=" ">
-                                <input class=" form-control" value="{{ application.full_api_id }}" disabled>
+                                <div class=" ">
+                                    <input class=" form-control" value="{{ api.api_id }}" disabled>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label  " for="id_full_api_key">API Verification Code</label>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_full_api_key">API Verification Code</label>
 
-                            <div class=" ">
-                                <input class=" form-control" value="{{ application.full_api_key }}" disabled>
-                            </div>
-                        </div>
+                                <div class=" ">
+                                    <input class=" form-control" value="{{ api.api_key }}" disabled>
+                                </div>
+                           </div>
+                        {% endfor %}
                         <div class="form-group">
                             <label class="control-label  " for="id_corp">Corp</label>
 
@@ -114,17 +116,21 @@
 
                                     <div class="row text-center">
                                         {% if application.reviewer_inprogress_character != None %}
-                                            <a href="/hr_application_approve/{{ application.id }}">
-                                                <button type="button" class="btn btn-lg btn-success">Approve</button>
-                                            </a>
-
-                                            <a href="/hr_application_reject/{{ application.id }}">
-                                                <button type="button" class="btn btn-lg btn-info">Reject</button>
-                                            </a>
-
-                                            <a href="/hr_application_remove/{{ application.id }}">
-                                                <button type="button" class="btn btn-lg btn-danger">Delete</button>
-                                            </a>
+                                            {% if perms.hrapplications.approve_hrapplication %}
+                                                <a href="/hr_application_approve/{{ application.id }}">
+                                                    <button type="button" class="btn btn-lg btn-success">Approve</button>
+                                                </a>
+                                            {% endif %}
+                                            {% if perms.hrapplications.reject_hrapplication %}
+                                                <a href="/hr_application_reject/{{ application.id }}">
+                                                    <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                                </a>
+                                            {% endif %}
+                                            {% if perms.hrapplications.delete_hrapplication %}
+                                                <a href="/hr_application_remove/{{ application.id }}">
+                                                    <button type="button" class="btn btn-lg btn-danger">Delete</button>
+                                                </a>
+                                             {% endif %}
 
                                         {% else %}
                                             <a href="/hr_mark_in_progress/{{ application.id }}">
@@ -136,14 +142,18 @@
                                     <br/>
 
                                     <div class="row text-center">
-                                        <a href="{{ JACK_KNIFE_URL }}?usid={{ application.full_api_id }}&apik={{ application.full_api_key }}"
-                                           target="_blank">
-                                            <button type="button" class="btn btn-lg btn-primary">API Jack Knife</button>
-                                        </a>
-                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
-                                                data-target="#myModal">
-                                            Comment
-                                        </button>
+                                        {% for api in apis %}
+                                            <a href="{{ JACK_KNIFE_URL }}?usid={{ api._api_id }}&apik={{ api.api__key }}"
+                                               target="_blank">
+                                                <button type="button" class="btn btn-lg btn-primary">API {{ api.api_id }}</button>
+                                            </a>
+                                        {% endfor %}
+                                        {% if perms.hrapplications.add_hrapplicationcomment %}
+                                            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                                    data-target="#myModal">
+                                                Comment
+                                            </button>
+                                        {% endif %}
                                     </div>
                                 </div>
 
@@ -188,29 +198,31 @@
     </div>
 
     {% if perms.auth.human_resources %}
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form-signin" role="form" action="" method="POST">
-                            {% csrf_token %}
-                            {{ comment_form.app_id|bootstrap }}
-                            {{ comment_form.comment|bootstrap }}
-                            <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
+        {% if perms.hrapplications.add_hrapplicationcomment %}
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span
+                                    aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-signin" role="form" action="" method="POST">
+                                {% csrf_token %}
+                                {{ comment_form.app_id|bootstrap }}
+                                {{ comment_form.comment|bootstrap }}
+                                <br/>
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 {% endblock content %}
 {% block extra_script %}

@@ -7,8 +7,6 @@ from eveonline.models import EveCorporationInfo
 
 class HRApplication(models.Model):
     character_name = models.CharField(max_length=254, default="")
-    full_api_id = models.CharField(max_length=254, default="")
-    full_api_key = models.CharField(max_length=254, default="")
     is_a_spi = models.CharField(max_length=254, default="")
     about = models.TextField(default="")
     extra = models.TextField(default="")
@@ -24,6 +22,9 @@ class HRApplication(models.Model):
 
     def __str__(self):
         return self.character_name + " - Application"
+
+    class Meta:
+        permissions = (('approve_hrapplication', 'Can approve applications'), ('reject_hrapplication', 'Can reject applications'))
 
 
 class HRApplicationComment(models.Model):
