@@ -56,22 +56,24 @@
                                 <input class=" form-control" value="{{ application.character_name }}" disabled>
                             </div>
                         </div>
-                        {% for api in apis %}
-                            <div class="form-group">
-                                <label class="control-label" for="id_full_api_id">API ID</label>
+                        {% if perms.hrapplications.view_apis %}
+                            {% for api in apis %}
+                                <div class="form-group">
+                                    <label class="control-label" for="id_full_api_id">API ID</label>
 
-                                <div class=" ">
-                                    <input class=" form-control" value="{{ api.api_id }}" disabled>
+                                    <div class=" ">
+                                        <input class=" form-control" value="{{ api.api_id }}" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_full_api_key">API Verification Code</label>
+                                <div class="form-group">
+                                    <label class="control-label  " for="id_full_api_key">API Verification Code</label>
 
-                                <div class=" ">
-                                    <input class=" form-control" value="{{ api.api_key }}" disabled>
-                                </div>
-                           </div>
-                        {% endfor %}
+                                    <div class=" ">
+                                        <input class=" form-control" value="{{ api.api_key }}" disabled>
+                                    </div>
+                               </div>
+                            {% endfor %}
+                        {% endif %}
                         <div class="form-group">
                             <label class="control-label  " for="id_corp">Corp</label>
 
@@ -142,12 +144,14 @@
                                     <br/>
 
                                     <div class="row text-center">
-                                        {% for api in apis %}
-                                            <a href="{{ JACK_KNIFE_URL }}?usid={{ api._api_id }}&apik={{ api.api__key }}"
-                                               target="_blank">
-                                                <button type="button" class="btn btn-lg btn-primary">API {{ api.api_id }}</button>
-                                            </a>
-                                        {% endfor %}
+                                        {% if perms.hrapplications.view_apis %}
+                                            {% for api in apis %}
+                                                <a href="{{ JACK_KNIFE_URL }}?usid={{ api._api_id }}&apik={{ api.api__key }}"
+                                                   target="_blank">
+                                                    <button type="button" class="btn btn-lg btn-primary">API {{ api.api_id }}</button>
+                                                </a>
+                                            {% endfor %}
+                                        {% endif %}
                                         {% if perms.hrapplications.add_hrapplicationcomment %}
                                             <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
                                                     data-target="#myModal">

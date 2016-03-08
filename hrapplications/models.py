@@ -24,7 +24,7 @@ class HRApplication(models.Model):
         return self.character_name + " - Application"
 
     class Meta:
-        permissions = (('approve_hrapplication', 'Can approve applications'), ('reject_hrapplication', 'Can reject applications'))
+        permissions = (('approve_hrapplication', 'Can approve applications'), ('reject_hrapplication', 'Can reject applications'), ('view_apis', 'Can view applicant APIs'),)
 
 
 class HRApplicationComment(models.Model):
