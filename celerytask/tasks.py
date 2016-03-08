@@ -31,6 +31,7 @@ from eveonline.models import EveAllianceInfo
 from authentication.managers import AuthServicesInfoManager
 from services.models import DiscordAuthToken
 
+import time
 import logging
 
 logger = logging.getLogger(__name__)
@@ -420,7 +421,7 @@ def set_state(user):
         notify(user, "Membership State Change", message="You membership state has been changed to %s" % state)
 
 # Run every minute
-@periodic_task(run_every=crontab(minute="*/1"))
+@periodic_task(run_every=crontab(minute="*/10"))
 def run_databaseUpdate():
     logger.debug("Starting database update.")
     users = User.objects.all()
@@ -435,6 +436,7 @@ def run_databaseUpdate():
         logger.debug("User has syncgroups %s" % syncgroups)
         add_to_databases(user, groups, syncgroups)
         remove_from_databases(user, groups, syncgroups)
+        time.sleep(1)
 
 # Run every 2 hours
 @periodic_task(run_every=crontab(minute="0", hour="*/2"))
