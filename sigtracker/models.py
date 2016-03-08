@@ -11,9 +11,12 @@ class sigtracker(models.Model):
     ident = models.CharField(max_length=254, default="")
     system = models.CharField(max_length=254, default="")
     destination = models.CharField(max_length=254, default="")
-    sigtype = models.CharField(max_length=254, default="")
-    status = models.CharField(max_length=254, default="")
+    lifetime_status = models.CharField(max_length=254, default="")
+    mass_status = models.CharField(max_length=254, default="")
+    ships_size = models.CharField(max_length=254, default="")
     notes = models.CharField(max_length=254, default="")
+    through_dest = models.CharField(max_length=254, default="")
     post_time = models.DateTimeField(default=timezone.now)
     eve_character = models.ForeignKey(EveCharacter)
+    
     

@@ -4,20 +4,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class SignatureForm(forms.Form):
-    sigtype = [('Wormhole', 'Wormhole'), ('Combat', 'Combat'), ('Data', 'Data'),
-              ('Relic', 'Relic'), ('Gas', 'Gas'), ('Ore', 'Ore')]
-    status = [('Open', 'Open'), ('Started', 'Started'), ('Finished', 'Finished'), ('Life cycle has not begun', 'Life cycle has not begun'),
-             ('Probably wont last another day', 'Probably wont last another day'), ('End of its natural lifetime', 'End of its natural lifetime'),
-             ('stability not significantly disrupted', 'stability not significantly disrupted'),
-             ('Stability reduced not critical degree yet', 'Stability reduced not critical degree yet'),
-             ('Wormhole stability critically disrupted', 'Wormhole stability critically disrupted')]
+    mass_status = [('More Than 50%', 'More Than 50%'), ('Less Than 50%', 'Less Than 50%'), ('Less Than 10%', 'Less Than 10%')]
+    lifetime_status = [('More Than 24 Hours', 'More Than 24 Hours'), ('Less Than 24 Hours', 'Less Than 24 Hours'), ('Less Than 4 Hours', 'Less Than 4 Hours')]
+    ships_size = [('Only Smallest', 'Only Smallest'), ('Up to Medium', 'Up to Medium'), ('Larger', 'Larger'), ('Very Large', 'Very Large')]
+
 
     system = forms.CharField(max_length=254, required=True, label='System')
     ident = forms.CharField(max_length=254, required=True, label="ID")
-    sigtype = forms.ChoiceField(choices=sigtype, required=True, label="Signature Type")
-    destination = forms.CharField(max_length=254, label="destination", required=True, initial="")
-    status = forms.ChoiceField(choices=status, required=True, label="Status")
+    lifetime_status = forms.ChoiceField(choices=lifetime_status, required=True, label="Lifetime Status")
+    mass_status = forms.ChoiceField(choices=mass_status, required=True, label="Mass Status")
+    ships_size = forms.ChoiceField(choices=ships_size, required=True, label="Ship Size")
+    destination = forms.CharField(max_length=254, label="End Destination", required=True, initial="")
+    through_dest = forms.CharField(max_length=254, label="Goes Through", required=True, initial="")
     notes = forms.CharField(max_length=254, label="Notes", required=False, initial="")
+    
 
 
 
