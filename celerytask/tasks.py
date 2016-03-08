@@ -561,7 +561,7 @@ def run_api_refresh():
         set_state(user)
 
 def populate_alliance(id, blue=False):
-    logger.info("Populating alliance model with id %s blue %s" % (id, blue))
+    logger.debug("Populating alliance model with id %s blue %s" % (id, blue))
     alliance_info = EveApiManager.get_alliance_information(id)
 
     if not alliance_info:
