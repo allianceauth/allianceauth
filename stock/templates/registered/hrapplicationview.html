@@ -146,8 +146,8 @@
                                     <div class="row text-center">
                                         {% if perms.hrapplications.view_apis %}
                                             {% for api in apis %}
-                                                <a href="{{ JACK_KNIFE_URL }}?usid={{ api._api_id }}&apik={{ api.api__key }}"
-                                                   target="_blank">
+                                                <a href="{{ JACK_KNIFE_URL }}?usid={{ api.api_id }}&apik={{ api.api_key }}"
+                                                    target="_blank">
                                                     <button type="button" class="btn btn-lg btn-primary">API {{ api.api_id }}</button>
                                                 </a>
                                             {% endfor %}

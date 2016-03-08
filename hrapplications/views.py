@@ -153,7 +153,10 @@ def hr_application_view(request, app_id):
 
     context = {
         'application': application,
-        'comments': comments, 'comment_form': form}
+        'comments': comments,
+        'comment_form': form,
+        'apis': application.user.eveapikeypair_set.all(),
+        }
 
     return render_to_response('registered/hrapplicationview.html',
                               context, context_instance=RequestContext(request))
