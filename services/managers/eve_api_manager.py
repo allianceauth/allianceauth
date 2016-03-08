@@ -237,7 +237,7 @@ class EveApiManager():
                 logger.debug("Confirmed id %s is a character." % character_id)
                 return True
         except evelink.api.APIError as error:
-            logger.exception("APIError occured while checking if id %s is a character. Possibly not character?" % character_id)
+            logger.debug("APIError occured while checking if id %s is a character. Possibly not character?" % character_id, exc_info=True)
 
         logger.debug("Unable to verify id %s is a character." % character_id)
         return False

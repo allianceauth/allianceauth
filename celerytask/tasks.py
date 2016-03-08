@@ -555,7 +555,7 @@ def run_api_refresh():
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))
                     authserviceinfo.main_char_id = ''
                     authserviceinfo.save()
-                    notify(user, "Main Character Reset", message="Your specified main character no longer has a model.\nThis could be the result of an invalid API\nYour main character ID has been reset." % api_key_pair.api_id, level="warn")
+                    notify(user, "Main Character Reset", message="Your specified main character no longer has a model.\nThis could be the result of an invalid API\nYour main character ID has been reset.", level="warn")
         set_state(user)
 
 def populate_alliance(id, blue=False):

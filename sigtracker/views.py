@@ -51,8 +51,10 @@ def add_signature_view(request):
             sig.ident = form.cleaned_data['ident']
             sig.system = form.cleaned_data['system']
             sig.destination = form.cleaned_data['destination']
-            sig.sigtype = form.cleaned_data['sigtype']
-            sig.status = form.cleaned_data['status']
+            sig.lifetime_status = form.cleaned_data['lifetime_status']
+            sig.mass_status = form.cleaned_data['mass_status']
+            sig.ships_size = form.cleaned_data['ships_size']
+            sig.through_dest = form.cleaned_data['through_dest']
             sig.notes = form.cleaned_data['notes']
             sig.create_time = post_time
             sig.eve_character = character
@@ -94,8 +96,10 @@ def edit_signature(request, sigtracker_id):
             sig.ident = form.cleaned_data['ident']
             sig.system = form.cleaned_data['system']
             sig.destination = form.cleaned_data['destination']
-            sig.sigtype = form.cleaned_data['sigtype']
-            sig.status = form.cleaned_data['status']
+            sig.lifetime_status = form.cleaned_data['lifetime_status']
+            sig.mass_status = form.cleaned_data['mass_status']
+            sig.ships_size = form.cleaned_data['ships_size']
+            sig.through_dest = form.cleaned_data['through_dest']
             sig.notes = form.cleaned_data['notes']
             sig.eve_character = character
             logger.info("User %s updating sigtracker id %s " % (request.user, sigtracker_id))
@@ -108,8 +112,10 @@ def edit_signature(request, sigtracker_id):
             'ident': sig.ident,
             'system': sig.system,
             'destination': sig.destination,
-            'sigtype': sig.sigtype,
-            'status': sig.status,
+            'lifetime_status': sig.lifetime_status,
+            'mass_status': sig.mass_status,
+            'ships_size': sig.ships_size,
+            'through_dest': sig.through_dest,
             'notes': sig.notes,
         }
         form = SignatureForm(initial= data)
