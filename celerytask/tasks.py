@@ -67,7 +67,7 @@ def update_jabber_groups(user):
     logger.debug("Updating user %s jabber groups to %s" % (user, groups))
 
     OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
-    logger.info("Updated user %s jabber groups." % user)
+    logger.debug("Updated user %s jabber groups." % user)
 
 
 def update_mumble_groups(user):
@@ -83,7 +83,7 @@ def update_mumble_groups(user):
         groups.append('empty')
     logger.debug("Updating user %s mumble groups to %s" % (user, groups))
     MumbleManager.update_groups(authserviceinfo.mumble_username, groups)
-    logger.info("Updated user %s mumble groups." % user)
+    logger.debug("Updated user %s mumble groups." % user)
 
 def update_forum_groups(user):
     logger.debug("Updating forum groups for user %s" % user)
@@ -98,7 +98,7 @@ def update_forum_groups(user):
         groups.append('empty')
     logger.debug("Updating user %s forum groups to %s" % (user, groups))
     Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
-    logger.info("Updated user %s forum groups." % user)
+    logger.debug("Updated user %s forum groups." % user)
 
 def update_ipboard_groups(user):
     logger.debug("Updating user %s ipboard groups." % user)
@@ -113,7 +113,7 @@ def update_ipboard_groups(user):
         groups.append('empty')
     logger.debug("Updating user %s ipboard groups to %s" % (user, groups))
     IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
-    logger.info("Updated user %s ipboard groups." % user)
+    logger.debug("Updated user %s ipboard groups." % user)
 
 def update_teamspeak3_groups(user):
     logger.debug("Updating user %s teamspeak3 groups" % user)
@@ -128,7 +128,7 @@ def update_teamspeak3_groups(user):
                     groups[ts_group.ts_group_name] = ts_group.ts_group_id
     logger.debug("Updating user %s teamspeak3 groups to %s" % (user, groups))
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
-    logger.info("Updated user %s teamspeak3 groups." % user)
+    logger.debug("Updated user %s teamspeak3 groups." % user)
 
 def update_discord_groups(user):
     logger.debug("Updating discord groups for user %s" % user)
@@ -144,7 +144,7 @@ def update_discord_groups(user):
         groups.append('empty')
     logger.debug("Updating user %s discord groups to %s" % (user, groups))
     DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
-    logger.info("Updated user %s discord groups." % user)
+    logger.debug("Updated user %s discord groups." % user)
 
 def create_syncgroup_for_user(user, groupname, servicename):
     logger.debug("Creating syncgroupcache for user %s group %s in service %s" % (user, groupname, servicename))
@@ -561,7 +561,7 @@ def run_api_refresh():
         set_state(user)
 
 def populate_alliance(id, blue=False):
-    logger.info("Populating alliance model with id %s blue %s" % (id, blue))
+    logger.debug("Populating alliance model with id %s blue %s" % (id, blue))
     alliance_info = EveApiManager.get_alliance_information(id)
 
     if not alliance_info:

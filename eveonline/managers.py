@@ -106,7 +106,7 @@ class EveManager:
             alliance_info.member_count = alliance_member_count
             alliance_info.is_blue = is_blue
             alliance_info.save()
-            logger.info("Updated alliance model %s" % alliance_info)
+            logger.debug("Updated alliance model %s" % alliance_info)
         else:
             logger.warn("Attempting to update non-existing alliance model with id %s" % alliance_id)
 
@@ -136,7 +136,7 @@ class EveManager:
             corp_info.alliance = alliance
             corp_info.is_blue = is_blue
             corp_info.save()
-            logger.info("Updated corp model %s" % corp_info)
+            logger.debug("Updated corp model %s" % corp_info)
         else:
             logger.warn("Attempting to update non-existant corp model with id %s" % corp_id)
 
