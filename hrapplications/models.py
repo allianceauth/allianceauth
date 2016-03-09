@@ -4,9 +4,61 @@ from django.contrib.auth.models import User
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 
+class ApplicationQuestion(models.Model):
+    title = models.CharField(max_length=100)
+    help_text = models.CharField(max_length=254, blank=True, null=True)
 
+    def __str__(self):
+        return "Question: " + self.title
+
+class ApplicationForm(models.Model):
+    questions = models.ManyToManyField(ApplicationQuestion)
+    corp = models.OneToOneField(EveCorporationInfo)
+
+class Application(models.Model):
+    form = models.OneToOneField(ApplicationForm, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
+    approved = models.NullBooleanField(blank=True, null=True, default=None)
+    reveiwer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    reveiwer_character = models.ForeignKey(EveCharacter, on_delete=models.SET_NULL, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user + " Application To " + self.corp
+
+    class Meta:
+        permissions = (('approve_application', 'Can approve applications'), ('reject_application', 'Can reject applications'), ('view_apis', 'Can view applicant APIs'),)
+
+class ApplicationResponse(models.Model):
+    question = models.ForeignKey(ApplicationQuestion, on_delete=models.CASCADE)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
+    answer = models.TextField()
+
+    def __str__(self):
+        return self.form + " Answer To " + self.question
+
+    class Meta:
+        unique_together = ('question', 'application')
+
+class ApplicationComment(models.Model):
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user + " comment on " + self.application
+
+################
+# Legacy Models
+################
+# Can't delete or evolutions explodes.
+# They do nothing.
+################
 class HRApplication(models.Model):
     character_name = models.CharField(max_length=254, default="")
+    full_api_id = models.CharField(max_length=254, default="")
+    full_api_key = models.CharField(max_length=254, default="")
     is_a_spi = models.CharField(max_length=254, default="")
     about = models.TextField(default="")
     extra = models.TextField(default="")
@@ -22,9 +74,6 @@ class HRApplication(models.Model):
 
     def __str__(self):
         return self.character_name + " - Application"
-
-    class Meta:
-        permissions = (('approve_hrapplication', 'Can approve applications'), ('reject_hrapplication', 'Can reject applications'), ('view_apis', 'Can view applicant APIs'),)
 
 
 class HRApplicationComment(models.Model):
