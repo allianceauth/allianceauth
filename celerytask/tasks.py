@@ -529,7 +529,7 @@ def refresh_api(api_key_pair):
                        logger.debug("API key %s has a new character on the account: %s" % (api_key_pair.api_id, characters.result[char]['name']))
                    if new_character:
                        logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
-                       EveManager.create_characters_from_list(characters, user, api_key_pair.api_key)
+                       EveManager.create_characters_from_list(characters, user, api_key_pair.api_id)
     else:
         logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
         EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
