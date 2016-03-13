@@ -83,7 +83,7 @@ def hr_application_personal_view(request, app_id):
             'responses': ApplicationResponse.objects.filter(application=app),
             'buttons': False,
             'comments': ApplicationComment.objects.filter(application=app),
-            'form': None,
+            'comment_form': None,
             'apis': [],
         }
         return render_to_response('registered/hrapplicationview.html', context, context_instance=RequestContext(request))
@@ -133,7 +133,7 @@ def hr_application_view(request, app_id):
         'buttons': True,
         'apis': app.apis,
         'comments': ApplicationComment.objects.filter(application=app),
-        'form': form,
+        'comment_form': form,
     }
     return render_to_response('registered/hrapplicationview.html', context, context_instance=RequestContext(request))
 

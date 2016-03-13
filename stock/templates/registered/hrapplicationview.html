@@ -70,37 +70,39 @@
                                         {% for comment in comments %}
                                             <div class="panel panel-default">
                                                 <div class="panel-heading" role="tab" id="">
-                                                    <div class="panel-title">{{comment.created_on}} - {{ comment.user }}</div>
+                                                    <div class="panel-title">{{comment.created}} - {{ comment.user }}</div>
                                                 </div>
-                                                <div class="panel-body">{{ comment.comment }}</div>
+                                                <div class="panel-body">{{ comment.text }}</div>
                                             </div>
                                         {% endfor %}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"><span
-                                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                        {% if perms.hrapplications.add_applicationcomment %}
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-signin" role="form" action="" method="POST">
+                                                {% csrf_token %}
+                                                {{ comment_form|bootstrap }}
+                                                <br/>
+                                                <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <form class="form-signin" role="form" action="" method="POST">
-                                            {% csrf_token %}
-                                            {{ form|bootstrap }}
-                                           <br/>
-                                           <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
-                                       </form>
-                                   </div>
-                                   <div class="modal-footer">
-                                   </div>
-                               </div>
-                           </div>
-                        </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>
