@@ -31,16 +31,16 @@
                     {% for app in applications %}
                         <tr>
                             <td class="text-center">{{ app.id }}</td>
-                            <td class="text-center">{{ app.user.username }}</td>
-                            <td class="text-center">{{ app.character_name }}</td>
-                            <td class="text-center">{{ app.corp.corporation_name }}</td>
+                            <td class="text-center">{{ app.user }}</td>
+                            <td class="text-center">{{ app.main_character }}</td>
+                            <td class="text-center">{{ app.form.corp }}</td>
                             <td class="text-center">
-                                {% if app.approved_denied == None %}
-                                    <div class="panel panel-warning" role="alert">Pending</div>
-                                {% elif  app.approved_denied == True %}
-                                    <div class="panel panel-success" role="alert">Approved</div>
+                                {% if app.approved == None %}
+                                    <div class="label label-warning">Pending</div>
+                                {% elif  app.approved == True %}
+                                    <div class="label label-success">Approved</div>
                                 {% else %}
-                                    <div class="panel panel-danger" role="alert">Rejected</div>
+                                    <div class="label label-danger">Rejected</div>
                                 {% endif %}
                             </td>
                             <td class="text-center">

@@ -24,7 +24,6 @@
             <table class="table table-bordered table-condensed">
                 <tr>
                     <th class="text-center">Username</th>
-                    <th class="text-center">Main Character</th>
                     <th class="text-center">Corporation
                     <th class="text-center">Status</th>
                     <th class="text-center">Actions</th>
@@ -32,15 +31,14 @@
                 {% for personal_app in personal_apps %}
                     <tr>
                         <td class="text-center">{{ personal_app.user.username }}</td>
-                        <td class="text-center">{{ personal_app.character_name }}</td>
-                        <td class="text-center">{{ personal_app.corp.corporation_name }}</td>
+                        <td class="text-center">{{ personal_app.form.corp.corporation_name }}</td>
                         <td class="text-center">
-                            {% if personal_app.approved_denied == None %}
-                                <div class="panel panel-warning" role="alert">Pending</div>
-                            {% elif  personal_app.approved_denied == True %}
-                                <div class="panel panel-success" role="alert">Approved</div>
+                            {% if personal_app.approved == None %}
+                                <div class="label label-warning">Pending</div>
+                            {% elif  personal_app.approved == True %}
+                                <div class="label label-success">Approved</div>
                             {% else %}
-                                <div class="panel panel-danger" role="alert">Rejected</div>
+                                <div class="label label-danger">Rejected</div>
                             {% endif %}
                         </td>
                         <td class="text-center">
@@ -83,8 +81,8 @@
                         <tr>
                             <td class="text-center">{{ app.id }}</td>
                             <td class="text-center">{{ app.user.username }}</td>
-                            <td class="text-center">{{ app.character_name }}</td>
-                            <td class="text-center">{{ app.corp.corporation_name }}</td>
+                            <td class="text-center">{{ app.main_character }}</td>
+                            <td class="text-center">{{ app.form.corp.corporation_name }}</td>
                             <td class="text-center">
                                 {% if app.approved_denied == None %}
                                     <div class="panel panel-warning" role="alert">Pending</div>
