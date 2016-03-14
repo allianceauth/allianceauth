@@ -127,12 +127,12 @@ def hr_application_view(request, app_id):
         form = HRApplicationCommentForm()
     apis = []
     if request.user.has_perm('hrapplications.view_apis'):
-        apis = app.user.eveapikeypair_set.all()
+        apis = app.apis
     context = {
         'app': app,
         'responses': ApplicationResponse.objects.filter(application=app),
         'buttons': True,
-        'apis': app.apis,
+        'apis': apis,
         'comments': ApplicationComment.objects.filter(application=app),
         'comment_form': form,
     }
