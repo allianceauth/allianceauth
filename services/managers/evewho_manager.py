@@ -15,6 +15,15 @@ class EveWhoManager():
     def get_corporation_members(corpid):
         url = "http://evewho.com/api.php?type=corplist&id=%s" % corpid
         jsondata = requests.get(url).content
-        data=json.loads(jsondata.decode())
+        data = json.loads(jsondata.decode())
 
-        return {row["character_id"]:{"name":row["name"], "id":row["character_id"]} for row in data["characters"]}
+        members = {}
+        page_count=0
+        while len(data["characters"]):
+            for row in data["characters"]:
+                members[row["character_id"]] = {"name":row["name"], "id":row["character_id"]}
+            page_count=page_count+1
+            jsondata = requests.get(url + "&page=%i" % page_count).content
+            data = json.loads(jsondata.decode())
+
+        return members
