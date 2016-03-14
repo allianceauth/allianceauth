@@ -14,7 +14,7 @@
                                 <label class="control-label" for="id_{{ question.pk }}">{{ question.title }}</label>
                                 <div class=" ">
                                     {% if question.help_text %}
-                                        <div cass="text-center">{{ question.extra_text }}</div>
+                                        <div cass="text-center">{{ question.help_text }}</div>
                                     {% endif %}
                                     <textarea class="form-control" cols="40" id="id_{{ question.pk }}" name="{{ question.pk }}" rows="10"></textarea>
                                 </div>
