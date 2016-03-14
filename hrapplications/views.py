@@ -84,7 +84,7 @@ def hr_application_personal_view(request, app_id):
             'responses': ApplicationResponse.objects.filter(application=app),
             'buttons': False,
             'comments': ApplicationComment.objects.filter(application=app),
-            'comment_form': None,
+            'comment_form': HRApplicationCommentForm(),
             'apis': [],
         }
         return render_to_response('registered/hrapplicationview.html', context, context_instance=RequestContext(request))
