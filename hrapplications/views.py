@@ -39,7 +39,8 @@ def hr_application_management_view(request):
         corp_applications = Application.objects.filter(approved=None)
     elif request.user.has_perm('auth.human_resources') and main_char:
         if ApplicationForm.objects.filter(corp__corporation_id=main_char.corporation_id).exists():
-            corp_applications = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id).applications.filter(approved=None)
+            app_form = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id)
+            corp_applications = Application.objects.filter(form=app_form).filter(approved=None)
     logger.debug("Retrieved %s personal, %s corp applications for %s" % (len(request.user.applications.all()), len(corp_applications), request.user))
     context = {
         'personal_apps': request.user.applications.all(),
