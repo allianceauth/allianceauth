@@ -47,6 +47,9 @@
                                     <a href="/hr_mark_in_progress/{{ app.id }}" class="btn btn-warning">Mark in Progress</a>
                                 {% endif %}
                             {% endif %}
+                            {% if perms.hrapplications.add_applicationcomment %}
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Comment</button>
+                            {% endif %}
                             {% if perms.hrapplications.view_apis %}
                                 {% for api in apis %}
                                     <a href="{{ JACK_KNIFE_URL }}?usid={{ api.api_id}}&apik={{ api.api_key }}" class="btn btn-info">API {{ api.api_id }}</a>
@@ -79,33 +82,32 @@
                                 </div>
                             </div>
                         </div>
-                        {% if perms.hrapplications.add_applicationcomment %}
-                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal"><span
-                                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form class="form-signin" role="form" action="" method="POST">
-                                                {% csrf_token %}
-                                                {{ comment_form|bootstrap }}
-                                                <br/>
-                                                <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
+{% if perms.hrapplications.add_applicationcomment %}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-signin" role="form" action="" method="POST">
+                        {% csrf_token %}
+                        {{ comment_form|bootstrap }}
+                        <br/>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment</button>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

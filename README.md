@@ -74,12 +74,12 @@ Special Permissions In Admin:
     auth | user | optimer_view ( Allows for an individual view fleet operations)
     auth | user | logging_notifications ( Generate notifications from logging)
 
-    auth | user | human_resources ( View applications to user's corp )    
-    hrapplications | hrapplication | delete_hrapplication ( Can delete applications )
-    hrapplications | hrapplication | accept_hrapplication ( Can accept applications )
-    hrapplications | hrapplication | reject_hrapplication ( Can reject applications )
-    hrapplications | hrapplication | view_apis ( Can see applicant's API keys )
-    hrapplicstions | hrapplicationcomment | add_hrapplicationcomment ( Can comment on applications )
+    auth | user | human_resources ( View applications to user's corp )
+    hrapplications | application | delete_application ( Can delete applications )
+    hrapplications | application | accept_application ( Can accept applications )
+    hrapplications | application | reject_application ( Can reject applications )
+    hrapplications | application | view_apis ( Can see applicant's API keys )
+    hrapplicstions | applicationcomment | add_applicationcomment ( Can comment on applications )
 
 Active Developers
 
