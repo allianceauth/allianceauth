@@ -38,3 +38,11 @@ class DiscordAuthToken(models.Model):
     def __str__(self):
         output = "Discord Token for email %s user %s" % (self.email, self.user)
         return output.encode('utf-8')
+
+class MumbleUser(models.Model):
+    username = models.CharField(max_length=254, unique=True)
+    pwhash = models.CharField(max_length=40)
+    groups = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.username + ' - ' + str(self.user)

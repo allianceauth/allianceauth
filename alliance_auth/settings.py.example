@@ -97,15 +97,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
-    },
-
-    'mumble': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alliance_mumble',
-        'USER': os.environ.get('AA_DB_MUMBLE_USER', 'allianceserver'),
-        'PASSWORD': os.environ.get('AA_DB_MUMBLE_PASSWORD', 'password'),
-        'HOST': os.environ.get('AA_DB_MUMBLE_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('AA_DB_MUMBLE_PORT', '3306'),
     }
 }
 
