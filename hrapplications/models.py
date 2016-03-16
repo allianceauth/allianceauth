@@ -21,7 +21,7 @@ class ApplicationForm(models.Model):
         return str(self.corp)
 
 class Application(models.Model):
-    form = models.OneToOneField(ApplicationForm, on_delete=models.CASCADE, related_name='applications')
+    form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE, related_name='applications')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
     approved = models.NullBooleanField(blank=True, null=True, default=None)
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -33,6 +33,7 @@ class Application(models.Model):
 
     class Meta:
         permissions = (('approve_application', 'Can approve applications'), ('reject_application', 'Can reject applications'), ('view_apis', 'Can view applicant APIs'),)
+        unique_together = ('form', 'user')
 
     @property
     def main_character(self):
