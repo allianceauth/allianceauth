@@ -16,14 +16,10 @@ class EveApiManager():
     def get_characters_from_api(api_id, api_key):
         chars = []
         logger.debug("Getting characters from api id %s" % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            # Should get characters
-            account = evelink.account.Account(api=api)
-            chars = account.characters()
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-
+        api = evelink.api.API(api_key=(api_id, api_key))
+        # Should get characters
+        account = evelink.account.Account(api=api)
+        chars = account.characters()
         logger.debug("Retrieved characters %s from api id %s" % (chars, api_id))
         return chars
 
@@ -31,15 +27,11 @@ class EveApiManager():
     def get_corporation_ticker_from_id(corp_id):
         logger.debug("Getting ticker for corp id %s" % corp_id)
         ticker = ""
-        try:
-            api = evelink.api.API()
-            corp = evelink.corp.Corp(api)
-            response = corp.corporation_sheet(corp_id)
-            logger.debug("Retrieved corp sheet for id %s: %s" % (corp_id, response))
-            ticker = response[0]['ticker']
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-
+        api = evelink.api.API()
+        corp = evelink.corp.Corp(api)
+        response = corp.corporation_sheet(corp_id)
+        logger.debug("Retrieved corp sheet for id %s: %s" % (corp_id, response))
+        ticker = response[0]['ticker']
         logger.debug("Determined corp id %s ticker: %s" % (corp_id, ticker))
         return ticker
 
@@ -47,13 +39,10 @@ class EveApiManager():
     def get_alliance_information(alliance_id):
         results = {}
         logger.debug("Getting info for alliance with id %s" % alliance_id)
-        try:
-            api = evelink.api.API()
-            eve = evelink.eve.EVE(api=api)
-            alliance = eve.alliances()
-            results = alliance[0][int(alliance_id)]
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
+        api = evelink.api.API()
+        eve = evelink.eve.EVE(api=api)
+        alliance = eve.alliances()
+        results = alliance[0][int(alliance_id)]
         logger.debug("Got alliance info %s" % results)
         return results
 
@@ -61,88 +50,57 @@ class EveApiManager():
     def get_corporation_information(corp_id):
         logger.debug("Getting info for corp with id %s" % corp_id)
         results = {}
-        try:
-            api = evelink.api.API()
-            corp = evelink.corp.Corp(api=api)
-            corpinfo = corp.corporation_sheet(corp_id=int(corp_id))
-            results = corpinfo[0]
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
+        api = evelink.api.API()
+        corp = evelink.corp.Corp(api=api)
+        corpinfo = corp.corporation_sheet(corp_id=int(corp_id))
+        results = corpinfo[0]
         logger.debug("Got corp info %s" % results)
         return results
 
     @staticmethod
     def check_api_is_type_account(api_id, api_key):
         logger.debug("Checking if api id %s is account." % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            account = evelink.account.Account(api=api)
-            info = account.key_info()
-            logger.debug("API id %s is type %s" % (api_id, info[0]['type']))
-            return info[0]['type'] == "account"
-
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-            return None
-
+        api = evelink.api.API(api_key=(api_id, api_key))
+        account = evelink.account.Account(api=api)
+        info = account.key_info()
+        logger.debug("API id %s is type %s" % (api_id, info[0]['type']))
+        return info[0]['type'] == "account"
 
     @staticmethod
     def check_api_is_full(api_id, api_key):
         logger.debug("Checking if api id %s meets member requirements." % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            account = evelink.account.Account(api=api)
-            info = account.key_info()
-            logger.debug("API has mask %s, required is %s" % (info[0]['access_mask'], settings.MEMBER_API_MASK))
-            return info[0]['access_mask'] & int(settings.MEMBER_API_MASK) == int(settings.MEMBER_API_MASK)
-
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-            return None
+        api = evelink.api.API(api_key=(api_id, api_key))
+        account = evelink.account.Account(api=api)
+        info = account.key_info()
+        logger.debug("API has mask %s, required is %s" % (info[0]['access_mask'], settings.MEMBER_API_MASK))
+        return info[0]['access_mask'] & int(settings.MEMBER_API_MASK) == int(settings.MEMBER_API_MASK)
 
     @staticmethod
     def check_blue_api_is_full(api_id, api_key):
         logger.debug("Checking if api id %s meets blue requirements." % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            account = evelink.account.Account(api=api)
-            info = account.key_info()
-            logger.debug("API has mask %s, required is %s" % (info[0]['access_mask'], settings.BLUE_API_MASK))
-            return info[0]['access_mask'] & int(settings.BLUE_API_MASK) == int(settings.BLUE_API_MASK)
+        api = evelink.api.API(api_key=(api_id, api_key))
+        account = evelink.account.Account(api=api)
+        info = account.key_info()
+        logger.debug("API has mask %s, required is %s" % (info[0]['access_mask'], settings.BLUE_API_MASK))
+        return info[0]['access_mask'] & int(settings.BLUE_API_MASK) == int(settings.BLUE_API_MASK)
  
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-            return None
-
-
     @staticmethod
     def get_api_info(api_id, api_key):
         logger.debug("Getting api info for key id %s" % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            account = evelink.account.Account(api=api)
-            info = account.key_info()
-            logger.debug("Got info for api id %s: %s" % (api_id, info))
-            return info
-
-        except evelink.api.APIError as error:
-            logger.exception("Unhandled APIError occured.")
-            return None
+        api = evelink.api.API(api_key=(api_id, api_key))
+        account = evelink.account.Account(api=api)
+        info = account.key_info()
+        logger.debug("Got info for api id %s: %s" % (api_id, info))
+        return info
 
     @staticmethod
     def api_key_is_valid(api_id, api_key):
         logger.debug("Checking if api id %s is valid." % api_id)
-        try:
-            api = evelink.api.API(api_key=(api_id, api_key))
-            account = evelink.account.Account(api=api)
-            info = account.key_info()
-            logger.info("Verified api id %s is still valid." % api_id)
-            return True
-        except evelink.api.APIError as error:
-            logger.exception("APIError occured while validating api id %s" % api_id)
-
-        logger.info("API id %s is invalid." % api_id)
-        return False
+        api = evelink.api.API(api_key=(api_id, api_key))
+        account = evelink.account.Account(api=api)
+        info = account.key_info()
+        logger.info("Verified api id %s is still valid." % api_id)
+        return True
 
     @staticmethod
     def check_if_api_server_online():
@@ -170,6 +128,9 @@ class EveApiManager():
             logger.debug("Confirmed id %s is a corp." % corp_id)
             return True
         except evelink.api.APIError as error:
+            if int(error.code) == '523':
+                logger.debug("Confirmed id %s is not a corp" % corp_id)
+                return False
             logger.debug("APIError occured while checking if id %s is corp. Possibly not corp?" % corp_id)
 
         logger.debug("Unable to verify id %s is corp." % corp_id)
@@ -178,16 +139,13 @@ class EveApiManager():
     @staticmethod
     def get_corp_standings():
         if settings.CORP_API_ID and settings.CORP_API_VCODE:
-            try:
-                logger.debug("Getting corp standings with api id %s" % settings.CORP_API_ID)
-                api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
-                corp = evelink.corp.Corp(api=api)
-                corpinfo = corp.contacts()
-                results = corpinfo.result
-                logger.debug("Got corp standings from settings: %s" % results)
-                return results
-            except evelink.api.APIError as error:
-                logger.exception("Unhandled APIError occured.", exc_info=True)
+            logger.debug("Getting corp standings with api id %s" % settings.CORP_API_ID)
+            api = evelink.api.API(api_key=(settings.CORP_API_ID, settings.CORP_API_VCODE))
+            corp = evelink.corp.Corp(api=api)
+            corpinfo = corp.contacts()
+            results = corpinfo.result
+            logger.debug("Got corp standings from settings: %s" % results)
+            return results
         else:
             logger.error("No corp API key supplied in settings. Unable to get standings.")
         return {}
