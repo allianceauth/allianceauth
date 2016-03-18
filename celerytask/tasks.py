@@ -628,8 +628,8 @@ def run_corp_update():
         if alliance_id:
             logger.debug("Getting information for owning alliance with id %s" % alliance_id)
             ownerallianceinfo = EveApiManager.get_alliance_information(alliance_id)
-                if not ownerallianceinfo:
-                    logger.error("Failed to retrieve corp info for owning alliance id %s - bad alliance id?" % alliance_id)
+            if not ownerallianceinfo:
+                logger.error("Failed to retrieve corp info for owning alliance id %s - bad alliance id?" % alliance_id)
                 return
             if EveAllianceInfo.objects.filter(alliance_id=ownerallianceinfo['id']).exists():
                 logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
