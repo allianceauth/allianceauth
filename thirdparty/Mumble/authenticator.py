@@ -74,7 +74,7 @@ def x2bool(s):
 #
 #--- Default configuration values
 #
-cfgfile = 'allianceauth.ini'
+cfgfile = 'authenticator.ini'
 default = {'database':(('lib', str, 'MySQLdb'),
                        ('name', str, 'alliance_auth'),
                        ('user', str, 'allianceserver'),
@@ -96,8 +96,8 @@ default = {'database':(('lib', str, 'MySQLdb'),
                    
             'murmur':(('servers', lambda x:map(int, x.split(',')), []),),
             'glacier':(('enabled', x2bool, False),
-                       ('user', str, 'smf'),
-                       ('password', str, 'secret'),
+                       ('user', str, 'allianceserver'),
+                       ('password', str, 'password'),
                        ('host', str, 'localhost'),
                        ('port', int, '4063')),
                        
@@ -304,7 +304,7 @@ def do_main_program():
             metacbprx = adapter.addWithUUID(metaCallback(self))
             self.metacb = Murmur.MetaCallbackPrx.uncheckedCast(metacbprx)
             
-            authprx = adapter.addWithUUID(smfauthenticator())
+            authprx = adapter.addWithUUID(allianceauthauthenticator())
             self.auth = Murmur.ServerUpdatingAuthenticatorPrx.uncheckedCast(authprx)
             
             return self.attachCallbacks()
