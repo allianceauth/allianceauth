@@ -102,10 +102,9 @@ class MumbleManager:
     @staticmethod
     def update_groups(username, groups):
         logger.debug("Updating mumble user %s groups %s" % (username, groups))
-        userid = MumbleManager.get_user_id_by_name(username)
         safe_groups = set([g.replace(' ', '-') for g in groups])
         if MumbleUser.objects.filter(username=username).exists():
-            logger.info("Updating mumble user %s groups to" % (username, safe_groups))
+            logger.info("Updating mumble user %s groups to %s" % (username, safe_groups))
             model = MumbleUser.objects.get(username=username)
             model.groups = safe_groups
             model.save()
