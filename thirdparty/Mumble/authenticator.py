@@ -499,11 +499,13 @@ def do_main_program():
                 return (FALL_THROUGH, None, None)
     
             uid, upwhash, ugroups = res
+
+            groups = ugroups.split(',')
             
             if allianceauth_check_hash(pw, upwhash):
                 info('User authenticated: "%s" (%d)', name, uid + cfg.user.id_offset)
-                debug('Group memberships: %s', str(ugroups))
-                return (uid + cfg.user.id_offset, entity_decode(name), ugroups)
+                debug('Group memberships: %s', str(groups))
+                return (uid + cfg.user.id_offset, entity_decode(name), groups)
 
             info('Failed authentication attempt for user: "%s" (%d)', name, uid + cfg.user.id_offset)
             return (AUTH_REFUSED, None, None)

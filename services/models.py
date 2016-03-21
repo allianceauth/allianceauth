@@ -45,4 +45,4 @@ class MumbleUser(models.Model):
     groups = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.username + ' - ' + str(self.user)
+        return self.username

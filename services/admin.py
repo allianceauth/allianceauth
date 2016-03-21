@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import AuthTS
 from .models import DiscordAuthToken
+from .models import MumbleUser
 
 class AuthTSgroupAdmin(admin.ModelAdmin):
     fields = ['auth_group','ts_group']
@@ -9,3 +10,5 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 admin.site.register(AuthTS, AuthTSgroupAdmin)
 
 admin.site.register(DiscordAuthToken)
+
+admin.site.register(MumbleUser)

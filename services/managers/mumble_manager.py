@@ -102,11 +102,15 @@ class MumbleManager:
     @staticmethod
     def update_groups(username, groups):
         logger.debug("Updating mumble user %s groups %s" % (username, groups))
-        safe_groups = set([g.replace(' ', '-') for g in groups])
+        safe_groups = list(set([g.replace(' ', '-') for g in groups]))
+        groups =''
+        for g in safe_groups:
+            groups = groups + g + ','
+        groups = groups.strip(',')
         if MumbleUser.objects.filter(username=username).exists():
             logger.info("Updating mumble user %s groups to %s" % (username, safe_groups))
             model = MumbleUser.objects.get(username=username)
-            model.groups = safe_groups
+            model.groups = groups
             model.save()
         else:
             logger.error("User %s not found on mumble. Unable to update groups." % username)
