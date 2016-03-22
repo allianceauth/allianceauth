@@ -62,8 +62,11 @@ def update_jabber_groups(user):
     if len(groups) == 0:
         groups.append('empty')
     logger.debug("Updating user %s jabber groups to %s" % (user, groups))
-
-    OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
+    try:
+        OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
+    except:
+        logger.warn("Jabber group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s jabber groups." % user)
 
 @task
@@ -76,7 +79,11 @@ def update_mumble_groups(user):
     if len(groups) == 0:
         groups.append('empty')
     logger.debug("Updating user %s mumble groups to %s" % (user, groups))
-    MumbleManager.update_groups(authserviceinfo.mumble_username, groups)
+    try:
+        MumbleManager.update_groups(authserviceinfo.mumble_username, groups)
+    except:
+        logger.warn("Mumble group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s mumble groups." % user)
 
 @task
@@ -89,7 +96,11 @@ def update_forum_groups(user):
     if len(groups) == 0:
         groups.append('empty')
     logger.debug("Updating user %s forum groups to %s" % (user, groups))
-    Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
+    try:
+        Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
+    except:
+        logger.warn("Phpbb group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s forum groups." % user)
 
 @task
@@ -102,7 +113,11 @@ def update_ipboard_groups(user):
     if len(groups) == 0:
         groups.append('empty')
     logger.debug("Updating user %s ipboard groups to %s" % (user, groups))
-    IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
+    try:
+        IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
+    except:
+        logger.warn("IPBoard group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s ipboard groups." % user)
 
 @task
@@ -131,7 +146,11 @@ def update_discord_groups(user):
         logger.debug("No syncgroups found for user. Adding empty group.")
         groups.append('empty')
     logger.debug("Updating user %s discord groups to %s" % (user, groups))
-    DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
+    try:
+        DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
+    except:
+        logger.warn("Discord group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s discord groups." % user)
 
 def assign_corp_group(auth):
