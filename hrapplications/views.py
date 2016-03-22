@@ -1,12 +1,16 @@
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect
 from notifications import notify
 from models import HRApplication
 from models import HRApplicationComment
-from forms import HRApplicationForm
+from models import ApplicationForm
+from models import Application
+from models import ApplicationQuestion
+from models import ApplicationResponse
+from models import ApplicationComment
 from forms import HRApplicationCommentForm
 from forms import HRApplicationSearchForm
 from eveonline.models import EveCorporationInfo
@@ -23,192 +27,158 @@ logger = logging.getLogger(__name__)
 @login_required
 def hr_application_management_view(request):
     logger.debug("hr_application_management_view called by user %s" % request.user)
-    personal_app = None
-    corp_applications = None
-
+    corp_applications = []
+    auth_info, c = AuthServicesInfo.objects.get_or_create(user=request.user)
+    main_char = None
+    if auth_info.main_char_id:
+        try:
+            main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+        except:
+            pass
     if request.user.is_superuser:
-        logger.debug("User %s is superuser: returning all applications." % request.user)
-        corp_applications = HRApplication.objects.all()
-    else:
-        # Get the corp the member is in
-        auth_info = AuthServicesInfo.objects.get(user=request.user)
-        if auth_info.main_char_id != "":
-            try:
-                main_corp_id = EveManager.get_charater_corporation_id_by_id(auth_info.main_char_id)
-                main_alliance_id = EveManager.get_charater_alliance_id_by_id(auth_info.main_char_id)
-                if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
-                    main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-                    if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
-                        corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
-                        corp_applications = HRApplication.objects.filter(corp=corp).filter(approved_denied=None)
-                    else:
-                        corp_applications = None
-                else:
-                    corp_applications = None
-            except:
-                logger.error("Unable to determine user %s main character id %s corp. Returning no corp hrapplications." % (request.user, auth_info.main_char_id))
-                corp_applications = None
-    context = {'personal_apps': HRApplication.objects.all().filter(user=request.user),
-               'applications': corp_applications,
-               'search_form': HRApplicationSearchForm()}
-
-    return render_to_response('registered/hrapplicationmanagement.html',
-                              context, context_instance=RequestContext(request))
-
+        corp_applications = Application.objects.filter(approved=None)
+    elif request.user.has_perm('auth.human_resources') and main_char:
+        if ApplicationForm.objects.filter(corp__corporation_id=main_char.corporation_id).exists():
+            app_form = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id)
+            corp_applications = Application.objects.filter(form=app_form).filter(approved=None)
+    logger.debug("Retrieved %s personal, %s corp applications for %s" % (len(request.user.applications.all()), len(corp_applications), request.user))
+    context = {
+        'personal_apps': request.user.applications.all(),
+        'applications': corp_applications,
+        'search_form': HRApplicationSearchForm()}
+    return render_to_response('registered/hrapplicationmanagement.html', context, context_instance=RequestContext(request))
 
 @login_required
-def hr_application_create_view(request):
-    logger.debug("hr_application_create_view called by user %s" % request.user)
-    success = False
-
-    if request.method == 'POST':
-        form = HRApplicationForm(request.POST)
-        logger.debug("Request type POST with form valid: %s" % form.is_valid())
-        if form.is_valid():
-            application = HRApplication()
-            application.user = request.user
-            application.character_name = form.cleaned_data['character_name']
-            application.full_api_id = form.cleaned_data['full_api_id']
-            application.full_api_key = form.cleaned_data['full_api_key']
-            application.corp = EveCorporationInfo.objects.get(corporation_id=form.cleaned_data['corp'])
-            application.is_a_spi = form.cleaned_data['is_a_spi']
-            application.about = form.cleaned_data['about']
-            application.extra = form.cleaned_data['extra']
-            application.save()
-            success = True
-            logger.info("Created HRApplication for user %s to corp %s" % (request.user, application.corp))
+def hr_application_create_view(request, form_id=None):
+    if form_id:
+        app_form = get_object_or_404(ApplicationForm, id=form_id)
+        if request.method == "POST":
+            if Application.objects.filter(user=request.user).filter(form=app_form).exists():
+                logger.warn("User %s attempting to duplicate application to %s" % (request.user, app_form.corp))
+            else:
+                application = Application(user=request.user, form=app_form)
+                application.save()
+                for question in app_form.questions.all():
+                    response = ApplicationResponse(question=question, application=application)
+                    response.answer = request.POST.get(str(question.pk), "Failed to retrieve answer provided by applicant.")
+                    response.save()
+                logger.info("%s created %s" % (request.user, application))
+            return redirect('auth_hrapplications_view')
+        else:
+            questions = app_form.questions.all()
+            return render_to_response('registered/hrapplicationcreate.html', {'questions':questions, 'corp':app_form.corp}, context_instance=RequestContext(request))
     else:
-        logger.debug("Providing empty form.")
-        form = HRApplicationForm()
-
-    context = {'form': form, 'success': success}
-    return render_to_response('registered/hrcreateapplication.html',
-                              context, context_instance=RequestContext(request))
-
+        choices = []
+        for app_form in ApplicationForm.objects.all():
+            if not Application.objects.filter(user=request.user).filter(form=app_form).exists():
+                choices.append((app_form.id, app_form.corp.corporation_name))
+        return render_to_response('registered/hrapplicationcorpchoice.html', {'choices':choices}, context_instance=RequestContext(request))
 
 @login_required
 def hr_application_personal_view(request, app_id):
     logger.debug("hr_application_personal_view called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
-        application = HRApplication.objects.get(id=app_id)
-        logger.debug("Got application id %s: %s" % (app_id, application))
-        if application.user != request.user:
-            logger.warn("HRApplication id %s user %s does not match request user %s - returning blank application." % (app_id, application.user, request.user))
-            application = HRApplication()
+    app = get_object_or_404(Application, pk=app_id)
+    if app.user == request.user:
+        context = {
+            'app': app,
+            'responses': ApplicationResponse.objects.filter(application=app),
+            'buttons': False,
+            'comments': ApplicationComment.objects.filter(application=app),
+            'comment_form': HRApplicationCommentForm(),
+            'apis': [],
+        }
+        return render_to_response('registered/hrapplicationview.html', context, context_instance=RequestContext(request))
     else:
-        logger.error("Unable to locate HRApplication matching id %s - returning blank application to user %s" % (app_id, request.user))
-        application = HRApplication()
-    context = {'application': application}
-
-    return render_to_response('registered/hrapplicationview.html',
-                              context, context_instance=RequestContext(request))
-
+        logger.warn("User %s not authorized to view %s" % (request.user, app))
+        return redirect('auth_hrapplications_view')
+    
 
 @login_required
 def hr_application_personal_removal(request, app_id):
     logger.debug("hr_application_personal_removal called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
-        application = HRApplication.objects.get(id=app_id)
-        if application.user == request.user:
-            application.delete()
-            logger.info("Deleted HRApplication with id %s for user %s to corp %s" % (app_id, request.user, application.corp))
-        else:
-            logger.error("HRapplication id %s user %s does not match request user %s - refusing to delete." % (app_id, application.user, request.user))
-    return HttpResponseRedirect("/hr_application_management/")
-
+    app = get_object_or_404(Application, pk=app_id)
+    if app.user == request.user:
+        logger.info("User %s deleting %s" % (request.user, app))
+        app.delete()
+    else:
+        logger.warn("User %s not authorized to delete %s" % (request.user, app))
+    return redirect('auth_hrapplications_view')
 
 @login_required
 @permission_required('auth.human_resources')
 def hr_application_view(request, app_id):
     logger.debug("hr_application_view called by user %s for app id %s" % (request.user, app_id))
+    app = get_object_or_404(Application, pk=app_id)
     if request.method == 'POST':
-        form = HRApplicationCommentForm(request.POST)
-        logger.debug("Request type POST contains form valid: %s" % form.is_valid())
-        if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
-
-            comment = HRApplicationComment()
-            comment.application = HRApplication.objects.get(id=int(form.cleaned_data['app_id']))
-            comment.commenter_user = request.user
-            comment.commenter_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-            comment.comment = form.cleaned_data['comment']
-            comment.save()
-            logger.info("Saved comment by user %s to hrapplication %s" % (request.user, comment.application))
-
+        if request.user.has_perm('hrapplications.add_applicationcomment'):
+            form = HRApplicationCommentForm(request.POST)
+            logger.debug("Request type POST contains form valid: %s" % form.is_valid())
+            if form.is_valid():
+                comment = ApplicationComment()
+                comment.application = app
+                comment.user = request.user
+                comment.text = form.cleaned_data['comment']
+                comment.save()
+                logger.info("Saved comment by user %s to %s" % (request.user, app))
+        else:
+            logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
     else:
         logger.debug("Returning blank HRApplication comment form.")
         form = HRApplicationCommentForm()
-
-    if HRApplication.objects.filter(id=app_id).exists():
-        application = HRApplication.objects.get(id=app_id)
-        comments = HRApplicationComment.objects.all().filter(application=application)
-        logger.debug("Retrieved hrpplication id %s on behalf of user %s with comments %s" % (app_id, request.user, len(comments)))
-    else:
-        application = HRApplication()
-        comments = []
-        logger.error("HRAppllication with id %s not found - returning blank applicatin to user %s" % request.user)
-
-    context = {'application': application, 'comments': comments, 'comment_form': form}
-
-    return render_to_response('registered/hrapplicationview.html',
-                              context, context_instance=RequestContext(request))
+    apis = []
+    if request.user.has_perm('hrapplications.view_apis'):
+        apis = app.apis
+    context = {
+        'app': app,
+        'responses': ApplicationResponse.objects.filter(application=app),
+        'buttons': True,
+        'apis': apis,
+        'comments': ApplicationComment.objects.filter(application=app),
+        'comment_form': form,
+    }
+    return render_to_response('registered/hrapplicationview.html', context, context_instance=RequestContext(request))
 
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.delete_application')
 def hr_application_remove(request, app_id):
     logger.debug("hr_application_remove called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
-        application = HRApplication.objects.get(id=app_id)
-        if application:
-            logger.info("Deleted HRApplication id %s on behalf of user %s" % (app_id, request.user))
-            notify(application.user, "Application Deleted", message="Your application to %s was deleted.")
-            application.delete()
-        else:
-                    logger.error("Unable to delete HRApplication with id %s on behalf of user %s: application is NoneType" % (app_id, request.user))
-    else:
-        logger.error("Unable to delete HRApplication with id %s on behalf of user %s: application not found." % (app_id, request.user))
-
-    return HttpResponseRedirect("/hr_application_management/")
-
+    app = get_object_or_404(Application, pk=app_id)
+    logger.info("User %s deleting %s" % (request.user, app))
+    app.delete()
+    notify(app.user, "Application Deleted", message="Your application to %s was deleted." % app.form.corp)
+    return redirect('auth_hrapplications_view')
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.approve_application')
 def hr_application_approve(request, app_id):
     logger.debug("hr_application_approve called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
-        auth_info = AuthServicesInfo.objects.get(user=request.user)
-        application = HRApplication.objects.get(id=app_id)
-        application.approved_denied = True
-        application.reviewer_user = request.user
-        application.reviewer_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        application.save()
-        logger.info("HRApplication for user %s to corp %s approved by %s" % (application.user, application.corp, request.user))
-        notify(application.user, "Application Accepted", message="Your application to %s has been approved." % application.corp, level="success")
+    app = get_object_or_404(Application, pk=app_id)
+    if request.user.is_superuser or request.user == app.reviewer:
+        logger.info("User %s approving %s" % (request.user, app))
+        app.approved = True
+        app.save()
+        notify(app.user, "Application Accepted", message="Your application to %s has been approved." % app.form.corp, level="success")
     else:
-        logger.error("User %s unable to approve HRApplication id %s - hrapplication with that id not found." % (request.user, app_id))
-
-    return HttpResponseRedirect("/hr_application_management/")
-
+        logger.warn("User %s not authorized to approve %s" % (request.user, app))
+    return redirect('auth_hrapplications_view')
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('hrapplications.reject_application')
 def hr_application_reject(request, app_id):
     logger.debug("hr_application_reject called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
-        auth_info = AuthServicesInfo.objects.get(user=request.user)
-        application = HRApplication.objects.get(id=app_id)
-        application.approved_denied = False
-        application.reviewer_user = request.user
-        application.reviewer_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        application.save()
-        logger.info("HRApplication for user %s to corp %s rejected by %s" % (application.user, application.corp, request.user))
-        notify(application.user, "Application Rejected", message="Your application to %s has been rejected." % application.corp, level="danger")
+    app = get_object_or_404(Application, pk=app_id)
+    if request.user.is_superuser or request.user == app.reviewer:
+        logger.info("User %s rejecting %s" % (request.user, app))
+        app.approved = False
+        app.save()
+        notify(app.user, "Application Rejected", message="Your application to %s has been rejected." % app.form.corp, level="danger")
     else:
-        logger.error("User %s unable to reject HRApplication id %s - hrapplication with that id not found." % (request.user, app_id))
-
-    return HttpResponseRedirect("/hr_application_management/")
-
+        logger.warn("User %s not authorized to reject %s" % (request.user, app))
+    return redirect('auth_hrapplications_view')
 
 @login_required
 @permission_required('auth.human_resources')
@@ -221,13 +191,16 @@ def hr_application_search(request):
             # Really dumb search and only checks character name
             # This can be improved but it does the job for now
             searchstring = form.cleaned_data['search_string']
-            applications = []
+            applications = set([])
             logger.debug("Searching for application with character name %s for user %s" % (searchstring, request.user))
 
-            for application in HRApplication.objects.all():
-                if searchstring in application.character_name:
-                    applications.append(application)
-            logger.info("Found %s HRApplications for user %s matching search string %s" % (len(applications), request.user, searchstring))
+            for application in Application.objects.all():
+                if application.main_character:
+                    if searchstring in application.main_character.character_name:
+                        applications.add(application)
+                if searchstring in application.user.username:
+                    applications.add(application)
+            logger.info("Found %s Applications for user %s matching search string %s" % (len(applications), request.user, searchstring))
 
             context = {'applications': applications, 'search_form': HRApplicationSearchForm()}
 
@@ -243,19 +216,23 @@ def hr_application_search(request):
         logger.debug("Returning empty search form for user %s" % request.user)
         return HttpResponseRedirect("/hr_application_management/")
 
-
 @login_required
 @permission_required('auth.human_resources')
 def hr_application_mark_in_progress(request, app_id):
     logger.debug("hr_application_mark_in_progress called by user %s for app id %s" % (request.user, app_id))
-    if HRApplication.objects.filter(id=app_id).exists():
+    app = get_object_or_404(Application, pk=app_id)
+    if not app.reviewer:
+        logger.info("User %s marking %s in progress" % (request.user, app))
         auth_info = AuthServicesInfo.objects.get(user=request.user)
-        application = HRApplication.objects.get(id=app_id)
-        application.reviewer_inprogress_character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        application.save()
-        logger.info("Marked HRApplication for user %s to corp %s in progress by user %s" % (application.user, application.corp, request.user))
-        notify(application.user, "Application In Progress", message="Your application to %s is being reviewed by %s" % (application.corp, application.reviewer_inprogress_character))
+        try:
+            character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+        except:
+            logger.warn("User %s marking %s in review has no main character" % (request.user, app))
+            character = None
+        app.reviewer = request.user
+        app.reviewer_character = character
+        app.save()
+        notify(app.user, "Application In Progress", message="Your application to %s is being reviewed by %s" % (app.form.corp, app.reviewer_str))
     else:
-        logger.error("Unable to mark HRApplication id %s in progress by user %s - hrapplication matching id not found." % (app_id, request.user))
-
+        logger.warn("User %s unable to mark %s in progress: already being reviewed by %s" % (request.user, app, app.reviewer))
     return HttpResponseRedirect("/hr_application_view/" + str(app_id))
