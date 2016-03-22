@@ -7,6 +7,7 @@ from .tasks import update_mumble_groups
 from .tasks import update_forum_groups
 from .tasks import update_ipboard_groups
 from .tasks import update_discord_groups
+from authentication.models import AuthServicesInfo
 
 logger = logging.getLogger(__name__)
 
