@@ -31,6 +31,7 @@ from eveonline.models import EveAllianceInfo
 from authentication.managers import AuthServicesInfoManager
 from services.models import DiscordAuthToken
 
+import evelink
 import time
 import logging
 
@@ -460,76 +461,43 @@ def refresh_api(api_key_pair):
         state = determine_membership_by_user(user)
         if state == "BLUE":
             if settings.BLUE_API_ACCOUNT:
-                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
-                if type == None:
-                    api_key_pair.error_count += 1
-                    api_key_pair.save()
-                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                    still_valid = None
-                elif type == False:
+                if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
                     logger.info("Determined api key %s for blue user %s is no longer type account as requred." % (api_key_pair.api_id, user))
                     still_valid = False
                     notify(user, "API Failed Validation", message="Your API key ID %s is not account-wide as required." % api_key_pair.api_id, level="danger")
-                full = EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
-                if full == None:
-                    api_key_pair.error_count += 1
-                    api_key_pair.save()
-                    logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                    still_valid = None
-                elif full == False:
+                if not EveApiManager.check_blue_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
                     logger.info("Determined api key %s for blue user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                     still_valid = False
                     notify(user, "API Failed Validation", message="Your API key ID %s does not meet access mask requirements." % api_key_pair.api_id, level="danger")
         elif state == "MEMBER":
             if settings.MEMBER_API_ACCOUNT:
-                type = EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key)
-                if type == None:
-                    api_key_pair.error_count += 1
-                    api_key_pair.save()
-                    logger.info("API key %s incurred an error checking if type account. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                    still_valid = None
-                elif type == False:
+                if not EveApiManager.check_api_is_type_account(api_key_pair.api_id, api_key_pair.api_key):
                     logger.info("Determined api key %s for user %s is no longer type account as required." % (api_key_pair.api_id, user))
                     still_valid = False
                     notify(user, "API Failed Validation", message="Your API key ID %s is not account-wide as required." % api_key_pair.api_id, level="danger")
-                full = EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key)
-                if full == None:
-                    api_key_pair.error_count += 1
-                    api_key_pair.save()
-                    logger.info("API key %s incurred an error checking if meets mask requirements. Error count is now %s" % (api_key_pair.api_id, api_key_pair.error_count))
-                    still_valid = None
-                elif full == False:
+                if not EveApiManager.check_api_is_full(api_key_pair.api_id, api_key_pair.api_key):
                     logger.info("Determined api key %s for user %s no longer meets minimum access mask as required." % (api_key_pair.api_id, user))
                     still_valid = False
                     notify(user, "API Failed Validation", message="Your API key ID %s does not meet access mask requirements." % api_key_pair.api_id, level="danger")
-        if still_valid == None:
-               if api_key_pair.error_count >= 3:
-                   logger.info("API key %s has incurred 3 or more errors. Assuming invalid." % api_key_pair.api_id)
-                   still_valid = False
-                   notify(user, "API Failed Validation", message="Your API key ID %s has accumulated too many errors during refresh and is assumed to be invalid." % api_key_pair.api_id, level="danger")
-        if still_valid == False:
-               logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
-               EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
-               EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
-               notify(user, "API Key Deleted", message="Your API key ID %s has failed validation. It and its associated characters have been deleted." % api_key_pair.api_id, level="danger")
-        elif still_valid == True:
-               if api_key_pair.error_count != 0:
-                   logger.info("Clearing error count for api %s as it passed validation" % api_key_pair.api_id)
-                   api_key_pair.error_count = 0
-                   api_key_pair.save()
-               logger.info("Determined api key %s still meets requirements." % api_key_pair.api_id)
-               # Update characters
-               characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
-               EveManager.update_characters_from_list(characters)
-               new_character = False
-               for char in characters.result:
-                   # Ensure we have a model for all characters on key
-                   if not EveManager.check_if_character_exist(characters.result[char]['name']):
-                       new_character = True
-                       logger.debug("API key %s has a new character on the account: %s" % (api_key_pair.api_id, characters.result[char]['name']))
-                   if new_character:
-                       logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
-                       EveManager.create_characters_from_list(characters, user, api_key_pair.api_id)
+        if not still_valid:
+           logger.debug("API key %s has failed validation; it and its characters will be deleted." % api_key_pair.api_id)
+           EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+           EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+           notify(user, "API Key Deleted", message="Your API key ID %s has failed validation. It and its associated characters have been deleted." % api_key_pair.api_id, level="danger")
+        else:
+           logger.info("Determined api key %s still meets requirements." % api_key_pair.api_id)
+           # Update characters
+           characters = EveApiManager.get_characters_from_api(api_key_pair.api_id, api_key_pair.api_key)
+           EveManager.update_characters_from_list(characters)
+           new_character = False
+           for char in characters.result:
+               # Ensure we have a model for all characters on key
+               if not EveManager.check_if_character_exist(characters.result[char]['name']):
+                   new_character = True
+                   logger.debug("API key %s has a new character on the account: %s" % (api_key_pair.api_id, characters.result[char]['name']))
+               if new_character:
+                   logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api_key_pair.api_id))
+                   EveManager.create_characters_from_list(characters, user, api_key_pair.api_id)
     else:
         logger.debug("API key %s is no longer valid; it and its characters will be deleted." % api_key_pair.api_id)
         EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
@@ -551,7 +519,19 @@ def run_api_refresh():
                 authserviceinfo, c = AuthServicesInfo.objects.get_or_create(user=user)
                 logger.debug("User %s has api keys. Proceeding to refresh." % user)
                 for api_key_pair in api_key_pairs:
-                    refresh_api(api_key_pair)
+                    try:
+                        refresh_api(api_key_pair)
+                    except evelink.api.APIError as e:
+                        if int(e.code) >= 500:
+                            logger.error("EVE API servers encountered an error. Aborting API updates")
+                            return
+                        elif int(e.code) == 221:
+                            logger.warn("API server hiccup while updating %s" % api_key_pair)
+                        else:
+                            logger.debug("API key %s failed update with error code %s" % (api_key_pair.api_id, e.code))
+                            EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
+                            EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
+                            notify(user, "API Key Deleted", message="Your API key ID %s failed validation with code %s. It and its associated characters have been deleted." % (api_key_pair.api_id, e.code), level="danger")
                 # Check our main character
                 if EveCharacter.objects.filter(character_id=authserviceinfo.main_char_id).exists() is False:
                     logger.info("User %s main character id %s missing model. Clearning main character." % (user, authserviceinfo.main_char_id))
@@ -625,178 +605,180 @@ def run_corp_update():
         logger.warn("Aborted updating corp and alliance models: API server unreachable")
         return
     standing_level = 'alliance'
-
-    # get corp info for owning corp if required
-    ownercorpinfo = {}
-    if settings.IS_CORP:
-        standing_level = 'corp'
-        logger.debug("Getting information for owning corp with id %s" % settings.CORP_ID)
-        ownercorpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
-        if not ownercorpinfo:
-            logger.error("Failed to retrieve corp info for owning corp id %s - bad corp id?" % settings.CORP_ID)
-            return
-
-    # check if we need to update an alliance model
-    alliance_id = ''
-    if ownercorpinfo and ownercorpinfo['alliance']['id']:
-        alliance_id = ownercorpinfo['alliance']['id']
-    elif settings.IS_CORP is False:
-        alliance_id = settings.ALLIANCE_ID
-
-    # get and create alliance info for owning alliance if required
-    alliance = None
-    if alliance_id:
-        logger.debug("Getting information for owning alliance with id %s" % alliance_id)
-        ownerallianceinfo = EveApiManager.get_alliance_information(alliance_id)
-        if not ownerallianceinfo:
-            logger.error("Failed to retrieve corp info for owning alliance id %s - bad alliance id?" % alliance_id)
-            return
-        if EveAllianceInfo.objects.filter(alliance_id=ownerallianceinfo['id']).exists():
-            logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
-            EveManager.update_alliance_info(ownerallianceinfo['id'], ownerallianceinfo['executor_id'], ownerallianceinfo['member_count'], False)
-        else:
-            populate_alliance(alliance_id)
-        alliance = EveAllianceInfo.objects.get(alliance_id=alliance_id)
-
-    # create corp info for owning corp if required
-    if ownercorpinfo:
-        if EveCorporationInfo.objects.filter(corporation_id=ownercorpinfo['id']).exists():
-            logger.debug("Updating existing owner corp model with id %s" % ownercorpinfo['id'])
-            EveManager.update_corporation_info(ownercorpinfo['id'], ownercorpinfo['members']['current'], alliance, False)
-        else:
-            logger.info("Creating model for owning corp with id %s" % ownercorpinfo['id'])
-            EveManager.create_corporation_info(ownercorpinfo['id'], ownercorpinfo['name'], ownercorpinfo['ticker'],
+    try:
+        # get corp info for owning corp if required
+        ownercorpinfo = {}
+        if settings.IS_CORP:
+            standing_level = 'corp'
+            logger.debug("Getting information for owning corp with id %s" % settings.CORP_ID)
+            ownercorpinfo = EveApiManager.get_corporation_information(settings.CORP_ID)
+            if not ownercorpinfo:
+                logger.error("Failed to retrieve corp info for owning corp id %s - bad corp id?" % settings.CORP_ID)
+                return
+    
+        # check if we need to update an alliance model
+        alliance_id = ''
+        if ownercorpinfo and ownercorpinfo['alliance']['id']:
+            alliance_id = ownercorpinfo['alliance']['id']
+        elif settings.IS_CORP is False:
+            alliance_id = settings.ALLIANCE_ID
+    
+        # get and create alliance info for owning alliance if required
+        alliance = None
+        if alliance_id:
+            logger.debug("Getting information for owning alliance with id %s" % alliance_id)
+            ownerallianceinfo = EveApiManager.get_alliance_information(alliance_id)
+            if not ownerallianceinfo:
+                logger.error("Failed to retrieve corp info for owning alliance id %s - bad alliance id?" % alliance_id)
+                return
+            if EveAllianceInfo.objects.filter(alliance_id=ownerallianceinfo['id']).exists():
+                logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
+                EveManager.update_alliance_info(ownerallianceinfo['id'], ownerallianceinfo['executor_id'], ownerallianceinfo['member_count'], False)
+            else:
+                populate_alliance(alliance_id)
+                alliance = EveAllianceInfo.objects.get(alliance_id=alliance_id)
+    
+        # create corp info for owning corp if required
+        if ownercorpinfo:
+            if EveCorporationInfo.objects.filter(corporation_id=ownercorpinfo['id']).exists():
+                logger.debug("Updating existing owner corp model with id %s" % ownercorpinfo['id'])
+                EveManager.update_corporation_info(ownercorpinfo['id'], ownercorpinfo['members']['current'], alliance, False)
+            else:
+                logger.info("Creating model for owning corp with id %s" % ownercorpinfo['id'])
+                EveManager.create_corporation_info(ownercorpinfo['id'], ownercorpinfo['name'], ownercorpinfo['ticker'],
                                                        ownercorpinfo['members']['current'], False, alliance)
 
-    # validate and create corp models for member corps of owning alliance
-    if alliance:
-        current_corps = EveCorporationInfo.objects.filter(alliance=alliance)
-        for corp in current_corps:
-            if corp.corporation_id in ownerallianceinfo['member_corps'] is False:
-                logger.info("Corp %s is no longer in owning alliance %s - updating model." % (corp, alliance))
-                corp.alliance = None
-                corp.save()
-        for member_corp in ownerallianceinfo['member_corps']:
-            if EveCorporationInfo.objects.filter(corporation_id=member_corp).exists():
-                corp = EveCorporationInfo.objects.get(corporation_id=member_corp)
-                if corp.alliance == alliance is not True:
-                    logger.info("Associating corp %s with owning alliance %s" % (corp, alliance))
-                    corp.alliance = alliance
+        # validate and create corp models for member corps of owning alliance
+        if alliance:
+            current_corps = EveCorporationInfo.objects.filter(alliance=alliance)
+            for corp in current_corps:
+                if corp.corporation_id in ownerallianceinfo['member_corps'] is False:
+                    logger.info("Corp %s is no longer in owning alliance %s - updating model." % (corp, alliance))
+                    corp.alliance = None
                     corp.save()
-            else:
-                corpinfo = EveApiManager.get_corporation_information(member_corp)
-                logger.info("Creating model for owning alliance member corp with id %s" % corpinfo['id'])
-                EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
+            for member_corp in ownerallianceinfo['member_corps']:
+                if EveCorporationInfo.objects.filter(corporation_id=member_corp).exists():
+                    corp = EveCorporationInfo.objects.get(corporation_id=member_corp)
+                    if corp.alliance == alliance is not True:
+                        logger.info("Associating corp %s with owning alliance %s" % (corp, alliance))
+                        corp.alliance = alliance
+                        corp.save()
+                else:
+                    corpinfo = EveApiManager.get_corporation_information(member_corp)
+                    logger.info("Creating model for owning alliance member corp with id %s" % corpinfo['id'])
+                    EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
                                                        corpinfo['members']['current'], False, alliance)
 
-    # update existing corp models
-    for corp in EveCorporationInfo.objects.all():
-        update_corp.delay(corp.corporation_id)
+        # update existing corp models
+        for corp in EveCorporationInfo.objects.all():
+            update_corp.delay(corp.corporation_id)
 
-    # update existing alliance models
-    for alliance in EveAllianceInfo.objects.all():
-        update_alliance.delay(alliance.alliance_id)
+        # update existing alliance models
+        for alliance in EveAllianceInfo.objects.all():
+            update_alliance.delay(alliance.alliance_id)
 
-    # create standings
-    standings = EveApiManager.get_corp_standings()
-    if standings:
-        standings = standings[standing_level]
-        for standing in standings:
-            if int(standings[standing]['standing']) >= settings.BLUE_STANDING:
-                logger.debug("Standing %s meets threshold" % standing)
-                if EveApiManager.check_if_id_is_alliance(standing):
-                    logger.debug("Standing %s is an alliance" % standing)
-                    if EveAllianceInfo.objects.filter(alliance_id=standing).exists():
-                        alliance = EveAllianceInfo.objects.get(alliance_id=standing)
-                        if alliance.is_blue is not True:
-                            logger.info("Updating alliance %s as blue" % alliance)
-                            alliance.is_blue = True
-                            alliance.save()
-                    else:
-                        populate_alliance(standing, blue=True)
-                elif EveApiManager.check_if_id_is_corp(standing):
-                    logger.debug("Standing %s is a corp" % standing)
-                    if EveCorporationInfo.objects.filter(corporation_id=standing).exists():
-                        corp = EveCorporationInfo.objects.get(corporation_id=standing)
-                        if corp.is_blue is not True:
-                            logger.info("Updating corp %s as blue" % corp)
-                            corp.is_blue = True
-                            corp.save()
-                    else:
-                        logger.info("Creating model for blue corp with id %s" % standing)
-                        corpinfo = EveApiManager.get_corporation_information(standing)
-                        corp_alliance = None
-                        if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
-                            logger.debug("New corp model for standing %s has existing alliance model" % standing)
-                            corp_alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
-                        EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
+        # create standings
+        standings = EveApiManager.get_corp_standings()
+        if standings:
+            standings = standings[standing_level]
+            for standing in standings:
+                if int(standings[standing]['standing']) >= settings.BLUE_STANDING:
+                    logger.debug("Standing %s meets threshold" % standing)
+                    if EveApiManager.check_if_id_is_alliance(standing):
+                        logger.debug("Standing %s is an alliance" % standing)
+                        if EveAllianceInfo.objects.filter(alliance_id=standing).exists():
+                            alliance = EveAllianceInfo.objects.get(alliance_id=standing)
+                            if alliance.is_blue is not True:
+                                logger.info("Updating alliance %s as blue" % alliance)
+                                alliance.is_blue = True
+                                alliance.save()
+                        else:
+                            populate_alliance(standing, blue=True)
+                    elif EveApiManager.check_if_id_is_corp(standing):
+                        logger.debug("Standing %s is a corp" % standing)
+                        if EveCorporationInfo.objects.filter(corporation_id=standing).exists():
+                            corp = EveCorporationInfo.objects.get(corporation_id=standing)
+                            if corp.is_blue is not True:
+                                logger.info("Updating corp %s as blue" % corp)
+                                corp.is_blue = True
+                                corp.save()
+                        else:
+                            logger.info("Creating model for blue corp with id %s" % standing)
+                            corpinfo = EveApiManager.get_corporation_information(standing)
+                            corp_alliance = None
+                            if EveAllianceInfo.objects.filter(alliance_id=corpinfo['alliance']['id']).exists():
+                                logger.debug("New corp model for standing %s has existing alliance model" % standing)
+                                corp_alliance = EveAllianceInfo.objects.get(alliance_id=corpinfo['alliance']['id'])
+                            EveManager.create_corporation_info(corpinfo['id'], corpinfo['name'], corpinfo['ticker'],
                                                                corpinfo['members']['current'], True, corp_alliance)
                     
 
-    # update alliance standings
-    for alliance in EveAllianceInfo.objects.filter(is_blue=True):
-        if int(alliance.alliance_id) in standings:
-            if float(standings[int(alliance.alliance_id)]['standing']) < float(settings.BLUE_STANDING):
-                logger.info("Alliance %s no longer meets minimum blue standing threshold" % alliance)
+        # update alliance standings
+        for alliance in EveAllianceInfo.objects.filter(is_blue=True):
+            if int(alliance.alliance_id) in standings:
+                if float(standings[int(alliance.alliance_id)]['standing']) < float(settings.BLUE_STANDING):
+                    logger.info("Alliance %s no longer meets minimum blue standing threshold" % alliance)
+                    alliance.is_blue = False
+                    alliance.save()
+            else:
+                logger.info("Alliance %s no longer in standings" % alliance)
                 alliance.is_blue = False
                 alliance.save()
-        else:
-            logger.info("Alliance %s no longer in standings" % alliance)
-            alliance.is_blue = False
-            alliance.save()
-
-    # update corp standings
-    for corp in EveCorporationInfo.objects.filter(is_blue=True):
-        if int(corp.corporation_id) in standings:
-            if float(standings[int(corp.corporation_id)]['standing']) < float(settings.BLUE_STANDING):
-                logger.info("Corp %s no longer meets minimum blue standing threshold" % corp)
-                corp.is_blue = False
-                corp.save()
-        else:
-            if corp.alliance:
-                if corp.alliance.is_blue is False:
-                    logger.info("Corp %s and its alliance %s are no longer blue" % (corp, corp.alliance))
+    
+        # update corp standings
+        for corp in EveCorporationInfo.objects.filter(is_blue=True):
+            if int(corp.corporation_id) in standings:
+                if float(standings[int(corp.corporation_id)]['standing']) < float(settings.BLUE_STANDING):
+                    logger.info("Corp %s no longer meets minimum blue standing threshold" % corp)
                     corp.is_blue = False
                     corp.save()
             else:
-                logger.info("Corp %s is no longer blue" % corp)
-                corp.is_blue = False
-                corp.save()
+                if corp.alliance:
+                    if corp.alliance.is_blue is False:
+                        logger.info("Corp %s and its alliance %s are no longer blue" % (corp, corp.alliance))
+                        corp.is_blue = False
+                        corp.save()
+                else:
+                    logger.info("Corp %s is no longer blue" % corp)
+                    corp.is_blue = False
+                    corp.save()
 
-    # delete unnecessary alliance models
-    for alliance in EveAllianceInfo.objects.filter(is_blue=False):
-        logger.debug("Checking to delete alliance %s" % alliance)
-        if settings.IS_CORP is False:
-            if alliance.alliance_id == settings.ALLIANCE_ID is False:
-                logger.info("Deleting unnecessary alliance model %s" % alliance)
-                alliance.delete()
-        else:
-            if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
-                logger.info("Deleting unnecessary alliance model %s" % alliance)
-                alliance.delete()
-
-    # delete unnecessary corp models
-    for corp in EveCorporationInfo.objects.filter(is_blue=False):
-        logger.debug("Checking to delete corp %s" % corp)
-        if settings.IS_CORP is False:
-            if corp.alliance:
-                logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
-                if corp.alliance.alliance_id == settings.ALLIANCE_ID is False:
-                    logger.info("Deleting unnecessary corp model %s" % corp)
-                    corp.delete()
+        # delete unnecessary alliance models
+        for alliance in EveAllianceInfo.objects.filter(is_blue=False):
+            logger.debug("Checking to delete alliance %s" % alliance)
+            if settings.IS_CORP is False:
+                if alliance.alliance_id == settings.ALLIANCE_ID is False:
+                    logger.info("Deleting unnecessary alliance model %s" % alliance)
+                    alliance.delete()
             else:
-                logger.info("Deleting unnecessary corp model %s" % corp)
-                corp.delete()
-        else:
-            if corp.corporation_id != settings.CORP_ID:
-                logger.debug("Corp %s is not owning corp" % corp)
+                if alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
+                    logger.info("Deleting unnecessary alliance model %s" % alliance)
+                    alliance.delete()
+
+        # delete unnecessary corp models
+        for corp in EveCorporationInfo.objects.filter(is_blue=False):
+            logger.debug("Checking to delete corp %s" % corp)
+            if settings.IS_CORP is False:
                 if corp.alliance:
                     logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
-                    if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
+                    if corp.alliance.alliance_id == settings.ALLIANCE_ID is False:
                         logger.info("Deleting unnecessary corp model %s" % corp)
                         corp.delete()
                 else:
                     logger.info("Deleting unnecessary corp model %s" % corp)
                     corp.delete()
             else:
-                logger.debug("Corp %s is owning corp" % corp)
+                if corp.corporation_id != settings.CORP_ID:
+                    logger.debug("Corp %s is not owning corp" % corp)
+                    if corp.alliance:
+                        logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
+                        if corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists() is False:
+                            logger.info("Deleting unnecessary corp model %s" % corp)
+                            corp.delete()
+                    else:
+                        logger.info("Deleting unnecessary corp model %s" % corp)
+                        corp.delete()
+                else:
+                    logger.debug("Corp %s is owning corp" % corp)
+    except evelink.api.APIError as e:
+        logger.error("Model update failed with error code %s" % e.code)
