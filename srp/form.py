@@ -8,7 +8,7 @@ class SrpFleetMainForm(forms.Form):
 
 
 class SrpFleetUserRequestForm(forms.Form):
-    killboard_link = forms.CharField(required=True, label="Killboard Link")
+    killboard_link = forms.CharField(required=True, label="ZKillboard Link")
     additional_info = forms.CharField(required=False, label="Additional Info")
 
 
