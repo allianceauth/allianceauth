@@ -23,7 +23,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
             update_jabber_groups.delay(instance)
         if auth.forum_username:
             update_forum_groups.delay(instance)
-        if auth.ipboard_groups:
+        if auth.ipboard_username:
             update_ipboard_groups.delay(instance)
-        if auth.discord_groups:
+        if auth.discord_username:
             update_discord_groups.delay(instance)
