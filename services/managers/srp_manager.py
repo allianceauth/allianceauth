@@ -44,3 +44,13 @@ class srpManager():
             logger.debug("ship type %s determined to be %s" % (ship_type, ship_name))
         else:
             logger.info("ship type %s is invalid please try again" % ship_type)
+
+
+
+
+
+
+
+
+
+
