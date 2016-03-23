@@ -46,7 +46,7 @@ class Application(models.Model):
 
     @property
     def characters(self):
-        return EveCharacter.objects.filter(user=user)
+        return EveCharacter.objects.filter(user=self.user)
 
     @property
     def apis(self):

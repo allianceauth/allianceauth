@@ -21,14 +21,53 @@
                     {% if app.reviewer_str %}
                         <div class="alert alert-info">Reviewer: {{ app.reviewer_str }}</div>
                     {% endif %}
-                    {% for response in responses %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">{{ response.question.title }}</div>
-                            <div class="alert">{{ response.answer }}</div>
-                        </div>
-                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Applicant</div>
+                        <table class="table">
+                            <tr>
+                                <th class="text-center">User</th>
+                                <th class="text-center">Main Character</th>
+                            </tr>
+                            <tr>
+                                <td class="text-center">{{ app.user }}</td>
+                                <td class="text-center">{{ app.main_character }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Characters</div>
+                        <table class="table">
+                            <tr>
+                                <th class="text-center"></th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Corp</th>
+                                <th class="text-center">Alliance</th>
+                            </tr>
+                            {% for char in app.characters %}
+                                <tr>
+                                    <td class="text-center">
+                                        <img class="ra-avatar img-responsive" src="https://image.eveonline.com/Character/{{ char.character_id }}_32.jpg">
+                                    </td>
+                                    <td class="text-center">{{ char.character_name }}</td>
+                                    <td class="text-center">{{ char.corporation_name }}</td>
+                                    <td class="text-center">{{ char.alliance_name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>      
+                </div>
+                <div class="row">
+                {% for response in responses %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ response.question.title }}</div>
+                        <div class="alert">{{ response.answer }}</div>
+                    </div>
+                {% endfor %}
                 </div>
                 {% if buttons %}
+                    <div class="row">
                     {% if perms.auth.human_resources %}
                         <div class="panel panel-primary">
                             <div class="panel-heading">Actions</div>
@@ -83,6 +122,7 @@
                             </div>
                         </div>
                     {% endif %}
+                </div>
                 {% endif %}
             </div>
         </div>
