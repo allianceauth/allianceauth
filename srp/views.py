@@ -207,9 +207,6 @@ def srp_request_view(request, fleet_srp):
             completed = True
             logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (request.user, srp_fleet_main.fleet_name))
 
-
-
-
     else:
         logger.debug("Returning blank SrpFleetUserRequestForm")
         form = SrpFleetUserRequestForm()
