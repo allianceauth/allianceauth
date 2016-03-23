@@ -134,7 +134,7 @@ def activate_forum(request):
     if result[0] != "":
         AuthServicesInfoManager.update_user_forum_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with forum credentials. Updating groups." % request.user)
-        update_forum_groups.delay(request.user)
+        update_forum_groups.delay(request.user.pk)
         logger.info("Succesfully activated forum for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to activate forum for user %s" % request.user)
@@ -183,7 +183,7 @@ def activate_ipboard_forum(request):
     if result[0] != "":
         AuthServicesInfoManager.update_user_ipboard_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with ipboard credentials. Updating groups." % request.user)
-        update_ipboard_groups.delay(request.user)
+        update_ipboard_groups.delay(request.user.pk)
         logger.info("Succesfully activated ipboard for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to activate ipboard for user %s" % request.user)
@@ -231,7 +231,7 @@ def activate_jabber(request):
     if info[0] is not "":
         AuthServicesInfoManager.update_user_jabber_info(info[0], info[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with jabber credentials. Updating groups." % request.user)
-        update_jabber_groups.delay(request.user)
+        update_jabber_groups.delay(request.user.pk)
         logger.info("Succesfully activated jabber for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to activate jabber for user %s" % request.user)
@@ -284,7 +284,7 @@ def activate_mumble(request):
     if result[0] is not "":
         AuthServicesInfoManager.update_user_mumble_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with mumble credentials. Updating groups." % request.user)
-        update_mumble_groups.delay(request.user)
+        update_mumble_groups.delay(request.user.pk)
         logger.info("Succesfully activated mumble for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccessful attempt to activate mumble for user %s" % request.user)
@@ -339,7 +339,7 @@ def activate_teamspeak3(request):
     if result[0] is not "":
         AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with TS3 credentials. Updating groups." % request.user)
-        update_teamspeak3_groups.delay(request.user)
+        update_teamspeak3_groups.delay(request.user.pk)
         logger.info("Succesfully activated TS3 for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccessful attempt to activate TS3 for user %s" % request.user)
@@ -443,7 +443,7 @@ def activate_discord(request):
                 if user_id != "":
                     AuthServicesInfoManager.update_user_discord_info(user_id, request.user)
                     logger.debug("Updated discord id %s for user %s" % (user_id, request.user))
-                    update_discord_groups.delay(request.user)
+                    update_discord_groups.delay(request.user.pk)
                     logger.debug("Updated discord groups for user %s." % request.user)
                     success = True
                     logger.info("Succesfully activated discord for user %s" % request.user)
