@@ -2,6 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import HttpResponseRedirect
 from notifications import notify
 from models import HRApplication
@@ -24,10 +25,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def create_application_test(user):
+    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    if auth.main_char_id:
+        return True
+    else:
+        return False
+
 @login_required
 def hr_application_management_view(request):
     logger.debug("hr_application_management_view called by user %s" % request.user)
     corp_applications = []
+    finished_corp_applications = []
     auth_info, c = AuthServicesInfo.objects.get_or_create(user=request.user)
     main_char = None
     if auth_info.main_char_id:
@@ -41,14 +50,19 @@ def hr_application_management_view(request):
         if ApplicationForm.objects.filter(corp__corporation_id=main_char.corporation_id).exists():
             app_form = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id)
             corp_applications = Application.objects.filter(form=app_form).filter(approved=None)
+            finished_corp_applications = Application.objects.filter(form=app_form).filter(approved__in=[True, False])
     logger.debug("Retrieved %s personal, %s corp applications for %s" % (len(request.user.applications.all()), len(corp_applications), request.user))
     context = {
         'personal_apps': request.user.applications.all(),
         'applications': corp_applications,
-        'search_form': HRApplicationSearchForm()}
+        'finished_applications': finished_corp_applications,
+        'search_form': HRApplicationSearchForm(),
+        'create': create_application_test(request.user)
+    }
     return render_to_response('registered/hrapplicationmanagement.html', context, context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(create_application_test)
 def hr_application_create_view(request, form_id=None):
     if form_id:
         app_form = get_object_or_404(ApplicationForm, id=form_id)
@@ -98,8 +112,11 @@ def hr_application_personal_removal(request, app_id):
     logger.debug("hr_application_personal_removal called by user %s for app id %s" % (request.user, app_id))
     app = get_object_or_404(Application, pk=app_id)
     if app.user == request.user:
-        logger.info("User %s deleting %s" % (request.user, app))
-        app.delete()
+        if app.accepted == None:
+            logger.info("User %s deleting %s" % (request.user, app))
+            app.delete()
+        else:
+            logger.warn("User %s attempting to delete reviewed app %s" % (request.user, app))
     else:
         logger.warn("User %s not authorized to delete %s" % (request.user, app))
     return redirect('auth_hrapplications_view')
@@ -188,17 +205,35 @@ def hr_application_search(request):
         form = HRApplicationSearchForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
-            # Really dumb search and only checks character name
-            # This can be improved but it does the job for now
-            searchstring = form.cleaned_data['search_string']
+            searchstring = form.cleaned_data['search_string'].lower()
             applications = set([])
             logger.debug("Searching for application with character name %s for user %s" % (searchstring, request.user))
-
-            for application in Application.objects.all():
+            app_list = []
+            if request.user.is_superuser:
+                app_list = Application.objects.all()
+            else:
+                auth_info = AuthServicesInfo.objects.get(user=request.user)
+                try:
+                    character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+                    app_list = Application.objects.filter(form__corp__corporation_id=character.corporation_id)
+                except:
+                    logger.warn("User %s missing main character model: unable to filter applications to search" % request.user)
+            for application in app_list:
                 if application.main_character:
-                    if searchstring in application.main_character.character_name:
+                    if searchstring in application.main_character.character_name.lower():
                         applications.add(application)
-                if searchstring in application.user.username:
+                    if searchstring in application.main_character.corporation_name.lower():
+                        applications.add(application)
+                    if searchstring in application.main_character.alliance_name.lower():\
+                        applications.add(application)
+                for character in application.characters:
+                    if searchstring in character.character_name.lower():
+                        applications.add(application)
+                    if searchstring in character.corporation_name.lower():
+                        applications.add(application)
+                    if searchstring in character.alliance_name.lower():
+                        applications.add(application)
+                if searchstring in application.user.username.lower():
                     applications.add(application)
             logger.info("Found %s Applications for user %s matching search string %s" % (len(applications), request.user, searchstring))
 
