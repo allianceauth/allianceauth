@@ -15,6 +15,7 @@ from form import SrpFleetMainForm
 from form import SrpFleetUserRequestForm
 from form import SrpFleetUpdateCostForm
 from form import SrpFleetMainUpdateForm
+from services.managers.srp_manager import srpManager
 
 import logging
 
@@ -190,6 +191,10 @@ def srp_request_view(request, fleet_srp):
             srp_request.additional_info = form.cleaned_data['additional_info']
             srp_request.character = character
             srp_request.srp_fleet_main = srp_fleet_main
+            srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
+            srp_kill_data = srpManager.get_kill_data(srp_kill_link)
+            srp_ship_name = srpManager.get_ship_name(srp_kill_data)
+            srp_request.srp_ship_name = srp_ship_name
             srp_request.save()
 
             completed = True
