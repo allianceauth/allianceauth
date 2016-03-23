@@ -198,7 +198,7 @@ def srp_request_view(request, fleet_srp):
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
                 (srp_kill_data, ship_value) = srpManager.get_kill_data(srp_kill_link)
             except:
-                logger.info("Invalid Killmail Link")
+                logger.info("%s Submitted Invalid Killmail Link %s" % (request.user, srp_request.killboard_link))
                 notify(request.user, "SRP Killmail Link Failed Validation", message="Your SRP Request Killmail link %s is invalid. Make sure your using Zkillboard." % srp_request.killboard_link, level="danger")
                 return HttpResponseRedirect("/srp")
             srp_ship_name = srpManager.get_ship_name(srp_kill_data)
