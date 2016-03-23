@@ -6,6 +6,7 @@ from services.models import UserTSgroup
 from services.models import AuthTS
 from services.models import TSgroup
 from services.models import DiscordAuthToken
+from services.models import MumbleUser
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,8 @@ def disable_mumble():
             auth.save()
     logger.info("Deleting all SyncGroupCache models for mumble")
     SyncGroupCache.objects.filter(servicename="mumble").delete()
+    logger.info("Deleting all MumbleUser models")
+    MumbleUser.objects.all().delete()
 
 def disable_ipboard():
     if settings.ENABLE_AUTH_IPBOARD:
