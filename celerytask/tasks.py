@@ -141,6 +141,7 @@ def update_teamspeak3_groups(user):
 def update_discord_groups(user):
     logger.debug("Updating discord groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
     for group in user.groups.all():
         groups.append(str(group.name))
     if len(groups) == 0:
