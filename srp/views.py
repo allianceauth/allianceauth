@@ -196,16 +196,16 @@ def srp_request_view(request, fleet_srp):
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
                 (srp_kill_data, ship_value) = srpManager.get_kill_data(srp_kill_link)
-                srp_ship_name = srpManager.get_ship_name(srp_kill_data)
-                srp_request.srp_ship_name = srp_ship_name
-                kb_total_loss = ship_value
-                srp_request.kb_total_loss = kb_total_loss
-                srp_request.save()
-                completed = True
-                logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (request.user, srp_fleet_main.fleet_name))
             except:
                 logger.info("Invalid Killmail Link")
                 return HttpResponseRedirect("/srp")
+            srp_ship_name = srpManager.get_ship_name(srp_kill_data)
+            srp_request.srp_ship_name = srp_ship_name
+            kb_total_loss = ship_value
+            srp_request.kb_total_loss = kb_total_loss
+            srp_request.save()
+            completed = True
+            logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (request.user, srp_fleet_main.fleet_name))
 
 
 
