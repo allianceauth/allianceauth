@@ -24,6 +24,9 @@ class SrpUserRequest(models.Model):
     srp_total_amount = models.BigIntegerField(default=0)
     character = models.ForeignKey(EveCharacter)
     srp_fleet_main = models.ForeignKey(SrpFleetMain)
+    kb_total_loss = models.BigIntegerField(default=0)
+    srp_ship_name = models.CharField(max_length=254, default="") 
+
 
     def __str__(self):
         return self.character.character_name + " - SrpUserRequest"
