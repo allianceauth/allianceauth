@@ -9,7 +9,7 @@ class SrpFleetMainForm(forms.Form):
 
 
 class SrpFleetUserRequestForm(forms.Form):
-    additional_info = forms.CharField(required=False, label="Additional Info")
+    additional_info = forms.CharField(required=False, max_length=25, label="Additional Info")
     killboard_link = forms.CharField(
         label="zKillboard Link",
         max_length=255,
