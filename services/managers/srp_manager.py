@@ -46,7 +46,7 @@ class srpManager():
             logger.debug("ship type %s determined to be %s" % (ship_type, ship_name))
             return ship_name
         else:
-            logger.info("ship type %s is invalid" % ship_type)
+            logger.debug("ship type %s is invalid" % ship_type)
             raise ValueError("Cannot get ship name")
 
 
