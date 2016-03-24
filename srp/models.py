@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from eveonline.models import EveCharacter
 
 
@@ -26,7 +26,7 @@ class SrpUserRequest(models.Model):
     srp_fleet_main = models.ForeignKey(SrpFleetMain)
     kb_total_loss = models.BigIntegerField(default=0)
     srp_ship_name = models.CharField(max_length=254, default="") 
-
+    post_time = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.character.character_name + " - SrpUserRequest"
