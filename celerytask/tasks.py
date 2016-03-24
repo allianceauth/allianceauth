@@ -54,7 +54,8 @@ def is_teamspeak3_active():
     return settings.ENABLE_AUTH_TEAMSPEAK3 or settings.ENABLE_BLUE_TEAMSPEAK3
 
 @task
-def update_jabber_groups(user):
+def update_jabber_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating jabber groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
@@ -71,7 +72,8 @@ def update_jabber_groups(user):
     logger.debug("Updated user %s jabber groups." % user)
 
 @task
-def update_mumble_groups(user):
+def update_mumble_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating mumble groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
@@ -88,7 +90,8 @@ def update_mumble_groups(user):
     logger.debug("Updated user %s mumble groups." % user)
 
 @task
-def update_forum_groups(user):
+def update_forum_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating forum groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
@@ -105,7 +108,8 @@ def update_forum_groups(user):
     logger.debug("Updated user %s forum groups." % user)
 
 @task
-def update_ipboard_groups(user):
+def update_ipboard_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating user %s ipboard groups." % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
     groups = []
@@ -122,7 +126,8 @@ def update_ipboard_groups(user):
     logger.debug("Updated user %s ipboard groups." % user)
 
 @task
-def update_teamspeak3_groups(user):
+def update_teamspeak3_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating user %s teamspeak3 groups" % user)
     usergroups = user.groups.all()
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -138,9 +143,11 @@ def update_teamspeak3_groups(user):
     logger.debug("Updated user %s teamspeak3 groups." % user)
 
 @task
-def update_discord_groups(user):
+def update_discord_groups(pk):
+    user = User.objects.get(pk=pk)
     logger.debug("Updating discord groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
     for group in user.groups.all():
         groups.append(str(group.name))
     if len(groups) == 0:
