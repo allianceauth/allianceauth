@@ -671,3 +671,9 @@ def run_corp_update():
                     logger.debug("Corp %s is owning corp" % corp)
     except evelink.api.APIError as e:
         logger.error("Model update failed with error code %s" % e.code)
+
+@periodic_task(run_every=crontab(minute="*/30"))
+def run_ts3_group_update():
+    if is_teamspeak3_active():
+        logger.debug("TS3 installed. Syncing local group objects.")
+        Teamspeak3Manager._sync_ts_group_db()
