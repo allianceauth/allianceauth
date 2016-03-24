@@ -11,7 +11,7 @@ class SrpFleetMainForm(forms.Form):
 class SrpFleetUserRequestForm(forms.Form):
     additional_info = forms.CharField(required=False, label="Additional Info")
     killboard_link = forms.CharField(
-        label="Zkillboard Link",
+        label="zKillboard Link",
         max_length=255,
         required=True
 
@@ -20,7 +20,7 @@ class SrpFleetUserRequestForm(forms.Form):
     def clean_killboard_link(self):
         data = self.cleaned_data['killboard_link']
         if "zkillboard.com" not in data:
-            raise forms.ValidationError("Invalid Link. Please use Zkillboard.com")
+            raise forms.ValidationError("Invalid Link. Please use zKillboard.com")
         return data
 
 
