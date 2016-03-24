@@ -7,7 +7,7 @@ from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
 
 class ApplicationQuestion(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=254)
     help_text = models.CharField(max_length=254, blank=True, null=True)
 
     def __str__(self):
