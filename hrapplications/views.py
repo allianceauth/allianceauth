@@ -113,7 +113,7 @@ def hr_application_personal_removal(request, app_id):
     logger.debug("hr_application_personal_removal called by user %s for app id %s" % (request.user, app_id))
     app = get_object_or_404(Application, pk=app_id)
     if app.user == request.user:
-        if app.accepted == None:
+        if app.approved == None:
             logger.info("User %s deleting %s" % (request.user, app))
             app.delete()
         else:

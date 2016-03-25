@@ -45,7 +45,7 @@
                                         class="glyphicon glyphicon-eye-open"></span></button>
                             </a>
 
-                            {% if personal_app.approved_denied == None %}
+                            {% if personal_app.approved == None %}
                                 <a href="/hr_application_personal_removal/{{ personal_app.id }}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>
