@@ -7,7 +7,7 @@ class SrpFleetMain(models.Model):
     fleet_name = models.CharField(max_length=254, default="")
     fleet_doctrine = models.CharField(max_length=254, default="")
     fleet_time = models.DateTimeField()
-    fleet_srp_code = models.CharField(max_length=254, default="", unique=True)
+    fleet_srp_code = models.CharField(max_length=254, default="")
     fleet_srp_status = models.CharField(max_length=254, default="")
     fleet_commander = models.ForeignKey(EveCharacter)
     fleet_srp_aar_link = models.CharField(max_length=254, default="")
