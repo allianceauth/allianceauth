@@ -213,13 +213,14 @@ def srp_request_view(request, fleet_srp):
             character = EveManager.get_character_by_id(authinfo.main_char_id)
             srp_fleet_main = SrpFleetMain.objects.get(fleet_srp_code=fleet_srp)
             post_time = timezone.now()
-
+            srp_status = "Pending"
 
             srp_request = SrpUserRequest()
             srp_request.killboard_link = form.cleaned_data['killboard_link']
             srp_request.additional_info = form.cleaned_data['additional_info']
             srp_request.character = character
             srp_request.srp_fleet_main = srp_fleet_main
+            srp_request.srp_status = srp_status
 
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
