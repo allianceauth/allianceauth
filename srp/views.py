@@ -17,6 +17,7 @@ from form import SrpFleetUpdateCostForm
 from form import SrpFleetMainUpdateForm
 from services.managers.srp_manager import srpManager
 from notifications import notify
+from django.utils import timezone
 
 import logging
 
@@ -74,7 +75,7 @@ def srp_fleet_view(request, fleet_id):
     if SrpFleetMain.objects.filter(id=fleet_id).exists():
         fleet_main = SrpFleetMain.objects.get(id=fleet_id)
         totalcost = 0
-        for fleet_data in SrpUserRequest.objects.filter(srp_fleet_main=fleet_main):
+        for fleet_data in SrpUserRequest.objects.filter(srp_fleet_main=fleet_main).filter(srp_status="Approved"):
             totalcost = totalcost + fleet_data.srp_total_amount
         logger.debug("Determiend fleet id %s total cost %s" % (fleet_id, totalcost))
 
@@ -137,6 +138,31 @@ def srp_fleet_remove(request, fleet_id):
         logger.error("Unable to delete SRP fleet id %s for user %s - fleet matching id not found." % (fleet_id, request.user))
     return HttpResponseRedirect("/srp")
 
+@login_required
+@permission_required('auth.srp_management')
+def srp_fleet_disable(request, fleet_id):
+    logger.debug("srp_fleet_disable called by user %s for fleet id %s" % (request.user, fleet_id))
+    if SrpFleetMain.objects.filter(id=fleet_id).exists():
+        srpfleetmain = SrpFleetMain.objects.get(id=fleet_id)
+        srpfleetmain.fleet_srp_code = ""
+        srpfleetmain.save()
+        logger.info("SRP Fleet %s disabled by user %s" % (srpfleetmain.fleet_name, request.user))
+    else:
+        logger.error("Unable to disable SRP fleet id %s for user %s - fleet matching id not found." % (fleet_id, request.user))
+    return HttpResponseRedirect("/srp")
+
+@login_required
+@permission_required('auth.srp_management')
+def srp_fleet_enable(request, fleet_id):
+    logger.debug("srp_fleet_enable called by user %s for fleet id %s" % (request.user, fleet_id))
+    if SrpFleetMain.objects.filter(id=fleet_id).exists():
+        srpfleetmain = SrpFleetMain.objects.get(id=fleet_id)
+        srpfleetmain.fleet_srp_code = random_string(8)
+        srpfleetmain.save()
+        logger.info("SRP Fleet %s enable by user %s" % (srpfleetmain.fleet_name, request.user))
+    else:
+        logger.error("Unable to enable SRP fleet id %s for user %s - fleet matching id not found." % (fleet_id, request.user))
+    return HttpResponseRedirect("/srp")
 
 @login_required
 @permission_required('auth.srp_management')
@@ -186,13 +212,15 @@ def srp_request_view(request, fleet_srp):
             authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
             character = EveManager.get_character_by_id(authinfo.main_char_id)
             srp_fleet_main = SrpFleetMain.objects.get(fleet_srp_code=fleet_srp)
-
+            post_time = timezone.now()
+            srp_status = "Pending"
 
             srp_request = SrpUserRequest()
             srp_request.killboard_link = form.cleaned_data['killboard_link']
             srp_request.additional_info = form.cleaned_data['additional_info']
             srp_request.character = character
             srp_request.srp_fleet_main = srp_fleet_main
+            srp_request.srp_status = srp_status
 
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
@@ -205,6 +233,7 @@ def srp_request_view(request, fleet_srp):
             srp_request.srp_ship_name = srp_ship_name
             kb_total_loss = ship_value
             srp_request.kb_total_loss = kb_total_loss
+            srp_request.post_time = post_time
             srp_request.save()
             completed = True
             logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (request.user, srp_fleet_main.fleet_name))
@@ -243,12 +272,17 @@ def srp_request_approve(request, srp_request_id):
     logger.debug("srp_request_approve called by user %s for srp request id %s" % (request.user, srp_request_id))
     stored_fleet_view = None
 
+
+
     if SrpUserRequest.objects.filter(id=srp_request_id).exists():
         srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
         stored_fleet_view = srpuserrequest.srp_fleet_main.id
         srpuserrequest.srp_status = "Approved"
+        if srpuserrequest.srp_total_amount == 0:
+            srpuserrequest.srp_total_amount = srpuserrequest.kb_total_loss
         srpuserrequest.save()
         logger.info("Approved SRP request id %s for character %s by user %s" % (srp_request_id, srpuserrequest.character, request.user))
+
     if stored_fleet_view is None:
         logger.error("Unable to approve srp request id %s on behalf of user %s - request matching id not found." % (srp_request_id, request.user))
         return HttpResponseRedirect("/srp")

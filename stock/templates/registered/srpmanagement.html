@@ -46,7 +46,7 @@
                                 {{ srpfleet.fleet_name }}
                             </div>
                         </td>
-                        <td class="text-center">{{ srpfleet.fleet_time }}</td>
+                        <td class="text-center">{{ srpfleet.fleet_time | date:"Y-m-d H:i" }}</td>
                         <td class="text-center">{{ srpfleet.fleet_doctrine }}</td>
                         <td class="text-center">
                             <div class="label label-success">
@@ -56,10 +56,16 @@
                         <th class="text-center"><a href="{{ srpfleet.fleet_srp_aar_link }}"
                                                    target="_blank">{{ srpfleet.fleet_srp_aar_link }}</a></th>
                         <th class="text-center">
+                            {% if srpfleet.fleet_srp_code %}
                             <div class="label label-warning">
                                 <a href="/srp_request/{{ srpfleet.fleet_srp_code }}"
-                                   target="_blank">{{ srpfleet.fleet_srp_code }}</a>
+                                   >{{ srpfleet.fleet_srp_code }}</a>
                             </div>
+                            {% else %}
+                                <div class="label label-danger">
+                                    Disabled
+                                </div>
+                            {% endif %}
                         </th>
                         <td class="text-center">
                             {% for key,value in price_pair.items %}
@@ -95,8 +101,20 @@
 
                                 <a href="/srp_fleet_remove/{{ srpfleet.id }}">
                                     <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
+                                            class="glyphicon glyphicon-trash"></span></button>
                                 </a>
+                                {% if srpfleet.fleet_srp_code %}
+                                    <a href="/srp_fleet_disable/{{ srpfleet.id }}">
+                                    <button type="button" class="btn btn-warning"><span
+                                            class="glyphicon glyphicon-remove-sign"></span></button>
+                                    </a>
+                                {% else %}
+                                    <a href="/srp_fleet_enable/{{ srpfleet.id }}">
+                                    <button type="button" class="btn btn-success"><span
+                                            class="glyphicon glyphicon-ok-sign"></span></button>
+                                    </a>
+                                {% endif %}
+
                             {% endif %}
                         </td>
                     </tr>

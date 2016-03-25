@@ -40,6 +40,7 @@
                     <th class="text-center">Ship Type</th>
                     <th class="text-center">Killboard Loss Amt</th>
                     <th class="text-center">SRP ISK Cost</th>
+                    <th class="text-center">Post Time</th>
                     <th class="text-center">Status</th>
                     {% if perms.auth.srp_management %}
                         <th class="text-center">Actions</th>
@@ -60,6 +61,7 @@
                         <td class="text-center">{{ srpfleetrequest.srp_ship_name }}</td>
                         <td class="text-center">ISK: {{ srpfleetrequest.kb_total_loss | intcomma }}</td>
                         <td class="text-center">ISK: {{ srpfleetrequest.srp_total_amount | intcomma }}</td>
+                        <td class="text-center">{{ srpfleetrequest.post_time | date:"Y-m-d H:i" }}</td>
                         <td class="text-center">
                             {% if srpfleetrequest.srp_status == "Approved" %}
                                 <div class="label label-success">
@@ -82,18 +84,43 @@
                                     <button type="button" class="btn btn-info"><span
                                             class="glyphicon glyphicon-pencil"></span></button>
                                 </a>
-                                <a href="/srp_request_approve/{{ srpfleetrequest.id }}">
+                                {% if srpfleetrequest.srp_status == "Rejected" %}
+                                    <a href="/srp_request_approve/{{ srpfleetrequest.id }}">
                                     <button type="button" class="btn btn-success"><span
                                             class="glyphicon glyphicon-ok"></span></button>
-                                </a>
-                                <a href="/srp_request_reject/{{ srpfleetrequest.id }}">
+                                    </a>
+                                {% elif srpfleetrequest.srp_status == "Pending" %}
+                                    <a href="/srp_request_approve/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-success"><span
+                                            class="glyphicon glyphicon-ok"></span></button>
+                                    </a>
+                                {% elif srpfleetrequest.srp_status == "" %}
+                                    <a href="/srp_request_approve/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-success"><span
+                                            class="glyphicon glyphicon-ok"></span></button>
+                                    </a>
+                                {% endif %}
+                                {% if srpfleetrequest.srp_status == "Approved" %}
+                                    <a href="/srp_request_reject/{{ srpfleetrequest.id }}">
                                     <button type="button" class="btn btn-warning"><span
                                             class="glyphicon glyphicon-remove"></span></button>
-                                </a>
+                                    </a>
+                                {% elif srpfleetrequest.srp_status == "Pending" %}
+                                    <a href="/srp_request_reject/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-warning"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                    </a>
+                                {% elif srpfleetrequest.srp_status == "" %}
+                                    <a href="/srp_request_reject/{{ srpfleetrequest.id }}">
+                                    <button type="button" class="btn btn-warning"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                    </a>
+                                {% endif %}
                                 <a href="/srp_request_remove/{{ srpfleetrequest.id }}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-trash"></span></button>
                                 </a>
+
                             </td>
                         {% endif %}
                     </tr>
