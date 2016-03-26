@@ -26,6 +26,7 @@ from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 from forms import DiscordForm
 from forms import ServicePasswordForm
+from forms import TeamspeakJoinForm
 from util import check_if_user_has_permission
 
 import threading
@@ -339,12 +340,32 @@ def activate_teamspeak3(request):
     if result[0] is not "":
         AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with TS3 credentials. Updating groups." % request.user)
-        update_teamspeak3_groups.delay(request.user.pk)
         logger.info("Succesfully activated TS3 for user %s" % request.user)
-        return HttpResponseRedirect("/services/")
+        return HttpResponseRedirect("/verify_teamspeak3/")
     logger.error("Unsuccessful attempt to activate TS3 for user %s" % request.user)
     return HttpResponseRedirect("/dashboard")
 
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def verify_teamspeak3(request):
+    logger.debug("verify_teamspeak3 called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    if not authinfo.teamspeak3_uid:
+        logger.warn("Unable to validate user %s teamspeak: no teamspeak data" % request.user)
+        return HttpResponseRedirect("/services")
+    if request.method == "POST":
+        form = TeamspeakJoinForm(request.POST)
+        if form.is_valid():
+            update_teamspeak3_groups.delay(request.user.pk)
+            logger.debug("Validated user %s joined TS server")
+            return HttpResponseRedirect("/services/")
+    else:
+        form = TeamspeakJoinForm({'username':authinfo.teamspeak3_uid})
+    context = {
+        'form': form,
+        'authinfo': authinfo,
+    }
+    return render_to_response('registered/teamspeakjoin.html', context, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(service_blue_alliance_test)

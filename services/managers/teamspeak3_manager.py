@@ -88,11 +88,9 @@ class Teamspeak3Manager:
         if type(groups) == list:
             logger.debug("Recieved multiple groups. Iterating.")
             for group in groups:
-                logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         elif type(groups) == dict:
             logger.debug("Recieved single group.")
-            logger.debug("Assigning name/id dict: %s = %s" % (groups['keys']['name'], groups['keys']['sgid']))
             outlist[groups['keys']['name']] = groups['keys']['sgid']
         logger.debug("Returning name/id pairing: %s" % outlist)
         return outlist
