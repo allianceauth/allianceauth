@@ -130,6 +130,7 @@ urlpatterns = patterns('',
                            name='auth_deactivate_teamspeak3'),
                        url(r'reset_teamspeak3_perm/$', 'services.views.reset_teamspeak3_perm',
                            name='auth_reset_teamspeak3_perm'),
+                       url(r'verify_teamspeak3/$', 'services.views.verify_teamspeak3', name='auth_verify_teamspeak3'),
 
                        # Discord Service Control
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),

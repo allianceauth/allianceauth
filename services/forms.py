@@ -1,4 +1,5 @@
 from django import forms
+from services.managers.teamspeak3_manager import Teamspeak3Manager
 
 class JabberBroadcastForm(forms.Form):
     group = forms.ChoiceField(widget=forms.Select)
@@ -30,3 +31,11 @@ class ServicePasswordForm(forms.Form):
         if not len(password) >= 8:
             raise forms.ValidationError("Password must be at least 8 characters long.")
         return password
+
+class TeamspeakJoinForm(forms.Form):
+    username = forms.CharField(widget=forms.HiddenInput())
+
+    def clean(self):
+        if Teamspeak3Manager._get_userid(self.cleaned_data['username']):
+            return self.cleaned_data
+        raise forms.ValidationError("Unable to locate user %s on server" % self.cleaned_data['username'])
