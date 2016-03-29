@@ -500,7 +500,10 @@ def do_main_program():
     
             uid, upwhash, ugroups = res
 
-            groups = ugroups.split(',')
+            if ugroups:
+              groups = ugroups.split(',')
+            else:
+              groups = []
             
             if allianceauth_check_hash(pw, upwhash):
                 info('User authenticated: "%s" (%d)', name, uid + cfg.user.id_offset)
