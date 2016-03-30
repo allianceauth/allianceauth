@@ -83,11 +83,14 @@ def corp_member_view(request, corpid = None):
                     mainname = mainchar.character_name
                     maincorp = mainchar.corporation_name
                     maincorpid = mainchar.corporation_id
-                except (ValueError, EveCharacter.DoesNotExist):
+                    api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
+                except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
+                    logger.info("No main character seem to be set for character %s" % char.character_name)
                     mainname = "User: " + char_owner.username
                     mainchar = char
                     maincorp = "Not set."
                     maincorpid = None
+                    api_pair = None
                 num_registered_characters = num_registered_characters + 1
                 characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                                 maincorp=maincorp,
@@ -95,21 +98,48 @@ def corp_member_view(request, corpid = None):
                                                                 altlist=[],
                                                                 apilist=[])
                                                ).altlist.append(char)
-
-                characters_with_api[mainname].apilist.append(EveApiKeyPair.objects.get(api_id=char.api_id))
-            except(EveApiKeyPair.DoesNotExist):
-                logger.info("User %s EveApiKeyPair does not exist. is main char selected?" % char_owner)
-                pass
+                if api_pair:
+                    characters_with_api[mainname].apilist.append(api_pair)
 
             except (EveCharacter.DoesNotExist):
                 characters_without_api.update({member_data["name"]: member_data["id"]})
 
+        for char in EveCharacter.objects.filter(corporation_id=corpid):
+            if not char.character_id in member_list:
+                logger.info("Character %s does not exist in EveWho dump." % char.character_name)
+                char_owner = char.user
+                try:
+                    mainid = int(AuthServicesInfoManager.get_auth_service_info(user=char_owner).main_char_id)
+                    mainchar = EveCharacter.objects.get(character_id=mainid)
+                    mainname = mainchar.character_name
+                    maincorp = mainchar.corporation_name
+                    maincorpid = mainchar.corporation_id
+                    api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
+                except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
+                    logger.info("No main character seem to be set for character %s" % char.character_name)
+                    mainname = "User: " + char_owner.username
+                    mainchar = char
+                    maincorp = "Not set."
+                    maincorpid = None
+                    api_pair = None
+                num_registered_characters = num_registered_characters + 1
+                characters_with_api.setdefault(mainname, Player(main=mainchar,
+                                                                maincorp=maincorp,
+                                                                maincorpid=maincorpid,
+                                                                altlist=[],
+                                                                apilist=[])
+                                               ).altlist.append(char)
+                if api_pair:
+                    characters_with_api[mainname].apilist.append(api_pair)
+
+        n_unacounted = corp.member_count - (num_registered_characters + len(characters_without_api))
 
         if not settings.IS_CORP:
             context = {"membercorp_list": membercorp_list,
                        "corp": corp,
                        "characters_with_api": sorted(characters_with_api.items()),
                        'n_registered': num_registered_characters,
+                       'n_unacounted': n_unacounted,
                        "characters_without_api": sorted(characters_without_api.items()),
                        "search_form": CorputilsSearchForm()}
         else:
@@ -117,6 +147,7 @@ def corp_member_view(request, corpid = None):
             context = {"corp": corp,
                        "characters_with_api": sorted(characters_with_api.items()),
                        'n_registered': num_registered_characters,
+                       'n_unacounted': n_unacounted,
                        "characters_without_api": sorted(characters_without_api.items()),
                        "search_form": CorputilsSearchForm()}
 
