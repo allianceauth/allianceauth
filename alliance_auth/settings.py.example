@@ -103,7 +103,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_ips4',
         'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver'),
-        'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'G7GeHrpE'),
+        'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
     }
