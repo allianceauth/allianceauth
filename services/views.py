@@ -630,9 +630,10 @@ def reset_ips4_password(request):
     logger.debug("reset_ips4_password called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Ips4Manager.update_user_password(authinfo.ips4_username)
+    member_id = Ips4Manager.get_user_id(authinfo.ips4_username)
     # false we failed
     if result != "":
-        AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, id, request.user)
+        AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, member_id, request.user)
         logger.info("Succesfully reset IPS4 password for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccessful attempt to reset IPS4 password for user %s" % request.user)
@@ -652,8 +653,9 @@ def set_ips4_password(request):
             logger.debug("Form contains password of length %s" % len(password))
             authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
             result = Ips4Manager.update_custom_password(authinfo.ips4_username, plain_password=password)
+            member_id = Ips4Manager.get_user_id(authinfo.ips4_username)
             if result != "":
-                AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, authinfo.ips4_id, request.user)
+                AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, member_id, request.user)
                 logger.info("Succesfully reset IPS4 password for user %s" % request.user)
                 return HttpResponseRedirect("/services/")
             else:
