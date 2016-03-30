@@ -27,6 +27,7 @@ from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 from forms import DiscordForm
 from forms import ServicePasswordForm
+from forms import TeamspeakJoinForm
 from util import check_if_user_has_permission
 
 import threading
