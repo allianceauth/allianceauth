@@ -28,7 +28,7 @@
 
                                          <p>Player count: {{characters_with_api|length}}</p>
 
-                                         <p>Unregistered characters: {{characters_without_api|length}}</p>
+                                         <p>Unregistered characters: {{characters_without_api|length|add:n_unacounted}}</p>
                                     </div>
                                     <div class="col-lg-12 col-sm-5">
                                         <b>API Index:</b>
@@ -76,7 +76,7 @@
                         </nav>
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#gotapi">Registered Main Characters <b>({{characters_with_api|length}})</b></a></li>
-                            <li><a data-toggle="tab" href="#noapi">Characters without API <b>({{characters_without_api|length}})</b></a></li>
+                            <li><a data-toggle="tab" href="#noapi">Characters without API <b>({{characters_without_api|length|add:n_unacounted}})</b></a></li>
                         </ul>
                     <div class="tab-content">
                         <div id="gotapi" class="tab-pane fade in active">
@@ -146,7 +146,12 @@
                         <div id="noapi" class="tab-pane fade">
                         {% if characters_without_api %}
                             <div class="panel-body">
-                                <div class="table-responsive">    
+                                <div class="table-responsive">
+                                    {% if 0 < n_unacounted %}
+                                    <div class="alert alert-danger" role="alert">
+                                            <h3>There are atleast {{ n_unacounted }} characters not accounted for in EveWho.</h3>
+                                    </div>
+                                    {% endif %}
                                     <table class="table table-condensed table-hover table-striped">
                                         <tr>
                                             <th class="col-md-1"></th>
