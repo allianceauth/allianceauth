@@ -412,11 +412,11 @@ def run_api_refresh():
                         refresh_api(api_key_pair)
                     except evelink.api.APIError as e:
                         if int(e.code) >= 500:
-                            logger.error("EVE API servers encountered an error updating %s" % api_key_pair)
+                            logger.error("EVE API servers encountered error %s updating %s" % (e.code, api_key_pair))
                         elif int(e.code) == 221:
-                            logger.warn("API server hiccup while updating %s" % api_key_pair)
+                            logger.warn("API server hiccup %s while updating %s" % (e.code, api_key_pair))
                         else:
-                            logger.debug("API key %s failed update with error code %s" % (api_key_pair.api_id, e.code))
+                            logger.info("API key %s failed update with error code %s" % (api_key_pair.api_id, e.code))
                             EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
                             EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
                             notify(user, "API Key Deleted", message="Your API key ID %s failed validation with code %s. It and its associated characters have been deleted." % (api_key_pair.api_id, e.code), level="danger")
