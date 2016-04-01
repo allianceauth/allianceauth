@@ -412,8 +412,7 @@ def run_api_refresh():
                         refresh_api(api_key_pair)
                     except evelink.api.APIError as e:
                         if int(e.code) >= 500:
-                            logger.error("EVE API servers encountered an error. Aborting API updates")
-                            return
+                            logger.error("EVE API servers encountered an error updating %s" % api_key_pair)
                         elif int(e.code) == 221:
                             logger.warn("API server hiccup while updating %s" % api_key_pair)
                         else:
