@@ -137,6 +137,15 @@ urlpatterns = patterns('',
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
 
+                       # IPS4 Service Control
+                       url(r'^activate_ips4/$', 'services.views.activate_ips4',
+                           name='auth_activate_ips4'),
+                       url(r'^deactivate_ips4/$', 'services.views.deactivate_ips4',
+                           name='auth_deactivate_ips4'),
+                       url(r'^reset_ips4_password/$', 'services.views.reset_ips4_password',
+                           name='auth_reset_ips4_password'),
+                       url(r'^set_ips4_password/$', 'services.views.set_ips4_password', name='auth_set_ips4_password'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),

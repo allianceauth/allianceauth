@@ -130,6 +130,33 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_BLUE_IPS4 %}
+                <td class="text-center">IPS4</td>
+                <td class="text-center">{{ authinfo.ips4_username }}</td>
+                <td class="text-center">{{ authinfo.ips4_password }}</td>
+                <td class="text-center"><a href="{{ IPS4_URL }}">{{ IPS4_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.ips4_username "" %}
+                        <a href="{% url 'auth_activate_ips4' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_ips4_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_ips4_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_ips4' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
             {% if ENABLE_BLUE_DISCORD %}
                 <tr>
                     <td class="text-center">Discord</td>
@@ -317,6 +344,33 @@
                         {% endifequal %}
                     </td>
                 </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_IPS4 %}
+                <td class="text-center">IPS4</td>
+                <td class="text-center">{{ authinfo.ips4_username }}</td>
+                <td class="text-center">{{ authinfo.ips4_password }}</td>
+                <td class="text-center"><a href="{{ IPS4_URL }}">{{ IPS4_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.ips4_username "" %}
+                        <a href="{% url 'auth_activate_ips4' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_ips4_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_ips4_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_ips4' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
             {% endif %}
             {% if ENABLE_AUTH_DISCORD %}
                 <tr>
