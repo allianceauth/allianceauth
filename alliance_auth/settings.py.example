@@ -189,7 +189,7 @@ IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
 # DOMAIN - The alliance auth domain_url
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
-# EMAIL_HOST_USER - Email Username (for gmail, the part before @gmail.com)
+# EMAIL_HOST_USER - Email Username (for gmail, the entire address)
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
