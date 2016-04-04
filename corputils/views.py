@@ -108,8 +108,8 @@ def corp_member_view(request, corpid = None):
                 characters_without_api.update({member_data["name"]: member_data["id"]})
 
         for char in EveCharacter.objects.filter(corporation_id=corpid):
-            if not char.character_id in member_list:
-                logger.info("Character %s does not exist in EveWho dump." % char.character_name)
+            if not int(char.character_id) in member_list:
+                logger.info("Character '%s' does not exist in EveWho dump." % char.character_name)
                 char_owner = char.user
                 try:
                     mainid = int(AuthServicesInfoManager.get_auth_service_info(user=char_owner).main_char_id)
