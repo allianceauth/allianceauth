@@ -30,7 +30,7 @@
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
-		        <th class="text-center">Local Time</th>
+	        <th class="text-center">Local Time</th>
                 <th class="text-center">Creator</th>
                 {% if perms.auth.timer_management %}
                     <th class="text-center">Action</th>
@@ -106,16 +106,15 @@
                     {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ closest_timer.eve_time | date:"Y-m-d H:i" }}</td>
-		        <td id="countdownclosest" class="text-center" nowrap></td>
-		        <td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
+	        <td id="countdownclosest" class="text-center" nowrap></td>
+	        <td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
-
                         <a href="/remove_timer/{{ closest_timer.id }}">
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>
-                                           <a href="/edit_timer/{{ closest_timer.id }}">
+                        <a href="/edit_timer/{{ closest_timer.id }}">
                            <button type="button" class="btn btn-info"><span
                                    class="glyphicon glyphicon-pencil"></span></button>
                        </a>
