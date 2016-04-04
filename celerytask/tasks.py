@@ -67,7 +67,7 @@ def update_jabber_groups(pk):
     try:
         OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
     except:
-        logger.warn("Jabber group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Jabber group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s jabber groups." % user)
 
@@ -85,7 +85,7 @@ def update_mumble_groups(pk):
     try:
         MumbleManager.update_groups(authserviceinfo.mumble_username, groups)
     except:
-        logger.warn("Mumble group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Mumble group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s mumble groups." % user)
 
@@ -103,7 +103,7 @@ def update_forum_groups(pk):
     try:
         Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
     except:
-        logger.warn("Phpbb group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Phpbb group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s forum groups." % user)
 
@@ -121,7 +121,7 @@ def update_ipboard_groups(pk):
     try:
         IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
     except:
-        logger.warn("IPBoard group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("IPBoard group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s ipboard groups." % user)
 
@@ -157,7 +157,7 @@ def update_discord_groups(pk):
     try:
         DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
     except:
-        logger.warn("Discord group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s discord groups." % user)
 
