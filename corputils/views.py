@@ -23,8 +23,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-# Because corp-api only exist for the executor corp, this function will only be available in corporation mode.
 @login_required
 def corp_member_view(request, corpid = None):
     logger.debug("corp_member_view called by user %s" % request.user)
@@ -39,11 +37,16 @@ def corp_member_view(request, corpid = None):
     if not settings.IS_CORP:
         alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
         alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
-        membercorp_list = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
-        membercorp_list.sort(key=lambda tup: tup[1])
-
+        membercorplist = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in alliancecorps]
+        membercorplist.sort(key=lambda tup: tup[1])
         membercorp_id_list = [int(membercorp.corporation_id) for membercorp in alliancecorps]
-        if user_corp_id not in membercorp_id_list:
+
+        bluecorps = EveCorporationInfo.objects.filter(is_blue=True)
+        bluecorplist = [(int(bluecorp.corporation_id), str(bluecorp.corporation_name)) for bluecorp in bluecorps]
+        bluecorplist.sort(key=lambda tup: tup[1])
+        bluecorp_id_list = [int(bluecorp.corporation_id) for bluecorp in bluecorps]
+
+        if not (user_corp_id in membercorp_id_list or user_corp_id not in bluecorp_id_list):
             user_corp_id = None
 
     if not corpid:
@@ -52,7 +55,7 @@ def corp_member_view(request, corpid = None):
         elif user_corp_id:
             corpid = user_corp_id
         else:
-            corpid = membercorp_list[0][0]
+            corpid = membercorplist[0][0]
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist", "apilist"])
@@ -135,7 +138,7 @@ def corp_member_view(request, corpid = None):
         n_unacounted = corp.member_count - (num_registered_characters + len(characters_without_api))
 
         if not settings.IS_CORP:
-            context = {"membercorp_list": membercorp_list,
+            context = {"membercorplist": membercorplist,
                        "corp": corp,
                        "characters_with_api": sorted(characters_with_api.items()),
                        'n_registered': num_registered_characters,
