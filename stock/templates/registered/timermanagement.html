@@ -30,7 +30,7 @@
                 <th class="text-center">System</th>
                 <th class="text-center">Structure</th>
                 <th class="text-center">Eve Time</th>
-		<th class="text-center">Local Time</th>
+		        <th class="text-center">Local Time</th>
                 <th class="text-center">Creator</th>
                 {% if perms.auth.timer_management %}
                     <th class="text-center">Action</th>
@@ -106,8 +106,8 @@
                     {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ closest_timer.eve_time | date:"Y-m-d H:i" }}</td>
-		<td id="countdownclosest" class="text-center" nowrap></td>
-		<td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
+		        <td id="countdownclosest" class="text-center" nowrap></td>
+		        <td class="text-center">{{ closest_timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
 
@@ -209,7 +209,7 @@
                     {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
-                <td class="text-center" nowrap><div id="countdown{{ timer.id }}"></div></td>
+                <td class="text-center" nowrap><div id="countdownCorp{{ timer.id }}"></div></td>
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
@@ -217,9 +217,10 @@
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>
-                                      <a href="/edit_timer/{{ timer.id }}">
+                        <a href="/edit_timer/{{ timer.id }}">
                            <button type="button" class="btn btn-info"><span
                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
                     </td>
                 {% endif %}
                 </tr>
@@ -339,13 +340,27 @@ var clock{{ timer.id }} = document.getElementById("countdown{{ timer.id }}"), ta
 
 setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
 {% for timer in timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
-{% for timer in corp_timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
 
 setInterval(function(){updateClock()}, 1000);
 
 function updateClock() {
   var clock = new Date();
   document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+}
+
+</script>
+<script>
+var clockClosestCorp = document.getElementById("countdownclosestCorp"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in corp_timers %}
+var clockCorp{{ timer.id }} = document.getElementById("countdownCorp{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
+
+setInterval(function(){clockClosestCorp.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosestCorp.innerHTML = clockClosestCorp.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+{% for timer in corp_timers %}setInterval(function(){clockCorp{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clockCorp{{ timer.id }}.innerHTML = clockCorp{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+
+setInterval(function(){updateClock()}, 1000);
+
+function updateClock() {
+  var clockCorp = new Date();
+  document.getElementById("current-time").innerHTML = "<b>" + clockCorp.toUTCString() + "</b>";
 }
 
 </script>

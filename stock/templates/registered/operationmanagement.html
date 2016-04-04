@@ -17,6 +17,12 @@
                 </a>
             </div>
         </h1>
+     <div class="col-lg-12 text-center">
+        <div class="label label-info text-left">
+            <b>Current Eve Time: </b>
+        </div><div class="label label-info text-left" id="current-time"></div>
+        <br/>
+     </div>
         <table class="table table-responsive table-bordered">
             <tr>
                 <th class="text-center">Operation Name</th>
@@ -24,27 +30,29 @@
                 <th class="text-center">Form Up System</th>
                 <th class="text-center">Form Up Location</th>
                 <th class="text-center">Start Time</th>
-		<th class="text-center">Duration</th>
+                <th class="text-center">Local Time</th>
+		        <th class="text-center">Duration</th>
                 <th class="text-center">FC</th>
-		<th class="text-center">Details</th>
-		<th class="text-center">Post Time</th>
+		        <th class="text-center">Details</th>
+		        <th class="text-center">Post Time</th>
 		{% if perms.auth.optimer_management %}
-           <th class="text-center">Creator</th> 
-		   <th class="text-center">Action</th>
+                <th class="text-center">Creator</th>
+		        <th class="text-center">Action</th>
                 {% endif %}
             </tr>
             	              
                 {% for ops in optimer %}
                 <tr>
-       		<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
+       		    <td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
                 <td style="width:150px" class="text-center">{{ ops.doctrine }}</td>
                 <td class="text-center">
                 <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
                 </td>
                 <td style="width:150px" class="text-center">{{ ops.location }}</td>
                 <td style="width:150px" class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
-		<td style="width:150px" class="text-center">{{ ops.duration }}</td>
- 	  	<td style="width:150px" class="text-center">{{ ops.fc }}</td>
+                <td class="text-center" nowrap><div id="countdown{{ ops.id }}"></div></td>
+		        <td style="width:150px" class="text-center">{{ ops.duration }}</td>
+ 	  	        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
                 <td style="width:150px" class="text-center">{{ ops.details }}</td>
                 <td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
                 {% if perms.auth.optimer_management %}
@@ -70,7 +78,24 @@
         
     </div>
 
+<script src="/static/js/dateformat.js"></script>
+<script src="/static/js/countdown.js"></script>
+<script>
+var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% for ops in optimer %}
+var clock{{ ops.id }} = document.getElementById("countdown{{ ops.id }}"), targetDate{{ ops.id }} = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
 
+setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+{% for ops in optimer %}setInterval(function(){clock{{ ops.id }}.innerHTML = targetDate{{ ops.id }}.format('D @ h:ia'); if (targetDate{{ ops.id }} > Date.now()){ clock{{ ops.id }}.innerHTML = clock{{ ops.id }}.innerHTML + "<BR>" + countdown(targetDate{{ ops.id }}).toString();}}, 1000);{% endfor %}
+
+
+setInterval(function(){updateClock()}, 1000);
+
+function updateClock() {
+  var clock = new Date();
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+}
+
+</script>
 
 
 {% endblock content %}
