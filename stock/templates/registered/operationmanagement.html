@@ -31,42 +31,42 @@
                 <th class="text-center">Form Up Location</th>
                 <th class="text-center">Start Time</th>
                 <th class="text-center">Local Time</th>
-		        <th class="text-center">Duration</th>
+		<th class="text-center">Duration</th>
                 <th class="text-center">FC</th>
-		        <th class="text-center">Details</th>
-		        <th class="text-center">Post Time</th>
+                <th class="text-center">Details</th>
+		<th class="text-center">Post Time</th>
 		{% if perms.auth.optimer_management %}
-                <th class="text-center">Creator</th>
+                	<th class="text-center">Creator</th>
 		        <th class="text-center">Action</th>
                 {% endif %}
             </tr>
             	              
                 {% for ops in optimer %}
-                <tr>
-       		    <td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
-                <td style="width:150px" class="text-center">{{ ops.doctrine }}</td>
-                <td class="text-center">
-                <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
-                </td>
-                <td style="width:150px" class="text-center">{{ ops.location }}</td>
-                <td style="width:150px" class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
-                <td class="text-center" nowrap><div id="countdown{{ ops.id }}"></div></td>
+                	<tr>
+                	<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
+                	<td style="width:150px" class="text-center">{{ ops.doctrine }}</td>
+                	<td class="text-center">
+                	<a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
+                	</td>
+                	<td style="width:150px" class="text-center">{{ ops.location }}</td>
+                	<td style="width:150px" class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
+                	<td class="text-center" nowrap><div id="countdown{{ ops.id }}"></div></td>
 		        <td style="width:150px" class="text-center">{{ ops.duration }}</td>
- 	  	        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
-                <td style="width:150px" class="text-center">{{ ops.details }}</td>
-                <td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
+		        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
+                	<td style="width:150px" class="text-center">{{ ops.details }}</td>
+                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
                 {% if perms.auth.optimer_management %}
-                <td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
-                    <td class="text-center">
+                	<td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
+                    	<td class="text-center">
                         <a href="/remove_optimer/{{ ops.id }}">
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>
-                       <a href="/edit_optimer/{{ ops.id }}">
+                	<a href="/edit_optimer/{{ ops.id }}">
                            <button type="button" class="btn btn-info"><span
                                    class="glyphicon glyphicon-pencil"></span></button>
-                       </a>
-                    </td>
+                	</a>
+                	</td>
               
               
               {% endif %}
