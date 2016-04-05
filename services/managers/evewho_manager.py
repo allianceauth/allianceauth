@@ -21,7 +21,7 @@ class EveWhoManager():
         page_count=0
         while len(data["characters"]):
             for row in data["characters"]:
-                members[row["character_id"]] = {"name":row["name"], "id":row["character_id"]}
+                members[int(row["character_id"])] = {"name":row["name"], "id":int(row["character_id"])}
             page_count=page_count+1
             jsondata = requests.get(url + "&page=%i" % page_count).content
             data = json.loads(jsondata.decode())
