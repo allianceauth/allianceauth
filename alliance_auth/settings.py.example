@@ -30,7 +30,7 @@ DEBUG = 'True' == os.environ.get('AA_DEBUG','True')
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','yourdomain.com','www.yourdomain.com']
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
@@ -278,7 +278,6 @@ CORP_NAME = os.environ.get('AA_CORP_NAME', '')
 CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
 CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
 
-
 #########################
 # Alliance Configuration
 #########################
@@ -385,7 +384,7 @@ DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
 # IPS4_URL - base url of the IPS4 install (no trailing slash)
 # IPS4_API_KEY - API key provided by IPS4
 #####################################
-IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://mydomain.com/ips4')
+IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://yourdomain.com/ips4')
 IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
 
 #####################################
