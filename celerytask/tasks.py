@@ -316,6 +316,8 @@ def determine_membership_by_user(user):
         return False
 
 def set_state(user):
+    if user.is_superuser:
+        return
     change = False
     state = determine_membership_by_user(user)
     logger.debug("Assigning user %s to state %s" % (user, state))
