@@ -1,0 +1,221 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}FleetUp{% endblock page_title %}
+
+{% block content %}
+<div class="col-lg-12">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Fleet-Up</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Ops and Timers <span class="sr-only">(current)</span></a></li>
+                <li><a href="/fleetup/doctrines/">Doctrines</a></li>
+                <li><a href="/fleetup/fittings/">Fittings</a></li>
+                {% if perms.auth.corp_stats %}
+                <li><a href="/fleetup/characters/">Characters</a></li>
+                {% endif %}
+                <li></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="panel">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#operations">Operations</a></li>
+        <li><a data-toggle="tab" href="#timers">Timers</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="operations" class="tab-pane fade in active">
+            <div class="col-lg-7">
+                {% if operations_list %}
+                {% for subject, start in operations_list %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><b>{{ start.subject }}</b></h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th class="col-md-6">Start</th>
+                                    <th class="col-md-6">End</th>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-6">{{ start.start|date:"l d M H:i" }} <span class="label label-success">Eve Time</span></td>
+                                    
+                                    <td class="col-md-6">{{ start.end|date:"l d M H:i" }} <span class="label label-success">Eve Time</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-6"><div id="countdown{{ start.operation_id }}"></div></td>
+                                    
+                                    <td class="col-md-6"></td>
+                                </tr>
+                            </table> 
+                            <p>{{ start.details }}</p>
+                            
+                            <div class="col-lg-12">
+                            <table class="table table-condensed table-striped">
+                                <tr>
+                                    <th class="col-md-4">Location</th>
+                                    <th class="col-md-4">Doctrine</th>
+                                    <th class="col-md-2">Organizer</th>
+                                    <th class="col-md-2">URL</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ start.location }} - {{ start.location_info }} <a href="http://evemaps.dotlan.net/system/{{ start.location }}" target="_blank" class="label label-success">Dotlan</a>
+                                    </td>
+                                    <td>
+                                        {% if start.doctrine %}
+                                        {% for doctrine in start.doctrine %}
+                                            
+                                            <a href="/fleetup/doctrines/{{ doctrine.Id }}" class="label label-success">{{ doctrine.Name }}</a>
+                                            
+                                        {% endfor %}
+                                            
+                                        {% else %}
+                                        <span class="label label-danger">TBA</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ start.organizer }}
+                                    </td>
+                                    <td>
+                                        {% ifequal start.url "" %}
+                                        <div class="label label-danger">No link</div>
+                                        {% else %}
+                                        <a href="{{ start.url }}" target="_blank" class="label label-success">External link</a>
+                                        {% endifequal %}
+                                    </td>
+                                </tr>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+            <h3>There seems to be no Operations in the near future, go make ISK!</h3>
+            {% endif %}
+            </div>
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Current Eve Time:</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div id="current-time"></div>
+                    </div>
+                </div>
+                {% if timers_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Timers</h2>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-condensed table-hover table-striped">
+                        {% for notes, type in timers_list %}
+                        <tr>
+                        <td>
+                            {{ type.solarsystem }}
+                        </td>
+                            <td>
+                            {{ type.expires|date:"l d M H:i" }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div id="timers" class="tab-pane fade in">
+            <div class="col-lg-12">
+                {% if timers_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Timers</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-12">
+                        <table class="table table-condensed table-hover table-striped">
+                        <tr>
+                            <th class="col-lg-1">Type</th>
+                            <th class="col-lg-1">Structure</th>
+                            <th class="col-lg-2">Location</th>
+                            <th class="col-lg-2">Expires(EVE-time)</th>
+                            <!--<th class="col-lg-1">Local time</th>-->
+                            <th class="col-lg-1">Owner</th>
+                            <th class="col-lg-2">Note</th>
+                        </tr>
+                        {% for notes, type in timers_list %}
+                        <tr>
+                        <td>
+                            {% ifequal type.type "Final" %}
+                                        <span class="label label-danger">
+                            {{ type.type }}</span>{% else %}{{ type.type }}{% endifequal %}
+                        </td>
+                        <td>
+                            {{ type.timer_type }}
+                        </td>
+                        <td>
+                            {{ type.solarsystem }} - Planet:{{ type.planet }} Moon:{{ type.moon }}
+                        </td>
+                        <td>
+                            {{ type.expires|date:"l d M H:i" }}
+                        </td>
+                        <!--<td>
+                            {{ type.expires }}
+                        </td>-->
+                        <td>
+                            {{ type.owner }}
+                        </td>
+                        <td>            
+                            {{ type.notes }}
+                        </td>
+                        </tr>
+                        {% endfor %}
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+            <h3>There seems to be no Timers in the near future, this does not mean there isn't any!</h3>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+<script src="/static/js/dateformat.js"></script>
+<script src="/static/js/countdown.js"></script>
+<script>
+var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for subject, start in operations_list %}
+var clock{{ start.operation_id }} = document.getElementById("countdown{{ start.operation_id }}"), targetDate{{ start.operation_id }} = new Date(Date.UTC({{ start.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
+
+setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+{% for subject, start in operations_list %}setInterval(function(){clock{{ start.operation_id }}.innerHTML = targetDate{{ start.operation_id }}.format('l d M H:i'); if (targetDate{{ start.operation_id }} > Date.now()){ clock{{ start.operation_id }}.innerHTML = clock{{ start.operation_id }}.innerHTML + " <span class='label label-success'>Local time</span></br><h2>" + countdown(targetDate{{ start.operation_id }}).toString() + "</h2>";}}, 1000);{% endfor %}
+{% for timer in corp_timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+
+setInterval(function(){updateClock()}, 1000);
+
+function updateClock() {
+  var clock = new Date();
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+}
+
+</script>
+{% endblock content %}
