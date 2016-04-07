@@ -20,7 +20,6 @@ class FleetUpManager():
         jsondata = requests.get(url).content
         fmembers=json.loads(jsondata.decode())
 
-        #return(fmembers)
         return {row["UserId"]:{"user_id":row["UserId"],
                                "char_name":row["EveCharName"],
                                "char_id":row["EveCharId"],
