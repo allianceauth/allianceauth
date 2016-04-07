@@ -71,7 +71,7 @@ class FleetUpManager():
 
     @staticmethod
     def get_fleetup_doctrine(doctrinenumber):
-        url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/%s" % doctrinenumber
+        url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/DoctrineFittings/%s" % doctrinenumber
         jsondata = requests.get(url).content
         fdoctrine=json.loads(jsondata.decode())
 

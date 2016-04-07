@@ -1,0 +1,529 @@
+"""
+vim: set filetype=python:
+Django settings for alliance_auth project.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/1.6/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/1.6/ref/settings/
+
+"""
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import os
+
+import djcelery
+
+djcelery.setup_loader()
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# Generate a new key here: http://www.miniwebtool.com/django-secret-key-generator/
+SECRET_KEY = os.environ.get('AA_SECRET_KEY', '5xvh4e0x&@-$6(kj%4^80pdo1n5v-!mtx(e(1tw@kn-1le*ts@')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = 'True' == os.environ.get('AA_DEBUG','True')
+
+TEMPLATE_DEBUG = True
+
+ALLOWED_HOSTS = ['127.0.0.1','yourdomain.com','www.yourdomain.com']
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+# Application definition
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django_evolution',
+    'djcelery',
+    'celerytask',
+    'bootstrapform',
+    'authentication',
+    'portal',
+    'registration',
+    'services',
+    'eveonline',
+    'groupmanagement',
+    'hrapplications',
+    'timerboard',
+    'srp',
+    'sigtracker',
+    'optimer',
+    'corputils',
+    'notifications',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+ROOT_URLCONF = 'alliance_auth.urls'
+
+WSGI_APPLICATION = 'alliance_auth.wsgi.application'
+
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_auth',
+        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_DEFAULT_PORT', '3306'),
+    },
+
+    'phpbb3': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_forum',
+        'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
+    },
+
+    'ips4': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_ips4',
+        'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
+    },
+    'smf': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_smf',
+        'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
+    }
+    
+}
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+    'util.context_processors.is_corp',
+    'util.context_processors.corp_id',
+    'util.context_processors.corp_name',
+    'util.context_processors.alliance_id',
+    'util.context_processors.alliance_name',
+    'util.context_processors.jabber_url',
+    'util.context_processors.domain_url',
+    'util.context_processors.member_api_mask',
+    'util.context_processors.blue_api_mask',
+    'notifications.context_processors.user_notification_count',
+)
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'customization/templates'),
+    os.path.join(BASE_DIR, 'stock/templates'),
+)
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "customization/static"),
+    os.path.join(BASE_DIR, "stock/static"),
+)
+
+LOGIN_URL = '/login_user/'
+
+# Internationalization
+# https://docs.djangoproject.com/en/1.6/topics/i18n/
+
+LANGUAGE_CODE = os.environ.get('AA_LANGUAGE_CODE', 'en-us')
+
+TIME_ZONE = os.environ.get('AA_TIME_ZONE', 'UTC')
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.6/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
+
+# Cache directory for EveWho, no ending /
+# by default this becomes ~/<installdir>/alliance_auth/cache
+# This directory needs to be writable by the webserver
+EVEWHO_CACHE_DIR = '{}/cache'.format(BASE_DIR)
+
+# Cache directory for Fleet-Up, no ending /
+# by default this becomes ~/<installdir>/alliance_auth/cache
+# This directory needs to be writable by the webserver
+FLEETUP_CACHE_DIR = '{}/cache'.format(BASE_DIR)
+
+#####################################################
+##
+## Auth configuration starts here
+##
+#####################################################
+
+###########################
+# ALLIANCE / CORP TOGGLE
+###########################
+# Specifies to run membership checks against corp or alliance
+# Set to FALSE for alliance
+# Set to TRUE for corp
+###########################
+IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
+
+
+#################
+# EMAIL SETTINGS
+#################
+# DOMAIN - The alliance auth domain_url
+# EMAIL_HOST - SMTP Server URL
+# EMAIL_PORT - SMTP Server PORT
+# EMAIL_HOST_USER - Email Username (for gmail, the entire address)
+# EMAIL_HOST_PASSWORD - Email Password
+# EMAIL_USE_TLS - Set to use TLS encryption
+#################
+DOMAIN = os.environ.get('AA_DOMAIN', 'https://yourdomain.com')
+EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('AA_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
+
+####################
+# Front Page Links
+####################
+# KILLBOARD_URL - URL for your killboard. Blank to hide link
+# MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
+# FORUM_URL - URL for your forums. Blank to hide link
+# SMF_URL - URL for your SMF forums.
+####################
+KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
+EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
+FORUM_URL = os.environ.get('AA_FORUM_URL', '')
+SMF_URL = os.environ.get('AA_SMF_URL', '')
+
+#########################
+# Default Group Settings
+#########################
+# DEFAULT_AUTH_GROUP - Default group members are put in
+# DEFAULT_BLUE_GROUP - Default group for blue members
+# MEMBER_CORP_GROUPS - Assign members to a group representing their main corp
+# BLUE_CORP_GROUPS - Assign blues to a group representing their main corp
+#########################
+DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
+DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
+MEMBER_CORP_GROUPS = 'True' == os.environ.get('AA_MEMBER_CORP_GROUPS', 'True')
+MEMBER_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_MEMBER_ALLIANCE_GROUPS', 'False')
+BLUE_CORP_GROUPS = 'True' == os.environ.get('AA_BLUE_CORP_GROUPS', 'False')
+BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'False')
+
+#########################
+# Alliance Service Setup
+#########################
+# ENABLE_AUTH_FORUM - Enable forum support in the auth for auth'd members
+# ENABLE_AUTH_JABBER - Enable jabber support in the auth for auth'd members
+# ENABLE_AUTH_MUMBLE - Enable mumble support in the auth for auth'd members
+# ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
+# ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
+# ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
+# ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
+#########################
+ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
+ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
+ENABLE_AUTH_MUMBLE = 'True' == os.environ.get('AA_ENABLE_AUTH_MUMBLE', 'False')
+ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'False')
+ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'False')
+ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
+ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
+ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
+
+#####################
+# Blue service Setup
+#####################
+# BLUE_STANDING - The default lowest standings setting to consider blue
+# ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
+# ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
+# ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
+# ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
+# ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
+# ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
+# ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
+#####################
+BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
+ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
+ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'False')
+ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'False')
+ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False')
+ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
+ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
+ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
+ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
+
+#########################
+# Corp Configuration
+#########################
+# If running in alliance mode, the following should be for the executor corp#
+# CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
+# CORP_NAME - Set this to your Corporation Name
+# CORP_API_ID - Set this to the api id for the corp API key
+# CORP_API_VCODE - Set this to the api vcode for the corp API key
+########################
+CORP_ID = os.environ.get('AA_CORP_ID', '')
+CORP_NAME = os.environ.get('AA_CORP_NAME', '')
+CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
+CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
+
+#########################
+# Alliance Configuration
+#########################
+# ALLIANCE_ID - Set this to your Alliance ID (get this from https://zkillboard.com/alliance/#######)
+# ALLIANCE_NAME - Set this to your Alliance Name
+########################
+ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
+ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
+
+########################
+# API Configuration
+########################
+# MEMBER_API_MASK - Numeric value of minimum API mask required for members
+# MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
+# BLUE_API_MASK - Numeric value of minimum API mask required for blues
+# BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
+#######################
+MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
+MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
+BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
+BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
+
+#####################
+# HR Configuration
+#####################
+# JACK_KNIFE_URL - Url for the audit page of API Jack knife
+#                  Should seriously replace with your own.
+#####################
+JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/eveapi/audit.php')
+
+#####################
+# Forum Configuration
+#####################
+# IPBOARD_ENDPOINT - Api endpoint if using ipboard
+# IPBOARD_APIKEY - Api key to interact with ipboard
+# IPBOARD_APIMODULE - Module for alliance auth *leave alone*
+#####################
+IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
+IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
+IPBOARD_APIMODULE = 'aa'
+
+######################
+# Jabber Configuration
+######################
+# JABBER_URL - Jabber address url
+# JABBER_PORT - Jabber service portal
+# JABBER_SERVER - Jabber server url
+# OPENFIRE_ADDRESS - Address of the openfire admin console including port
+#                    Please use http with 9090 or https with 9091
+# OPENFIRE_SECRET_KEY - Openfire REST API secret key
+# BROADCAST_USER - Broadcast user JID
+# BROADCAST_USER_PASSWORD - Broadcast user password
+######################
+JABBER_URL = os.environ.get('AA_JABBER_URL', "yourdomain.com")
+JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
+JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "yourdomain.com")
+OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://yourdomain.com:9090")
+OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
+BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
+BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
+BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast")
+
+######################################
+# Mumble Configuration
+######################################
+# MUMBLE_URL - Mumble server url
+# MUMBLE_SERVER_ID - Mumble server id
+######################################
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "yourdomain.com")
+MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
+
+######################################
+# Teamspeak3 Configuration
+######################################
+# TEAMSPEAK3_SERVER_IP - Teamspeak3 server ip
+# TEAMSPEAK3_SERVER_PORT - Teamspeak3 server port
+# TEAMSPEAK3_SERVERQUERY_USER - Teamspeak3 serverquery username
+# TEAMSPEAK3_SERVERQUERY_PASSWORD - Teamspeak3 serverquery password
+# TEAMSPEAK3_VIRTUAL_SERVER - Virtual server id
+# TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
+# TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
+######################################
+TEAMSPEAK3_SERVER_IP = os.environ.get('AA_TEAMSPEAK3_SERVER_IP', '127.0.0.1')
+TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'))
+TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
+TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
+TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
+TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.com')
+
+######################################
+# Discord Configuration
+######################################
+# DISCORD_SERVER_ID - ID of the server to manage
+# DISCORD_USER_EMAIL - email of the server management user
+# DISCORD_USER_PASSWORD - password of the server management user
+######################################
+DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
+DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
+DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
+
+#####################################
+# IPS4 Configuration
+#####################################
+# IPS4_URL - base url of the IPS4 install (no trailing slash)
+# IPS4_API_KEY - API key provided by IPS4
+#####################################
+IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://yourdomain.com/ips4')
+IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
+
+######################################
+# Fleet-Up Configuration
+######################################
+# FLEETUP_APP_KEY - The app key from http://fleet-up.com/Api/MyApps
+# FLEETUP_USER_ID - The user id from http://fleet-up.com/Api/MyKeys
+# FLEETUP_API_ID - The API id from http://fleet-up.com/Api/MyKeys
+# FLEETUP_GROUP_ID - The id of the group you want to pull data from, see http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships
+######################################
+FLEETUP_APP_KEY = os.environ.get('AA_FLEETUP_APP_KEY', '')
+FLEETUP_USER_ID = os.environ.get('AA_FLEETUP_USER_ID', '')
+FLEETUP_API_ID = os.environ.get('AA_FLEETUP_API_ID', '')
+FLEETUP_GROUP_ID = os.environ.get('AA_FLEETUP_GROUP_ID', '')
+
+#####################################
+# Logging Configuration
+#####################################
+# Set log_file and console level to desired state:
+# DEBUG - basically stack trace, explains every step
+# INFO - model creation, deletion, updates, etc
+# WARN - unexpected function outcomes that do not impact user
+# ERROR - unexcpeted function outcomes which prevent user from achieving desired outcome
+# EXCEPTION - something critical went wrong, unhandled
+#####################################
+# Recommended level for log_file is INFO, console is DEBUG
+# Change log level of individual apps below to narrow your debugging
+#####################################
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'log_file': {
+            'level': 'INFO',         # edit this line to change logging level to file
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR,'log/allianceauth.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*5, # edit this line to change max log file size
+            'backupCount': 5,        # edit this line to change number of log backups
+        },
+        'console': {
+            'level': 'DEBUG',        # edit this line to change logging level to console
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'notifications': {           # creates notifications for users with logging_notifications permission
+            'level': 'ERROR',        # edit this line to change logging level to notifications
+            'class': 'notifications.handlers.NotificationHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'authentication': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'celerytask': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'eveonline': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'groupmanagement': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'hrapplications': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'portal': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'registration': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'services': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'srp': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'timerboard': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'sigtracker': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'optimer': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'corputils': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'util': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
+        },
+        'django': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'ERROR',
+        },
+    }
+}
+
