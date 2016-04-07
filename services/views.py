@@ -15,12 +15,14 @@ from managers.ipboard_manager import IPBoardManager
 from managers.teamspeak3_manager import Teamspeak3Manager
 from managers.discord_manager import DiscordManager
 from managers.ips4_manager import Ips4Manager
+from managers.smf_manager import smfManager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from celerytask.tasks import update_jabber_groups
 from celerytask.tasks import update_mumble_groups
 from celerytask.tasks import update_forum_groups
 from celerytask.tasks import update_ipboard_groups
+from celerytask.tasks import update_smf_groups
 from celerytask.tasks import update_teamspeak3_groups
 from celerytask.tasks import update_discord_groups
 from forms import JabberBroadcastForm
@@ -683,3 +685,83 @@ def deactivate_ips4(request):
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to deactivate IPS4 for user %s" % request.user)
     return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_smf(request):
+    logger.debug("activate_smf called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    # Valid now we get the main characters
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    logger.debug("Adding smf user for user %s with main character %s" % (request.user, character))
+    result = smfManager.add_user(character.character_name, request.user.email, ['Member'], authinfo.main_char_id)
+    # if empty we failed
+    if result[0] != "":
+        AuthServicesInfoManager.update_user_smf_info(result[0], result[1], request.user)
+        logger.debug("Updated authserviceinfo for user %s with smf credentials. Updating groups." % request.user)
+        update_smf_groups.delay(request.user.pk)
+        logger.info("Succesfully activated smf for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccesful attempt to activate smf for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_smf(request):
+    logger.debug("deactivate_smf called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = smfManager.disable_user(authinfo.smf_username)
+    # false we failed
+    if result:
+        AuthServicesInfoManager.update_user_smf_info("", "", request.user)
+        logger.info("Succesfully deactivated smf for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccesful attempt to activate smf for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def reset_smf_password(request):
+    logger.debug("reset_smf_password called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = smfManager.update_user_password(authinfo.smf_username, authinfo.main_char_id)
+    # false we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_smf_info(authinfo.smf_username, result, request.user)
+        logger.info("Succesfully reset smf password for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccessful attempt to reset smf password for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_smf_password(request):
+    logger.debug("set_smf_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = smfManager.update_user_password(authinfo.smf_username, authinfo.main_char_id, password=password)
+            if result != "":
+                AuthServicesInfoManager.update_user_smf_info(authinfo.smf_username, result, request.user)
+                logger.info("Succesfully reset smf password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom smf password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Forum'}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))

@@ -106,6 +106,14 @@ DATABASES = {
         'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
+    },
+    'smf': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_smf',
+        'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
     }
     
 }
@@ -206,10 +214,12 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 # KILLBOARD_URL - URL for your killboard. Blank to hide link
 # MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
 # FORUM_URL - URL for your forums. Blank to hide link
+# SMF_URL - URL for your SMF forums.
 ####################
 KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
 EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
+SMF_URL = os.environ.get('AA_SMF_URL', '')
 
 #########################
 # Default Group Settings
@@ -235,6 +245,7 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
 # ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
 # ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
+# ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
@@ -243,6 +254,7 @@ ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'False'
 ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'False')
 ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
 ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
+ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
 
 #####################
 # Blue service Setup
@@ -253,7 +265,8 @@ ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 # ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
-# ENABLE_BLUE_IPS4 - Enable IPS4 support in the auth for blues
+# ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
+# ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
 #####################
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -263,6 +276,7 @@ ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False'
 ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
 ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
 ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
+ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
 
 #########################
 # Corp Configuration

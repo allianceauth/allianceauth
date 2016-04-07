@@ -10,6 +10,7 @@ from .tasks import update_forum_groups
 from .tasks import update_ipboard_groups
 from .tasks import update_discord_groups
 from .tasks import update_teamspeak3_groups
+from .tasks import update_smf_groups
 from authentication.models import AuthServicesInfo
 from services.models import AuthTS
 
@@ -27,6 +28,8 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
             update_teamspeak3_groups.delay(instance.pk)
         if auth.forum_username:
             update_forum_groups.delay(instance.pk)
+        if auth.smf_username:
+            update_smf_groups.delay(instance.pk)
         if auth.ipboard_username:
             update_ipboard_groups.delay(instance.pk)
         if auth.discord_uid:

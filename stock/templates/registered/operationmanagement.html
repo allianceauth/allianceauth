@@ -40,7 +40,7 @@
 		        <th class="text-center">Action</th>
                 {% endif %}
             </tr>
-            	              
+
                 {% for ops in optimer %}
                 	<tr>
                 	<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
@@ -54,7 +54,7 @@
 		        <td style="width:150px" class="text-center">{{ ops.duration }}</td>
 		        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
                 	<td style="width:150px" class="text-center">{{ ops.details }}</td>
-                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
+                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>
                 {% if perms.auth.optimer_management %}
                 	<td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
                     	<td class="text-center">
@@ -67,15 +67,15 @@
                                    class="glyphicon glyphicon-pencil"></span></button>
                 	</a>
                 	</td>
-              
-              
+
+
               {% endif %}
               </tr>
               {% endfor %}
             </tr>
         </table>
 
-        
+
     </div>
 
 <script src="/static/js/dateformat.js"></script>

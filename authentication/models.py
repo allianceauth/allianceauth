@@ -17,6 +17,8 @@ class AuthServicesInfo(models.Model):
     ips4_username = models.CharField(max_length=254, blank=True, default="")
     ips4_password = models.CharField(max_length=254, blank=True, default="")
     ips4_id = models.CharField(max_length=254, blank=True, default="")
+    smf_username = models.CharField(max_length=254, blank=True, default="")
+    smf_password = models.CharField(max_length=254, blank=True, default="")
     main_char_id = models.CharField(max_length=64, blank=True, default="")
     is_blue = models.BooleanField(default=False)
     user = models.ForeignKey(User)

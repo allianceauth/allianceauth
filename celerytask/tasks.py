@@ -11,6 +11,7 @@ from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
 from services.managers.discord_manager import DiscordManager, DiscordAPIManager
+from services.managers.smf_manager import smfManager
 from services.models import AuthTS
 from services.models import TSgroup
 from authentication.models import AuthServicesInfo
@@ -106,6 +107,25 @@ def update_forum_groups(pk):
         logger.exception("Phpbb group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s forum groups." % user)
+
+@task
+def update_smf_groups(pk):
+    user = User.objects.get(pk=pk)
+    logger.debug("Updating smf groups for user %s" % user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
+    for group in user.groups.all():
+        groups.append(str(group.name))
+    if len(groups) == 0:
+        groups.append('empty')
+    logger.debug("Updating user %s smf groups to %s" % (user, groups))
+    try:
+        smfManager.update_groups(authserviceinfo.smf_username, groups)
+    except:
+        logger.exception("smf group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
+    logger.debug("Updated user %s smf groups." % user)
+
 
 @task
 def update_ipboard_groups(pk):

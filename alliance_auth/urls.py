@@ -146,6 +146,13 @@ urlpatterns = patterns('',
                            name='auth_reset_ips4_password'),
                        url(r'^set_ips4_password/$', 'services.views.set_ips4_password', name='auth_set_ips4_password'),
 
+                       # SMF Service Control
+                       url(r'^activate_smf/$', 'services.views.activate_smf', name='auth_activate_smf'),
+                       url(r'^deactivate_smf/$', 'services.views.deactivate_smf', name='auth_deactivate_smf'),
+                       url(r'^reset_smf_password/$', 'services.views.reset_smf_password',
+                           name='auth_reset_smf_password'),
+                       url(r'^set_smf_password/$', 'services.views.set_smf_password', name='auth_set_smf_password'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),
