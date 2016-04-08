@@ -39,7 +39,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
 
 def trigger_all_ts_update():
     for auth in AuthServicesInfo.objects.filter(teamspeak3_uid__isnull=False):
-        update_teamspeak3_groups.delay(auth.user)
+        update_teamspeak3_groups.delay(auth.user.pk)
 
 @receiver(m2m_changed, sender=AuthTS.ts_group.through)
 def m2m_changed_authts_group(sender, instance, action, *args, **kwargs):
