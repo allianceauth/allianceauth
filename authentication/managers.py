@@ -146,3 +146,15 @@ class AuthServicesInfoManager:
             logger.info("Updated user %s smf info in authservicesinfo model." % user)
         else:
             logger.error("Failed to update user %s smf info: user does not exist." % user)
+
+    @staticmethod
+    def update_user_market_info(username, password, user):
+        if User.objects.filter(username=user.username).exists():
+            logger.debug("Updating user %s market info: username %s" % (user, username))
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.market_username = username
+            authserviceinfo.market_password = password
+            authserviceinfo.save(update_fields=['market_username', 'market_password'])
+            logger.info("Updated user %s market info in authservicesinfo model." % user)
+        else:
+            logger.error("Failed to update user %s market info: user does not exist." % user)

@@ -153,6 +153,13 @@ urlpatterns = patterns('',
                            name='auth_reset_smf_password'),
                        url(r'^set_smf_password/$', 'services.views.set_smf_password', name='auth_set_smf_password'),
 
+                       # Alliance Market Control
+                       url(r'^activate_market/$', 'services.views.activate_market', name='auth_activate_market'),
+                       url(r'^deactivate_market/$', 'services.views.deactivate_market', name='auth_deactivate_market'),
+                       url(r'^reset_market_password/$', 'services.views.reset_market_password',
+                           name='auth_reset_market_password'),
+                       url(r'^set_market_password/$', 'services.views.set_market_password', name='auth_set_market_password'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),

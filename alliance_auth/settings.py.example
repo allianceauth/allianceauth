@@ -107,6 +107,7 @@ DATABASES = {
         'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
     },
+
     'smf': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_smf',
@@ -114,6 +115,15 @@ DATABASES = {
         'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
+    },
+
+    'market': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_market',
+        'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_MARKET_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_MARKET_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_MARKET_PORT', '3306'),
     }
     
 }
@@ -246,6 +256,7 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
 # ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
 # ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
+# ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
@@ -255,6 +266,7 @@ ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', '
 ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
 ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
 ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
+ENABLE_AUTH_MARKET = 'True' == os.environ.get('AA_ENABLE_AUTH_MARKET', 'False')
 
 #####################
 # Blue service Setup
@@ -267,6 +279,7 @@ ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
 # ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
 # ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
 # ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
+# ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
 #####################
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -277,6 +290,7 @@ ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', '
 ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
 ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
 ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
+ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'False')
 
 #########################
 # Corp Configuration
@@ -313,6 +327,11 @@ MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
 MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
 BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
 BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
+
+#####################
+# Alliance Market
+#####################
+MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://yourdomain.com/market')
 
 #####################
 # HR Configuration

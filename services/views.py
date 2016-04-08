@@ -16,6 +16,7 @@ from managers.teamspeak3_manager import Teamspeak3Manager
 from managers.discord_manager import DiscordManager
 from managers.ips4_manager import Ips4Manager
 from managers.smf_manager import smfManager
+from managers.market_manager import marketManager
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
 from celerytask.tasks import update_jabber_groups
@@ -763,5 +764,84 @@ def set_smf_password(request):
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
-    context = {'form': form, 'service': 'Forum'}
+    context = {'form': form, 'service': 'SMF'}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_market(request):
+    logger.debug("activate_market called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    # Valid now we get the main characters
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    logger.debug("Adding market user for user %s with main character %s" % (request.user, character))
+    result = marketManager.add_user(character.character_name, request.user.email, authinfo.main_char_id, character.character_name)
+    # if empty we failed
+    if result[0] != "":
+        AuthServicesInfoManager.update_user_market_info(result[0], result[1], request.user)
+        logger.debug("Updated authserviceinfo for user %s with market credentials." % request.user)
+        logger.info("Succesfully activated market for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccesful attempt to activate market for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_market(request):
+    logger.debug("deactivate_market called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = marketManager.disable_user(authinfo.market_username)
+    # false we failed
+    if result:
+        AuthServicesInfoManager.update_user_market_info("", "", request.user)
+        logger.info("Succesfully deactivated market for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccesful attempt to activate market for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def reset_market_password(request):
+    logger.debug("reset_market_password called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = marketManager.update_user_password(authinfo.market_username)
+    # false we failed
+    if result != "":
+        AuthServicesInfoManager.update_user_market_info(authinfo.market_username, result, request.user)
+        logger.info("Succesfully reset market password for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccessful attempt to reset market password for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_market_password(request):
+    logger.debug("set_market_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = marketManager.update_custom_password(authinfo.market_username, password)
+            if result != "":
+                AuthServicesInfoManager.update_user_market_info(authinfo.market_username, result, request.user)
+                logger.info("Succesfully reset market password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom market password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Market'}
     return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
