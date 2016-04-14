@@ -21,7 +21,7 @@ class Teamspeak3Manager:
     @staticmethod
     def __santatize_username(username):
         sanatized = username.replace(" ", "_")
-        sanatized = sanatized.replace("'", "_")
+        sanatized = sanatized.replace("'", "-")
         return sanatized
 
     @staticmethod
