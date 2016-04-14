@@ -26,7 +26,7 @@ class marketManager:
     @staticmethod
     def __santatize_username(username):
         sanatized = username.replace(" ", "_")
-        sanatized = sanatized.replace("'", "")
+        sanatized = sanatized.replace("'", "_")
         return sanatized.lower()
 
     @staticmethod
