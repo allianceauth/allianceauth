@@ -49,7 +49,6 @@ class smfManager:
     @staticmethod
     def santatize_username(username):
         sanatized = username.replace(" ", "_")
-        sanatized = username.replace("'", "\\'")
         return sanatized.lower()
 
     @staticmethod
