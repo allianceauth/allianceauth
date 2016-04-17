@@ -236,6 +236,25 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_BLUE_DISCOURSE %}
+                <td class="text-center">Discourse</td>
+                <td class="text-center">{{ authinfo.discourse_username }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
+                <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.discourse_username "" %}
+                        <a href="{% url 'auth_activate_discourse' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_deactivate_discourse' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
             {% if ENABLE_BLUE_TEAMSPEAK3 %}
                 <tr>
                     <th class="text-center">Service</th>
@@ -506,6 +525,25 @@
                         {% endifequal %}
                     </td>
                 </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_DISCOURSE %}
+                <td class="text-center">Discourse</td>
+                <td class="text-center">{{ authinfo.discourse_username }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
+                <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.discourse_username "" %}
+                        <a href="{% url 'auth_activate_discourse' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                            <a href="{% url 'auth_deactivate_discourse' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                    {% endifequal %}
+                </td>
             {% endif %}
             {% if ENABLE_AUTH_TEAMSPEAK3 %}
                 <tr>

@@ -137,6 +137,10 @@ urlpatterns = patterns('',
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
 
+                       # Discourse Service Control
+                       url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),
+                       url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
+
                        # IPS4 Service Control
                        url(r'^activate_ips4/$', 'services.views.activate_ips4',
                            name='auth_activate_ips4'),

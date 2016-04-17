@@ -123,6 +123,18 @@ class AuthServicesInfoManager:
             logger.error("Failed to update user %s discord info: user does not exist." % user)
 
     @staticmethod
+    def update_user_discourse_info(username, password, user):
+        if User.objects.filter(username=user.username).exists():
+            logger.debug("Updating user %s discourse info: username %s" % (user, username))
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.discourse_username = username
+            authserviceinfo.discourse_password = password
+            authserviceinfo.save(update_fields=['discourse_username', 'discourse_password'])
+            logger.info("Updated user %s discourse info in authservicesinfo model." % user)
+        else:
+            logger.error("Failed to update user %s discourse info: user does not exist." % user)
+
+    @staticmethod
     def update_user_ips4_info(username, password, id, user):
         if User.objects.filter(username=user.username).exists():
             logger.debug("Updating user %s IPS4 info: username %s" % (user, username))

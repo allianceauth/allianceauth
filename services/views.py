@@ -14,6 +14,7 @@ from managers.mumble_manager import MumbleManager
 from managers.ipboard_manager import IPBoardManager
 from managers.teamspeak3_manager import Teamspeak3Manager
 from managers.discord_manager import DiscordManager
+from managers.discourse_manager import DiscourseManager
 from managers.ips4_manager import Ips4Manager
 from managers.smf_manager import smfManager
 from managers.market_manager import marketManager
@@ -26,6 +27,7 @@ from celerytask.tasks import update_ipboard_groups
 from celerytask.tasks import update_smf_groups
 from celerytask.tasks import update_teamspeak3_groups
 from celerytask.tasks import update_discord_groups
+from celerytask.tasks import update_discourse_groups
 from forms import JabberBroadcastForm
 from forms import FleetFormatterForm
 from forms import DiscordForm
@@ -610,6 +612,37 @@ def set_ipboard_password(request):
 
 @login_required
 @user_passes_test(service_blue_alliance_test)
+def activate_discourse(request):
+    logger.debug("activate_discourse called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    logger.debug("Adding discourse user for user %s with main character %s" % (request.user, character))
+    result = DiscourseManager.add_user(character.character_name, request.user.email)
+    if result[0] != "":
+        AuthServicesInfoManager.update_user_discourse_info(result[0], result[1], request.user)
+        logger.debug("Updated authserviceinfo for user %s with discourse credentials. Updating groups." % request.user)
+        update_discourse_groups.delay(request.user.pk)
+        logger.info("Successfully activated discourse for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_discourse(request):
+    logger.debug("deactivate_discourse called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = DiscourseManager.delete_user(authinfo.discourse_username)
+    if result:
+        AuthServicesInfoManager.update_user_discourse_info("", "", request.user)
+        logger.info("Successfully deactivated discourse for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccessful attempt to activate discourse for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
@@ -720,7 +753,6 @@ def deactivate_smf(request):
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to activate smf for user %s" % request.user)
     return HttpResponseRedirect("/dashboard")
-
 
 @login_required
 @user_passes_test(service_blue_alliance_test)

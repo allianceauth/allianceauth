@@ -46,3 +46,12 @@ class MumbleUser(models.Model):
 
     def __str__(self):
         return self.username
+
+class GroupCache(models.Model):
+    SERVICE_CHOICES = (
+        ("discourse", "discourse"),
+    )
+
+    created = models.DateTimeField(auto_now_add=True)
+    groups = models.TextField(blank=True, null=True)
+    service = models.CharField(max_length=254, choices=SERVICE_CHOICES, unique=True)
