@@ -41,6 +41,7 @@ def domain_url(request):
             'ENABLE_AUTH_IPS4': settings.ENABLE_AUTH_IPS4,
             'ENABLE_AUTH_SMF': settings.ENABLE_AUTH_SMF,
             'ENABLE_AUTH_MARKET': settings.ENABLE_AUTH_MARKET,
+            'ENABLE_AUTH_PATHFINDER': settings.ENABLE_AUTH_PATHFINDER,
             'ENABLE_BLUE_JABBER': settings.ENABLE_BLUE_JABBER,
             'ENABLE_BLUE_FORUM': settings.ENABLE_BLUE_FORUM,
             'ENABLE_BLUE_MUMBLE': settings.ENABLE_BLUE_MUMBLE,
@@ -51,6 +52,7 @@ def domain_url(request):
             'ENABLE_BLUE_IPS4': settings.ENABLE_BLUE_IPS4,
             'ENABLE_BLUE_SMF': settings.ENABLE_BLUE_SMF,
             'ENABLE_BLUE_MARKET': settings.ENABLE_BLUE_MARKET,
+            'ENABLE_BLUE_PATHFINDER': settings.ENABLE_BLUE_PATHFINDER,
             'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
             'DISCORD_SERVER_ID': settings.DISCORD_SERVER_ID,
@@ -59,5 +61,6 @@ def domain_url(request):
             'IPS4_URL': settings.IPS4_URL,
             'SMF_URL': settings.SMF_URL,
             'MARKET_URL': settings.MARKET_URL,
+            'PATHFINDER_URL': settings.PATHFINDER_URL,
             'EXTERNAL_MEDIA_URL': settings.EXTERNAL_MEDIA_URL,
             'CURRENT_UTC_TIME': timezone.now()}

@@ -136,7 +136,7 @@ urlpatterns = patterns('',
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
-
+                       
                        # Discourse Service Control
                        url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),
                        url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
@@ -163,6 +163,13 @@ urlpatterns = patterns('',
                        url(r'^reset_market_password/$', 'services.views.reset_market_password',
                            name='auth_reset_market_password'),
                        url(r'^set_market_password/$', 'services.views.set_market_password', name='auth_set_market_password'),
+
+                       # Pathfinder Control
+                       url(r'^activate_pathfinder/$', 'services.views.activate_pathfinder', name='auth_activate_pathfinder'),
+                       url(r'^deactivate_pathfinder/$', 'services.views.deactivate_pathfinder', name='auth_deactivate_pathfinder'),
+                       url(r'^reset_pathfinder_password/$', 'services.views.reset_pathfinder_password',
+                           name='auth_reset_pathfinder_password'),
+                       url(r'^set_pathfinder_password/$', 'services.views.set_pathfinder_password', name='auth_set_pathfinder_password'),
 
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',

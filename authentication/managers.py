@@ -121,7 +121,7 @@ class AuthServicesInfoManager:
             logger.info("Updated user %s discord info in authservicesinfo model." % user)
         else:
             logger.error("Failed to update user %s discord info: user does not exist." % user)
-
+            
     @staticmethod
     def update_user_discourse_info(username, password, user):
         if User.objects.filter(username=user.username).exists():
@@ -170,3 +170,15 @@ class AuthServicesInfoManager:
             logger.info("Updated user %s market info in authservicesinfo model." % user)
         else:
             logger.error("Failed to update user %s market info: user does not exist." % user)
+
+    @staticmethod
+    def update_user_pathfinder_info(username, password, user):
+        if User.objects.filter(username=user.username).exists():
+            logger.debug("Updating user %s market info: username %s" % (user, username))
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.pathfinder_username = username
+            authserviceinfo.pathfinder_password = password
+            authserviceinfo.save(update_fields=['pathfinder_username', 'pathfinder_password'])
+            logger.info("Updated user %s pathfinder info in authservicesinfo model." % user)
+        else:
+            logger.error("Failed to update user %s pathfinder info: user does not exist." % user)

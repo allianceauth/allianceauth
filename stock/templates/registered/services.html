@@ -126,6 +126,33 @@
                     {% endifequal %}
                 </td>
             {% endif %}
+            {% if ENABLE_BLUE_PATHFINDER %}
+                <td class="text-center">Pathfinder</td>
+                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
+                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
+                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.pathfinder_username "" %}
+                        <a href="{% url 'auth_activate_pathfinder' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_pathfinder_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_pathfinder_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_pathfinder' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
             {% if ENABLE_BLUE_JABBER %}
                 <tr>
                     <td class="text-center">Jabber</td>
@@ -410,6 +437,33 @@
                                     class="glyphicon glyphicon-refresh"></span></button>
                         </a>
                         <a href="{% url 'auth_deactivate_market' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+            {% endif %}
+            {% if ENABLE_AUTH_PATHFINDER %}
+                <td class="text-center">Pathfinder</td>
+                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
+                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
+                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.pathfinder_username "" %}
+                        <a href="{% url 'auth_activate_pathfinder' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_pathfinder_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_pathfinder_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_pathfinder' %}">
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>
