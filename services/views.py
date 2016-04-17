@@ -643,7 +643,7 @@ def deactivate_discourse(request):
     return HttpResponseRedirect("/dashboard")
     
 @login_required
-user_passes_test(service_blue_alliance_test)
+@user_passes_test(service_blue_alliance_test)
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
