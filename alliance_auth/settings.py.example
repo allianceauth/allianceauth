@@ -107,6 +107,7 @@ DATABASES = {
         'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
     },
+
     'smf': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_smf',
@@ -114,6 +115,24 @@ DATABASES = {
         'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
+    },
+
+    'market': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_market',
+        'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_MARKET_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_MARKET_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_MARKET_PORT', '3306'),
+    },
+
+    'pathfinder': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_pathfinder',
+        'USER': os.environ.get('AA_DB_PATHFINDER_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_PATHFINDER_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_PATHFINDER_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_PATHFINDER_PORT', '3306'),
     }
     
 }
@@ -169,10 +188,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
 
-# Cache directory for EveWho, no ending /
-# by default this becomes ~/<installdir>/alliance_auth/cache
-# This directory needs to be writable by the webserver
-EVEWHO_CACHE_DIR = '{}/cache'.format(BASE_DIR)
 
 #####################################################
 ##
@@ -243,8 +258,11 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_MUMBLE - Enable mumble support in the auth for auth'd members
 # ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
 # ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
+# ENABLE_AUTH_DISCOURSE - Enable Discourse support in the auth for auth'd members
 # ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
 # ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
+# ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
+# ENABLE_AUTH_PATHFINDER = Enable Alliance Pathfinder suppor in auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
@@ -252,8 +270,11 @@ ENABLE_AUTH_MUMBLE = 'True' == os.environ.get('AA_ENABLE_AUTH_MUMBLE', 'False')
 ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'False')
 ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'False')
 ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
+ENABLE_AUTH_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCOURSE', 'False')
 ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
 ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
+ENABLE_AUTH_MARKET = 'True' == os.environ.get('AA_ENABLE_AUTH_MARKET', 'False')
+ENABLE_AUTH_PATHFINDER = 'True' == os.environ.get('AA_ENABLE_AUTH_PATHFINDER', 'False')
 
 #####################
 # Blue service Setup
@@ -264,8 +285,11 @@ ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 # ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
+# ENABLE_BLUE_DISCOURSE - Enable Discord support in the auth for blues
 # ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
 # ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
+# ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
+# ENABLE_BLUE_PATHFINDER = Enable Pathfinder support in the auth for blues
 #####################
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -274,8 +298,11 @@ ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'False')
 ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False')
 ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
 ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
+ENABLE_BLUE_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCOURSE', 'False')
 ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
 ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
+ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'False')
+ENABLE_BLUE_PATHFINDER = 'True' == os.environ.get('AA_ENABLE_BLUE_PATHFINDER', 'False')
 
 #########################
 # Corp Configuration
@@ -312,6 +339,16 @@ MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
 MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
 BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
 BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
+
+##########################
+# Pathfinder Configuration
+##########################
+PATHFINDER_URL = os.environ.get('AA_PATHFINDER_URL', 'http://pathfinder.yourdomain.com')
+
+#####################
+# Alliance Market
+#####################
+MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://yourdomain.com/market')
 
 #####################
 # HR Configuration
@@ -390,6 +427,18 @@ TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.c
 DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
 DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
 DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
+
+######################################
+# Discourse Configuration
+######################################
+# DISCOURSE_URL - Web address of the forums (no trailing slash)
+# DISCOURSE_API_USERNAME - API account username
+# DISCOURSE_API_KEY - API Key
+######################################
+DISCOURSE_URL = os.environ.get('AA_DISCOURSE_URL', '')
+DISCOURSE_API_USERNAME = os.environ.get('AA_DISCOURSE_API_USERNAME', '')
+DISCOURSE_API_KEY = os.environ.get('AA_DISCOURSE_API_KEY', '')
+
 
 #####################################
 # IPS4 Configuration
@@ -521,4 +570,3 @@ LOGGING = {
         },
     }
 }
-
