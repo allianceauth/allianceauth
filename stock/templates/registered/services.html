@@ -19,6 +19,7 @@
                 <th class="text-center">Action</th>
             </tr>
             {% if ENABLE_BLUE_FORUM %}
+                <tr>
                 <td class="text-center">Forums</td>
                 <td class="text-center">{{ authinfo.forum_username }}</td>
                 <td class="text-center">{{ authinfo.forum_password }}</td>
@@ -44,8 +45,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_SMF %}
+                <tr>
                 <td class="text-center">SMF Forums</td>
                 <td class="text-center">{{ authinfo.smf_username }}</td>
                 <td class="text-center">{{ authinfo.smf_password }}</td>
@@ -71,8 +74,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_IPBOARD %}
+                <tr>
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
                 <td class="text-center">{{ authinfo.ipboard_password }}</td>
@@ -98,8 +103,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_MARKET %}
+                <tr>
                 <td class="text-center">Alliance Market</td>
                 <td class="text-center">{{ authinfo.market_username }}</td>
                 <td class="text-center">{{ authinfo.market_password }}</td>
@@ -125,8 +132,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_PATHFINDER %}
+                <tr>
                 <td class="text-center">Pathfinder</td>
                 <td class="text-center">{{ authinfo.pathfinder_username }}</td>
                 <td class="text-center">{{ authinfo.pathfinder_password }}</td>
@@ -152,6 +161,7 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_JABBER %}
                 <tr>
@@ -264,6 +274,7 @@
                 </tr>
             {% endif %}
             {% if ENABLE_BLUE_DISCOURSE %}
+                <tr>
                 <td class="text-center">Discourse</td>
                 <td class="text-center">{{ authinfo.discourse_username }}</td>
                 <td class="text-center">{{ authinfo.discourse_password }}</td>
@@ -281,6 +292,7 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_TEAMSPEAK3 %}
                 <tr>
@@ -390,6 +402,7 @@
                 </tr>
             {% endif %}
             {% if ENABLE_AUTH_IPBOARD %}
+                <tr>
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
                 <td class="text-center">{{ authinfo.ipboard_password }}</td>
@@ -415,8 +428,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_AUTH_MARKET %}
+                <tr>
                 <td class="text-center">Alliance Market</td>
                 <td class="text-center">{{ authinfo.market_username }}</td>
                 <td class="text-center">{{ authinfo.market_password }}</td>
@@ -442,8 +457,10 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_AUTH_PATHFINDER %}
+                <tr>
                 <td class="text-center">Pathfinder</td>
                 <td class="text-center">{{ authinfo.pathfinder_username }}</td>
                 <td class="text-center">{{ authinfo.pathfinder_password }}</td>
@@ -469,6 +486,7 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
             {% endif %}
             {% if ENABLE_AUTH_JABBER %}
                 <tr>
