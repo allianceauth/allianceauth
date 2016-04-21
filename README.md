@@ -79,7 +79,7 @@ Special Permissions In Admin:
     hrapplications | application | accept_application ( Can accept applications )
     hrapplications | application | reject_application ( Can reject applications )
     hrapplications | application | view_apis ( Can see applicant's API keys )
-    hrapplicstions | applicationcomment | add_applicationcomment ( Can comment on applications )
+    hrapplications | applicationcomment | add_applicationcomment ( Can comment on applications )
 
 Active Developers
 

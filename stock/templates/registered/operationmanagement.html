@@ -40,7 +40,7 @@
 		        <th class="text-center">Action</th>
                 {% endif %}
             </tr>
-            	              
+
                 {% for ops in optimer %}
                 	<tr>
                 	<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
@@ -54,7 +54,7 @@
 		        <td style="width:150px" class="text-center">{{ ops.duration }}</td>
 		        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
                 	<td style="width:150px" class="text-center">{{ ops.details }}</td>
-                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>   			 
+                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>
                 {% if perms.auth.optimer_management %}
                 	<td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
                     	<td class="text-center">
@@ -67,26 +67,23 @@
                                    class="glyphicon glyphicon-pencil"></span></button>
                 	</a>
                 	</td>
-              
-              
+
+
               {% endif %}
               </tr>
               {% endfor %}
             </tr>
         </table>
 
-        
+
     </div>
 
 <script src="/static/js/dateformat.js"></script>
 <script src="/static/js/countdown.js"></script>
 <script>
-var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% for ops in optimer %}
-var clock{{ ops.id }} = document.getElementById("countdown{{ ops.id }}"), targetDate{{ ops.id }} = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
 
-setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+{% for ops in optimer %}var clock{{ ops.id }} = document.getElementById("countdown{{ ops.id }}"), targetDate{{ ops.id }} = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
 {% for ops in optimer %}setInterval(function(){clock{{ ops.id }}.innerHTML = targetDate{{ ops.id }}.format('D @ h:ia'); if (targetDate{{ ops.id }} > Date.now()){ clock{{ ops.id }}.innerHTML = clock{{ ops.id }}.innerHTML + "<BR>" + countdown(targetDate{{ ops.id }}).toString();}}, 1000);{% endfor %}
-
 
 setInterval(function(){updateClock()}, 1000);
 
@@ -96,6 +93,5 @@ function updateClock() {
 }
 
 </script>
-
 
 {% endblock content %}

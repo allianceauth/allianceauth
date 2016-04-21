@@ -19,6 +19,7 @@
                 <th class="text-center">Action</th>
             </tr>
             {% if ENABLE_BLUE_FORUM %}
+                <tr>
                 <td class="text-center">Forums</td>
                 <td class="text-center">{{ authinfo.forum_username }}</td>
                 <td class="text-center">{{ authinfo.forum_password }}</td>
@@ -44,8 +45,39 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_BLUE_SMF %}
+                <tr>
+                <td class="text-center">SMF Forums</td>
+                <td class="text-center">{{ authinfo.smf_username }}</td>
+                <td class="text-center">{{ authinfo.smf_password }}</td>
+                <td class="text-center"><a href="{{ SMF_URL }}">{{ SMF_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.smf_username "" %}
+                        <a href="{% url 'auth_activate_smf' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_smf_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_smf_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_smf' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_IPBOARD %}
+                <tr>
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
                 <td class="text-center">{{ authinfo.ipboard_password }}</td>
@@ -71,6 +103,65 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_BLUE_MARKET %}
+                <tr>
+                <td class="text-center">Alliance Market</td>
+                <td class="text-center">{{ authinfo.market_username }}</td>
+                <td class="text-center">{{ authinfo.market_password }}</td>
+                <td class="text-center"><a href="{{ MARKET_URL }}">{{ MARKET_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.market_username "" %}
+                        <a href="{% url 'auth_activate_market' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_market_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_market_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_market' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_BLUE_PATHFINDER %}
+                <tr>
+                <td class="text-center">Pathfinder</td>
+                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
+                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
+                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.pathfinder_username "" %}
+                        <a href="{% url 'auth_activate_pathfinder' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_pathfinder_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_pathfinder_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_pathfinder' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
             {% endif %}
             {% if ENABLE_BLUE_JABBER %}
                 <tr>
@@ -182,6 +273,27 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_BLUE_DISCOURSE %}
+                <tr>
+                <td class="text-center">Discourse</td>
+                <td class="text-center">{{ authinfo.discourse_username }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
+                <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.discourse_username "" %}
+                        <a href="{% url 'auth_activate_discourse' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_deactivate_discourse' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
+            {% endif %}
             {% if ENABLE_BLUE_TEAMSPEAK3 %}
                 <tr>
                     <th class="text-center">Service</th>
@@ -260,7 +372,37 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_AUTH_SMF %}
+                <tr>
+                    <td class="text-center">SMF Forums</td>
+                    <td class="text-center">{{ authinfo.smf_username }}</td>
+                    <td class="text-center">{{ authinfo.smf_password }}</td>
+                    <td class="text-center"><a href="{{ SMF_URL }}">{{ SMF_URL }}</a></td>
+                    <td class="text-center">
+                        {% ifequal authinfo.smf_username "" %}
+                            <a href="{% url 'auth_activate_smf' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'auth_set_smf_password' %}">
+                                <button type="button" class="btn btn-warning"><span
+                                        class="glyphicon glyphicon-pencil"></span></button>
+                            </a>
+                            <a href="{% url 'auth_reset_smf_password' %}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            </a>
+                            <a href="{% url 'auth_deactivate_smf' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                        {% endifequal %}
+                    </td>
+                </tr>
+            {% endif %}
             {% if ENABLE_AUTH_IPBOARD %}
+                <tr>
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
                 <td class="text-center">{{ authinfo.ipboard_password }}</td>
@@ -286,6 +428,65 @@
                         </a>
                     {% endifequal %}
                 </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_MARKET %}
+                <tr>
+                <td class="text-center">Alliance Market</td>
+                <td class="text-center">{{ authinfo.market_username }}</td>
+                <td class="text-center">{{ authinfo.market_password }}</td>
+                <td class="text-center"><a href="{{ MARKET_URL }}">{{ MARKET_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.market_username "" %}
+                        <a href="{% url 'auth_activate_market' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_market_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_market_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_market' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_PATHFINDER %}
+                <tr>
+                <td class="text-center">Pathfinder</td>
+                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
+                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
+                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.pathfinder_username "" %}
+                        <a href="{% url 'auth_activate_pathfinder' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_pathfinder_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_pathfinder_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_pathfinder' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
             {% endif %}
             {% if ENABLE_AUTH_JABBER %}
                 <tr>
@@ -396,6 +597,25 @@
                         {% endifequal %}
                     </td>
                 </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_DISCOURSE %}
+                <td class="text-center">Discourse</td>
+                <td class="text-center">{{ authinfo.discourse_username }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
+                <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.discourse_username "" %}
+                        <a href="{% url 'auth_activate_discourse' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                            <a href="{% url 'auth_deactivate_discourse' %}">
+                                <button type="button" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span></button>
+                            </a>
+                    {% endifequal %}
+                </td>
             {% endif %}
             {% if ENABLE_AUTH_TEAMSPEAK3 %}
                 <tr>

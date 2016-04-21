@@ -136,6 +136,10 @@ urlpatterns = patterns('',
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
+                       
+                       # Discourse Service Control
+                       url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),
+                       url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
 
                        # IPS4 Service Control
                        url(r'^activate_ips4/$', 'services.views.activate_ips4',
@@ -145,6 +149,27 @@ urlpatterns = patterns('',
                        url(r'^reset_ips4_password/$', 'services.views.reset_ips4_password',
                            name='auth_reset_ips4_password'),
                        url(r'^set_ips4_password/$', 'services.views.set_ips4_password', name='auth_set_ips4_password'),
+
+                       # SMF Service Control
+                       url(r'^activate_smf/$', 'services.views.activate_smf', name='auth_activate_smf'),
+                       url(r'^deactivate_smf/$', 'services.views.deactivate_smf', name='auth_deactivate_smf'),
+                       url(r'^reset_smf_password/$', 'services.views.reset_smf_password',
+                           name='auth_reset_smf_password'),
+                       url(r'^set_smf_password/$', 'services.views.set_smf_password', name='auth_set_smf_password'),
+
+                       # Alliance Market Control
+                       url(r'^activate_market/$', 'services.views.activate_market', name='auth_activate_market'),
+                       url(r'^deactivate_market/$', 'services.views.deactivate_market', name='auth_deactivate_market'),
+                       url(r'^reset_market_password/$', 'services.views.reset_market_password',
+                           name='auth_reset_market_password'),
+                       url(r'^set_market_password/$', 'services.views.set_market_password', name='auth_set_market_password'),
+
+                       # Pathfinder Control
+                       url(r'^activate_pathfinder/$', 'services.views.activate_pathfinder', name='auth_activate_pathfinder'),
+                       url(r'^deactivate_pathfinder/$', 'services.views.deactivate_pathfinder', name='auth_deactivate_pathfinder'),
+                       url(r'^reset_pathfinder_password/$', 'services.views.reset_pathfinder_password',
+                           name='auth_reset_pathfinder_password'),
+                       url(r'^set_pathfinder_password/$', 'services.views.set_pathfinder_password', name='auth_set_pathfinder_password'),
 
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
