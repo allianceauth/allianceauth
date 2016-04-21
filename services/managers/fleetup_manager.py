@@ -17,7 +17,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_members():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/GroupCharacters/" + str(groupid) + ""
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         fmembers=json.loads(jsondata.decode())
 
         return {row["UserId"]:{"user_id":row["UserId"],
@@ -48,7 +51,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_timers():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Timers/" + str(groupid) + ""
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         ftimers=json.loads(jsondata.decode())
 
         return {row["ExpiresString"]:{"solarsystem":row["SolarSystem"],
@@ -63,7 +69,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_doctrines():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Doctrines/" + str(groupid) + ""
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         fdoctrines=json.loads(jsondata.decode())
 
         return {"fleetup_doctrines":fdoctrines["Data"]}
@@ -71,7 +80,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_doctrine(doctrinenumber):
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/DoctrineFittings/%s" % doctrinenumber
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         fdoctrine=json.loads(jsondata.decode())
 
         return {"fitting_doctrine":fdoctrine}
@@ -79,7 +91,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_fittings():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fittings/" + str(groupid) + ""
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         ffittings=json.loads(jsondata.decode())
 
         return {row["FittingId"]:{"fitting_id":row["FittingId"],
@@ -95,7 +110,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_fitting(fittingnumber):
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s" % fittingnumber
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         ffitting=json.loads(jsondata.decode())
 
         return {"fitting_data":ffitting["Data"]}
@@ -103,7 +121,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_doctrineid(fittingnumber):
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s" % fittingnumber
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         fdoctrineid=json.loads(jsondata.decode())
 
         return fdoctrineid['Data']['Doctrines'][0]['DoctrineId']
@@ -111,7 +132,10 @@ class FleetUpManager():
     @staticmethod
     def get_fleetup_fitting_eft(fittingnumber):
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s/eft" % fittingnumber
-        jsondata = requests.get(url).content
+        try:
+            jsondata = requests.get(url).content
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection timeout"
         ffittingeft=json.loads(jsondata.decode())
 
         return {"fitting_eft":ffittingeft["Data"]["FittingData"]}
