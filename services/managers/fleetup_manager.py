@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponse
 from datetime import datetime
 
 import logging
@@ -20,7 +21,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         fmembers=json.loads(jsondata.decode())
 
         return {row["UserId"]:{"user_id":row["UserId"],
@@ -34,7 +35,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         foperations=json.loads(jsondata.decode())
 
         return {row["StartString"]:{"subject":row["Subject"],
@@ -54,7 +55,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         ftimers=json.loads(jsondata.decode())
 
         return {row["ExpiresString"]:{"solarsystem":row["SolarSystem"],
@@ -72,7 +73,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         fdoctrines=json.loads(jsondata.decode())
 
         return {"fleetup_doctrines":fdoctrines["Data"]}
@@ -83,7 +84,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         fdoctrine=json.loads(jsondata.decode())
 
         return {"fitting_doctrine":fdoctrine}
@@ -94,7 +95,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         ffittings=json.loads(jsondata.decode())
 
         return {row["FittingId"]:{"fitting_id":row["FittingId"],
@@ -113,7 +114,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         ffitting=json.loads(jsondata.decode())
 
         return {"fitting_data":ffitting["Data"]}
@@ -124,7 +125,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         fdoctrineid=json.loads(jsondata.decode())
 
         return fdoctrineid['Data']['Doctrines'][0]['DoctrineId']
@@ -135,7 +136,7 @@ class FleetUpManager():
         try:
             jsondata = requests.get(url).content
         except requests.exceptions.ConnectionError:
-            r.status_code = "Connection timeout"
+            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
         ffittingeft=json.loads(jsondata.decode())
 
         return {"fitting_eft":ffittingeft["Data"]["FittingData"]}
