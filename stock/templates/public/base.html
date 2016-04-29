@@ -177,6 +177,12 @@
                             {% endif %}
 
                             <li>
+                            <a {% ifequal request.path "/fat/" %} class="active" {% endifequal %}
+                                                                         href="{% url 'auth_fatlink_view' %}"><i
+                                    class="fa fa-users fa-lightbulb-o grayiconecolor"></i> Fleet Activity Tracking</a>
+                             </li>
+
+                            <li>
                                 <a {% ifequal request.path "/srp/" %} class="active" {% endifequal %}
                                                                       href="{% url 'auth_srp_management_view' %}"><i
                                         class="fa fa-money fa-fw grayiconecolor"></i> Ship Replacement</a>

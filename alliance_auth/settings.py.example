@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'sigtracker',
     'optimer',
     'corputils',
+    'fleetactivitytracking',
     'notifications',
 )
 
@@ -559,6 +560,10 @@ LOGGING = {
         'corputils': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
+        },
+        'fleetactivitytracking': {
+            'handlers': ['log_file', 'console'],
+            'level': 'ERROR',
         },
         'util': {
             'handlers': ['log_file', 'console', 'notifications'],

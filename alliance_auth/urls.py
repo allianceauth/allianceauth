@@ -206,6 +206,7 @@ urlpatterns = patterns('',
                        #corputils
                        url(r'^corputils/$', 'corputils.views.corp_member_view', name='auth_corputils'),
                        url(r'^corputils/(?P<corpid>[0-9]+)/$', 'corputils.views.corp_member_view'),
+                       url(r'^corputils/(?P<corpid>[0-9]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', 'corputils.views.corp_member_view', name='auth_corputils_month'),
                        url(r'^corputils/search/$', 'corputils.views.corputils_search', name="auth_corputils_search"),
                        url(r'^corputils/search/(?P<corpid>[0-9]+)/$', 'corputils.views.corputils_search'),
 
@@ -235,4 +236,18 @@ urlpatterns = patterns('',
                        url(r'^notifications/$', 'notifications.views.notification_list', name='auth_notification_list'),
                        url(r'^notifications/(\w+)/$', 'notifications.views.notification_view', name='auth_notification_view'),
                        url(r'^remove_notifications/(\w+)/$', 'notifications.views.remove_notification', name='auth_remove_notification'),
-)
+
+                       # FleetActivityTracking (FAT)
+                       url(r'^fat/$', 'fleetactivitytracking.views.fatlink_view', name='auth_fatlink_view'),
+                       url(r'^fat/statistics/$', 'fleetactivitytracking.views.fatlink_statistics_view', name='auth_fatlink_view_statistics'),
+                       url(r'^fat/statistics/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', 'fleetactivitytracking.views.fatlink_statistics_view', name='auth_fatlink_view_statistics_month'),
+                       url(r'^fat/user/statistics/$', 'fleetactivitytracking.views.fatlink_personal_statistics_view'),
+                       url(r'^fat/user/statistics/(?P<year>[0-9]+)/$', 'fleetactivitytracking.views.fatlink_personal_statistics_view', name='auth_fatlink_view_personal_statistics'),
+                       url(r'^fat/create/$', 'fleetactivitytracking.views.create_fatlink_view', name='auth_create_fatlink_view'),
+                       url(r'^fat/modify/$', 'fleetactivitytracking.views.modify_fatlink_view', name='auth_modify_fatlink_view'),
+                       url(r'^fat/modify/(?P<hash>[a-zA-Z0-9_-]+)/([a-z0-9_-]+)$',
+                           'fleetactivitytracking.views.modify_fatlink_view'),
+                       url(r'^fat/link/$', 'fleetactivitytracking.views.fatlink_view', name='auth_click_fatlink_view'),
+                       url(r'^fat/link/(?P<hash>[a-zA-Z0-9]+)/(?P<fatname>[a-z0-9_-]+)/$',
+                           'fleetactivitytracking.views.click_fatlink_view'),
+                       )

@@ -1,0 +1,39 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}Personal fatlink statistics{% endblock page_title %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Participation data statistics for {{ year }}
+            <div class="text-right">
+                <a href="{% url 'auth_fatlink_view_personal_statistics' previous_year %}">
+                    <button type="button" class="btn btn-info">Previous year</button>
+                </a>
+                {%  if next_year %}
+                <a href="{% url 'auth_fatlink_view_personal_statistics' next_year  %}">
+                    <button type="button" class="btn btn-info">Next year</button>
+                </a>
+                {%  endif %}
+            </div>
+        </h1>
+        <table class="table table-responsive table-bordered">
+            <tr>
+                <th class="col-md-2 text-center">Month</th>
+                <th class="col-md-2 text-center">Fats</th>
+            </tr>
+            {% for month, n_fats in monthlystats.items %}
+            <tr>
+                <td class="text-center">{{ month }}</td>
+                <td class="text-center">{{ n_fats }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+<script src="/static/js/dateformat.js"></script>
+
+{% endblock content %}

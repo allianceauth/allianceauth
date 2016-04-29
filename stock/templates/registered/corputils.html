@@ -58,6 +58,23 @@
                                     </li>
                                     {% endif %}
                                     <li style="float: right">
+                                        <p class="navbar-form">
+                                        Statistics for:
+                                                <a href="{% url 'auth_corputils_month' corp.corporation_id previous_month|date:"Y" previous_month|date:"m"  %}">
+                                                    <i class="fa fa-arrow-circle-left fa-fw grayiconecolor"></i>
+                                                </a>
+                                            {{  this_month|date:"M" }}, {{  this_month|date:"Y" }}
+                                            {% if next_month %}
+                                                <a href="{% url 'auth_corputils_month' corp.corporation_id next_month|date:"Y" next_month|date:"m"  %}" >
+                                                    <i class="fa fa-arrow-circle-right fa-fw grayiconecolor"></i>
+                                                </a>
+                                                <a href="{% url 'auth_corputils' %}" >
+                                                    <i class="fa fa-angle-double-right  fa-fw grayiconecolor"></i>
+                                                </a>
+                                            {% endif %}
+                                        </p>
+                                    </li>
+                                    <li style="float: right">
                                         <p class="navbar-btn">
                                             <a href="https://zkillboard.com/corporation/{{ corp.corporation_id }}/" class="btn btn-default" target="_blank">{{ corp.corporation_name }} Killboard</a>
                                         </p>
@@ -89,6 +106,7 @@
                                             <th class="col-md-2">Main character</th>
                                             <th class="col-md-2">Main corporation</th>
                                             <th class="col-md-2">Character list</th>
+                                            <th class="col-md-1">Fats</th>
                                             <th class="col-md-3">Killboard</th>
                                             <th class="col-md-2">API JackKnife</th>
                                         </tr>
@@ -115,6 +133,9 @@
                                                 {% for char in player.altlist %}
                                                 <p>{{ char.character_name }}</p>
                                                 {% endfor %}
+                                            </td>
+                                            <td>
+                                                {{ player.n_fats }}
                                             </td>
                                             <td>
                                                 {% for char in player.altlist %}

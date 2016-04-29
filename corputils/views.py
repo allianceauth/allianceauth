@@ -2,7 +2,6 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
 from django.shortcuts import HttpResponseRedirect
 
 from collections import namedtuple
@@ -14,17 +13,45 @@ from eveonline.models import EveCorporationInfo
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCharacter
 from eveonline.models import EveApiKeyPair
-from authentication.models import AuthServicesInfo
+from fleetactivitytracking.models import Fat
 from util import check_if_user_has_permission
 from forms import CorputilsSearchForm
 from evelink.api import APIError
 
 import logging
+import datetime
 
 logger = logging.getLogger(__name__)
+class Player(object):
+    def __init__(self, main, user, maincorp, maincorpid, altlist, apilist, n_fats):
+        self.main = main
+        self.user = user
+        self.maincorp = maincorp
+        self.maincorpid = maincorpid
+        self.altlist = altlist
+        self.apilist = apilist
+        self.n_fats = n_fats
+
+def first_day_of_next_month(year, month):
+    if month == 12:
+        return datetime.datetime(year+1,1,1)
+    else:
+        return datetime.datetime(year, month+1, 1)
+
+def first_day_of_previous_month(year, month):
+    if month == 1:
+        return datetime.datetime(year-1,12,1)
+    else:
+        return datetime.datetime(year, month-1, 1)
+
 
 @login_required
-def corp_member_view(request, corpid = None):
+def corp_member_view(request, corpid = None, year=datetime.date.today().year, month=datetime.date.today().month):
+    year = int(year)
+    month = int(month)
+    start_of_month = datetime.datetime(year, month, 1)
+    start_of_next_month = first_day_of_next_month(year, month)
+    start_of_previous_month = first_day_of_previous_month(year, month)
     logger.debug("corp_member_view called by user %s" % request.user)
 
     try:
@@ -58,7 +85,6 @@ def corp_member_view(request, corpid = None):
             corpid = membercorplist[0][0]
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
-    Player = namedtuple("Player", ["main", "maincorp", "maincorpid", "altlist", "apilist"])
 
     if check_if_user_has_permission(request.user, 'alliance_apis') or (check_if_user_has_permission(request.user, 'corp_apis') and (user_corp_id == corpid)):
         logger.debug("Retreiving and sending API-information")
@@ -96,10 +122,12 @@ def corp_member_view(request, corpid = None):
                     api_pair = None
                 num_registered_characters = num_registered_characters + 1
                 characters_with_api.setdefault(mainname, Player(main=mainchar,
+                                                                user=char_owner,
                                                                 maincorp=maincorp,
                                                                 maincorpid=maincorpid,
                                                                 altlist=[],
-                                                                apilist=[])
+                                                                apilist=[],
+                                                                n_fats=0)
                                                ).altlist.append(char)
                 if api_pair:
                     characters_with_api[mainname].apilist.append(api_pair)
@@ -127,15 +155,25 @@ def corp_member_view(request, corpid = None):
                     api_pair = None
                 num_registered_characters = num_registered_characters + 1
                 characters_with_api.setdefault(mainname, Player(main=mainchar,
+                                                                user=char_owner,
                                                                 maincorp=maincorp,
                                                                 maincorpid=maincorpid,
                                                                 altlist=[],
-                                                                apilist=[])
+                                                                apilist=[],
+                                                                n_fats=0)
                                                ).altlist.append(char)
                 if api_pair:
                     characters_with_api[mainname].apilist.append(api_pair)
 
         n_unacounted = corp.member_count - (num_registered_characters + len(characters_without_api))
+
+        for mainname, player in characters_with_api.items():
+            fats_this_month = Fat.objects.filter(user=player.user).filter(fatlink__fatdatetime__gte = start_of_month).filter(fatlink__fatdatetime__lt = start_of_next_month)
+            characters_with_api[mainname].n_fats = len(fats_this_month)
+
+        if start_of_next_month > datetime.datetime.now():
+            start_of_next_month = None
+
 
         if not settings.IS_CORP:
             context = {"membercorplist": membercorplist,
@@ -153,6 +191,10 @@ def corp_member_view(request, corpid = None):
                        'n_unacounted': n_unacounted,
                        "characters_without_api": sorted(characters_without_api.items()),
                        "search_form": CorputilsSearchForm()}
+
+        context["next_month"] = start_of_next_month
+        context["previous_month"] = start_of_previous_month
+        context["this_month"] = start_of_month
 
         return render_to_response('registered/corputils.html',context, context_instance=RequestContext(request) )
     return HttpResponseRedirect("/dashboard/")

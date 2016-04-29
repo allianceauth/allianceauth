@@ -1,0 +1,98 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}Fatlink view{% endblock page_title %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Participation data</h1>
+        <table class="table">
+                <tr>
+                    <th class="col-md-11">
+                        <h4><b>Most recent clicked fatlinks</b>
+                        </h4>
+                    </th>
+                    <th class="col-md-1">
+                        <a href="{% url 'auth_fatlink_view_statistics' %}">
+                            <button type="button" class="btn btn-info">Personal statistics</button>
+                        </a>
+                    </th>
+                </tr>
+        </table>
+        <table class="table table-responsive table-bordered">
+            <tr>
+                <th class="text-center">fatname</th>
+                <th class="text-center">Character</th>
+                <th class="text-center">System</th>
+                <th class="text-center">Ship</th>
+                <th class="text-center">Eve Time</th>
+            </tr>
+            {% for fat in fats %}
+            <tr>
+                <td class="text-center">{{ fat.fatlink.name }}</td>
+                <td class="text-center">{{ fat.character.character_name }}</td>
+                {%  if fat.station != "None" %}
+                <td class="text-center">Docked in {{ fat.system }}</td>
+                {% else %}
+                <td class="text-center">{{ fat.system }}</td>
+                {% endif %}
+                <td class="text-center">{{ fat.shiptype }}</td>
+                <td class="text-center">{{ fat.fatlink.fatdatetime }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if perms.auth.fleetactivitytracking%}
+            <table class="table">
+                <tr>
+                    <th class="col-md-10">
+                        <h4><b>Most recent fatlinks</b>
+                        </h4>
+                    </th>
+                    <th class="col-md-1">
+                        <a href="{% url 'auth_fatlink_view_statistics' %}">
+                            <button type="button" class="btn btn-info">View statistics</button>
+                        </a>
+                    </th>
+                    <th class="col-md-1">
+                        <a href="{% url 'auth_create_fatlink_view' %}">
+                            <button type="button" class="btn btn-success">Create fatlink</button>
+                        </a>
+                    </th>
+                </tr>
+            </table>
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">Name</th>
+                <th class="text-center">Creator</th>
+                <th class="text-center">Fleet</th>
+                <th class="text-center">Eve Time</th>
+                <th class="text-center">Duration</th>
+                <th class="text-center">Edit</th>
+            </tr>
+            {% for link in fatlinks %}
+            <tr>
+                <td class="text-center"><a href="{%  url 'auth_click_fatlink_view' %}{{ link.hash }}/{{ link.name }}">{{ link.name }}</a></td>
+                <td class="text-center">{{ link.creator.username }}</td>
+                <td class="text-center">{{ link.fleet }}</td>
+                <td class="text-center">{{ link.fatdatetime }}</td>
+                <td class="text-center">{{ link.duration }}</td>
+                <td class="text-center">
+                    <a href="{%  url 'auth_modify_fatlink_view' %}{{ link.hash }}/{{ link.name }}">
+                        <button type="button" class="btn btn-info"><span
+                                class="glyphicon glyphicon-edit"></span></button>
+                    </a>
+                </td>
+            </tr>
+            {%  endfor %}
+
+        </table>
+        {% endif %}
+    </div>
+
+
+<script src="/static/js/dateformat.js"></script>
+
+{% endblock content %}
