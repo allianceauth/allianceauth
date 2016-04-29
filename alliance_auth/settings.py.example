@@ -449,6 +449,19 @@ DISCOURSE_API_KEY = os.environ.get('AA_DISCOURSE_API_KEY', '')
 IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://yourdomain.com/ips4')
 IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
 
+######################################
+# Fleet-Up Configuration
+######################################
+# FLEETUP_APP_KEY - The app key from http://fleet-up.com/Api/MyApps
+# FLEETUP_USER_ID - The user id from http://fleet-up.com/Api/MyKeys
+# FLEETUP_API_ID - The API id from http://fleet-up.com/Api/MyKeys
+# FLEETUP_GROUP_ID - The id of the group you want to pull data from, see http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships
+######################################
+FLEETUP_APP_KEY = os.environ.get('AA_FLEETUP_APP_KEY', '')
+FLEETUP_USER_ID = os.environ.get('AA_FLEETUP_USER_ID', '')
+FLEETUP_API_ID = os.environ.get('AA_FLEETUP_API_ID', '')
+FLEETUP_GROUP_ID = os.environ.get('AA_FLEETUP_GROUP_ID', '')
+
 #####################################
 # Logging Configuration
 #####################################
@@ -557,4 +570,3 @@ LOGGING = {
         },
     }
 }
-

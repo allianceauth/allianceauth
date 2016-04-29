@@ -1,0 +1,71 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}FleetUp{% endblock page_title %}
+
+{% block content %}
+<div class="col-lg-12">
+{% if perms.auth.corp_stats %}
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Fleet-Up</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/fleetup/">Ops and Timers</a></li>
+                <li><a href="/fleetup/doctrines/">Doctrines</a></li>
+                <li><a href="/fleetup/fittings/">Fittings</a></li>
+                
+                <li class="active"><a href="/fleetup/characters/">Characters <span class="sr-only">(current)</span></a></li>
+                
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    </nav>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Characters registered on Fleet-Up.com</h3>
+        </div>
+            <div class="panel-body">
+                <div class="col-lg-6">
+                    <div class="table-responsive">   
+                    <table class="table table-condensed table-hover table-striped">
+                        <tr>
+                            <th class="col-md-1"></th>
+                            <th class="col-md-1">Character</th>
+                            <th class="col-md-1">Corporation</th>
+                            <th class="col-md-1">Fleet-Up(id)</th>
+                        </tr>
+                        {% for char_name, user_id in member_list %}
+                        <tr>
+                            <td>
+                                <img src="http://image.eveonline.com/Character/{{ user_id.char_id }}_32.jpg" class="img-circle">
+                            </td>
+                            <td>
+                                <p>{{ user_id.char_name }}</p>
+                            </td>
+                            <td>
+                                <p>{{ user_id.corporation }}</p>
+                            </td>
+                            <td>
+                                <p>{{ user_id.user_id }}</p>
+                            </td>
+                        {% endfor %}
+                    </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endif %}
+</div>
+{% endblock content %}

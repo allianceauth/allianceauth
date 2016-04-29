@@ -211,6 +211,13 @@ urlpatterns = patterns('',
 
                        # FLEET FITTINGS
                        url(r'^fits/$', 'services.views.fleet_fits', name='auth_fleet_fits'),
+                       #Fleetup
+                       url(r'^fleetup/$', 'fleetup.views.fleetup_view', name='auth_fleetup_view'),
+                       url(r'^fleetup/fittings/$', 'fleetup.views.fleetup_fittings', name='auth_fleetup_fittings'),
+                       url(r'^fleetup/fittings/(?P<fittingnumber>[0-9]+)/$', 'fleetup.views.fleetup_fitting'),
+                       url(r'^fleetup/doctrines/$', 'fleetup.views.fleetup_doctrines', name='auth_fleetup_doctrines'),
+                       url(r'^fleetup/characters/$', 'fleetup.views.fleetup_characters', name='auth_fleetup_characters'),
+                       url(r'^fleetup/doctrines/(?P<doctrinenumber>[0-9]+)/$', 'fleetup.views.fleetup_doctrine'),
 
                        # Sig Tracker
                        url(r'^sigtracker/$', 'sigtracker.views.sigtracker_view', name='auth_signature_view'),
