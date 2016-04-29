@@ -147,7 +147,7 @@ class EveApiManager():
             logger.debug("Got corp standings from settings: %s" % results)
             return results
         else:
-            logger.error("No corp API key supplied in settings. Unable to get standings.")
+            logger.warn("No corp API key supplied in settings. Unable to get standings.")
         return {}
 
     @staticmethod
