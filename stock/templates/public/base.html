@@ -114,12 +114,7 @@
                                         class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
                             </li>
                         {% endif %}
-			{% if  perms.auth.member or perms.auth.blue_member %}
-                            <li>
-                        	<a {% ifequal request.path "/fat/" %} class="active" {% endifequal %}
-                                				      href="{% url 'auth_fatlink_view' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Pap Links</a>
-                            </li>
+
                         {% if not perms.auth.member or perms.auth.human_resources %}
                             <li>
                                 <a {% ifequal request.path "/hr_application_management/" %}
