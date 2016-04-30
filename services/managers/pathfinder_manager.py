@@ -116,7 +116,7 @@ class pathfinderManager:
                     return username_clean, plain_password
 
                 except:
-                    logger.debug("Unsuccessful attempt at adding user %s to pathfinder on add_user" % username)
+                    logger.exception("Unsuccessful attempt at adding user %s to pathfinder on add_user" % username)
                     return "",""
             else:
                 logger.debug("pathfinder username %s already exists Updating instead" % username)
