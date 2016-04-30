@@ -19,4 +19,8 @@ class optimer(models.Model):
     details = models.CharField(max_length=254, default="")
     post_time = models.DateTimeField(default=timezone.now)
     eve_character = models.ForeignKey(EveCharacter)
-    
+
+    def __str__(self):
+        output = self.operation_name
+        return output.encode('utf-8')
+
