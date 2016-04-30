@@ -20,9 +20,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/GroupCharacters/" + str(groupid) + ""
         try:
             jsondata = requests.get(url).content
+            fmembers=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        fmembers=json.loads(jsondata.decode())
 
         return {row["UserId"]:{"user_id":row["UserId"],
                                "char_name":row["EveCharName"],
@@ -34,9 +34,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Operations/" + str(groupid) + ""
         try:
             jsondata = requests.get(url).content
+            foperations=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        foperations=json.loads(jsondata.decode())
 
         return {row["StartString"]:{"subject":row["Subject"],
                            "start": (datetime.strptime(row["StartString"], "%Y-%m-%d %H:%M:%S")),
@@ -54,9 +54,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Timers/" + str(groupid) + ""
         try:
             jsondata = requests.get(url).content
+            ftimers=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        ftimers=json.loads(jsondata.decode())
 
         return {row["ExpiresString"]:{"solarsystem":row["SolarSystem"],
                            "planet":row["Planet"],
@@ -72,9 +72,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Doctrines/" + str(groupid) + ""
         try:
             jsondata = requests.get(url).content
+            fdoctrines=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        fdoctrines=json.loads(jsondata.decode())
 
         return {"fleetup_doctrines":fdoctrines["Data"]}
 
@@ -83,9 +83,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/DoctrineFittings/%s" % doctrinenumber
         try:
             jsondata = requests.get(url).content
+            fdoctrine=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        fdoctrine=json.loads(jsondata.decode())
 
         return {"fitting_doctrine":fdoctrine}
 
@@ -94,9 +94,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fittings/" + str(groupid) + ""
         try:
             jsondata = requests.get(url).content
+            ffittings=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        ffittings=json.loads(jsondata.decode())
 
         return {row["FittingId"]:{"fitting_id":row["FittingId"],
                                "name":row["Name"],
@@ -113,9 +113,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s" % fittingnumber
         try:
             jsondata = requests.get(url).content
+            ffitting=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        ffitting=json.loads(jsondata.decode())
 
         return {"fitting_data":ffitting["Data"]}
 
@@ -124,9 +124,9 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s" % fittingnumber
         try:
             jsondata = requests.get(url).content
+            fdoctrineid=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        fdoctrineid=json.loads(jsondata.decode())
 
         return fdoctrineid['Data']['Doctrines'][0]['DoctrineId']
 
@@ -135,8 +135,8 @@ class FleetUpManager():
         url = "http://api.fleet-up.com/Api.svc/" + str(appkey) + "/" + str(userid) + "/" + str(apiid) + "/Fitting/%s/eft" % fittingnumber
         try:
             jsondata = requests.get(url).content
+            ffittingeft=json.loads(jsondata.decode())
         except requests.exceptions.ConnectionError:
             return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
-        ffittingeft=json.loads(jsondata.decode())
 
         return {"fitting_eft":ffittingeft["Data"]["FittingData"]}
