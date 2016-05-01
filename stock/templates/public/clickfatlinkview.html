@@ -26,7 +26,7 @@
     </style>
 </head>
 
-<body onload=CCPEVE.requestTrust('{{ DOMAIN }}*')>
+<body onload=CCPEVE.requestTrust('{{ DOMAIN }}')>
 <div id="wrapper">
         <!-- Navigation -->
 
@@ -59,7 +59,7 @@
 
 
  <div class="col-lg-12">
-    {% if registered %}<h1 class="page-header text-center">Fleet registered!</h1> {% elif expired%}<h1 class="page-header text-center">This link has expired.</h1> {% elif errormessages%}<h1 class="page-header text-center">Something unhappened occured.</h1>{% else %}<h1 class="page-header text-center">Invalid link.</h1>{% endif %}
+    {% if registered %}<h1 class="page-header text-center">Fleet registered!</h1> {% elif expired%}<h1 class="page-header text-center">This link has expired.</h1> {% elif errormessages%}<h1 class="page-header text-center">Something horrible happened. Shoot your FC!</h1>{% else %}<h1 class="page-header text-center">Invalid link.</h1>{% endif %}
     <div class="col-lg-12 container" id="example">
         {% for message in errormessages %}
         <div class="alert alert-danger" role="alert">{{ message }}</div>

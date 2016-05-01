@@ -33,7 +33,7 @@
             <tr>
                 <td class="text-center">{{ fat.fatlink.name }}</td>
                 <td class="text-center">{{ fat.character.character_name }}</td>
-                {%  if fat.station != "None" %}
+                {%  if fat.station != "No Station" %}
                 <td class="text-center">Docked in {{ fat.system }}</td>
                 {% else %}
                 <td class="text-center">{{ fat.system }}</td>

@@ -158,7 +158,10 @@ def click_fatlink_view(request, hash, fatname):
                 if character:
                     fat = Fat()
                     fat.system = request.META['HTTP_EVE_SOLARSYSTEMNAME']
-                    fat.station = request.META['HTTP_EVE_STATIONNAME']
+                    if 'HTTP_EVE_STATIONNAME' in request.META:
+                        fat.station = request.META['HTTP_EVE_STATIONNAME']
+                    else:
+                        fat.station = "No Station"
                     fat.shiptype = request.META['HTTP_EVE_SHIPTYPENAME']
                     fat.fatlink = fatlink
                     fat.character = character
