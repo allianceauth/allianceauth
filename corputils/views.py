@@ -245,22 +245,22 @@ def corputils_search(request, corpid=settings.CORP_ID):
                             char = EveCharacter.objects.get(character_name=member_data["name"])
                             user = char.user
                             mainid = int(AuthServicesInfoManager.get_auth_service_info(user=user).main_char_id)
-                            mainname = EveCharacter.objects.get(character_id=mainid).character_name
+                            main = EveCharacter.objects.get(character_id=mainid)
                             api_registered = True
                             apiinfo = EveApiKeyPair.objects.get(api_id=char.api_id)
                         except EveCharacter.DoesNotExist:
                             api_registered = False
                             char = None
-                            mainname = ""
+                            main = ""
                             apiinfo = None
 
-                        searchresults.append(SearchResult(name=member_data["name"], id=memberid, main=mainname, api_registered=api_registered,
+                        searchresults.append(SearchResult(name=member_data["name"], id=memberid, main=main, api_registered=api_registered,
                                                     character=char, apiinfo=apiinfo))
 
 
                 logger.info("Found %s members for user %s matching search string %s" % (len(searchresults), request.user, searchstring))
 
-                context = {'corp': corp, 'results': searchresults, 'search_form': CorputilsSearchForm()}
+                context = {'corp': corp, 'results': searchresults, 'search_form': CorputilsSearchForm(), "year":datetime.datetime.now().year, "month":datetime.datetime.now().month}
 
                 return render_to_response('registered/corputilssearchview.html',
                                           context, context_instance=RequestContext(request))

@@ -114,21 +114,23 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
 
 
 @login_required
-def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
+def fatlink_personal_statistics_view(request, year=datetime.date.today().year, main_name=None):
     year = int(year)
+    logger.debug("Personal statistics view for year %i called by %s" % (year, request.user))
+
     user = request.user
     logger.debug("fatlink_personal_statistics_view called by user %s" % request.user)
 
     personal_fats = Fat.objects.filter(user=user).order_by('id')
 
-
-
-    monthlystats = {datetime.date(year, month, 1).strftime("%h"):0 for month in range(1,13)}
+    monthlystats = [0 for month in range(1,13)]
 
     for fat in personal_fats:
         fatdate = fat.fatlink.fatdatetime
         if fatdate.year == year:
-            monthlystats[fatdate.strftime("%h")] += 1
+            monthlystats[fatdate.month-1] += 1
+
+    monthlystats = [(i+1, datetime.date(year, i+1, 1).strftime("%h"), monthlystats[i]) for i in range(12)]
 
     if datetime.datetime.now() > datetime.datetime(year+1, 1, 1):
         context = {'user':user, 'monthlystats': monthlystats, 'year':year, 'previous_year':year-1, 'next_year':year+1}
@@ -136,6 +138,38 @@ def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
         context = {'user':user, 'monthlystats': monthlystats, 'year':year, 'previous_year':year-1}
 
     return render_to_response('registered/fatlinkpersonalstatisticsview.html', context, context_instance=RequestContext(request))
+
+
+@login_required
+def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None):
+    year = int(year)
+    month = int(month)
+    start_of_month = datetime.datetime(year, month, 1)
+    start_of_next_month = first_day_of_next_month(year, month)
+    start_of_previous_month = first_day_of_previous_month(year, month)
+
+    if check_if_user_has_permission(request.user, 'fleetactivitytracking_statistics') and char_id:
+        user = EveCharacter.objects.get(character_id=char_id).user
+    else:
+        user = request.user
+    logger.debug("Personal monthly statistics view for user %s called by %s" % (user, request.user))
+
+    personal_fats = Fat.objects.filter(user=user).filter(fatlink__fatdatetime__gte = start_of_month).filter(fatlink__fatdatetime__lt = start_of_next_month)
+
+    ship_statistics = dict()
+    n_fats = 0
+    for fat in personal_fats:
+        ship_statistics[fat.shiptype] = ship_statistics.setdefault(fat.shiptype, 0) + 1
+        n_fats += 1
+    context = {'user': user, 'shipStats':sorted(ship_statistics.items()), 'month':start_of_month.strftime("%h"),
+               'year':year, 'n_fats': n_fats, 'char_id': char_id, 'previous_month': start_of_previous_month,
+               'next_month': start_of_next_month}
+
+    created_fats = Fatlink.objects.filter(creator=user).filter(fatdatetime__gte = start_of_month).filter(fatdatetime__lt = start_of_next_month)
+    context["created_fats"] = created_fats
+    context["n_created_fats"] = len(created_fats)
+
+    return render_to_response('registered/fatlinkpersonalmonthlystatisticsview.html', context, context_instance=RequestContext(request))
 
 
 @login_required
@@ -201,6 +235,7 @@ def create_fatlink_view(request):
                 fatlink.name = slugify(form.cleaned_data["fatname"])
                 fatlink.fleet = form.cleaned_data["fleet"]
                 fatlink.duration = form.cleaned_data["duration"]
+                fatlink.fatdatetime = timezone.now()
                 fatlink.creator = request.user
                 fatlink.hash = ''.join(random.choice(string.ascii_letters+string.digits) for i in range(10))
                 try:

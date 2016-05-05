@@ -107,7 +107,12 @@
                                             <th class="col-md-2">Main corporation</th>
                                             <th class="col-md-2">Character list</th>
                                             <th class="col-md-1">Fats</th>
+                                            {% if  perms.auth.fleetactivitytracking_statistics %}
+                                            <th class="col-md-1">Killboard</th>
+                                            <th class="col-md-2">Fleet statistics</th>
+                                            {% else %}
                                             <th class="col-md-3">Killboard</th>
+                                            {% endif %}
                                             <th class="col-md-2">API JackKnife</th>
                                         </tr>
                                         {% for maincharname, player  in characters_with_api %}
@@ -142,6 +147,14 @@
                                                 <p><a href="https://zkillboard.com/character/{{ char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
                                                 {% endfor %}
                                             </td>
+                                            {% if perms.auth.fleetactivitytracking %}
+                                            <td>
+                                                <a href="{% url 'auth_fatlink_view_user_statistics_month' player.main.character_id this_month|date:"Y" this_month|date:"m" %}">
+                                                    <button type="button" class="btn btn-primary">Statistics
+                                                    </button>
+                                                </a>
+                                            </td>
+                                            {%  endif %}
                                             <td>
                                                 {% for apiinfo in player.apilist %}
                                                 <p>

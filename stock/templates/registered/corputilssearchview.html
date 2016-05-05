@@ -37,7 +37,12 @@
                             <th class="col-md-1"></th>
                             <th class="col-md-2">Character</th>
                             <th class="col-md-2">Main character</th>
+                            {% if perms.auth.fleetactivitytracking%}
+                            <th class="col-md-2">Killboard</th>
+                            <th class="col-md-2">Fleet statistics</th>
+                            {% else %}
                             <th class="col-md-5">Killboard</th>
+                            {%  endif %}
                             <th class="col-md-2">API JackKnife</th>
                         </tr>
                         {% for result in results %}
@@ -48,7 +53,7 @@
                                 <td>{{ result.name }}</td>
                                 <td>
                                 {% if  result.api_registered%}
-                                    {{ result.main }}
+                                    {{ result.main.character_name }}
                                 {% else %}
                                     <span class="label label-danger">No API registered!</span>
                                 {% endif %}
@@ -56,6 +61,19 @@
                                 <td>
                                     <p><a href="https://zkillboard.com/character/{{ result.char.character_id }}/" class="label label-danger" target="_blank">Killboard</a></p>
                                 </td>
+
+                                {% if perms.auth.fleetactivitytracking %}
+                                    {% if result.main %}
+                                        <td>
+                                            <a href="{% url 'auth_fatlink_view_user_statistics_month' result.main.character_id year month%}">
+                                                <button type="button" class="btn btn-primary">Statistics
+                                                </button>
+                                            </a>
+                                        </td>
+                                    {% else %}
+                                    <td></td>
+                                    {% endif %}
+                                {%  endif %}
 
                                 <td>
                                     {% if result.api_registered %}
