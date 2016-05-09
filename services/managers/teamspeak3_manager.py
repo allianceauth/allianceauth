@@ -185,11 +185,11 @@ class Teamspeak3Manager:
             if 'keys' in ret:
                 if 'token' in ret['keys']:
                     token = ret['keys']['token']
+                    logger.info("Created permission token for user %s on TS3 server" % username_clean)
+                    return username_clean, token
         except:
-            pass
-        logger.info("Created permission token for user %s on TS3 server" % username_clean)
-
-        return username_clean, token
+            logger.exception("Failed to add teamspeak user %s - received response: %s" % (username, ret))
+        return "",""
 
     @staticmethod
     def add_blue_user(username, corp_ticker):
@@ -212,12 +212,14 @@ class Teamspeak3Manager:
             if 'keys' in ret:
                 if 'token' in ret['keys']:
                     token = ret['keys']['token']
-
+                    logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
+                    return username_clean, token
         except:
-            pass
-        logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
+            logger.exception("Failed to add blue teamspeak user %s - received response: %s" % (username, ret))
+        return "",""
+        
 
-        return username_clean, token
+        
 
     @staticmethod
     def delete_user(uid):
