@@ -182,14 +182,12 @@ class Teamspeak3Manager:
                                                'tokencustomset': "ident=sso_uid value=%s" % username_clean})
 
         try:
-            if 'keys' in ret:
-                if 'token' in ret['keys']:
-                    token = ret['keys']['token']
-                    logger.info("Created permission token for user %s on TS3 server" % username_clean)
-                    return username_clean, token
+            token = ret['keys']['token']
+            logger.info("Created permission token for user %s on TS3 server" % username_clean)
+            return username_clean, token
         except:
-            logger.exception("Failed to add teamspeak user %s - received response: %s" % (username, ret))
-        return "",""
+            logger.exception("Failed to add teamspeak user %s - received response: %s" % (username_clean, ret))
+            return "",""
 
     @staticmethod
     def add_blue_user(username, corp_ticker):
@@ -209,14 +207,12 @@ class Teamspeak3Manager:
                                                'tokencustomset': "ident=sso_uid value=%s" % username_clean})
 
         try:
-            if 'keys' in ret:
-                if 'token' in ret['keys']:
-                    token = ret['keys']['token']
-                    logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
-                    return username_clean, token
+            token = ret['keys']['token']
+            logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
+            return username_clean, token
         except:
-            logger.exception("Failed to add blue teamspeak user %s - received response: %s" % (username, ret))
-        return "",""
+            logger.exception("Failed to add blue teamspeak user %s - received response: %s" % (username_clean, ret))
+            return "",""
         
 
         
