@@ -335,11 +335,15 @@ ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
 # MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
 # BLUE_API_MASK - Numeric value of minimum API mask required for blues
 # BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
+# REJECT_OLD_APIS - Require each submitted API be newer than the latest submitted API
+# REJECT_OLD_APIS_MARGIN - Margin from latest submitted API ID within which a newly submitted API is still accepted
 #######################
 MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
 MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
 BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
 BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
+REJECT_OLD_APIS = 'True' == os.environ.get('AA_REJECT_OLD_APIS', 'False')
+REJECT_OLD_APIS_MARGIN = os.environ.get('AA_REJECT_OLD_APIS_MARGIN', 50)
 
 ##########################
 # Pathfinder Configuration
