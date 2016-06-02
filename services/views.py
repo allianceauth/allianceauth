@@ -465,6 +465,8 @@ def activate_discord(request):
             logger.debug("Form contains email address beginning with %s" % email[0:3])
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
+            update_avatar = form.cleaned_data['update_avatar']
+            logger.debug("Form contains update_avatar set to %r" % bool(update_avatar))
             try:
                 user_id = DiscordManager.add_user(email, password, request.user)
                 logger.debug("Received discord uid %s" % user_id)
@@ -475,6 +477,14 @@ def activate_discord(request):
                     logger.debug("Updated discord groups for user %s." % request.user)
                     success = True
                     logger.info("Succesfully activated discord for user %s" % request.user)
+                    if (update_avatar):
+                        authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+                        char_id  = authinfo.main_char_id
+                        avatar_updated = DiscordManager.update_user_avatar(email, password, request.user, char_id)
+                        if (avatar_updated):
+                            logger.debug("Updated user %s discord avatar." % request.user)
+                        else:
+                            logger.debug("Could not set user %s discord avatar." %request.user)
                     return HttpResponseRedirect("/services/")
             except:
                 logger.exception("An unhandled exception has occured.")

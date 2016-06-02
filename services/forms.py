@@ -23,6 +23,7 @@ class FleetFormatterForm(forms.Form):
 class DiscordForm(forms.Form):
     email = forms.CharField(label="Email Address", required=True)
     password = forms.CharField(label="Password", required=True, widget=forms.PasswordInput)
+    update_avatar = forms.BooleanField(label="Update Avatar", required=False, initial=True)
 
 class ServicePasswordForm(forms.Form):
     password = forms.CharField(label="Password", required=True)

@@ -3,6 +3,8 @@ import json
 from django.conf import settings
 import re
 import os
+import urllib
+import base64
 from services.models import DiscordAuthToken
 
 import logging
@@ -10,6 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 DISCORD_URL = "https://discordapp.com/api"
+EVE_IMAGE_SERVER = "https://image.eveonline.com"
 
 class DiscordAPIManager:
 
@@ -260,8 +263,8 @@ class DiscordAPIManager:
         return r.json()
 
     @staticmethod
-    def get_user_profile(email, password):
-        token = DiscordAPIManager.get_token_by_user(email, password)
+    def get_user_profile(email, password, user):
+        token = DiscordAPIManager.get_token_by_user(email, password, user)
         custom_headers = {'accept': 'application/json', 'authorization': token}
         path = DISCORD_URL + "/users/@me"
         r = requests.get(path, headers=custom_headers)
@@ -270,8 +273,8 @@ class DiscordAPIManager:
         return r.json()
 
     @staticmethod
-    def set_user_password(email, current_password, new_password):
-        profile = DiscordAPIManager.get_user_profile(email, current_password)
+    def set_user_password(email, current_password, new_password, user):
+        profile = DiscordAPIManager.get_user_profile(email, current_password, user)
         avatar = profile['avatar']
         username = profile['username']
         data = {
@@ -283,6 +286,23 @@ class DiscordAPIManager:
         }
         path = DISCORD_URL + "/users/@me"
         custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_token_by_user(email, current_password)}
+        r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        r.raise_for_status()
+        return r.json()
+
+    @staticmethod
+    def set_user_avatar(email, current_password, user, avatar_url):
+        profile = DiscordAPIManager.get_user_profile(email, current_password, user)
+        avatar = "data:image/jpeg;base64," + base64.b64encode(urllib.urlopen(avatar_url).read())
+        username = profile['username']
+        data = {
+            'avatar': avatar,
+            'username': username,
+            'password': current_password,
+            'email': email
+        }
+        path = DISCORD_URL + "/users/@me"
+        custom_headers = {'content-type':'application/json', 'authorization': DiscordAPIManager.get_token_by_user(email, current_password, user)}
         r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
         r.raise_for_status()
         return r.json()
@@ -372,13 +392,23 @@ class DiscordManager:
             return False
 
     @staticmethod
-    def update_user_password(email, current_password):
+    def update_user_password(email, current_password, user):
         new_password = DiscordManager.__generate_random_pass()
         try:
-            profile = DiscordAPIManager.set_user_password(email, current_password, new_password)
+            profile = DiscordAPIManager.set_user_password(email, current_password, new_password, user)
             return new_password
         except:
             return current_password
+
+    @staticmethod
+    def update_user_avatar(email, password, user, char_id):
+        try:
+            char_url = EVE_IMAGE_SERVER + "/character/" + str(char_id) + "_256.jpg"
+            logger.debug("Character image URL for %s: %s" % (user, char_url))
+            DiscordAPIManager.set_user_avatar(email, password, user, char_url)
+            return True
+        except:
+            return False
 
     @staticmethod
     def add_user(email, password, user):
@@ -390,6 +420,7 @@ class DiscordManager:
             logger.debug("Got profile for user: %s" % profile)
             user_id = profile['id']
             logger.debug("Determined user id: %s" % user_id)
+
             if server_api.check_if_user_banned(user_id):
                 logger.debug("User is currently banned. Unbanning %s" % user_id)
                 server_api.unban_user(user_id)
