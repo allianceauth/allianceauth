@@ -155,7 +155,7 @@
 			{% endif %}
 
                         {% if  perms.auth.member or perms.auth.blue_member %}
-                            {% if perms.auth.sigtracker_view %}
+                            {% if perms.auth.signature_view %}
 			      <li>
                                 <a {% ifequal request.path "/sigtracker" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_signature_view' %}"><i
