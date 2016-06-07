@@ -74,6 +74,12 @@ def update_jabber_groups(pk):
     logger.debug("Updated user %s jabber groups." % user)
 
 @task
+def update_all_jabber_groups():
+    logger.debug("Updating ALL jabber groups")
+    for user in AuthServicesInfo.objects.exclude(jabber_username__exact=''):
+        update_jabber_groups.delay(user.user_id)
+
+@task
 def update_mumble_groups(pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating mumble groups for user %s" % user)
@@ -90,6 +96,12 @@ def update_mumble_groups(pk):
         logger.exception("Mumble group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s mumble groups." % user)
+
+@task
+def update_all_mumble_groups():
+    logger.debug("Updating ALL mumble groups")
+    for user in AuthServicesInfo.objects.exclude(mumble_username__exact=''):
+        update_mumble_groups.delay(user.user_id)
 
 @task
 def update_forum_groups(pk):
@@ -110,6 +122,12 @@ def update_forum_groups(pk):
     logger.debug("Updated user %s forum groups." % user)
 
 @task
+def update_all_forum_groups():
+    logger.debug("Updating ALL forum groups")
+    for user in AuthServicesInfo.objects.exclude(forum_username__exact=''):
+        update_forum_groups.delay(user.user_id)
+
+@task
 def update_smf_groups(pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating smf groups for user %s" % user)
@@ -127,6 +145,11 @@ def update_smf_groups(pk):
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s smf groups." % user)
 
+@task
+def update_all_smf_groups():
+    logger.debug("Updating ALL smf groups")
+    for user in AuthServicesInfo.objects.exclude(smf_username__exact=''):
+        update_smf_groups.delay(user.user_id)
 
 @task
 def update_ipboard_groups(pk):
@@ -147,6 +170,12 @@ def update_ipboard_groups(pk):
     logger.debug("Updated user %s ipboard groups." % user)
 
 @task
+def update_all_ipboard_groups():
+    logger.debug("Updating ALL ipboard groups")
+    for user in AuthServicesInfo.objects.exclude(ipboard_username__exact=''):
+        update_ipboard_groups.delay(user.user_id)
+
+@task
 def update_teamspeak3_groups(pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating user %s teamspeak3 groups" % user)
@@ -162,6 +191,12 @@ def update_teamspeak3_groups(pk):
     logger.debug("Updating user %s teamspeak3 groups to %s" % (user, groups))
     Teamspeak3Manager.update_groups(authserviceinfo.teamspeak3_uid, groups)
     logger.debug("Updated user %s teamspeak3 groups." % user)
+
+@task
+def update_all_teamspeak3_groups():
+    logger.debug("Updating ALL teamspeak3 groups")
+    for user in AuthServicesInfo.objects.exclude(teamspeak3_uid__exact=''):
+        update_teamspeak3_groups.delay(user.user_id)
 
 @task
 def update_discord_groups(pk):
@@ -183,6 +218,12 @@ def update_discord_groups(pk):
     logger.debug("Updated user %s discord groups." % user)
 
 @task
+def update_all_discord_groups():
+    logger.debug("Updating ALL discord groups")
+    for user in AuthServicesInfo.objects.exclude(discord_uid__exact=''):
+        update_discord_groups.delay(user.user_id)
+
+@task
 def update_discourse_groups(pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discourse groups for user %s" % user)
@@ -200,6 +241,12 @@ def update_discourse_groups(pk):
         logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user, exc_info=True)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s discord groups." % user)
+
+@task
+def update_all_discourse_groups():
+    logger.debug("Updating ALL discourse groups")
+    for user in AuthServicesInfo.objects.exclude(discourse_username__exact=''):
+        update_discourse_groups.delay(user.user_id)
 
 
 def assign_corp_group(auth):
