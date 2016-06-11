@@ -12,6 +12,7 @@ from managers.openfire_manager import OpenfireManager
 from managers.phpbb3_manager import Phpbb3Manager
 from managers.mumble_manager import MumbleManager
 from managers.ipboard_manager import IPBoardManager
+from managers.xenforo_manager import XenForoManager
 from managers.teamspeak3_manager import Teamspeak3Manager
 from managers.discord_manager import DiscordManager
 from managers.discourse_manager import DiscourseManager
@@ -178,6 +179,79 @@ def reset_forum_password(request):
     logger.error("Unsuccessful attempt to reset forum password for user %s" % request.user)
     return HttpResponseRedirect("/dashboard")
 
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def activate_xenforo_forum(request):
+    logger.debug("activate_xenforo_forum called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    logger.debug("Adding XenForo user for user %s with main character %s" % (request.user, character))
+    result = XenForoManager.add_user(character.character_name, request.user.email)
+    # Based on XenAPI's response codes
+    if result['response']['status_code'] == 200:
+        logger.info("Updated authserviceinfo for user %s with XenForo credentials. Updating groups." % request.user)
+        AuthServicesInfoManager.update_user_xenforo_info(result['username'], result['password'], request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccesful attempt to activate xenforo for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def deactivate_xenforo_forum(request):
+    logger.debug("deactivate_xenforo_forum called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    result = XenForoManager.disable_user(authinfo.xenforo_username)
+    if result.status_code == 200:
+        AuthServicesInfoManager.update_user_xenforo_info("", "", request.user)
+        logger.info("Succesfully deactivated XenForo for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def reset_xenforo_password(request):
+    logger.debug("reset_xenforo_password called by user %s" % request.user)
+    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+    character = EveManager.get_character_by_id(authinfo.main_char_id)
+    result = XenForoManager.reset_password(authinfo.xenforo_username)
+    # Based on XenAPI's response codes
+    if result['response']['status_code'] == 200:
+        AuthServicesInfoManager.update_user_xenforo_info(authinfo.xenforo_username, result['password'], request.user)
+        logger.info("Succesfully reset XenForo password for user %s" % request.user)
+        return HttpResponseRedirect("/services/")
+    logger.error("Unsuccessful attempt to reset XenForo password for user %s" % request.user)
+    return HttpResponseRedirect("/dashboard")
+
+@login_required
+@user_passes_test(service_blue_alliance_test)
+def set_xenforo_password(request):
+    logger.debug("set_xenforo_password called by user %s" % request.user)
+    error = None
+    if request.method == 'POST':
+        logger.debug("Received POST request with form.")
+        form = ServicePasswordForm(request.POST)
+        logger.debug("Form is valid: %s" % form.is_valid())
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            logger.debug("Form contains password of length %s" % len(password))
+            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
+            result = XenForoManager.update_user_password(authinfo.xenforo_username, password)
+            if result['response']['status_code'] == 200:
+                AuthServicesInfoManager.update_user_xenforo_info(authinfo.xenforo_username, result['password'], request.user)
+                logger.info("Succesfully reset XenForo password for user %s" % request.user)
+                return HttpResponseRedirect("/services/")
+            else:
+                logger.error("Failed to install custom XenForo password for user %s" % request.user)
+                error = "Failed to install custom password."
+        else:
+            error = "Invalid password provided"
+    else:
+        logger.debug("Request is not type POST - providing empty form.")
+        form = ServicePasswordForm()
+
+    logger.debug("Rendering form for user %s" % request.user)
+    context = {'form': form, 'service': 'Forum'}
+    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(service_blue_alliance_test)

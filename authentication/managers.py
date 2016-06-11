@@ -91,6 +91,18 @@ class AuthServicesInfoManager:
             logger.error("Failed to update user %s ipboard info: user does not exist." % user)
 
     @staticmethod
+    def update_user_xenforo_info(username, password, user):
+        if User.objects.filter(username=user.username).exists():
+            logger.debug("Updating user %s xenforo info: uername %s" % (user, username))
+            authserviceinfo = AuthServicesInfoManager.__get_or_create(user)
+            authserviceinfo.xenforo_username = username
+            authserviceinfo.xenforo_password = password
+            authserviceinfo.save(update_fields=['xenforo_username', 'xenforo_password'])
+            logger.info("Updated user %s xenforo info in authservicesinfo model." % user)
+        else:
+            logger.error("Failed to update user %s xenforo info: user does not exist." % user)
+
+    @staticmethod
     def update_user_teamspeak3_info(uid, perm_key, user):
         if User.objects.filter(username=user.username).exists():
             logger.debug("Updating user %s teamspeak3 info: uid %s" % (user, uid))

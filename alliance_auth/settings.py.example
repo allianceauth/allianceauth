@@ -264,6 +264,7 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
 # ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
 # ENABLE_AUTH_PATHFINDER = Enable Alliance Pathfinder suppor in auth for auth'd members
+# ENABLE_AUTH_XENFORO = Enable XenForo forums support in the auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
@@ -276,6 +277,7 @@ ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
 ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
 ENABLE_AUTH_MARKET = 'True' == os.environ.get('AA_ENABLE_AUTH_MARKET', 'False')
 ENABLE_AUTH_PATHFINDER = 'True' == os.environ.get('AA_ENABLE_AUTH_PATHFINDER', 'False')
+ENABLE_AUTH_XENFORO = 'True' == os.environ.get('AA_ENABLE_AUTH_XENFORO', 'False')
 
 #####################
 # Blue service Setup
@@ -291,6 +293,7 @@ ENABLE_AUTH_PATHFINDER = 'True' == os.environ.get('AA_ENABLE_AUTH_PATHFINDER', '
 # ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
 # ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
 # ENABLE_BLUE_PATHFINDER = Enable Pathfinder support in the auth for blues
+# ENABLE_BLUE_XENFORO = Enable XenForo forum support in the auth for blue 
 #####################
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -304,6 +307,7 @@ ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
 ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
 ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'False')
 ENABLE_BLUE_PATHFINDER = 'True' == os.environ.get('AA_ENABLE_BLUE_PATHFINDER', 'False')
+ENABLE_BLUE_XENFORO = 'True' == os.environ.get('AA_ENABLE_BLUE_XENFORO', 'False')
 
 #########################
 # Corp Configuration
@@ -373,6 +377,14 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
+
+########################
+# XenForo Configuration
+########################
+XENFORO_ENDPOINT = os.environ.get('AA_XENFORO_ENDPOINT', 'yourdomain.com/api.php')
+XENFORO_DEFAULT_GROUP = os.environ.get('AA_XENFORO_DEFAULT_GROUP', 0)
+XENFORO_APIKEY   = os.environ.get('AA_XENFORO_APIKEY', 'yourapikey')
+#####################
 
 ######################
 # Jabber Configuration

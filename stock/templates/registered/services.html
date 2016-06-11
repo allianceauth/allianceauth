@@ -105,6 +105,35 @@
                 </td>
                 </tr>
             {% endif %}
+            {% if ENABLE_BLUE_XENFORO %}
+                <tr>
+                <td class="text-center">XenForo Forums</td>
+                <td class="text-center">{{ authinfo.xenforo_username }}</td>
+                <td class="text-center">{{ authinfo.xenforo_password }}</td>
+                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.xenforo_username "" %}
+                        <a href="{% url 'auth_activate_xenforo' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_xenforo_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_xenforo_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_xenforo' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
+            {% endif %}
             {% if ENABLE_BLUE_MARKET %}
                 <tr>
                 <td class="text-center">Alliance Market</td>
@@ -423,6 +452,35 @@
                                     class="glyphicon glyphicon-refresh"></span></button>
                         </a>
                         <a href="{% url 'auth_deactivate_ipboard' %}">
+                            <button type="button" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove"></span></button>
+                        </a>
+                    {% endifequal %}
+                </td>
+                </tr>
+            {% endif %}
+            {% if ENABLE_AUTH_XENFORO %}
+                <tr>
+                <td class="text-center">XenForo Forums</td>
+                <td class="text-center">{{ authinfo.xenforo_username }}</td>
+                <td class="text-center">{{ authinfo.xenforo_password }}</td>
+                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
+                <td class="text-center">
+                    {% ifequal authinfo.xenforo_username "" %}
+                        <a href="{% url 'auth_activate_xenforo' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-ok"></span></button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'auth_set_xenforo_password' %}">
+                            <button type="button" class="btn btn-warning"><span
+                                    class="glyphicon glyphicon-pencil"></span></button>
+                        </a>
+                        <a href="{% url 'auth_reset_xenforo_password' %}">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-refresh"></span></button>
+                        </a>
+                        <a href="{% url 'auth_deactivate_xenforo' %}">
                             <button type="button" class="btn btn-danger"><span
                                     class="glyphicon glyphicon-remove"></span></button>
                         </a>

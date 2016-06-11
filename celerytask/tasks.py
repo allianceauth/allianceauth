@@ -9,6 +9,7 @@ from services.managers.openfire_manager import OpenfireManager
 from services.managers.mumble_manager import MumbleManager
 from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
+from services.managers.xenforo_manager import XenForoManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
 from services.managers.discord_manager import DiscordManager, DiscordAPIManager
 from services.managers.discourse_manager import DiscourseManager

@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 class AuthServicesInfo(models.Model):
     ipboard_username = models.CharField(max_length=254, blank=True, default="")
     ipboard_password = models.CharField(max_length=254, blank=True, default="")
+    xenforo_username = models.CharField(max_length=254, blank=True, default="")
+    xenforo_password = models.CharField(max_length=254, blank=True, default="")
     forum_username = models.CharField(max_length=254, blank=True, default="")
     forum_password = models.CharField(max_length=254, blank=True, default="")
     jabber_username = models.CharField(max_length=254, blank=True, default="")

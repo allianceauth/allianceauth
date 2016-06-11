@@ -123,6 +123,15 @@ urlpatterns = patterns('',
                            name='auth_reset_ipboard_password'),
                        url(r'^set_ipboard_password/$', 'services.views.set_ipboard_password', name='auth_set_ipboard_password'),
 
+                       # XenForo service control
+                       url(r'^activate_xenforo/$', 'services.views.activate_xenforo_forum',
+                           name='auth_activate_xenforo'),
+                       url(r'^deactivate_xenforo/$', 'services.views.deactivate_xenforo_forum',
+                           name='auth_deactivate_xenforo'),
+                       url(r'^reset_xenforo_password/$', 'services.views.reset_xenforo_password',
+                           name='auth_reset_xenforo_password'),
+                       url(r'^set_xenforo_password/$', 'services.views.set_xenforo_password', name='auth_set_xenforo_password'), 
+
                        # Teamspeak3 service control
                        url(r'^activate_teamspeak3/$', 'services.views.activate_teamspeak3',
                            name='auth_activate_teamspeak3'),
