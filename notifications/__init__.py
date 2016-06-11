@@ -3,7 +3,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+MAX_NOTIFICATIONS = 50
+
 def notify(user, title, message=None, level='info'):
+    if Notification.objects.filter(user=user).count() > MAX_NOTIFICATIONS:
+        for n in Notification.objects.filter(user=user)[MAX_NOTIFICATIONS:]:
+            n.delete()
     notif = Notification()
     notif.user = user
     notif.title = title
