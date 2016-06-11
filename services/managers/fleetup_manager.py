@@ -142,7 +142,7 @@ class FleetUpManager():
             fdoctrineid=json.loads(jsondata.decode())
             return fdoctrineid['Data']['Doctrines'][0]['DoctrineId']
         except requests.exceptions.ConnectionError:
-            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
+            logger.warn("Can't connect to Fleet-Up API, is it offline?!")
         except (ValueError, UnicodeDecodeError):
             logger.warn("Fleetup doctrine number not found for fitting number %s" % fittingnumber)
         return None
@@ -155,7 +155,7 @@ class FleetUpManager():
             ffittingeft=json.loads(jsondata.decode())
             return {"fitting_eft":ffittingeft["Data"]["FittingData"]}
         except requests.exceptions.ConnectionError:
-            return HttpResponse("Can't connect to Fleet-Up API, is it offline?!")
+            logger.warn("Can't connect to Fleet-Up API, is it offline?!")
         except (ValueError, UnicodeDecodeError):
             logger.warn("Fleetup fitting eft not found for fitting number %s" % fittingnumber)
         return {"fitting_eft":{}}
