@@ -8,6 +8,7 @@ requests>=2.9.1
 bcrypt
 zeroc-ice
 slugify
+requests-oauthlib
 
 # Django Stuff #
 django==1.6.5

@@ -57,7 +57,7 @@ def domain_url(request):
             'ENABLE_BLUE_XENFORO': settings.ENABLE_BLUE_XENFORO,
             'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
             'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
-            'DISCORD_SERVER_ID': settings.DISCORD_SERVER_ID,
+            'DISCORD_SERVER_ID': settings.DISCORD_GUILD_ID,
             'KILLBOARD_URL': settings.KILLBOARD_URL,
             'DISCOURSE_URL': settings.DISCOURSE_URL,
             'IPS4_URL': settings.IPS4_URL,

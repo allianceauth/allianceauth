@@ -437,13 +437,19 @@ TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.c
 ######################################
 # Discord Configuration
 ######################################
-# DISCORD_SERVER_ID - ID of the server to manage
-# DISCORD_USER_EMAIL - email of the server management user
-# DISCORD_USER_PASSWORD - password of the server management user
+# DISCORD_GUILD_ID - ID of the guild to manage
+# DISCORD_BOT_TOKEN - oauth token of the app bot user
+# DISCORD_INVITE_CODE - invite code to the server
+# DISCORD_APP_ID - oauth app client ID
+# DISCORD_APP_SECRET - oauth app secret
+# DISCORD_CALLBACK_URL - oauth callback url
 ######################################
-DISCORD_SERVER_ID = os.environ.get('AA_DISCORD_SERVER_ID', '')
-DISCORD_USER_EMAIL = os.environ.get('AA_DISCORD_USER_EMAIL', '')
-DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
+DISCORD_GUILD_ID = os.environ.get('AA_DISCORD_GUILD_ID', '')
+DISCORD_BOT_TOKEN = os.environ.get('AA_DISCORD_BOT_TOKEN', '')
+DISCORD_INVITE_CODE = os.environ.get('AA_DISCORD_INVITE_CODE', '')
+DISCORD_APP_ID = os.environ.get('AA_DISCORD_APP_ID', '')
+DISCORD_APP_SECRET = os.environ.get('AA_DISCORD_APP_SECRET', '')
+DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://mydomain.com/discord_callback')
 
 ######################################
 # Discourse Configuration

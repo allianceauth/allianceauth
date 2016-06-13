@@ -145,6 +145,8 @@ urlpatterns = patterns('',
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
+                       url(r'^discord_callback/$', 'services.views.discord_callback', name='auth_discord_callback'),
+                       url(r'^discord_add_bot/$', 'services.views.discord_add_bot', name='auth_discord_add_bot'),
                        
                        # Discourse Service Control
                        url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),

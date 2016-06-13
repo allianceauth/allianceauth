@@ -9,6 +9,14 @@
 {% block content %}
     <div class="col-lg-12">
     <h1 class="page-header text-center">Available Services</h1>
+    {% if ENABLE_AUTH_DISCORD or ENABLE_BLUE_DISCORD %}
+        {% if request.user.is_superuser %}
+            <div class="text-center">
+                <a type="button" class="btn btn-lg btn-success" href="{% url 'auth_discord_add_bot' %}">Link Discord Server</a>
+            </div>
+            <br>
+        {% endif %}
+    {% endif %}
     {% if perms.auth.blue_member %}
         <table class="table table-bordered">
             <tr>

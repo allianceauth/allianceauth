@@ -11,7 +11,7 @@ from services.managers.phpbb3_manager import Phpbb3Manager
 from services.managers.ipboard_manager import IPBoardManager
 from services.managers.xenforo_manager import XenForoManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
-from services.managers.discord_manager import DiscordManager, DiscordAPIManager
+from services.managers.discord_manager import DiscordOAuthManager
 from services.managers.discourse_manager import DiscourseManager
 from services.managers.smf_manager import smfManager
 from services.models import AuthTS
@@ -212,7 +212,7 @@ def update_discord_groups(pk):
         groups.append('empty')
     logger.debug("Updating user %s discord groups to %s" % (user, groups))
     try:
-        DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
+        DiscordOAuthManager.update_groups(authserviceinfo.discord_uid, groups)
     except:
         logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
