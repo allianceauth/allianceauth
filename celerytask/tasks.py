@@ -419,18 +419,6 @@ def set_state(user):
     if change:
         notify(user, "Membership State Change", message="You membership state has been changed to %s" % state)
 
-# Run every 2 hours
-@periodic_task(run_every=crontab(minute="0", hour="*/2"))
-def run_discord_token_cleanup():
-    logger.debug("Running validation of all DiscordAuthTokens")
-    for auth in DiscordAuthToken.objects.all():
-        logger.debug("Testing DiscordAuthToken %s" % auth)
-        if DiscordAPIManager.validate_token(auth.token):
-            logger.debug("Token passes validation. Retaining %s" % auth)
-        else:
-            logger.debug("DiscordAuthToken failed validation. Deleting %s" % auth)
-            auth.delete()
-
 def refresh_api(api_key_pair):
     logger.debug("Running update on api key %s" % api_key_pair.api_id)
     user = api_key_pair.user
