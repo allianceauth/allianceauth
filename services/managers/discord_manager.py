@@ -483,7 +483,6 @@ class DiscordOAuthManager:
     def add_user(code):
         try:
             token = DiscordOAuthManager._process_callback_code(code)['access_token']
-            logger.debug(token)
             logger.debug("Received token from OAuth")
 
             custom_headers = {'accept': 'application/json', 'authorization': 'Bearer ' + token}
@@ -507,7 +506,7 @@ class DiscordOAuthManager:
     @staticmethod
     def delete_user(user_id):
         try:
-            custom_headers = {'accept': 'application/json', 'authorization': 'Bearer ' + settings.DISCORD_BOT_TOKEN}
+            custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
             path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
             r = requests.delete(path, headers=custom_headers)
             logger.debug("Got status code %s after removing Discord user ID %s" % (r.status_code, user_id))
@@ -517,7 +516,7 @@ class DiscordOAuthManager:
             logger.exception("Failed to remove Discord user %s" % user_id)
             try:
                 # user maybe already left server?
-                custom_headers = {'accept': 'application/json', 'authorization': 'Bearer ' + settings.DISCORD_BOT_TOKEN}
+                custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
                 path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/"
                 r = requests.get(path, headers=custom_headers)
                 members = r.json()
