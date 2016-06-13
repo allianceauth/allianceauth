@@ -132,6 +132,8 @@ class FleetUpManager():
             logger.warn("Can't connect to Fleet-Up API, is it offline?!")
         except (ValueError, UnicodeDecodeError):
             logger.warn("Fleetup fitting number %s not found" % fittingnumber)
+        except KeyError:
+            logger.warn("Failed to retrieve fleetup fitting number %s" % fittingnumber)
         return {"fitting_data":{}}
 
     @staticmethod
@@ -145,6 +147,8 @@ class FleetUpManager():
             logger.warn("Can't connect to Fleet-Up API, is it offline?!")
         except (ValueError, UnicodeDecodeError):
             logger.warn("Fleetup doctrine number not found for fitting number %s" % fittingnumber)
+        except (KeyError, IndexError):
+            logger.debug("Fleetup fitting number %s not in a doctrine." % fittingnumber)
         return None
 
     @staticmethod
