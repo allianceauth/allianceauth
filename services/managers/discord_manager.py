@@ -517,7 +517,7 @@ class DiscordOAuthManager:
             try:
                 # user maybe already left server?
                 custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
-                path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/"
+                path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members"
                 r = requests.get(path, headers=custom_headers)
                 members = r.json()
                 users = [str(m['user']['id']) == str(user_id) for m in members]
