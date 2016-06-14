@@ -6,6 +6,8 @@ import logging
 import requests
 import json
 
+logger = logging.getLogger(__name__)
+
 appkey = settings.FLEETUP_APP_KEY
 userid = settings.FLEETUP_USER_ID
 apiid = settings.FLEETUP_API_ID
