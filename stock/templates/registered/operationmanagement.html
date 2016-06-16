@@ -1,43 +1,45 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Fleet Operation Management{% endblock page_title %}
+{% block page_title %}{% trans "Fleet Operation Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Fleet Operation Timers
+        <h1 class="page-header text-center">{% trans "Fleet Operation Timers" %}
             <div class="text-right">
                 <a href="{% url 'auth_add_optimer_view' %}">
                     {% if perms.auth.optimer_management %}
-                        <button type="button" class="btn btn-success">Create Operation</button>
+                        <button type="button" class="btn btn-success">{% trans "Create Operation" %}</button>
                     {% endif %}
                 </a>
             </div>
         </h1>
      <div class="col-lg-12 text-center">
         <div class="label label-info text-left">
-            <b>Current Eve Time: </b>
+            <b>{% trans "Current Eve Time:" %} </b>
         </div><div class="label label-info text-left" id="current-time"></div>
         <br/>
      </div>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th class="text-center">Operation Name</th>
-		<th class="text-center">Doctrine</th>
-                <th class="text-center">Form Up System</th>
-                <th class="text-center">Form Up Location</th>
-                <th class="text-center">Start Time</th>
-                <th class="text-center">Local Time</th>
-		<th class="text-center">Duration</th>
-                <th class="text-center">FC</th>
-                <th class="text-center">Details</th>
-		<th class="text-center">Post Time</th>
+                <th class="text-center">{% trans "Operation Name" %}</th>
+		<th class="text-center">{% trans "Doctrine" %}</th>
+                <th class="text-center">{% trans "Form Up System" %}</th>
+                <th class="text-center">{% trans "Form Up Location" %}</th>
+                <th class="text-center">{% trans "Start Time" %}</th>
+                <th class="text-center">{% trans "Local Time" %}</th>
+		<th class="text-center">{% trans "Duration" %}</th>
+                <th class="text-center">{% trans "FC" %}</th>
+                <th class="text-center">{% trans "Details" %}</th>
+		<th class="text-center">{% trans "Post Time" %}</th>
 		{% if perms.auth.optimer_management %}
-                	<th class="text-center">Creator</th>
-		        <th class="text-center">Action</th>
+                	<th class="text-center">{% trans "Creator" %}</th>
+		        <th class="text-center">{% trans "Action" %}</th>
                 {% endif %}
             </tr>
 
@@ -75,23 +77,28 @@
             </tr>
         </table>
 
-
     </div>
 
 <script src="/static/js/dateformat.js"></script>
 <script src="/static/js/countdown.js"></script>
 <script>
-
+var locale = "{{ LANGUAGE_CODE }}";
 {% for ops in optimer %}var clock{{ ops.id }} = document.getElementById("countdown{{ ops.id }}"), targetDate{{ ops.id }} = new Date(Date.UTC({{ ops.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
-{% for ops in optimer %}setInterval(function(){clock{{ ops.id }}.innerHTML = targetDate{{ ops.id }}.format('D @ h:ia'); if (targetDate{{ ops.id }} > Date.now()){ clock{{ ops.id }}.innerHTML = clock{{ ops.id }}.innerHTML + "<BR>" + countdown(targetDate{{ ops.id }}).toString();}}, 1000);{% endfor %}
+{% for ops in optimer %}setInterval(function(){
+    var options = { weekday: 'short' };
+    var options2 = { hour: 'numeric', minute: 'numeric' };
+    var time = ((targetDate{{ ops.id }}.toLocaleString(locale, options)) + " @ " + (targetDate{{ ops.id }}.toLocaleString(locale, options2)));
+    clock{{ ops.id }}.innerHTML = time; 
+if (targetDate{{ ops.id }} > Date.now())
+{ clock{{ ops.id }}.innerHTML = clock{{ ops.id }}.innerHTML + "<BR>" + countdown(targetDate{{ ops.id }}).toString();}}, 1000);{% endfor %}
 
 setInterval(function(){updateClock()}, 1000);
 
 function updateClock() {
-  var clock = new Date();
-  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+  var options = { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: "numeric", minute: "numeric", second: "numeric" };
+  var clock = new Date()
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toLocaleString(locale, options) + "</b>";
 }
-
 </script>
 
 {% endblock content %}

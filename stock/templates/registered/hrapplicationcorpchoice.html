@@ -1,13 +1,15 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
+
 {% block title %}Choose a Corp{% endblock %}
-{% block page_title %}Choose a Corp{% endblock page_title %}
+{% block page_title %}{% trans "Choose a Corp" %}{% endblock page_title %}
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Choose a Corp</h1>
+        <h1 class="page-header text-center">{% trans "Choose a Corp" %}</h1>
         {% if choices %}
             <div class="panel panel-primary">
-                <div class="panel-heading">Available Corps</div>
+                <div class="panel-heading">{% trans "Available Corps" %}</div>
                 <table class="table table-responsive">
                     {% for choice in choices %}
                         <tr>
@@ -19,7 +21,7 @@
                 </table>
             </div>
         {% else %}
-            <div class="alert alert-danger">No corps are accepting applications at this time.</div>
+            <div class="alert alert-danger">{% trans "No corps are accepting applications at this time." %}</div>
         {% endif %}
     </div>
 {% endblock content %}

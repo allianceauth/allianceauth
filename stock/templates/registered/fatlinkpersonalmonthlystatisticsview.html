@@ -1,29 +1,30 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}Personal fatlink statistics{% endblock page_title %}
+{% block page_title %}{% trans "Personal fatlink statistics" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Participation data statistics for {{ month }}, {{ year }}
+        <h1 class="page-header text-center">{% trans "Participation data statistics for" %} {{ month }}, {{ year }}
             {% if char_id %}
             <div class="text-right">
                 <a href="{% url 'auth_fatlink_view_user_statistics_month' char_id previous_month|date:"Y" previous_month|date:"m" %}">
-                    <button type="button" class="btn btn-info">Previous month</button>
+                    <button type="button" class="btn btn-info">{% trans "Previous month" %}</button>
                 </a>
                 <a href="{% url 'auth_fatlink_view_user_statistics_month' char_id next_month|date:"Y" next_month|date:"m"  %}">
-                    <button type="button" class="btn btn-info">Next month</button>
+                    <button type="button" class="btn btn-info">{% trans "Next month" %}</button>
                 </a>
             </div>
             {% endif %}
         </h1>
-        <h2>{{ user }} has collected {{ n_fats }} links this month.</h2>
+        <h2>{% blocktrans %}{{ user }} has collected {{ n_fats }} links this month.{% endblocktrans %}</h2>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th class="col-md-2 text-center">Ship</th>
-                <th class="col-md-2 text-center">Times used</th>
+                <th class="col-md-2 text-center">{% trans "Ship" %}</th>
+                <th class="col-md-2 text-center">{% trans "Times used" %}</th>
             </tr>
             {% for ship, n_fats in shipStats %}
             <tr>
@@ -33,15 +34,15 @@
             {% endfor %}
         </table>
         {%  if created_fats %}
-         <h2>{{ user }} has created {{ n_created_fats }} links this month.</h2>
+         <h2>{% blocktrans %}{{ user }} has created {{ n_created_fats }} links this month.{% endblocktrans %}</h2>
         <table class="table table-bordered">
             <tr>
-                <th class="text-center">Name</th>
-                <th class="text-center">Creator</th>
-                <th class="text-center">Fleet</th>
-                <th class="text-center">Eve Time</th>
-                <th class="text-center">Duration</th>
-                <th class="text-center">Edit</th>
+                <th class="text-center">{% trans "Name" %}</th>
+                <th class="text-center">{% trans "Creator" %}</th>
+                <th class="text-center">{% trans "Fleet" %}</th>
+                <th class="text-center">{% trans "Eve Time" %}</th>
+                <th class="text-center">{% trans "Duration" %}</th>
+                <th class="text-center">{% trans "Edit" %}</th>
             </tr>
             {% for link in created_fats %}
             <tr>

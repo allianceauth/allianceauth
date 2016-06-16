@@ -1,10 +1,11 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}API Key Management{% endblock page_title %}
+{% block page_title %}{% trans "API Key Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
@@ -12,20 +13,20 @@
         <div class="row">
             {% if apikeypairs %}
             {% else %}
-                <div class="alert alert-danger" role="alert">No api keys found</div>
+                <div class="alert alert-danger" role="alert">{% trans "No api keys found" %}</div>
             {% endif %}
-            <h1 class="page-header text-center">API Key Management
+            <h1 class="page-header text-center">{% trans "API Key Management" %}
                 <div class="text-right">
                     <a href="{% url 'auth_add_api_key' %}">
-                        <button type="button" class="btn btn-success">Add Key</button>
+                        <button type="button" class="btn btn-success">{% trans "Add Key" %}</button>
                     </a>
                 </div>
             </h1>
             <table class="table table-bordered">
                 <tr>
-                    <th class="text-center">API ID</th>
-                    <th class="text-center">API Key</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "API ID" %}</th>
+                    <th class="text-center">{% trans "API Key" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 </tr>
                 {% for pair in apikeypairs %}
                     <tr>

@@ -1,36 +1,37 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Wormhole Signature Management{% endblock page_title %}
+{% block page_title %}{% trans "Wormhole Signature Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Wormhole Signatures
+        <h1 class="page-header text-center">{% trans "Wormhole Signatures" %}
             <div class="text-right">
                 <a href="{% url 'auth_add_signature_view' %}">
                     {% if perms.auth.signature_management %}
-                        <button type="button" class="btn btn-success">Create Signature</button>
+                        <button type="button" class="btn btn-success">{% trans "Create Signature" %}</button>
                     {% endif %}
                 </a>
             </div>
         </h1>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th class="text-center">ID</th>
-                <th class="text-center">System</th>
-                <th class="text-center">Destination</th>
-		<th class="text-center">Goes Through</th>
-                <th class="text-center">Lifetime Status</th>
-		<th class="text-center">Mass Status</th>
-		<th class="text-center">Ship Size</th>
-                <th class="text-center">Notes</th>
-		<th class="text-center">Post Time</th>
+                <th class="text-center">{% trans "ID" %}</th>
+                <th class="text-center">{% trans "System" %}</th>
+                <th class="text-center">{% trans "Destination" %}</th>
+		<th class="text-center">{% trans "Goes Through" %}</th>
+                <th class="text-center">{% trans "Lifetime Status" %}</th>
+		<th class="text-center">{% trans "Mass Status" %}</th>
+		<th class="text-center">{% trans "Ship Size" %}</th>
+                <th class="text-center">{% trans "Notes" %}</th>
+		<th class="text-center">{% trans "Post Time" %}</th>
 		{% if perms.auth.signature_management %}
-                   <th class="text-center">Creator</th> 
-		   <th class="text-center">Action</th>
+                   <th class="text-center">{% trans "Creator" %}</th> 
+		   <th class="text-center">{% trans "Action" %}</th>
                 {% endif %}
             </tr>
             	              

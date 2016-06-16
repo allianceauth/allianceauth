@@ -1,11 +1,12 @@
 {% extends "public/base.html" %}
+{% load i18n %}
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}Dashboard{% endblock page_title %}
+{% block page_title %}{% trans "Dashboard" %}{% endblock page_title %}
 
 {% block content %}
 
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Dashboard</h1>
+        <h1 class="page-header text-center">{% trans "Dashboard" %}</h1>
         {% if perms.auth.member %}
             <div class="col-lg-12 container" id="example">
 
@@ -15,7 +16,7 @@
                         {% for character in characters %}
                             {% ifequal character.character_id authinfo.main_char_id %}
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Main character</div>
+                                    <div class="panel-heading">{% trans "Main character" %}</div>
 
                                     <div class="panel-body">
                                         <div class="col-lg-5 col-sm-2"><img class=
@@ -39,7 +40,7 @@
 
                     <div class="col-lg-6">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Groups</div>
+                            <div class="panel-heading">{% trans "Groups" %}</div>
                             <div class="panel-body">
                                 <div style="height: 128px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                                 <table class="table table-striped">
@@ -60,9 +61,9 @@
             </div>
         {% else %}
             {% if IS_CORP %}
-                <div class="alert alert-danger" role="alert">Not a part of the corporation.</div> 
+                <div class="alert alert-danger" role="alert">{% trans "Not a part of the corporation." %}</div> 
             {% else %}
-                <div class="alert alert-danger" role="alert">Not a part of the alliance.</div>
+                <div class="alert alert-danger" role="alert">{% trans "Not a part of the alliance." %}</div>
             {% endif %}
         {% endif %}
     </div>

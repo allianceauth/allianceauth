@@ -124,8 +124,8 @@ def main_character_change(request, char_id):
     if EveManager.check_if_character_owned_by_user(char_id, request.user):
         AuthServicesInfoManager.update_main_char_Id(char_id, request.user)
         set_state(request.user)
-        return HttpResponseRedirect("/characters")
-    return HttpResponseRedirect("/characters")
+        return HttpResponseRedirect("/characters/")
+    return HttpResponseRedirect("/characters/")
 
 
 

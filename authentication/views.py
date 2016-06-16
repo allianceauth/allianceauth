@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils import translation
 
 from forms import LoginForm
 
@@ -23,7 +24,7 @@ def login_user(request):
                 if user.is_active:
                     logger.info("Successful login attempt from user %s" % user)
                     login(request, user)
-                    return HttpResponseRedirect("/dashboard")
+                    return HttpResponseRedirect("/dashboard/")
                 else:
                     logger.info("Login attempt failed for user %s: user marked inactive." % user)
             else:

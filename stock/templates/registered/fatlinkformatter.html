@@ -4,17 +4,17 @@
 
 {% block title %}Alliance Auth - Fatlink Create{% endblock %}
 
-{% block page_title %}Create Fatlink{% endblock page_title %}
+{% block page_title %}{% trans "Create Fatlink" %}{% endblock page_title %}
 {% block extra_css %}
     <link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet" type="text/css">{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Create Fleet Operation</h1>
+        <h1 class="page-header text-center">{% trans "Create Fleet Operation" %}</h1>
 
         <div class="container-fluid">
             {% if badrequest %}
-            <div class="alert alert-danger" role="alert">Bad request!</div>
+            <div class="alert alert-danger" role="alert">{% trans "Bad request!" %}</div>
             {% endif %}
             {% for message in errormessages %}
             <div class="alert alert-danger" role="alert">{{ message }}</div>
@@ -25,7 +25,7 @@
                             {% csrf_token %}
                             {{ form|bootstrap }}
                             <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit_fat">Create fatlink</button>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit_fat">{% trans "Create fatlink" %}</button>
                         </form>
                 </div>
             </div>

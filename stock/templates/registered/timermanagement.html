@@ -1,39 +1,41 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Structure Timer Management{% endblock page_title %}
+{% block page_title %}{% trans "Structure Timer Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Structure Timers
+        <h1 class="page-header text-center">{% trans "Structure Timers" %}
             <div class="text-right">
                 <a href="{% url 'auth_add_timer_view' %}">
                     {% if perms.auth.timer_management %}
-                        <button type="button" class="btn btn-success">Create Structure Timer</button>
+                        <button type="button" class="btn btn-success">{% trans "Create Structure Timer" %}</button>
                     {% endif %}
                 </a>
             </div>
         </h1>
         <div class="col-lg-12 text-center">
             <div class="label label-info text-left">
-                <b>Current Eve Time: </b>
+                <b>{% trans "Current Eve Time:" %} </b>
             </div><div class="label label-info text-left" id="current-time"></div>
         </div>
-        <h4><b>Next Timer</b></h4>
+        <h4><b>{% trans "Next Timer" %}</b></h4>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th style="width:150px" class="text-center">Details</th>
-                <th class="text-center">Objective</th>
-                <th class="text-center">System</th>
-                <th class="text-center">Structure</th>
-                <th class="text-center">Eve Time</th>
-	        <th class="text-center">Local Time</th>
-                <th class="text-center">Creator</th>
+                <th style="width:150px" class="text-center">{% trans "Details" %}</th>
+                <th class="text-center">{% trans "Objective" %}</th>
+                <th class="text-center">{% trans "System" %}</th>
+                <th class="text-center">{% trans "Structure" %}</th>
+                <th class="text-center">{% trans "Eve Time" %}</th>
+	        <th class="text-center">{% trans "Local Time" %}</th>
+                <th class="text-center">{% trans "Creator" %}</th>
                 {% if perms.auth.timer_management %}
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 {% endif %}
             </tr>
             {% if closest_timer %}
@@ -46,17 +48,17 @@
                 <td class="text-center">
                     {% ifequal closest_timer.objective "Hostile" %}
                         <div class="label label-danger">
-                            Hostile
+                            {% trans "Hostile" %}
                         </div>
                     {% endifequal %}
                     {% ifequal closest_timer.objective "Friendly" %}
                         <div class="label label-primary">
-                            Friendly
+                            {% trans "Friendly" %}
                         </div>
                     {% endifequal %}
                     {% ifequal closest_timer.objective "Neutral" %}
                         <div class="label label-default">
-                            Neutral
+                            {% trans "Neutral" %}
                         </div>
                     {% endifequal %}
                 </td>
@@ -124,18 +126,18 @@
             </tr>
         </table>
         {% if corp_timers %}
-            <h4><b>Corp Timers</b></h4>
+            <h4><b>{% trans "Corp Timers" %}</b></h4>
             <table class="table table-bordered">
                 <tr>
-                    <th style="width:150px" class="text-center">Details</th>
-                    <th class="text-center">Objective</th>
-                    <th class="text-center">System</th>
-                    <th class="text-center">Structure</th>
-                    <th class="text-center">Eve Time</th>
-                    <th class="text-center">Local Time</th>
-                    <th class="text-center">Creator</th>
+                    <th style="width:150px" class="text-center">{% trans "Details" %}</th>
+                    <th class="text-center">{% trans "Objective" %}</th>
+                    <th class="text-center">{% trans "System" %}</th>
+                    <th class="text-center">{% trans "Structure" %}</th>
+                    <th class="text-center">{% trans "Eve Time" %}</th>
+                    <th class="text-center">{% trans "Local Time" %}</th>
+                    <th class="text-center">{% trans "Creator" %}</th>
                     {% if perms.auth.timer_management %}
-                        <th class="text-center">Action</th>
+                        <th class="text-center">{% trans "Action" %}</th>
                     {% endif %}
                 </tr>
                 {% for timer in corp_timers %}
@@ -148,17 +150,17 @@
                 <td class="text-center">
                     {% ifequal timer.objective "Hostile" %}
                         <div class="label label-danger">
-                            Hostile
+                            {% trans "Hostile" %}
                         </div>
                     {% endifequal %}
                     {% ifequal timer.objective "Friendly" %}
                         <div class="label label-primary">
-                            Friendly
+                            {% trans "Friendly" %}
                         </div>
                     {% endifequal %}
                     {% ifequal timer.objective "Neutral" %}
                         <div class="label label-default">
-                            Neutral
+                            {% trans "Neutral" %}
                         </div>
                     {% endifequal %}
                 </td>
@@ -226,18 +228,18 @@
             {% endfor %}
             </table>
         {% endif %}
-        <h4><b>Future Timers</b></h4>
+        <h4><b>{% trans "Future Timers" %}</b></h4>
         <table class="table table-bordered">
             <tr>
-                <th style="width:150px" class="text-center">Details</th>
-                <th class="text-center">Objective</th>
-                <th class="text-center">System</th>
-                <th class="text-center">Structure</th>
-                <th class="text-center">Eve Time</th>
-                <th class="text-center">Local Time</th>
-                <th class="text-center">Creator</th>
+                <th style="width:150px" class="text-center">{% trans "Details" %}</th>
+                <th class="text-center">{% trans "Objective" %}</th>
+                <th class="text-center">{% trans "System" %}</th>
+                <th class="text-center">{% trans "Structure" %}</th>
+                <th class="text-center">{% trans "Eve Time" %}</th>
+                <th class="text-center">{% trans "Local Time" %}</th>
+                <th class="text-center">{% trans "Creator" %}</th>
                 {% if perms.auth.timer_management %}
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 {% endif %}
             </tr>
             {% for timer in timers %}
@@ -251,17 +253,17 @@
                 <td class="text-center">
                     {% ifequal timer.objective "Hostile" %}
                         <div class="label label-danger">
-                            Hostile
+                            {% trans "Hostile" %}
                         </div>
                     {% endifequal %}
                     {% ifequal timer.objective "Friendly" %}
                         <div class="label label-primary">
-                            Friendly
+                            {% trans "Friendly" %}
                         </div>
                     {% endifequal %}
                     {% ifequal timer.objective "Neutral" %}
                         <div class="label label-default">
-                            Neutral
+                            {% trans "Neutral" %}
                         </div>
                     {% endifequal %}
                 </td>
@@ -334,32 +336,58 @@
 <script src="/static/js/dateformat.js"></script>
 <script src="/static/js/countdown.js"></script>
 <script>
+var locale = "{{ LANGUAGE_CODE }}";
+var options = { weekday: 'short' };
+var options2 = { hour: 'numeric', minute: 'numeric' };
+
 var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in timers %}
 var clock{{ timer.id }} = document.getElementById("countdown{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
 
-setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
-{% for timer in timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+setInterval(function(){
+clockClosest.innerHTML = ((targetDate.toLocaleString(locale, options)) + " @ " + (targetDate.toLocaleString(locale, options2)));
+if (targetDate > Date.now()){ 
+clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+
+{% for timer in timers %}setInterval(
+function(){
+clock{{ timer.id }}.innerHTML = ((targetDate{{ timer.id }}.toLocaleString(locale, options)) + " @ " + (targetDate{{ timer.id }}.toLocaleString(locale, options2)));
+if (targetDate{{ timer.id }} > Date.now()){ 
+    clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
 
 setInterval(function(){updateClock()}, 1000);
 
 function updateClock() {
-  var clock = new Date();
-  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
+  var options = { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: "numeric", minute: "numeric", second: "numeric" };
+  var clock = new Date()
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toLocaleString(locale, options) + "</b>";
 }
 
 </script>
 <script>
+var locale = "{{ LANGUAGE_CODE }}";
+var options = { weekday: 'short' };
+var options2 = { hour: 'numeric', minute: 'numeric' };
+
 var clockClosestCorp = document.getElementById("countdownclosestCorp"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in corp_timers %}
 var clockCorp{{ timer.id }} = document.getElementById("countdownCorp{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
 
-setInterval(function(){clockClosestCorp.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosestCorp.innerHTML = clockClosestCorp.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
-{% for timer in corp_timers %}setInterval(function(){clockCorp{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clockCorp{{ timer.id }}.innerHTML = clockCorp{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+setInterval(
+function(){
+clockClosestCorp.innerHTML = ((targetDate.toLocaleString(locale, options)) + " @ " + (targetDate.toLocaleString(locale, options2)));
+if (targetDate > Date.now()){ 
+clockClosestCorp.innerHTML = clockClosestCorp.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+
+{% for timer in corp_timers %}setInterval(function(){
+clockCorp{{ timer.id }}.innerHTML = ((targetDate{{ timer.id }}.toLocaleString(locale, options)) + " @ " + (targetDate{{ timer.id }}.toLocaleString(locale, options2)));
+
+if (targetDate{{ timer.id }} > Date.now()){ clockCorp{{ timer.id }}.innerHTML = clockCorp{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
 
 setInterval(function(){updateClock()}, 1000);
 
 function updateClock() {
-  var clockCorp = new Date();
-  document.getElementById("current-time").innerHTML = "<b>" + clockCorp.toUTCString() + "</b>";
+  var options = { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: "numeric", minute: "numeric", second: "numeric" };
+  var clock = new Date()
+  document.getElementById("current-time").innerHTML = "<b>" + clock.toLocaleString(locale, options) + "</b>";
 }
 
 </script>

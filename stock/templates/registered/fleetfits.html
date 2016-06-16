@@ -1,10 +1,11 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Alliance Fleet Doctrines{% endblock page_title %}
+{% block page_title %}{% trans "Alliance Fleet Doctrines" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}

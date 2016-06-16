@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,6 +22,13 @@
     <style>
         .grayiconecolor {
             color: #505050;
+        }
+        #lang_select {
+            margin-right: 25px;
+        }
+        
+        #f_lang_select {
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -47,6 +54,21 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
+                
+                <li class="nav-link">
+                    <form id="f_lang_select" action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}" />
+                        <select onchange="this.form.submit()" class="form-control" id="lang_select" name="language">
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </li>
                 {% if notifications %}
                     <li class="nav-link active"><a href="{% url 'auth_notification_list' %}">
                         <i class="fa fa-flag"></i></a>
@@ -57,61 +79,63 @@
                     </li>
                 {% endif %}
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'auth_logout_user' %}">Logout</a></li>
+                    <li><a href="{% url 'auth_logout_user' %}">{% trans "Logout" %}</a></li>
                 {% else %}
-                    <li><a href="{% url 'auth_login_user' %}">Login</a></li>
+                    <li><a href="{% url 'auth_login_user' %}">{% trans "Login" %}</a></li>
                 {% endif %}
+                
             </ul>
+            
             <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li class="text-center divider-horizontal">
-                            <h5>Main Navigation</h5>
+                            <h5>{% trans "Main Navigation" %}</h5>
                         </li>
 
                         <li>
                             <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %}
                                                                         href="{% url 'auth_dashboard' %}"><i
-                                    class="fa fa-dashboard fa-fw grayiconecolor"></i> Dashboard</a>
+                                    class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}</a>
                         </li>
 
                         <li>
                             <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %}
                                                                                  href="{% url 'auth_api_key_management' %}"><i
-                                    class="fa fa-key fa-fw grayiconecolor"></i> Api Keys</a>
+                                    class="fa fa-key fa-fw grayiconecolor"></i>{% trans " Api Keys" %}</a>
                         </li>
 
                         <li>
                             <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %}
                                                                          href="{% url 'auth_characters' %}"><i
-                                    class="fa fa-users fa-fw grayiconecolor"></i> Characters</a>
+                                    class="fa fa-users fa-fw grayiconecolor"></i>{% trans " Characters" %}</a>
                         </li>
 
                         {% if  perms.auth.member %}
                             <li>
                                 <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
                                                                          href="{% url 'auth_groups' %}"><i
-                                        class="fa fa-cogs fa-sitemap grayiconecolor"></i> Groups</a>
+                                        class="fa fa-cogs fa-sitemap grayiconecolor"></i>{% trans " Groups" %}</a>
                             </li>
                         {% endif %}
 
                         <li>
                             <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
                                                                    href="{% url 'auth_help' %}"><i
-                                    class="fa fa-question fa-fw grayiconecolor"></i> Help</a>
+                                    class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}</a>
                         </li>
 
 
                         <li class="text-center divider-horizontal">
-                            <h5>Aux Navigation</h5>
+                            <h5>{% trans "Aux Navigation" %}</h5>
                         </li>
                         {% if  perms.auth.member or perms.auth.blue_member %}
                             <li>
                                 <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
                                                                            href="{% url 'auth_services' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i> Services</a>
+                                        class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}</a>
                             </li>
                         {% endif %}
 
@@ -120,7 +144,7 @@
                                 <a {% ifequal request.path "/hr_application_management/" %}
                                     class="active" {% endifequal %}
                                     href="{% url 'auth_hrapplications_view' %}"><i
-                                        class="fa fa-file-o fa-fw grayiconecolor"></i> Applications</a>
+                                        class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}</a>
                             </li>
                         {% endif %}
 
@@ -128,7 +152,7 @@
                             <li>
                                 <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
                                                                                    href="{% url 'auth_corputils' %}"><i
-                                        class="fa fa-share-alt fa-fw grayiconecolor"></i> Corporation Stats</a>
+                                        class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}</a>
                             </li>
                         {% endif %}
 
@@ -136,7 +160,7 @@
                             <li>
                                 <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}
                                                                                         href="{% url 'auth_group_management' %}"><i
-                                        class="fa fa-lock fa-sitemap grayiconecolor"></i> Group Management</a>
+                                        class="fa fa-lock fa-sitemap grayiconecolor"></i>{% trans " Group Management" %}</a>
                             </li>
                         {% endif %}
 
@@ -144,7 +168,7 @@
 							<li>
                                 <a {% ifequal request.path "/fits" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_fleet_fits' %}"><i
-                                        class="fa fa-bolt fa-fw grayiconecolor"></i> Fleet Doctrines</a>
+                                        class="fa fa-bolt fa-fw grayiconecolor"></i>{% trans " Fleet Doctrines" %}</a>
                             </li>
                             <li>
                                 <a {% ifequal request.path "/fleetup" %} class="active" {% endifequal %}
@@ -159,21 +183,21 @@
 			      <li>
                                 <a {% ifequal request.path "/sigtracker" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_signature_view' %}"><i
-                                        class="fa fa-compass fa-fw grayiconecolor"></i> Wormhole Tracker</a>
+                                        class="fa fa-compass fa-fw grayiconecolor"></i>{% trans " Wormhole Tracker" %}</a>
                             </li>
                             {% endif %}
 			    {% if perms.auth.optimer_view %}
                             <li>
                                 <a {% ifequal request.path "/optimer" %} class="active" {% endifequal %}
                                                                                   href="{% url 'auth_optimer_view' %}"><i
-                                        class="fa fa-exclamation  fa-fw grayiconecolor"></i> Fleet Operations</a>
+                                        class="fa fa-exclamation  fa-fw grayiconecolor"></i>{% trans " Fleet Operations" %}</a>
                             </li>
 			    {% endif %}
                             {% if perms.auth.timer_view %}
                                 <li>
                                     <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
                                                                                       href="{% url 'auth_timer_view' %}"><i
-                                            class="fa fa-clock-o fa-fw grayiconecolor"></i> Structure Timers</a>
+                                            class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}</a>
                                 </li>
                             {% endif %}
 
@@ -186,19 +210,19 @@
                             <li>
                                 <a {% ifequal request.path "/srp/" %} class="active" {% endifequal %}
                                                                       href="{% url 'auth_srp_management_view' %}"><i
-                                        class="fa fa-money fa-fw grayiconecolor"></i> Ship Replacement</a>
+                                        class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}</a>
                             </li>
 
                         {% endif %}
 
 
                         <li class="text-center divider-horizontal">
-                            <h5>Util</h5>
+                            <h5>{% trans "Util" %}</h5>
                         </li>
                         <li>
                             <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %}
                                                                             href="{% url 'password_change' %}"><i
-                                    class="fa fa-lock fa-fw grayiconecolor"></i>Change Password</a>
+                                    class="fa fa-lock fa-fw grayiconecolor"></i>{% trans "Change Password" %}</a>
                         </li>
 
                         {% if  perms.auth.member or perms.auth.blue_member %}
@@ -206,7 +230,7 @@
                                 <a {% ifequal request.path "/tool/fleet_formatter_tool/" %}
                                     class="active" {% endifequal %}
                                     href="{% url 'auth_fleet_format_tool_view' %}"><i
-                                        class="fa fa-space-shuttle fa-fw grayiconecolor"></i> Fleet Broadcast Formatter</a>
+                                        class="fa fa-space-shuttle fa-fw grayiconecolor"></i>{% trans " Fleet Broadcast Formatter" %}</a>
                             </li>
                         {% endif %}
 
@@ -214,7 +238,7 @@
                             <li>
                                 <a {% ifequal request.path "/services/jabber_broadcast/" %}
                                     class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i
-                                        class="fa fa-lock fa-bullhorn grayiconecolor"></i> Jabber Broadcast</a>
+                                        class="fa fa-lock fa-bullhorn grayiconecolor"></i>{% trans " Jabber Broadcast" %}</a>
                             </li>
                         {% endif %}
                     </ul>

@@ -1,18 +1,16 @@
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import ugettext_lazy as _
 
 
 
 class opForm(forms.Form):
     
-    doctrine = forms.CharField(max_length=254, required=True, label='Doctrine')
-    system = forms.CharField(max_length=254, required=True, label="System")
-    location = forms.CharField(max_length=254, required=True, label="Location")
-    start = forms.DateTimeField(required=True, label="Start Time")    
-    duration = forms.CharField(max_length=254, required=True, label="Duration")
-    operation_name = forms.CharField(max_length=254, required=True, label="Operation Name")
-    fc = forms.CharField(max_length=254, required=True, label="Fleet Commander")
-    details = forms.CharField(max_length=254, required=False, label="Extra Details")
-    
-    
-
+    doctrine = forms.CharField(max_length=254, required=True, label=_('Doctrine'))
+    system = forms.CharField(max_length=254, required=True, label=_("System"))
+    location = forms.CharField(max_length=254, required=True, label=_("Location"))
+    start = forms.DateTimeField(required=True, label=_("Start Time"))
+    duration = forms.CharField(max_length=254, required=True, label=_("Duration"))
+    operation_name = forms.CharField(max_length=254, required=True, label=_("Operation Name"))
+    fc = forms.CharField(max_length=254, required=True, label=_("Fleet Commander"))
+    details = forms.CharField(max_length=254, required=False, label=_("Extra Details"))

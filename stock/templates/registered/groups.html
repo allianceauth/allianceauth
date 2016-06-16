@@ -1,21 +1,22 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Available{% endblock page_title %}
+{% block page_title %}{% trans "Available" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Available Groups</h1>
+        <h1 class="page-header text-center">{% trans "Available Groups" %}</h1>
         {% if perms.auth.member %}
             <table class="table table-bordered">
                 <tr>
-                    <th class="text-center">GroupID</th>
-                    <th class="text-center">GroupName</th>
-                    <th class="text-center">GroupDesc</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "GroupID" %}</th>
+                    <th class="text-center">{% trans "GroupName" %}</th>
+                    <th class="text-center">{% trans "GroupDesc" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 </tr>
 
                 {% for pair in pairs %}
@@ -28,7 +29,7 @@
                                 {% if pair.2 == "" %}
                                     <a href="/group/request_leave/{{ pair.0.id }}">
                                         <button type="button" class="btn btn-danger">
-                                            Leave
+                                            {% trans "Leave" %}
                                         </button>
                                     </a>
                                 {% else %}
@@ -39,7 +40,7 @@
                             {% elif pair.2 == "" %}
                                 <a href="/group/request_add/{{ pair.0.id }}">
                                     <button type="button" class="btn btn-success">
-                                        Request
+                                        {% trans "Request" %}
                                     </button>
                                 </a>
                             {% else %}
@@ -53,9 +54,9 @@
             </table>
         {% else %}
             {% if IS_CORP %}
-                <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
+                <div class="alert alert-danger" role="alert">{% trans "You are not in the corporation." %}</div>
             {% else %}
-                <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
+                <div class="alert alert-danger" role="alert">{% trans "You are not in the alliance." %}</div>
             {% endif %}
         {% endif %}
     </div>

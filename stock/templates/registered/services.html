@@ -1,18 +1,19 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Services Management{% endblock page_title %}
+{% block page_title %}{% trans "Services Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-    <h1 class="page-header text-center">Available Services</h1>
+    <h1 class="page-header text-center">{% trans "Available Services" %}</h1>
     {% if ENABLE_AUTH_DISCORD or ENABLE_BLUE_DISCORD %}
         {% if request.user.is_superuser %}
             <div class="text-center">
-                <a type="button" class="btn btn-lg btn-success" href="{% url 'auth_discord_add_bot' %}">Link Discord Server</a>
+                <a type="button" class="btn btn-lg btn-success" href="{% url 'auth_discord_add_bot' %}">{% trans "Link Discord" %} Server</a>
             </div>
             <br>
         {% endif %}
@@ -20,11 +21,11 @@
     {% if perms.auth.blue_member %}
         <table class="table table-bordered">
             <tr>
-                <th class="text-center">Service</th>
-                <th class="text-center">Username</th>
-                <th class="text-center">Password</th>
-                <th class="text-center">Domain</th>
-                <th class="text-center">Action</th>
+                <th class="text-center">{% trans "Service" %}</th>
+                <th class="text-center">{% trans "Username" %}</th>
+                <th class="text-center">{% trans "Password" %}</th>
+                <th class="text-center">{% trans "Domain" %}</th>
+                <th class="text-center">{% trans "Action" %}</th>
             </tr>
             {% if ENABLE_BLUE_FORUM %}
                 <tr>
@@ -333,11 +334,11 @@
             {% endif %}
             {% if ENABLE_BLUE_TEAMSPEAK3 %}
                 <tr>
-                    <th class="text-center">Service</th>
-                    <th class="text-center">Unique ID</th>
+                    <th class="text-center">{% trans "Service" %}</th>
+                    <th class="text-center">{% trans "Unique ID" %}</th>
                     <th class="text-center">PermissionKey</th>
-                    <th class="text-center">Quick Link</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "Quick Link" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 </tr>
                 <tr>
                     <td class="text-center">Teamspeak 3</td>
@@ -374,11 +375,11 @@
     {% elif perms.auth.member %}
         <table class="table table-bordered">
             <tr>
-                <th class="text-center">Service</th>
-                <th class="text-center">Username</th>
-                <th class="text-center">Password</th>
-                <th class="text-center">Domain</th>
-                <th class="text-center">Action</th>
+                <th class="text-center">{% trans "Service" %}</th>
+                <th class="text-center">{% trans "Username" %}</th>
+                <th class="text-center">{% trans "Password" %}</th>
+                <th class="text-center">{% trans "Domain" %}</th>
+                <th class="text-center">{% trans "Action" %}</th>
             </tr>
             {% if ENABLE_AUTH_FORUM %}
                 <tr>
@@ -685,11 +686,11 @@
             {% endif %}
             {% if ENABLE_AUTH_TEAMSPEAK3 %}
                 <tr>
-                    <th class="text-center">Service</th>
-                    <th class="text-center">Unique ID</th>
+                    <th class="text-center">{% trans "Service" %}</th>
+                    <th class="text-center">{% trans "Unique ID" %}</th>
                     <th class="text-center">PermissionKey</th>
-                    <th class="text-center">Quick Link</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "Quick Link" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 </tr>
                 <tr>
                     <td class="text-center">Teamspeak 3</td>
@@ -725,9 +726,9 @@
         </table>
     {% else %}
         {% if IS_CORP %}
-            <div class="alert alert-danger" role="alert">You are not in the corporation.</div>
+            <div class="alert alert-danger" role="alert">{% trans "You are not in the corporation." %}</div>
         {% else %}
-            <div class="alert alert-danger" role="alert">You are not in the alliance.</div>
+            <div class="alert alert-danger" role="alert">{% trans "You are not in the alliance." %}</div>
         {% endif %}
     {% endif %}
     </div>

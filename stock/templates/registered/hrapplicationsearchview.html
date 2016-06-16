@@ -1,6 +1,7 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
@@ -10,23 +11,23 @@
 {% block content %}
     <div class="col-lg-12">
         {% if perms.auth.human_resources %}
-            <h1 class="page-header text-center">Application Search Results
+            <h1 class="page-header text-center">{% trans "Application Search Results" %}
                 <div class="text-right">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-                        Search Applications
+                        {% trans "Search Applications" %}
                     </button>
                 </div>
             </h1>
             <div class="container-fluid">
                 <table class="table table-bordered">
                     <tr>
-                        <th class="text-center">Application ID</th>
-                        <th class="text-center">Username</th>
-                        <th class="text-center">Main Character</th>
-                        <th class="text-center">Corporation</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Actions</th>
+                        <th class="text-center">{% trans "Application ID" %}</th>
+                        <th class="text-center">{% trans "Username" %}</th>
+                        <th class="text-center">{% trans "Main Character" %}</th>
+                        <th class="text-center">{% trans "Corporation" %}</th>
+                        <th class="text-center">{% trans "Status" %}</th>
+                        <th class="text-center">{% trans "Actions" %}</th>
                     </tr>
                     {% for app in applications %}
                         <tr>
@@ -36,11 +37,11 @@
                             <td class="text-center">{{ app.form.corp }}</td>
                             <td class="text-center">
                                 {% if app.approved == None %}
-                                    <div class="label label-warning">Pending</div>
+                                    <div class="label label-warning">{% trans "Pending" %}</div>
                                 {% elif  app.approved == True %}
-                                    <div class="label label-success">Approved</div>
+                                    <div class="label label-success">{% trans "Approved" %}</div>
                                 {% else %}
-                                    <div class="label label-danger">Rejected</div>
+                                    <div class="label label-danger">{% trans "Rejected" %}</div>
                                 {% endif %}
                             </td>
                             <td class="text-center">
@@ -65,7 +66,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
                                 class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Application Search</h4>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "Application Search" %}</h4>
                     </div>
                     <div class="modal-body">
                         <form class="form-signin" role="form"
@@ -73,7 +74,7 @@
                             {% csrf_token %}
                             {{ search_form|bootstrap }}
                             <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Search" %}</button>
                         </form>
                     </div>
                     <div class="modal-footer">

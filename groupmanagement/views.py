@@ -12,6 +12,7 @@ from models import HiddenGroup
 from models import OpenGroup
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
+from django.utils.translation import ugettext_lazy as _
 
 import logging
 
@@ -159,7 +160,7 @@ def group_request_add(request, group_id):
         return HttpResponseRedirect("/groups")
     auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
     grouprequest = GroupRequest()
-    grouprequest.status = 'pending'
+    grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)
@@ -179,7 +180,7 @@ def group_request_leave(request, group_id):
         return HttpResponseRedirect("/groups")
     auth_info = AuthServicesInfoManager.get_auth_service_info(request.user)
     grouprequest = GroupRequest()
-    grouprequest.status = 'pending'
+    grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)

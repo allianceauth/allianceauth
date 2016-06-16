@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 import re
 
 import logging
@@ -7,11 +8,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=30, required=True)
-    password = forms.CharField(widget=forms.PasswordInput(), required=True)
-    password_again = forms.CharField(widget=forms.PasswordInput(), required=True, label="Password Again")
-    email = forms.CharField(max_length=254, required=True)
-    email_again = forms.CharField(max_length=254, required=True, label="Email Again")
+    username = forms.CharField(label=_('Username'), max_length=30, required=True)
+    password = forms.CharField(label=_('Password'), widget=forms.PasswordInput(), required=True)
+    password_again = forms.CharField(label=_('Password Again'), widget=forms.PasswordInput(), required=True)
+    email = forms.CharField(label=_('Email'), max_length=254, required=True)
+    email_again = forms.CharField(label=_('Email Again'), max_length=254, required=True)
 
     def clean(self):
         if ' ' in self.cleaned_data['username']:

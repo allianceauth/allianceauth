@@ -1,20 +1,21 @@
 {% extends "public/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 
-{% block page_title %}Characters{% endblock page_title %}
+{% block page_title %}{% trans "Characters" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12 container">
-        <h1 class="page-header text-center">Characters</h1>
+        <h1 class="page-header text-center">{% trans "Characters" %}</h1>
 
         <div class="col-lg-12 container" id="example">
 
             {% if authinfo.main_char_id %}
             {% else %}
-                <div class="alert alert-danger" role="alert">No primary character set</div>
+                <div class="alert alert-danger" role="alert">{% trans "No primary character set" %}</div>
             {% endif %}
             <div class="row">
                 {% for character in characters %}
@@ -31,13 +32,13 @@
                                             <div class="text-right col-md-4">
                                                 <a href="/main_character_change/{{ character.character_id }}">
                                                     {% ifequal character.character_id authinfo.main_char_id %}
-                                                        <button type="button" class="btn btn-default btn-xs">
+                                                        {% blocktrans %}<button type="button" class="btn btn-default btn-xs">
                                                             Refresh Primary
-                                                        </button>
+                                                        </button>{% endblocktrans %}
                                                     {% else %}
-                                                        <button type="button" class="btn btn-primary btn-xs">Make
+                                                        {% blocktrans %}<button type="button" class="btn btn-primary btn-xs">Make
                                                             Primary
-                                                        </button>
+                                                        </button>{% endblocktrans %}
                                                     {% endifequal %}
                                                 </a>
                                             </div>
@@ -53,11 +54,11 @@
                                 </div>
 
                                 <div class="col-lg-7 col-sm-2">
-                                    <p><strong>Alliance: </strong> {{ character.alliance_name }} </p>
+                                    <p><strong>{% trans "Alliance: " %}</strong> {{ character.alliance_name }} </p>
 
-                                    <p><strong>Corporation: </strong>{{ character.corporation_name }}</p>
+                                    <p><strong>{% trans "Corporation: " %}</strong>{{ character.corporation_name }}</p>
 
-                                    <p><strong>Corporation Ticker: </strong> {{ character.corporation_ticker }} </p>
+                                    <p><strong>{% trans "Corporation Ticker: " %}</strong> {{ character.corporation_ticker }} </p>
                                 </div>
                             </div>
                         </div>

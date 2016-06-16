@@ -1,9 +1,10 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}FleetUp - Doctrine{% endblock page_title %}
+{% block page_title %}{% trans "FleetUp - Doctrine" %}{% endblock page_title %}
 
 {% block content %}
 <div class="col-lg-12">
@@ -11,20 +12,20 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only">{% trans "Toggle navigation" %}</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Fleet-Up</a>
+            <a class="navbar-brand" href="#">{% trans "Fleet-Up" %}</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/fleetup/">Ops and Timers</a></li>
-                <li><a href="/fleetup/doctrines/">Doctrines</a></li>
-                <li class="active"><a href="/fleetup/fittings/">Fittings <span class="sr-only">(current)</span></a></li>
+                <li><a href="/fleetup/">{% trans "Ops and Timers" %}</a></li>
+                <li><a href="/fleetup/doctrines/">{% trans "Doctrines" %}</a></li>
+                <li class="active"><a href="/fleetup/fittings/">{% trans "Fittings" %} <span class="sr-only">(current)</span></a></li>
                 {% if perms.auth.corp_stats %}
-                <li><a href="/fleetup/characters/">Characters</a></li>
+                <li><a href="/fleetup/characters/">{% trans "Characters" %}</a></li>
                 {% endif %}
                 <li></li>
             </ul>
@@ -37,16 +38,16 @@
                 {% for x, y in fitting_data.items %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">This fit is part of a doctrine</h3>
+                        <h3 class="panel-title">{% trans "This fit is part of a doctrine" %}</h3>
                     </div>
                     <div class="panel-body">
                         {% for doctrin in y.Doctrines %}
                         <h4>{{ doctrin.Name }}</h4>
                         <div class="col-lg-12">
-                            <p>Role in doctrine: {{ doctrin.Role }}</p>
+                            <p>{% trans "Role in doctrine:" %} {{ doctrin.Role }}</p>
                         </div>
                         <div class="col-lg-4">
-                            <p>Priority:</p>
+                            <p>{% trans "Priority:" %}</p>
                         </div>
                         <div class="col-lg-8">
                             <div class="progress">
@@ -56,14 +57,14 @@
                             </div>
                         </div>
                         <div class="col-lg-8 col-lg-offset-7">
-                            <a class="btn btn-primary" href="/fleetup/doctrines/{{ doctrin.DoctrineId }}/">See doctrine</a>
+                            <a class="btn btn-primary" href="/fleetup/doctrines/{{ doctrin.DoctrineId }}/">{% trans "See doctrine" %}</a>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Fit categories</h3>
+                            <h3 class="panel-title">{% trans "Fit categories" %}</h3>
                         </div>
                         <div class="panel-body">
                             {% for category in y.Categories %}
@@ -74,7 +75,7 @@
                 {% endfor %}
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">All fits in this Doctrine</h3>
+                            <h3 class="panel-title">{% trans "All fits in this Doctrine" %}</h3>
                         </div>
                         <div class="panel-body">
                             <div class="list-group">
@@ -103,10 +104,10 @@
                             <img src="https://image.eveonline.com/InventoryType/{{ j.EveTypeId }}_64.png" class="img-responsive">
                         </div>
                         <div class="col-lg-9">
-                            <p>Hull: <b>{{ j.HullType }}</b></p>
-                            <p>Ship: <b>{{ j.ShipType }}</b></p>
+                            <p>{% trans "Hull:" %} <b>{{ j.HullType }}</b></p>
+                            <p>{% trans "Ship:" %} <b>{{ j.ShipType }}</b></p>
                             {% load humanize %}
-                            <p>Estimated price: <b>{{ j.EstPrice|intword }} ISK</b></p>
+                            <p>{% trans "Estimated price:" %} <b>{{ j.EstPrice|intword }} ISK</b></p>
                         </div>
                         {% regroup j.FittingData by Slot as fitting_list %}
                     <table class="table table-condensed table-hover">
@@ -134,7 +135,7 @@
             <div class="col-lg-3">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">EFT/Export</h3>
+                        <h3 class="panel-title">{% trans "EFT/Export" %}</h3>
                     </div>
                     <div class="panel-body">
                     {% for data in fitting_eft.items %}

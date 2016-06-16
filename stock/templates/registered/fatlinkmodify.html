@@ -1,29 +1,30 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
-{% block page_title %}Fatlink view{% endblock page_title %}
+{% block page_title %}{% trans "Fatlink view" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Edit fatlink "{{ fatlink.name }}"
+        <h1 class="page-header text-center">{% blocktrans %}Edit fatlink "{{ fatlink.name }}"{% endblocktrans %}
             <div class="text-right">
                 <form>
                     <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" name="deletefat" value="True">
-                        Delete fat
+                        {% trans "Delete fat" %}
                     </button>
                 </form>
             </div>
         </h1>
-        <h4><b>Registered characters</b></h4>
+        <h4><b>{% trans "Registered characters" %}</b></h4>
         <table class="table table-responsive table-bordered">
             <tr>
-                <th class="text-center">User</th>
-                <th class="text-center">Character</th>
-                <th class="text-center">System</th>
-                <th class="text-center">Ship</th>
-                <th class="text-center">Eve Time</th>
+                <th class="text-center">{% trans "User" %}</th>
+                <th class="text-center">{% trans "Character" %}</th>
+                <th class="text-center">{% trans "System" %}</th>
+                <th class="text-center">{% trans "Ship" %}</th>
+                <th class="text-center">{% trans "Eve Time" %}</th>
                 <th></th>
             </tr>
             {% for fat in registered_fats %}

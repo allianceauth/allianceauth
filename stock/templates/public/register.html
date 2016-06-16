@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load bootstrap %}
+{% load i18n %}
 <html>
 
 <head>
@@ -38,6 +39,12 @@
         .panel-body {
 
         }
+        
+        #lang_select {
+            width: 40%;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
@@ -46,14 +53,30 @@
         <div class="panel panel-default panel-transparent">
             <div class="panel-body">
                 {% if error %}
-                    <div class="alert alert-danger" role="alert">Username Already Registered</div>
+                    <div class="alert alert-danger" role="alert">{% trans "Username Already Registered" %}</div>
                 {% endif %}
                 <form action="{% url 'auth_register_user' %}" method="POST">
                     {% csrf_token %}
-                    <h2 class="form-signin-heading">Register Account</h2>
+                    <h2 class="form-signin-heading">{% trans "Register Account" %}</h2>
                     {{ form|bootstrap }}
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Register" %}</button>
+                </form>
             </div>
+        </div>
+        
+        <div class="dropdown">
+            <form action="{% url 'set_language' %}" method="post">
+              {% csrf_token %}
+              <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}" />
+              <select onchange="this.form.submit()" class="form-control" id="lang_select" name="language">
+                {% get_language_info_list for LANGUAGES as languages %}
+                  {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                      {{ language.name_local }} ({{ language.code }})
+                    </option>
+                  {% endfor %}
+              </select>
+            </form>
         </div>
     </div>
 </div>

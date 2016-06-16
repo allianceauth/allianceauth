@@ -1,6 +1,7 @@
 {% extends "public/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}FleetUp - Doctrine{% endblock page_title %}
@@ -11,7 +12,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only">{% trans "Toggle navigation" %}</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -20,11 +21,11 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/fleetup/">Ops and Timers</a></li>
-                <li class="active"><a href="/fleetup/doctrines/">Doctrines <span class="sr-only">(current)</span></a></li>
-                <li><a href="/fleetup/fittings/">Fittings</a></li>
+                <li><a href="/fleetup/">{% trans "Ops and Timers" %}</a></li>
+                <li class="active"><a href="/fleetup/doctrines/">{% trans "Doctrines" %} <span class="sr-only">(current)</span></a></li>
+                <li><a href="/fleetup/fittings/">{% trans "Fittings" %}</a></li>
                 {% if perms.auth.corp_stats %}
-                <li><a href="/fleetup/characters/">Characters</a></li>
+                <li><a href="/fleetup/characters/">{% trans "Characters" %}</a></li>
                 {% endif %}
                 <li></li>
             </ul>
@@ -45,12 +46,12 @@
                             <table class="table table-condensed table-hover table-striped">
                                 <tr>
                                     <th class="col-md-1"></th>
-                                    <th class="col-md-1">Name</th>
-                                    <th class="col-md-1">Role</th>
-                                    <th class="col-md-1">Hull type</th>
-                                    <th class="col-md-1">Ship type</th>
-                                    <th class="col-md-1">Estimated ISK</th>
-                                    <th class="col-md-2">Categories</th>
+                                    <th class="col-md-1">{% trans "Name" %}</th>
+                                    <th class="col-md-1">{% trans "Role" %}</th>
+                                    <th class="col-md-1">{% trans "Hull type" %}</th>
+                                    <th class="col-md-1">{% trans "Ship type" %}</th>
+                                    <th class="col-md-1">{% trans "Estimated ISK" %}</th>
+                                    <th class="col-md-2">{% trans "Categories" %}</th>
                                 </tr>
                                 {% for item in Role.list %}
                                 <tr>
