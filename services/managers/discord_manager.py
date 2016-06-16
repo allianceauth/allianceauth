@@ -510,25 +510,13 @@ class DiscordOAuthManager:
             path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
             r = requests.delete(path, headers=custom_headers)
             logger.debug("Got status code %s after removing Discord user ID %s" % (r.status_code, user_id))
+            if r.status_code == 404:
+                logger.warn("Discord user ID %s already left the server." % user_id)
+                return True
             r.raise_for_status()
             return True
         except:
-            logger.exception("Failed to remove Discord user %s" % user_id)
-            try:
-                # user maybe already left server?
-                custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
-                path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members"
-                r = requests.get(path, headers=custom_headers)
-                members = r.json()
-                users = [str(m['user']['id']) == str(user_id) for m in members]
-                if True in users:
-                    logger.error("Unable to remove Discord user %s" % user_id)
-                    return False
-                else:
-                    logger.warn("Discord user %s alredy left server." % user_id)
-                    return True
-            except:
-                logger.exception("Failed to locate Discord user")
+            logger.exception("Failed to remove Discord user ID %s" % user_id)
             return False
 
     @staticmethod
