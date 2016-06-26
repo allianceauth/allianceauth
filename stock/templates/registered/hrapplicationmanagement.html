@@ -132,7 +132,7 @@
                                     <td class="text-center">
                                         {% if app.approved_denied == None %}
                                             {% if app.reviewer_str %}
-                                                <div class="label label-info">{% trans "Reviewer: {{ app.reviewer_str }}</div>
+                                                <div class="label label-info">{% trans "Reviewer:" %} {{ app.reviewer_str }}</div>
                                             {% else %}
                                                 <div class="label label-warning">{% trans "Pending" %}</div>
                                             {% endif %}
