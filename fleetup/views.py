@@ -51,7 +51,7 @@ def fleetup_view(request):
     return render_to_response('registered/fleetup.html',context, context_instance=RequestContext(request) )
 
 @login_required
-@permission_required('auth.corp_stats')
+@permission_required('auth.human_resources')
 def fleetup_characters(request):
     logger.debug("fleetup_characters called by user %s" % request.user)
 
