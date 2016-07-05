@@ -24,7 +24,7 @@ def register_user_view(request):
                 user.save()
                 logger.info("Created new user %s" % user)
 
-                return HttpResponseRedirect("/dashboard")
+                return HttpResponseRedirect("/dashboard/")
 
             else:
                 logger.error("Unable to register new user: username %s already exists." % form.cleaned_data['username'])
