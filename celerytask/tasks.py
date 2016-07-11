@@ -408,7 +408,10 @@ def set_state(user):
     if user.is_superuser:
         return
     change = False
-    state = determine_membership_by_user(user)
+    if user.is_active:
+        state = determine_membership_by_user(user)
+    else:
+        state = False
     logger.debug("Assigning user %s to state %s" % (user, state))
     if state == "MEMBER":
         change = make_member(user)
