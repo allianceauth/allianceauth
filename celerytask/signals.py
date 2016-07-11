@@ -1,6 +1,8 @@
 from django.db.models.signals import m2m_changed
 from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.db.models.signals import post_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 import logging
@@ -60,3 +62,22 @@ def post_delete_authts(sender, instance, *args, **kwargs):
     logger.debug("Received post_delete signal from %s" % instance)
     trigger_all_ts_update()
 
+@receiver(pre_delete, sender=User)
+def pre_delete_user(sender, instance, *args, **kwargs):
+    logger.debug("Received pre_delete from %s" % instance)
+    disable_member(instance)
+
+@receiver(pre_save, sender=User)
+def pre_save_user(sender, instance, *args, **kwargs):
+    logger.debug("Received pre_save from %s" % instance)
+    # check if user is being marked inactive
+    if not instance.pk:
+        # new model being created
+        return
+    try:
+        old_instance = User.objects.get(pk=instance.pk)
+        if old_instance.is_active and not instance.is_active:
+            logger.info("Disabling services for inactivation of user %s" % instance)
+            disable_member(instance)
+    except User.DoesNotExist:
+        pass
