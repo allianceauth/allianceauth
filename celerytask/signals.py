@@ -14,6 +14,7 @@ from .tasks import update_discord_groups
 from .tasks import update_teamspeak3_groups
 from .tasks import update_discourse_groups
 from .tasks import update_smf_groups
+from .tasks import set_state
 from authentication.models import AuthServicesInfo
 from services.models import AuthTS
 
@@ -70,7 +71,7 @@ def pre_delete_user(sender, instance, *args, **kwargs):
 @receiver(pre_save, sender=User)
 def pre_save_user(sender, instance, *args, **kwargs):
     logger.debug("Received pre_save from %s" % instance)
-    # check if user is being marked inactive
+    # check if user is being marked active/inactive
     if not instance.pk:
         # new model being created
         return
@@ -79,5 +80,8 @@ def pre_save_user(sender, instance, *args, **kwargs):
         if old_instance.is_active and not instance.is_active:
             logger.info("Disabling services for inactivation of user %s" % instance)
             disable_member(instance)
+        elif instance.is_active and not old_instance.is_active:
+            logger.info("Assessing state of reactivated user %s" % instance)
+            set_state(instance)
     except User.DoesNotExist:
         pass
