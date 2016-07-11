@@ -224,15 +224,22 @@ class Teamspeak3Manager:
         logger.debug("Deleting user %s with id %s from TS3 server." % (user, uid))
         if user:
             for client in server.send_command('clientlist'):
-                if client['keys']['client_database_id'] == user:
-                    logger.debug("Found user %s on TS3 server - issuing deletion command." % user)
-                    server.send_command('clientkick', {'clid': client['keys']['clid'], 'reasonid': 5,
-                                                       'reasonmsg': 'Auth service deleted'})
+                try:
+                    if client['keys']['client_database_id'] == user:
+                        logger.debug("Found user %s on TS3 server - issuing deletion command." % user)
+                        server.send_command('clientkick', {'clid': client['keys']['clid'], 'reasonid': 5,
+                                                           'reasonmsg': 'Auth service deleted'})
+                except:
+                    logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, client))
+                    return False
 
             ret = server.send_command('clientdbdelete', {'cldbid': user})
             if ret == '0':
                 logger.info("Deleted user with id %s from TS3 server." % uid)
                 return True
+            else:
+                logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, ret))
+                return False
         else:
             logger.warn("User with id %s not found on TS3 server. Assuming succesful deletion." % uid)
             return True
