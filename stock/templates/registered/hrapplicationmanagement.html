@@ -89,13 +89,13 @@
                                     <td class="text-center">{{ app.main_character }}</td>
                                     <td class="text-center">{{ app.form.corp.corporation_name }}</td>
                                     <td class="text-center">
-                                        {% if app.approved_denied == None %}
+                                        {% if app.approved == None %}
                                             {% if app.reviewer_str %}
                                                 <div class="label label-info">{% trans "Reviewer:" %} {{ app.reviewer_str }}</div>
                                             {% else %}
                                                 <div class="label label-warning">{% trans "Pending" %}</div>
                                             {% endif %}
-                                        {% elif  app.approved_denied == True %}
+                                        {% elif  app.approved == True %}
                                             <div class="label label-success">{% trans "Approved" %}</div>
                                         {% else %}
                                             <div class="label label-danger">{% trans "Rejected" %}</div>
@@ -130,13 +130,13 @@
                                     <td class="text-center">{{ app.main_character }}</td>
                                     <td class="text-center">{{ app.form.corp.corporation_name }}</td>
                                     <td class="text-center">
-                                        {% if app.approved_denied == None %}
+                                        {% if app.approved == None %}
                                             {% if app.reviewer_str %}
                                                 <div class="label label-info">{% trans "Reviewer:" %} {{ app.reviewer_str }}</div>
                                             {% else %}
                                                 <div class="label label-warning">{% trans "Pending" %}</div>
                                             {% endif %}
-                                        {% elif  app.approved_denied == True %}
+                                        {% elif  app.approved == True %}
                                             <div class="label label-success">{% trans "Approved" %}</div>
                                         {% else %}
                                             <div class="label label-danger">{% trans "Rejected" %}</div>
