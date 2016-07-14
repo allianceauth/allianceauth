@@ -15,6 +15,7 @@ from .tasks import update_teamspeak3_groups
 from .tasks import update_discourse_groups
 from .tasks import update_smf_groups
 from .tasks import set_state
+from .tasks import disable_member
 from authentication.models import AuthServicesInfo
 from services.models import AuthTS
 
