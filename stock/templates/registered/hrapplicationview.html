@@ -116,7 +116,7 @@
                                                 <div class="panel-heading" role="tab" id="">
                                                     <div class="panel-title">{{comment.created}} - {{ comment.user }}</div>
                                                 </div>
-                                                <div class="panel-body">{{ comment.text }}</div>
+                                                <div class="panel-body">{{ comment.text|linebreaks }}</div>
                                             </div>
                                         {% endfor %}
                                     </div>
