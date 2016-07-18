@@ -419,12 +419,18 @@ def activate_teamspeak3(request):
     logger.debug("activate_teamspeak3 called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
+    ticker = character.corporation_ticker
+
     if check_if_user_has_permission(request.user, "blue_member"):
         logger.debug("Adding TS3 user for blue user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.add_blue_user(character.character_name, character.corporation_ticker)
+        # Blue members should have alliance ticker (if in alliance)
+        if EveAllianceInfo.objects.filter(alliance_id=character.alliance_id).exists():
+            alliance = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)[0]
+            ticker = alliance.alliance_ticker
+        result = Teamspeak3Manager.add_blue_user(character.character_name, ticker)
     else:
         logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.add_user(character.character_name, character.corporation_ticker)
+        result = Teamspeak3Manager.add_user(character.character_name, ticker)
 
     # if its empty we failed
     if result[0] is not "":

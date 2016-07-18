@@ -47,7 +47,9 @@ def timer_view(request):
     logger.debug("Determined closest timer is %s" % closest_timer)
     render_items = {'timers': Timer.objects.all().filter(corp_timer=False),
                     'corp_timers': corp_timers,
-                    'closest_timer': closest_timer}
+                    'closest_timer': closest_timer,
+                    'future_timers': Timer.objects.all().filter(corp_timer=False).filter(eve_time__gte=datetime.datetime.now()),
+                    'past_timers': Timer.objects.all().filter(corp_timer=False).filter(eve_time__lt=datetime.datetime.now())}
 
     return render_to_response('registered/timermanagement.html', render_items, context_instance=RequestContext(request))
 
