@@ -18,7 +18,7 @@ class EveCharacterAdmin(admin.ModelAdmin):
     list_display = ('character_name', 'corporation_name', 'alliance_name', 'user', 'main_character')
 
     def main_character(self, obj):
-        auth = AuthServicesInfoManager.get_auth_for_user(obj.user)
+        auth = AuthServicesInfoManager.get_auth_service_info(obj.user)
         if auth and auth.main_char_id:
             try:
                 return EveCharacter.objects.get(character_id=auth.main_char_id)
