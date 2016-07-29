@@ -453,7 +453,7 @@ def verify_teamspeak3(request):
         form = TeamspeakJoinForm(request.POST)
         if form.is_valid():
             update_teamspeak3_groups.delay(request.user.pk)
-            logger.debug("Validated user %s joined TS server")
+            logger.debug("Validated user %s joined TS server" % request.user)
             return HttpResponseRedirect("/services/")
     else:
         form = TeamspeakJoinForm({'username':authinfo.teamspeak3_uid})
