@@ -10,8 +10,6 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 
 admin.site.register(AuthTS, AuthTSgroupAdmin)
 
-admin.site.register(DiscordAuthToken)
-
 admin.site.register(MumbleUser)
 
 admin.site.register(GroupCache)
