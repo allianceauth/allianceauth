@@ -235,13 +235,13 @@ def update_discourse_groups(pk):
     if len(groups) == 0:
         logger.debug("No syncgroups found for user. Adding empty group.")
         groups.append('empty')
-    logger.debug("Updating user %s discord groups to %s" % (user, groups))
+    logger.debug("Updating user %s discourse groups to %s" % (user, groups))
     try:
         DiscourseManager.update_groups(authserviceinfo.discourse_username, groups)
     except:
         logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user, exc_info=True)
         raise self.retry(countdown = 60 * 10)
-    logger.debug("Updated user %s discord groups." % user)
+    logger.debug("Updated user %s discourse groups." % user)
 
 @task
 def update_all_discourse_groups():
