@@ -506,7 +506,7 @@ class DiscordOAuthManager:
     @staticmethod
     def delete_user(user_id):
         try:
-            custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
+            custom_headers = {'accept': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
             path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
             r = requests.delete(path, headers=custom_headers)
             logger.debug("Got status code %s after removing Discord user ID %s" % (r.status_code, user_id))
@@ -521,7 +521,7 @@ class DiscordOAuthManager:
 
     @staticmethod
     def __get_groups():
-        custom_headers = {'accept': 'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
+        custom_headers = {'accept': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/roles"
         r = requests.get(path, headers=custom_headers)
         logger.debug("Got status code %s after retrieving Discord roles" % r.status_code)
@@ -567,7 +567,7 @@ class DiscordOAuthManager:
 
     @staticmethod
     def __generate_role():
-        custom_headers = {'accept':'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
+        custom_headers = {'accept':'application/json', 'authorization': 'Bot' + settings.DISCORD_BOT_TOKEN}
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/roles"
         r = requests.post(path, headers=custom_headers)
         logger.debug("Received status code %s after generating new role." % r.status_code)
@@ -576,7 +576,7 @@ class DiscordOAuthManager:
 
     @staticmethod
     def __edit_role(role_id, name, color=0, hoist=True, permissions=36785152):
-        custom_headers = {'content-type':'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
+        custom_headers = {'content-type':'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         data = {
             'color': color,
             'hoist': hoist,
@@ -597,7 +597,7 @@ class DiscordOAuthManager:
 
     @staticmethod
     def update_groups(user_id, groups):
-        custom_headers = {'content-type':'application/json', 'authorization': settings.DISCORD_BOT_TOKEN}
+        custom_headers = {'content-type':'application/json', 'authorization': 'Bot' + settings.DISCORD_BOT_TOKEN}
         group_ids = [DiscordOAuthManager.__group_name_to_id(g) for g in groups]
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
         data = {'roles': group_ids}
