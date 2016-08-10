@@ -24,10 +24,12 @@ class Teamspeak3Manager:
         sanatized = sanatized.replace("'", "-")
         return sanatized
 
+    @staticmethod
     def __generate_username(username, corp_ticker):
         sanatized = "[" + corp_ticker + "]" + username
         return sanatized[:30]
 
+    @staticmethod
     def __generate_username_blue(username, corp_ticker):
         sanatized = "[BLUE][" + corp_ticker + "]" + username
         return sanatized[:30]
