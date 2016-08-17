@@ -9,6 +9,7 @@ from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
 from services.managers.discord_manager import DiscordOAuthManager
 from services.managers.xenforo_manager import XenForoManager
+from services.managers.market_manager import marketManager
 
 import logging
 
@@ -77,6 +78,11 @@ def deactivate_services(user):
         logger.debug("User %s has a XenForo account %s. Deleting." % (user, authinfo.xenforo_username))
         XenForoManager.disable_user(authinfo.xenforo_username)
         AuthServicesInfoManager.update_user_xenforo_info("", "", user)
+        change = True
+    if authinfo.market_username and authinfo.market_username != "":
+        logger.debug("User %s has a Market account %s. Deleting." % (user, authinfo.market_username))
+        marketManager.disable_user(authinfo.market_username)
+        AuthServicesInfoManager.update_user_market_info("", "", user)
         change = True
     if change:
         notify(user, "Services Disabled", message="Your services accounts have been disabled.", level="danger")
