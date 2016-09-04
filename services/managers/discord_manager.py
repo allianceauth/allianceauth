@@ -452,7 +452,7 @@ AUTH_URL = "https://discordapp.com/api/oauth2/authorize"
 TOKEN_URL = "https://discordapp.com/api/oauth2/token"
 
 # kick, manage roles
-BOT_PERMISSIONS = 0x00000002 + 0x10000000
+BOT_PERMISSIONS = 0x00000002 + 0x10000000 + 0x08000000
 
 # get user ID, accept invite
 SCOPES = [
@@ -502,6 +502,23 @@ class DiscordOAuthManager:
         except:
             logger.exception("Failed to add Discord user")
             return None
+
+    @staticmethod
+    def update_nickname(user_id, nickname):
+        try:
+            custom_headers = {'content-type':'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
+            data = { 'nick': nickname, }
+            path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
+            r = requests.patch(path, headers=custom_headers, json=data)
+            logger.debug("Got status code %s after setting nickname for Discord user ID %s (%s)" % (r.status_code, user_id, nickname))
+            if r.status_code == 404:
+                logger.warn("Discord user ID %s could not be found in server." % user_id)
+                return True
+            r.raise_for_status()
+            return True
+        except:
+            logger.exception("Failed to set nickname for Discord user ID %s (%s)" % (user_id, nickname))
+            return False
 
     @staticmethod
     def delete_user(user_id):

@@ -225,6 +225,26 @@ def update_all_discord_groups():
         update_discord_groups.delay(user.user_id)
 
 @task
+def update_discord_nickname(pk):
+    user = User.objects.get(pk=pk)
+    logger.debug("Updating discord nickname for user %s" % user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    character = EveManager.get_character_by_id(authserviceinfo.main_char_id)
+    logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
+    try:
+        DiscordOAuthManager.update_nickname(authserviceinfo.discord_uid, character.character_name)
+    except:
+        logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
+    logger.debug("Updated user %s discord nickname." % user)
+
+@task
+def update_all_discord_nicknames():
+    logger.debug("Updating ALL discord nicknames")
+    for user in AuthServicesInfo.objects.exclude(discord_uid__exact=''):
+        update_discord_nickname(user.user_id)
+
+@task
 def update_discourse_groups(pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discourse groups for user %s" % user)

@@ -454,6 +454,7 @@ TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.c
 # DISCORD_APP_ID - oauth app client ID
 # DISCORD_APP_SECRET - oauth app secret
 # DISCORD_CALLBACK_URL - oauth callback url
+# DISCORD_SYNC_NAMES - enable to force discord nicknames to be set to eve char name (bot needs Manage Nicknames permission)
 ######################################
 DISCORD_GUILD_ID = os.environ.get('AA_DISCORD_GUILD_ID', '')
 DISCORD_BOT_TOKEN = os.environ.get('AA_DISCORD_BOT_TOKEN', '')
@@ -461,6 +462,7 @@ DISCORD_INVITE_CODE = os.environ.get('AA_DISCORD_INVITE_CODE', '')
 DISCORD_APP_ID = os.environ.get('AA_DISCORD_APP_ID', '')
 DISCORD_APP_SECRET = os.environ.get('AA_DISCORD_APP_SECRET', '')
 DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://mydomain.com/discord_callback')
+DISCORD_SYNC_NAMES = 'True' == os.environ.get('AA_DISCORD_SYNC_NAMES', 'False')
 
 ######################################
 # Discourse Configuration
