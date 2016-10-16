@@ -1,11 +1,13 @@
+from __future__ import unicode_literals
 import logging
-from django.contrib.auth.models import User
-from .models import Notification
 
 logger = logging.getLogger(__name__)
 
+
 class NotificationHandler(logging.Handler):
     def emit(self, record):
+        from django.contrib.auth.models import User
+        from notifications.models import Notification
         for user in User.objects.all():
             if user.has_perm('auth.logging_notifications'):
                 notif = Notification()
@@ -14,7 +16,7 @@ class NotificationHandler(logging.Handler):
                 notif.level = str([item[0] for item in Notification.LEVEL_CHOICES if item[1] == record.levelname][0])
                 message = record.getMessage()
                 if record.exc_text:
-                    message = message + "\n\n"
+                    message += "\n\n"
                     message = message + record.exc_text
                 notif.message = message
                 notif.save()

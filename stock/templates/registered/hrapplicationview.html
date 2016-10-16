@@ -76,16 +76,16 @@
                             {% if app.approved == None %}
                                 {% if app.reviewer == user %}
                                     {% if perms.hrapplications.approve_application %}
-                                        <a href="/hr_application_approve/{{ app.id }}" class="btn btn-success">{% trans "Approve" %}</a>
+                                        <a href="{% url 'auth_hrapplication_approve' app.id %}" class="btn btn-success">{% trans "Approve" %}</a>
                                     {% endif %}
                                     {% if perms.hrapplications.reject_application %}
-                                        <a href="/hr_application_reject/{{ app.id }}" class="btn btn-danger">{% trans "Reject" %}</a>
+                                        <a href="{% url 'auth_hrapplication_reject' app.id %}" class="btn btn-danger">{% trans "Reject" %}</a>
                                     {% endif %}
                                     {% if perms.hrapplications.delete_application %}
-                                        <a href="/hr_application_remove/{{ app.id }}" class="btn btn-danger">{% trans "Delete" %}</a>
+                                        <a href="{% url 'auth_hrapplication_remove' app.id %}" class="btn btn-danger">{% trans "Delete" %}</a>
                                     {% endif %}
                                 {% elif not app.reviewer %}
-                                    <a href="/hr_mark_in_progress/{{ app.id }}" class="btn btn-warning">{% trans "Mark in Progress" %}</a>
+                                    <a href="{% url 'auth_hrapplication_mark_in_progress' app.id %}" class="btn btn-warning">{% trans "Mark in Progress" %}</a>
                                 {% endif %}
                             {% endif %}
                             {% if perms.hrapplications.add_applicationcomment %}

@@ -1,14 +1,16 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 from eveonline.models import EveCharacter
-from eveonline.models import EveCorporationInfo
 from datetime import datetime
 
 
+@python_2_unicode_compatible
 class optimer(models.Model):
     class Meta:
         ordering = ['start']
+
     doctrine = models.CharField(max_length=254, default="")
     system = models.CharField(max_length=254, default="")
     location = models.CharField(max_length=254, default="")
@@ -23,4 +25,3 @@ class optimer(models.Model):
     def __str__(self):
         output = self.operation_name
         return output.encode('utf-8')
-

@@ -1,30 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1026499400">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="Django default" uuid="3eb61453-647a-4832-8320-f3561f039abc">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/alliance_auth</jdbc-url>
-      <user-name>allianceauth</user-name>
-      <user-password>dfcbdfc6dfc6dfc3dfcbdfc4dfc9dfcfdfcbdfdfdfdedfc2</user-password>
-      <libraries />
     </data-source>
     <data-source source="LOCAL" name="Django phpbb3" uuid="2de247c2-1951-4e74-8276-6a1c89c396fa">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/alliance_forum</jdbc-url>
-      <user-name>allianceauth</user-name>
-      <user-password>dfcbdfc6dfc6dfc3dfcbdfc4dfc9dfcfdfcbdfdfdfdedfc2</user-password>
-      <libraries />
     </data-source>
     <data-source source="LOCAL" name="Django mumble" uuid="9963e5ca-7f2f-4dd3-9175-bc7102dfd48c">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/alliance_mumble</jdbc-url>
-      <user-name>alliancemumble</user-name>
-      <user-password>dfcbdfc6dfc6dfc3dfcbdfc4dfc9dfcfdfc7dfdfdfc7dfc8dfc6dfcf</user-password>
-      <libraries />
     </data-source>
   </component>
 </project>
-

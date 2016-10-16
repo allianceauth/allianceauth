@@ -16,8 +16,8 @@
                         </h4>
                     </th>
                     <th class="col-md-1">
-                        <a href="{% url 'auth_fatlink_view_personal_statistics' %}">
-                            <button type="button" class="btn btn-info">{% trans "Personal statistics" %}</button>
+                        <a href="{% url 'auth_fatlink_view_personal_statistics' %}" class="btn btn-info">
+                            {% trans "Personal statistics" %}
                         </a>
                     </th>
                 </tr>
@@ -53,13 +53,13 @@
                         </h4>
                     </th>
                     <th class="col-md-1">
-                        <a href="{% url 'auth_fatlink_view_statistics' %}">
-                            <button type="button" class="btn btn-info">{% trans "View statistics" %}</button>
+                        <a href="{% url 'auth_fatlink_view_statistics' %}" class="btn btn-info">
+                            {% trans "View statistics" %}
                         </a>
                     </th>
                     <th class="col-md-1">
-                        <a href="{% url 'auth_create_fatlink_view' %}">
-                            <button type="button" class="btn btn-success">{% trans "Create fatlink" %}</button>
+                        <a href="{% url 'auth_create_fatlink_view' %}" class="btn btn-success">
+                            {% trans "Create fatlink" %}
                         </a>
                     </th>
                 </tr>
@@ -81,9 +81,8 @@
                 <td class="text-center">{{ link.fatdatetime }}</td>
                 <td class="text-center">{{ link.duration }}</td>
                 <td class="text-center">
-                    <a href="{%  url 'auth_modify_fatlink_view' %}{{ link.hash }}/{{ link.name }}">
-                        <button type="button" class="btn btn-info"><span
-                                class="glyphicon glyphicon-edit"></span></button>
+                    <a href="{%  url 'auth_modify_fatlink_view' %}{{ link.hash }}/{{ link.name }}" class="btn btn-info">
+                        <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>
             </tr>

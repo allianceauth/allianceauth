@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load i18n %}
+{% load navactive %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,6 +31,10 @@
         #f_lang_select {
             margin-right: 5px;
         }
+        .navbar-brand {
+            height: 58px;
+            padding: 19px 19px;
+        }
     </style>
 </head>
 
@@ -39,22 +44,17 @@
         <!-- Navigation -->
 
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-
-            <div class="navbar-header ">
-                <a class="navbar-brand ">
-                    <div class="fa fa-cog fa-spin"></div>
+            <div class="container-fluid">
+            <a class="navbar-brand">
                     {% if IS_CORP %}
                         {{ CORP_NAME }}
                     {% else %}
                         {{ ALLIANCE_NAME }}
                     {% endif %}
-                </a>
-            </div>
-
+            </a>
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
                 <li class="nav-link">
                     <form id="f_lang_select" action="{% url 'set_language' %}" method="post">
                         {% csrf_token %}
@@ -70,21 +70,30 @@
                     </form>
                 </li>
                 {% if notifications %}
-                    <li class="nav-link active"><a href="{% url 'auth_notification_list' %}">
-                        <i class="fa fa-flag"></i></a>
+                    <li class="nav-link active">
+                        <a href="{% url 'auth_notification_list' %}">
+                            <span class="fa-stack">
+                                <i class="fa fa-bell fa-stack-2x"></i>
+                                <i class="fa fa-inverse fa-stack-1x">{{ notifications }}</i>
+                            </span>
+                        </a>
                     </li>
                 {% else %}
                     <li class="nav-link"><a href="{% url 'auth_notification_list' %}">
-                        <i class="fa fa-flag-o"></i></a>
+                        <i class="fa fa-bell-o"></i></a>
                     </li>
                 {% endif %}
                 {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                    {% endif %}
                     <li><a href="{% url 'auth_logout_user' %}">{% trans "Logout" %}</a></li>
                 {% else %}
                     <li><a href="{% url 'auth_login_user' %}">{% trans "Login" %}</a></li>
                 {% endif %}
                 
             </ul>
+            </div>
             
             <!-- /.navbar-top-links -->
 
@@ -96,149 +105,134 @@
                         </li>
 
                         <li>
-                            <a {% ifequal request.path "/dashboard/" %} class="active" {% endifequal %}
-                                                                        href="{% url 'auth_dashboard' %}"><i
-                                    class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}</a>
+                            <a class="{% navactive request 'auth_dashboard' %}" href="{% url 'auth_dashboard' %}">
+                                <i class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}
+                            </a>
                         </li>
 
                         <li>
-                            <a {% ifequal request.path "/api_key_management/" %} class="active" {% endifequal %}
-                                                                                 href="{% url 'auth_api_key_management' %}"><i
-                                    class="fa fa-key fa-fw grayiconecolor"></i>{% trans " Api Keys" %}</a>
+                            <a class="{% navactive request 'auth_api_key_management auth_add_api_key' %}" href="{% url 'auth_api_key_management' %}">
+                                <i class="fa fa-key fa-fw grayiconecolor"></i>{% trans " Api Keys" %}
+                            </a>
                         </li>
 
                         <li>
-                            <a {% ifequal request.path "/characters/" %} class="active" {% endifequal %}
-                                                                         href="{% url 'auth_characters' %}"><i
-                                    class="fa fa-users fa-fw grayiconecolor"></i>{% trans " Characters" %}</a>
+                            <a class="{% navactive request 'auth_characters' %}" href="{% url 'auth_characters' %}">
+                                <i class="fa fa-users fa-fw grayiconecolor"></i>{% trans " Characters" %}
+                            </a>
                         </li>
 
-                        {% if  perms.auth.member %}
+                        {% if STATE == MEMBER_STATE or user.is_superuser %}
                             <li>
-                                <a {% ifequal request.path "/groups/" %} class="active" {% endifequal %}
-                                                                         href="{% url 'auth_groups' %}"><i
-                                        class="fa fa-cogs fa-sitemap grayiconecolor"></i>{% trans " Groups" %}</a>
+                                <a class="{% navactive request 'auth_groups' %}" href="{% url 'auth_groups' %}">
+                                    <i class="fa fa-cogs fa-fw fa-sitemap grayiconecolor"></i>{% trans " Groups" %}
+                                </a>
                             </li>
                         {% endif %}
 
                         <li>
-                            <a {% ifequal request.path "/help/" %} class="active" {% endifequal %}
-                                                                   href="{% url 'auth_help' %}"><i
-                                    class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}</a>
+                            <a class="{% navactive request 'auth_help' %}" href="{% url 'auth_help' %}">
+                                <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
+                            </a>
                         </li>
 
 
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Aux Navigation" %}</h5>
                         </li>
-                        {% if  perms.auth.member or perms.auth.blue_member %}
+                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
                             <li>
-                                <a {% ifequal request.path "/services/" %} class="active" {% endifequal %}
-                                                                           href="{% url 'auth_services' %}"><i
-                                        class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}</a>
+                                <a class="{% navactive request 'auth_services' %}" href="{% url 'auth_services' %}">
+                                    <i class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}
+                                </a>
                             </li>
                         {% endif %}
 
-                        {% if not perms.auth.member or perms.auth.human_resources %}
+                        {% if not STATE == MEMBER_STATE or perms.auth.human_resources %}
                             <li>
-                                <a {% ifequal request.path "/hr_application_management/" %}
-                                    class="active" {% endifequal %}
-                                    href="{% url 'auth_hrapplications_view' %}"><i
-                                        class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}</a>
+                                <a class="{% navactive request 'auth_hrapplications_view auth_hrapplication_create_view auth_hrapplication_personal_view auth_hrapplication_search auth_hrapplication_view' %}"
+                                    href="{% url 'auth_hrapplications_view' %}">
+                                        <i class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}
+                                </a>
                             </li>
                         {% endif %}
 
                         {% if perms.auth.corp_apis or perms.auth.alliance_apis %}
                             <li>
-                                <a {% ifequal request.path "/corputils/" %} class="active" {% endifequal %}
-                                                                                   href="{% url 'auth_corputils' %}"><i
-                                        class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}</a>
+                                <a class="{% navactive request 'auth_corputils auth_corputils_search auth_corputils_corp_view auth_corputils_month' %}" href="{% url 'auth_corputils' %}">
+                                    <i class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}
+                                </a>
                             </li>
                         {% endif %}
 
                         {% if perms.auth.group_management %}
                             <li>
-                                <a {% ifequal request.path "/user/group_management/" %} class="active" {% endifequal %}
-                                                                                        href="{% url 'auth_group_management' %}"><i
-                                        class="fa fa-lock fa-sitemap grayiconecolor"></i>{% trans " Group Management" %}</a>
+                                <a class="{% navactive request 'auth_group_management' %}" href="{% url 'auth_group_management' %}">
+                                    <i class="fa fa-lock fa-sitemap fa-fw grayiconecolor"></i>{% trans " Group Management" %}
+                                </a>
                             </li>
                         {% endif %}
 
-                        {% if  perms.auth.member or perms.auth.blue_member %}
-							<li>
-                                <a {% ifequal request.path "/fits" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_fleet_fits' %}"><i
-                                        class="fa fa-bolt fa-fw grayiconecolor"></i>{% trans " Fleet Doctrines" %}</a>
-                            </li>
+                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
                             <li>
-                                <a {% ifequal request.path "/fleetup" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_fleetup_view' %}"><i
-                                        class="fa fa-clock-o fa-fw grayiconecolor"></i> Fleet-Up</a>
+                                <a class="{% navactive request 'auth_fleetup_view auth_fleetup_fittings auth_fleetup_fitting auth_fleetup_doctrines auth_fleetup_doctrine auth_fleetup_characters' %}" href="{% url 'auth_fleetup_view' %}">
+                                    <i class="fa fa-clock-o fa-fw grayiconecolor"></i> Fleet-Up
+                                </a>
                             </li>
 
 			{% endif %}
 
-                        {% if  perms.auth.member or perms.auth.blue_member %}
-                            {% if perms.auth.signature_view %}
-			      <li>
-                                <a {% ifequal request.path "/sigtracker" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_signature_view' %}"><i
-                                        class="fa fa-compass fa-fw grayiconecolor"></i>{% trans " Wormhole Tracker" %}</a>
-                            </li>
-                            {% endif %}
+                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
 			    {% if perms.auth.optimer_view %}
                             <li>
-                                <a {% ifequal request.path "/optimer" %} class="active" {% endifequal %}
-                                                                                  href="{% url 'auth_optimer_view' %}"><i
-                                        class="fa fa-exclamation  fa-fw grayiconecolor"></i>{% trans " Fleet Operations" %}</a>
+                                <a class="{% navactive request 'auth_optimer_view auth_add_optimer_view auth_edit_optimer' %}" href="{% url 'auth_optimer_view' %}">
+                                    <i class="fa fa-exclamation  fa-fw grayiconecolor"></i>{% trans " Fleet Operations" %}
+                                </a>
                             </li>
 			    {% endif %}
                             {% if perms.auth.timer_view %}
                                 <li>
-                                    <a {% ifequal request.path "/timer_management" %} class="active" {% endifequal %}
-                                                                                      href="{% url 'auth_timer_view' %}"><i
-                                            class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}</a>
+                                    <a class="{% navactive request 'auth_timer_view auth_add_timer_view auth_edit_timer' %}" href="{% url 'auth_timer_view' %}">
+                                        <i class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}
+                                    </a>
                                 </li>
                             {% endif %}
 
                             <li>
-                            <a {% ifequal request.path "/fat/" %} class="active" {% endifequal %}
-                                                                         href="{% url 'auth_fatlink_view' %}"><i
-                                    class="fa fa-users fa-lightbulb-o grayiconecolor"></i> Fleet Activity Tracking</a>
-                             </li>
-
-                            <li>
-                                <a {% ifequal request.path "/srp/" %} class="active" {% endifequal %}
-                                                                      href="{% url 'auth_srp_management_view' %}"><i
-                                        class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}</a>
+                                <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
+                                    <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i> Fleet Activity Tracking
+                                </a>
                             </li>
 
+                            <li>
+                                <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
+                                    <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
+                                </a>
+                            </li>
                         {% endif %}
-
 
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Util" %}</h5>
                         </li>
                         <li>
-                            <a {% ifequal request.path "/user/password/" %} class="active" {% endifequal %}
-                                                                            href="{% url 'password_change' %}"><i
-                                    class="fa fa-lock fa-fw grayiconecolor"></i>{% trans "Change Password" %}</a>
+                            <a class="{% navactive request 'password_change password_change_done' %}" href="{% url 'password_change' %}">
+                                <i class="fa fa-lock fa-fw grayiconecolor"></i>{% trans "Change Password" %}
+                            </a>
                         </li>
 
-                        {% if  perms.auth.member or perms.auth.blue_member %}
+                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
                             <li>
-                                <a {% ifequal request.path "/tool/fleet_formatter_tool/" %}
-                                    class="active" {% endifequal %}
-                                    href="{% url 'auth_fleet_format_tool_view' %}"><i
-                                        class="fa fa-space-shuttle fa-fw grayiconecolor"></i>{% trans " Fleet Broadcast Formatter" %}</a>
+                                <a class="{% navactive request 'auth_fleet_format_tool_view' %}" href="{% url 'auth_fleet_format_tool_view' %}">
+                                    <i class="fa fa-space-shuttle fa-fw grayiconecolor"></i>{% trans " Fleet Broadcast Formatter" %}
+                                </a>
                             </li>
                         {% endif %}
 
                         {% if perms.auth.jabber_broadcast %}
                             <li>
-                                <a {% ifequal request.path "/services/jabber_broadcast/" %}
-                                    class="active" {% endifequal %} href="{% url 'auth_jabber_broadcast_view' %}"><i
-                                        class="fa fa-lock fa-bullhorn grayiconecolor"></i>{% trans " Jabber Broadcast" %}</a>
+                                <a class="{% navactive request 'auth_jabber_broadcast_view' %}" href="{% url 'auth_jabber_broadcast_view' %}">
+                                    <i class="fa fa-lock fa-fw fa-bullhorn grayiconecolor"></i>{% trans " Jabber Broadcast" %}
+                                </a>
                             </li>
                         {% endif %}
                     </ul>
@@ -251,6 +245,12 @@
 
         <div id="page-wrapper">
             <div class="container">
+                {% if messages %}
+                    <br>
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.level_tag}}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
             	{% block content %}
             	{% endblock content %}
             </div>

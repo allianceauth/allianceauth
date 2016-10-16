@@ -13,7 +13,7 @@
         {% if perms.auth.corputils %}
             <h1 class="page-header text-center">{% trans "Member Search Results" %}
             </h1>
-            <h2 class="text-center"><a href="{% url 'auth_corputils' %}{{ corp.corporation_id }}">{{ corp.corporation_name }}</a></h2>
+            <h2 class="text-center"><a href="{% url 'auth_corputils_corp_view' corp.corporation_id %}">{{ corp.corporation_name }}</a></h2>
             <div class="container-fluid">
          
         <div class="panel panel-default">
@@ -21,10 +21,10 @@
                 <div class="container-fluid">
                     <ul class="nav navbar-nav navbar-wide">
                         <li style="float: right">
-                            <form class="navbar-form navbar-right" role="search" action={% url 'auth_corputils_search' %}{{ corp.corporation_id }}/ method="POST">
+                            <form class="navbar-form navbar-right" role="search" action="{% url 'auth_corputils_search_corp' corp.corporation_id %}" method="POST">
                                 <div class="form-group">
                                 {% csrf_token %}
-                                {{ search_form.as_table }}
+                                {{ search_form|bootstrap }}
                                 </div>
                                 <button class="btn btn-default" type="submit">{% trans "Search" %}</button>
                             </form>

@@ -1,44 +1,45 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from django.contrib.auth.models import Group, User
 
+
+@python_2_unicode_compatible
 class TSgroup(models.Model):
     ts_group_id = models.IntegerField(primary_key=True)
     ts_group_name = models.CharField(max_length=30)
 
     class Meta:
-        verbose_name='TS Group'
+        verbose_name = 'TS Group'
 
     def __str__(self):
         return self.ts_group_name
-	
+
+
+@python_2_unicode_compatible
 class AuthTS(models.Model):
     auth_group = models.ForeignKey('auth.Group')
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
-        verbose_name='Auth / TS Group'
+        verbose_name = 'Auth / TS Group'
 
     def __str__(self):
         return self.auth_group.name
 
+
+@python_2_unicode_compatible
 class UserTSgroup(models.Model):
     user = models.ForeignKey('auth.User')
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
-        verbose_name='User TS Group'
+        verbose_name = 'User TS Group'
 
     def __str__(self):
         return self.user.name
 
-class DiscordAuthToken(models.Model):
-    email = models.CharField(max_length=254, unique=True)
-    token = models.CharField(max_length=254)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    def __str__(self):
-        output = "Discord Token for email %s user %s" % (self.email, self.user)
-        return output.encode('utf-8')
 
+@python_2_unicode_compatible
 class MumbleUser(models.Model):
     username = models.CharField(max_length=254, unique=True)
     pwhash = models.CharField(max_length=40)
@@ -47,6 +48,8 @@ class MumbleUser(models.Model):
     def __str__(self):
         return self.username
 
+
+@python_2_unicode_compatible
 class GroupCache(models.Model):
     SERVICE_CHOICES = (
         ("discourse", "discourse"),

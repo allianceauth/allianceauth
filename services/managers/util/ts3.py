@@ -1,8 +1,9 @@
+from __future__ import unicode_literals
 import socket
 import logging
 
 
-class ConnectionError():
+class ConnectionError:
     def __init__(self, ip, port):
         self.ip = ip
         self.port = port
@@ -22,8 +23,7 @@ ts3_escape = {'/': r"\/",
               "\t": r'\t',
               "\v": r'\v'}
 
-
-class TS3Proto():
+class TS3Proto:
     bytesin = 0
     bytesout = 0
 
@@ -66,7 +66,7 @@ class TS3Proto():
         while True:
             resp = self._sockfile.readline()
             resp = self.parse_command(resp)
-            if not 'command' in resp:
+            if 'command' not in resp:
                 data.append(resp)
             else:
                 break
@@ -78,7 +78,7 @@ class TS3Proto():
                 else:
                     return data[0]
             else:
-                return resp['keys']['id']
+                raise TeamspeakError(resp['keys']['id'])
 
     def construct_command(self, command, keys=None, opts=None):
         """
@@ -139,7 +139,7 @@ class TS3Proto():
                     v = [v[0], '='.join(v[1:])]
                 key, value = v
                 keys[key] = self._unescape_str(value)
-            elif (not v == ['']): 
+            elif not v == ['']:
                 if v[0][0] and v[0][0] == '-':
                     # Option
                     opts.append(v[0][1:])
@@ -159,9 +159,10 @@ class TS3Proto():
         @type value: string/int
         """
 
-        if isinstance(value, int): return "%d" % value
+        if isinstance(value, int):
+            return "%d" % value
         value = value.replace("\\", r'\\')
-        for i, j in ts3_escape.iteritems():
+        for i, j in ts3_escape:
             value = value.replace(i, j)
         return value
 
@@ -173,12 +174,12 @@ class TS3Proto():
         @type value: string/int
         """
 
-        if isinstance(value, int): return "%d" % value
+        if isinstance(value, int):
+            return "%d" % value
         value = value.replace(r"\\", "\\")
-        for i, j in ts3_escape.iteritems():
+        for i, j in ts3_escape:
             value = value.replace(j, i)
         return value
-
 
     def send(self, payload):
         if self._connected:
@@ -230,7 +231,7 @@ class TS3Server(TS3Proto):
         """
         Send a global message to the current Virtual Server
         @param msg: Message
-        @type ip: str
+        @type msg: str
         """
         if self._connected:
             return self.send_command('gm', keys={'msg': msg})
@@ -243,3 +244,213 @@ class TS3Server(TS3Proto):
         """
         if self._connected and id > 0:
             self.send_command('use', keys={'sid': id})
+
+
+class TeamspeakError:
+    def __init__(self, code, msg=None):
+        self.code = str(code)
+        if not msg:
+            msg = ts3_errors[self.code]
+        self.msg = msg
+
+    def __str__(self):
+        return self.code + ' ' + self.msg
+
+ts3_errors = {
+    '0': 'unknown error code',
+    '1': 'undefined error',
+    '2': 'not implemented',
+    '3': '',
+    '4': '',
+    '5': 'library time limit reached',
+    '256': 'command not found',
+    '257': 'unable to bind network port',
+    '258': 'no network port available',
+    '512': 'invalid clientID',
+    '513': 'nickname is already in use',
+    '514': 'invalid error code',
+    '515': 'max clients protocol limit reached',
+    '516': 'invalid client type',
+    '517': 'already subscribed',
+    '518': 'not logged in',
+    '519': 'could not validate client identity',
+    '520': 'invalid loginname or password',
+    '521': 'too many clones already connected',
+    '522': 'client version outdated, please update',
+    '523': 'client is online',
+    '524': 'client is flooding',
+    '525': 'client is modified',
+    '526': 'can not verify client at this moment',
+    '527': 'client is not permitted to log in',
+    '528': 'client is not subscribed to the channel',
+    '768': 'invalid channelID',
+    '769': 'max channels protocol limit reached',
+    '770': 'already member of channel',
+    '771': 'channel name is already in use',
+    '772': 'channel not empty',
+    '773': 'can not delete default channel',
+    '774': 'default channel requires permanent',
+    '775': 'invalid channel flags',
+    '776': 'permanent channel can not be child of non permanent channel',
+    '777': 'channel maxclient reached',
+    '778': 'channel maxfamily reached',
+    '779': 'invalid channel order',
+    '780': 'channel does not support filetransfers',
+    '781': 'invalid channel password',
+    '782': 'channel is private channel',
+    '783': 'invalid security hash supplied by client',
+    '1024': 'invalid serverID',
+    '1025': 'server is running',
+    '1026': 'server is shutting down',
+    '1027': 'server maxclient reached',
+    '1028': 'invalid server password',
+    '1029': 'deployment active',
+    '1030': 'unable to stop own server in your connection class',
+    '1031': 'server is virtual',
+    '1032': 'server wrong machineID',
+    '1033': 'server is not running',
+    '1034': 'server is booting up',
+    '1035': 'server got an invalid status for this operation',
+    '1036': 'server modal quit',
+    '1037': 'server version is too old for command',
+    '1280': 'database error',
+    '1281': 'database empty result set',
+    '1282': 'database duplicate entry',
+    '1283': 'database no modifications',
+    '1284': 'database invalid constraint',
+    '1285': 'database reinvoke command',
+    '1536': 'invalid quote',
+    '1537': 'invalid parameter count',
+    '1538': 'invalid parameter',
+    '1539': 'parameter not found',
+    '1540': 'convert error',
+    '1541': 'invalid parameter size',
+    '1542': 'missing required parameter',
+    '1543': 'invalid checksum',
+    '1792': 'virtual server got a critical error',
+    '1793': 'Connection lost',
+    '1794': 'not connected',
+    '1795': 'no cached connection info',
+    '1796': 'currently not possible',
+    '1797': 'failed connection initialization',
+    '1798': 'could not resolve hostname',
+    '1799': 'invalid server connection handler ID',
+    '1800': 'could not initialize Input Manager',
+    '1801': 'client library not initialized',
+    '1802': 'server library not initialized',
+    '1803': 'too many whisper targets',
+    '1804': 'no whisper targets found',
+    '2048': 'invalid file name',
+    '2049': 'invalid file permissions',
+    '2050': 'file already exists',
+    '2051': 'file not found',
+    '2052': 'file input/output error',
+    '2053': 'invalid file transfer ID',
+    '2054': 'invalid file path',
+    '2055': 'no files available',
+    '2056': 'overwrite excludes resume',
+    '2057': 'invalid file size',
+    '2058': 'file already in use',
+    '2059': 'could not open file transfer connection',
+    '2060': 'no space left on device (disk full?)',
+    '2061': "file exceeds file system's maximum file size",
+    '2062': 'file transfer connection timeout',
+    '2063': 'lost file transfer connection',
+    '2064': 'file exceeds supplied file size',
+    '2065': 'file transfer complete',
+    '2066': 'file transfer canceled',
+    '2067': 'file transfer interrupted',
+    '2068': 'file transfer server quota exceeded',
+    '2069': 'file transfer client quota exceeded',
+    '2070': 'file transfer reset',
+    '2071': 'file transfer limit reached',
+    '2304': 'preprocessor disabled',
+    '2305': 'internal preprocessor',
+    '2306': 'internal encoder',
+    '2307': 'internal playback',
+    '2308': 'no capture device available',
+    '2309': 'no playback device available',
+    '2310': 'could not open capture device',
+    '2311': 'could not open playback device',
+    '2312': 'ServerConnectionHandler has a device registered',
+    '2313': 'invalid capture device',
+    '2314': 'invalid clayback device',
+    '2315': 'invalid wave file',
+    '2316': 'wave file type not supported',
+    '2317': 'could not open wave file',
+    '2318': 'internal capture',
+    '2319': 'device still in use',
+    '2320': 'device already registerred',
+    '2321': 'device not registered/known',
+    '2322': 'unsupported frequency',
+    '2323': 'invalid channel count',
+    '2324': 'read error in wave',
+    '2325': 'sound need more data',
+    '2326': 'sound device was busy',
+    '2327': 'there is no sound data for this period',
+    '2328': 'Channelmask set bits count (speakers) is not the same as channel (count)',
+    '2560': 'invalid group ID',
+    '2561': 'duplicate entry',
+    '2562': 'invalid permission ID',
+    '2563': 'empty result set',
+    '2564': 'access to default group is forbidden',
+    '2565': 'invalid size',
+    '2566': 'invalid value',
+    '2567': 'group is not empty',
+    '2568': 'insufficient client permissions',
+    '2569': 'insufficient group modify power',
+    '2570': 'insufficient permission modify power',
+    '2571': 'template group is currently used',
+    '2572': 'permission error',
+    '2816': 'virtualserver limit reached',
+    '2817': 'max slot limit reached',
+    '2818': 'license file not found',
+    '2819': 'license date not ok',
+    '2820': 'unable to connect to accounting server',
+    '2821': 'unknown accounting error',
+    '2822': 'accounting server error',
+    '2823': 'instance limit reached',
+    '2824': 'instance check error',
+    '2825': 'license file invalid',
+    '2826': 'virtualserver is running elsewhere',
+    '2827': 'virtualserver running in same instance already',
+    '2828': 'virtualserver already started',
+    '2829': 'virtualserver not started',
+    '2830': '',
+    '3072': 'invalid message id',
+    '3328': 'invalid ban id',
+    '3329': 'connection failed, you are banned',
+    '3330': 'rename failed, new name is banned',
+    '3331': 'flood ban',
+    '3584': 'unable to initialize tts',
+    '3840': 'invalid privilege key',
+    '4096': '',
+    '4097': '',
+    '4098': '',
+    '4099': '',
+    '4100': '',
+    '4101': '',
+    '4102': '',
+    '4103': '',
+    '4352': 'invalid password',
+    '4353': 'invalid request',
+    '4354': 'no (more) slots available',
+    '4355': 'pool missing',
+    '4356': 'pool unknown',
+    '4357': 'unknown ip location (perhaps LAN ip?)',
+    '4358': 'internal error (tried exceeded)',
+    '4359': 'too many slots requested',
+    '4360': 'too many reserved',
+    '4361': 'could not connect to provisioning server',
+    '4368': 'authentication server not connected',
+    '4369': 'authentication data too large',
+    '4370': 'already initialized',
+    '4371': 'not initialized',
+    '4372': 'already connecting',
+    '4373': 'already connected',
+    '4374': '',
+    '4375': 'io_error',
+    '4376': '',
+    '4377': '',
+    '4378': '',
+}

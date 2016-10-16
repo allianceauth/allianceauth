@@ -45,9 +45,8 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="/hr_application_view/{{ app.id }}">
-                                    <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-eye-open"></span></button>
+                                <a href="{% url 'auth_hrapplication_view' app.id %}" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
                                 </a>
                             </td>
                         </tr>

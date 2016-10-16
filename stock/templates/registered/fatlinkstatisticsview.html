@@ -10,13 +10,9 @@
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ month }}, {{ year }}{% endblocktrans %}
             <div class="text-right">
-                <a href="{% url 'auth_fatlink_view_statistics_month' previous_month|date:"Y" previous_month|date:"m"  %}">
-                    <button type="button" class="btn btn-info">{% trans "Previous month" %}</button>
-                </a>
+                <a href="{% url 'auth_fatlink_view_statistics_month' previous_month|date:"Y" previous_month|date:"m"  %}" class="btn btn-info">{% trans "Previous month" %}</a>
                 {%  if next_month %}
-                <a href="{% url 'auth_fatlink_view_statistics_month' next_month|date:"Y" next_month|date:"m"  %}">
-                    <button type="button" class="btn btn-info">{% trans "Next month" %}</button>
-                </a>
+                <a href="{% url 'auth_fatlink_view_statistics_month' next_month|date:"Y" next_month|date:"m"  %}" class="btn btn-info">{% trans "Next month" %}</a>
                 {%  endif %}
             </div>
         </h1>

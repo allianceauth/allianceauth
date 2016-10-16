@@ -52,7 +52,7 @@
                                         <ul class="dropdown-menu scrollable">
                                             {% for membercorpid, membercorpname in membercorplist %}
                                             <li>
-                                                <a href="/corputils/{{ membercorpid }}/">{{ membercorpname }}</a>
+                                                <a href="{% url 'auth_corputils_corp_view' membercorpid %}">{{ membercorpname }}</a>
                                             </li>
                                             {% endfor %}
                                         </ul>
@@ -159,10 +159,8 @@
                                             <td>
                                                 {% for apiinfo in player.apilist %}
                                                 <p>
-                                                    <a href="{{ JACK_KNIFE_URL }}?usid={{ apiinfo.api_id }}&apik={{ apiinfo.api_key }}"
-                                                       target="_blank">
-                                                        <button type="button" class="btn btn-primary">{% trans "API JackKnife" %}
-                                                        </button>
+                                                    <a href="{{ JACK_KNIFE_URL }}?usid={{ apiinfo.api_id }}&apik={{ apiinfo.api_key }}" target="_blank" class="btn btn-primary">
+                                                        {% trans "API JackKnife" %}
                                                     </a>
                                                 </p>
                                                 {% endfor %}

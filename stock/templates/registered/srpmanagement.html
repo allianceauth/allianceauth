@@ -15,11 +15,11 @@
             <h1 class="page-header text-center">{% trans "SRP Management" %}
                 <div class="text-right">
                     {% if perms.auth.srp_management %}
-                        <a href="{% url 'auth_srp_management_all_view' %}">
-                            <button type="button" class="btn btn-primary">{% trans "View All" %}</button>
+                        <a href="{% url 'auth_srp_management_all_view' %}" class="btn btn-primary">
+                            {% trans "View All" %}
                         </a>
-                        <a href="{% url 'auth_srp_fleet_add_view' %}">
-                            <button type="button" class="btn btn-success">{% trans "Add SRP Fleet" %}</button>
+                        <a href="{% url 'auth_srp_fleet_add_view' %}" class="btn btn-success">
+                            {% trans "Add SRP Fleet" %}
                         </a>
                     {% endif %}
                 </div>
@@ -60,7 +60,7 @@
                         <th class="text-center">
                             {% if srpfleet.fleet_srp_code %}
                             <div class="label label-warning">
-                                <a href="/srp_request/{{ srpfleet.fleet_srp_code }}"
+                                <a href="{% url 'auth_srp_request_view' srpfleet.fleet_srp_code %}"
                                    >{{ srpfleet.fleet_srp_code }}</a>
                             </div>
                             {% else %}
@@ -90,30 +90,25 @@
                         </td>
                         <td class="text-center">
 
-                            <a href="/srp_fleet_view/{{ srpfleet.id }}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            <a href="{% url 'auth_srp_fleet_view' srpfleet.id %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
                             {% if perms.auth.srp_management %}
-                                <a href="/srp_fleet_edit/{{ srpfleet.id }}">
-                                    <button type="button" class="btn btn-info"><span
-                                            class="glyphicon glyphicon-pencil"></span></button>
+                                <a href="{% url 'auth_srp_fleet_edit_view' srpfleet.id %}" class="btn btn-info">
+                                    <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
 
-                                <a href="/srp_fleet_remove/{{ srpfleet.id }}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-trash"></span></button>
+                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-trash"></span>
                                 </a>
                                 {% if srpfleet.fleet_srp_code %}
-                                    <a href="/srp_fleet_disable/{{ srpfleet.id }}">
-                                    <button type="button" class="btn btn-warning"><span
-                                            class="glyphicon glyphicon-remove-sign"></span></button>
+                                    <a href="{% url 'auth_srp_fleet_disable' srpfleet.id %}" class="btn btn-warning">
+                                        <span class="glyphicon glyphicon-remove-sign"></span>
                                     </a>
                                 {% else %}
-                                    <a href="/srp_fleet_enable/{{ srpfleet.id }}">
-                                    <button type="button" class="btn btn-success"><span
-                                            class="glyphicon glyphicon-ok-sign"></span></button>
+                                    <a href="{% url 'auth_srp_fleet_enable' srpfleet.id %}" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-ok-sign"></span>
                                     </a>
                                 {% endif %}
 

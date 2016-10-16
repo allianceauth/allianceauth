@@ -22,10 +22,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">{% trans "Ops and Timers" %} <span class="sr-only">(current)</span></a></li>
-                <li><a href="/fleetup/doctrines/">{% trans "Doctrines" %}</a></li>
-                <li><a href="/fleetup/fittings/">{% trans "Fittings" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %}</a></li>
                 {% if perms.auth.human_resources %}
-                <li><a href="/fleetup/characters/">{% trans "Characters" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %}</a></li>
                 {% endif %}
                 <li></li>
             </ul>
@@ -82,7 +82,7 @@
                                         {% if start.doctrine %}
                                         {% for doctrine in start.doctrine %}
                                             
-                                            <a href="/fleetup/doctrines/{{ doctrine.Id }}/" class="label label-success">{{ doctrine.Name }}</a>
+                                            <a href="{% url 'auth_fleetup_doctrine' doctrine.Id %}" class="label label-success">{{ doctrine.Name }}</a>
                                             
                                         {% endfor %}
                                             

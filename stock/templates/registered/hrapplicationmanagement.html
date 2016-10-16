@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="col-lg-12">
-        {% if not perms.auth.member %}
+        {% if not STATE == MEMBER_STATE and not user.is_superuser %}
             <h1 class="page-header text-center">{% trans "Personal Applications" %}
                 <div class="text-right">
                     {% if create %}
@@ -41,15 +41,13 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="/hr_application_personal_view/{{ personal_app.id }}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            <a href="{% url 'auth_hrapplication_personal_view' personal_app.id %}"class="btn btn-primary">
+                                <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
                             {% if personal_app.approved == None %}
-                                <a href="/hr_application_personal_removal/{{ personal_app.id }}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
+                                <a href="{% url 'auth_hrapplication_personal_removal' personal_app.id %}" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                             {% endif %}
                         </td>
@@ -102,9 +100,8 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <a href="/hr_application_view/{{ app.id }}">
-                                            <button type="button" class="btn btn-primary"><span
-                                                    class="glyphicon glyphicon-eye-open"></span></button>
+                                        <a href="{% url 'auth_hrapplication_view' app.id %}" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
                                     </td>
                                 </tr>
@@ -143,9 +140,8 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <a href="/hr_application_view/{{ app.id }}">
-                                            <button type="button" class="btn btn-primary"><span
-                                                    class="glyphicon glyphicon-eye-open"></span></button>
+                                        <a href="{% url 'auth_hrapplication_view' app.id %}" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
                                     </td>
                                 </tr>

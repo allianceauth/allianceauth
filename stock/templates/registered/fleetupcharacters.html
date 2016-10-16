@@ -22,11 +22,11 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/fleetup/">{% trans "Ops and Timers" %}</a></li>
-                <li><a href="/fleetup/doctrines/">{% trans "Doctrines" %}</a></li>
-                <li><a href="/fleetup/fittings/">{% trans "Fittings" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_view' %}">{% trans "Ops and Timers" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %}</a></li>
                 
-                <li class="active"><a href="/fleetup/characters/">{% trans "Characters" %} <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %} <span class="sr-only">(current)</span></a></li>
                 
                 <li></li>
             </ul>

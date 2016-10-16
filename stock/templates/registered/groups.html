@@ -10,7 +10,7 @@
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Available Groups" %}</h1>
-        {% if perms.auth.member %}
+        {% if STATE == MEMBER_STATE or user.is_superuser %}
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">{% trans "GroupID" %}</th>
@@ -27,10 +27,8 @@
                         <td class="text-center">
                             {% if pair.0 in user.groups.all %}
                                 {% if pair.2 == "" %}
-                                    <a href="/group/request_leave/{{ pair.0.id }}">
-                                        <button type="button" class="btn btn-danger">
-                                            {% trans "Leave" %}
-                                        </button>
+                                    <a href="{% url 'auth_group_request_leave' pair.0.id %}" class="btn btn-danger">
+                                        {% trans "Leave" %}
                                     </a>
                                 {% else %}
                                     <button type="button" class="btn btn-primary" disabled>
@@ -38,10 +36,8 @@
                                     </button>
                                 {% endif %}
                             {% elif pair.2 == "" %}
-                                <a href="/group/request_add/{{ pair.0.id }}">
-                                    <button type="button" class="btn btn-success">
-                                        {% trans "Request" %}
-                                    </button>
+                                <a href="{% url 'auth_group_request_add' pair.0.id %}" class="btn btn-success">
+                                    {% trans "Request" %}
                                 </a>
                             {% else %}
                                 <button type="button" class="btn btn-primary" disabled>

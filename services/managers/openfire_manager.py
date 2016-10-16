@@ -1,9 +1,14 @@
+from __future__ import unicode_literals
+from django.utils import six
+import re
 import os
-from urlparse import urlparse
+try:
+    from urlparse import urlparse
+except ImportError:
+    # python 3
+    from urllib.parse import urlparse
 
-import xmpp
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+import sleekxmpp
 from django.conf import settings
 import threading
 from ofrestapi.users import Users as ofUsers
@@ -12,6 +17,7 @@ from ofrestapi import exception
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class OpenfireManager:
     def __init__(self):
@@ -37,6 +43,11 @@ class OpenfireManager:
     @staticmethod
     def __generate_random_pass():
         return os.urandom(8).encode('hex')
+
+    @staticmethod
+    def _sanitize_groupname(name):
+        name = name.strip(' _')
+        return re.sub('[^\w.-]', '', name)
 
     @staticmethod
     def add_user(username):
@@ -95,30 +106,33 @@ class OpenfireManager:
             return ""
 
     @staticmethod
-    def update_user_groups(username, password, groups):
+    def update_user_groups(username, groups):
         logger.debug("Updating openfire user %s groups %s" % (username, groups))
         api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         response = api.get_user_groups(username)
         remote_groups = []
         if response:
             remote_groups = response['groupname']
-            if isinstance(remote_groups, basestring):
+            if isinstance(remote_groups, six.string_types):
                 remote_groups = [remote_groups]
         logger.debug("Openfire user %s has groups %s" % (username, remote_groups))
         add_groups = []
         del_groups = []
         for g in groups:
-            if not g in remote_groups:
+            g = OpenfireManager._sanitize_groupname(g)
+            if g not in remote_groups:
                 add_groups.append(g)
         for g in remote_groups:
-            if not g in groups:
+            g = OpenfireManager._sanitize_groupname(g)
+            if g not in groups:
                 del_groups.append(g)
-        logger.info("Updating openfire groups for user %s - adding %s, removing %s" % (username, add_groups, del_groups))
+        logger.info(
+            "Updating openfire groups for user %s - adding %s, removing %s" % (username, add_groups, del_groups))
         if add_groups:
             api.add_user_groups(username, add_groups)
         if del_groups:
             api.delete_user_groups(username, del_groups)
-        
+
     @staticmethod
     def delete_user_groups(username, groups):
         logger.debug("Deleting openfire groups %s from user %s" % (groups, username))
@@ -129,30 +143,58 @@ class OpenfireManager:
     @staticmethod
     def send_broadcast_message(group_name, broadcast_message):
         logger.debug("Sending jabber ping to group %s with message %s" % (group_name, broadcast_message))
-        # create to address
-        client = xmpp.Client(settings.JABBER_URL)
-        client.connect(server=(settings.JABBER_SERVER, settings.JABBER_PORT))
-        client.auth(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, 'broadcast')
-
         to_address = group_name + '@' + settings.BROADCAST_SERVICE_NAME + '.' + settings.JABBER_URL
-        logger.debug("Determined ping to address: %s" % to_address)
-        message = xmpp.Message(to_address, broadcast_message)
-        message.setAttr('type', 'chat')
-        client.send(message)
-        client.Process(1)
+        xmpp = PingBot(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, to_address, broadcast_message)
+        xmpp.register_plugin('xep_0030')  # Service Discovery
+        xmpp.register_plugin('xep_0199')  # XMPP Ping
+        if xmpp.connect():
+            xmpp.process(block=True)
+            logger.info("Sent jabber ping to group %s" % group_name)
+        else:
+            raise ValueError("Unable to connect to jabber server.")
 
-        client.disconnect()
-        logger.info("Sent jabber ping to group %s" % group_name)
 
-class XmppThread (threading.Thread):
-    def __init__(self, threadID, name, counter, group, message,):
+class PingBot(sleekxmpp.ClientXMPP):
+    """
+    A copy-paste of the example client bot from
+    http://sleekxmpp.com/getting_started/sendlogout.html
+    """
+    def __init__(self, jid, password, recipient, message):
+        sleekxmpp.ClientXMPP.__init__(self, jid, password)
+
+        # The message we wish to send, and the JID that
+        # will receive it.
+        self.recipient = recipient
+        self.msg = message
+
+        # The session_start event will be triggered when
+        # the bot establishes its connection with the server
+        # and the XML streams are ready for use. We want to
+        # listen for this event so that we we can initialize
+        # our roster.
+        self.add_event_handler("session_start", self.start)
+
+    def start(self, event):
+        self.send_presence()
+        self.get_roster()
+
+        self.send_message(mto=self.recipient,
+                          mbody=self.msg,
+                          mtype='chat')
+
+        # Using wait=True ensures that the send queue will be
+        # emptied before ending the session.
+        self.disconnect(wait=True)
+
+
+class XmppThread(threading.Thread):
+    def __init__(self, thread_id, name, counter, group, message, ):
         threading.Thread.__init__(self)
-        self.threadID = threadID
+        self.threadID = thread_id
         self.name = name
         self.counter = counter
         self.group = group
         self.message = message
+
     def run(self):
-        print "Starting " + self.name
         OpenfireManager.send_broadcast_message(self.group, self.message)
-        print "Exiting " + self.name

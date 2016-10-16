@@ -10,7 +10,7 @@
 {% block content %}
     <div class="col-lg-12">
     <h1 class="page-header text-center">{% trans "Available Services" %}</h1>
-    {% if ENABLE_AUTH_DISCORD or ENABLE_BLUE_DISCORD %}
+    {% if SHOW_DISCORD %}
         {% if request.user.is_superuser %}
             <div class="text-center">
                 <a type="button" class="btn btn-lg btn-success" href="{% url 'auth_discord_add_bot' %}">{% trans "Link Discord" %} Server</a>
@@ -18,629 +18,204 @@
             <br>
         {% endif %}
     {% endif %}
-    {% if perms.auth.blue_member %}
         <table class="table table-bordered">
             <tr>
                 <th class="text-center">{% trans "Service" %}</th>
                 <th class="text-center">{% trans "Username" %}</th>
-                <th class="text-center">{% trans "Password" %}</th>
                 <th class="text-center">{% trans "Domain" %}</th>
                 <th class="text-center">{% trans "Action" %}</th>
             </tr>
-            {% if ENABLE_BLUE_FORUM %}
-                <tr>
-                <td class="text-center">Forums</td>
-                <td class="text-center">{{ authinfo.forum_username }}</td>
-                <td class="text-center">{{ authinfo.forum_password }}</td>
-                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.forum_username "" %}
-                        <a href="{% url 'auth_activate_forum' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_forum_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_forum_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_forum' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_SMF %}
-                <tr>
-                <td class="text-center">SMF Forums</td>
-                <td class="text-center">{{ authinfo.smf_username }}</td>
-                <td class="text-center">{{ authinfo.smf_password }}</td>
-                <td class="text-center"><a href="{{ SMF_URL }}">{{ SMF_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.smf_username "" %}
-                        <a href="{% url 'auth_activate_smf' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_smf_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_smf_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_smf' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_IPBOARD %}
-                <tr>
-                <td class="text-center">IPBoard Forums</td>
-                <td class="text-center">{{ authinfo.ipboard_username }}</td>
-                <td class="text-center">{{ authinfo.ipboard_password }}</td>
-                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.ipboard_username "" %}
-                        <a href="{% url 'auth_activate_ipboard' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_ipboard_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_ipboard_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_ipboard' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_XENFORO %}
-                <tr>
-                <td class="text-center">XenForo Forums</td>
-                <td class="text-center">{{ authinfo.xenforo_username }}</td>
-                <td class="text-center">{{ authinfo.xenforo_password }}</td>
-                <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.xenforo_username "" %}
-                        <a href="{% url 'auth_activate_xenforo' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_xenforo_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_xenforo_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_xenforo' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_MARKET %}
-                <tr>
-                <td class="text-center">Alliance Market</td>
-                <td class="text-center">{{ authinfo.market_username }}</td>
-                <td class="text-center">{{ authinfo.market_password }}</td>
-                <td class="text-center"><a href="{{ MARKET_URL }}">{{ MARKET_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.market_username "" %}
-                        <a href="{% url 'auth_activate_market' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_market_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_market_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_market' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_PATHFINDER %}
-                <tr>
-                <td class="text-center">Pathfinder</td>
-                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
-                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
-                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.pathfinder_username "" %}
-                        <a href="{% url 'auth_activate_pathfinder' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_pathfinder_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_pathfinder_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_pathfinder' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_JABBER %}
-                <tr>
-                    <td class="text-center">Jabber</td>
-                    <td class="text-center">{{ authinfo.jabber_username }}</td>
-                    <td class="text-center">{{ authinfo.jabber_password }}</td>
-                    <td class="text-center">{{ JABBER_URL }}</td>
-                    <td class="text-center">
-                        {% ifequal authinfo.jabber_username "" %}
-                            <a href="{% url 'auth_activate_jabber' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_set_jabber_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
-                            </a>
-                            <a href="{% url 'auth_reset_jabber_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_jabber' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_MUMBLE %}
-                <tr>
-                    <td class="text-center">Mumble</td>
-                    <td class="text-center">{{ authinfo.mumble_username }}</td>
-                    <td class="text-center">{{ authinfo.mumble_password }}</td>
-                    <td class="text-center">{{ MUMBLE_URL }}</td>
-                    <td class="text-center">
-                        {% ifequal authinfo.mumble_username "" %}
-                            <a href="{% url 'auth_activate_mumble' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_set_mumble_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
-                            </a>
-                            <a href="{% url 'auth_reset_mumble_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_mumble' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_IPS4 %}
-                <td class="text-center">IPS4</td>
-                <td class="text-center">{{ authinfo.ips4_username }}</td>
-                <td class="text-center">{{ authinfo.ips4_password }}</td>
-                <td class="text-center"><a href="{{ IPS4_URL }}">{{ IPS4_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.ips4_username "" %}
-                        <a href="{% url 'auth_activate_ips4' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_ips4_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_ips4_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_ips4' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-            {% endif %}
-            {% if ENABLE_BLUE_DISCORD %}
-                <tr>
-                    <td class="text-center">Discord</td>
-                    <td class="text-center"></td>
-                    <td class="text-center"></td>
-                    <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
-                    <td class="text-center">
-                        {% ifequal authinfo.discord_uid "" %}
-                            <a href="{% url 'auth_activate_discord' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_reset_discord' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_discord' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_DISCOURSE %}
-                <tr>
-                <td class="text-center">Discourse</td>
-                <td class="text-center">{{ authinfo.discourse_username }}</td>
-                <td class="text-center">{{ authinfo.discourse_password }}</td>
-                <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.discourse_username "" %}
-                        <a href="{% url 'auth_activate_discourse' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_deactivate_discourse' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_BLUE_TEAMSPEAK3 %}
-                <tr>
-                    <th class="text-center">{% trans "Service" %}</th>
-                    <th class="text-center">{% trans "Unique ID" %}</th>
-                    <th class="text-center">PermissionKey</th>
-                    <th class="text-center">{% trans "Quick Link" %}</th>
-                    <th class="text-center">{% trans "Action" %}</th>
-                </tr>
-                <tr>
-                    <td class="text-center">Teamspeak 3</td>
-                    <td class="text-center">{{ authinfo.teamspeak3_uid }}</td>
-                    <td class="text-center">{{ authinfo.teamspeak3_perm_key }}</td>
-                    <td class="text-center">
-                        {% ifequal authinfo.teamspeak3_uid "" %}
-                        {% else %}
-                            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}&nickname={{ authinfo.teamspeak3_uid }}">Teamspeak3
-                                Link</a>
-                        {% endifequal %}
-                    </td>
-                    <td class="text-center">
-                        {% ifequal authinfo.teamspeak3_uid "" %}
-                            <a href="{% url 'auth_activate_teamspeak3' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'auth_verify_teamspeak3' %}" class="btn btn-success" title="Verify"><span class="glyphicon glyphicon-log-in"></a>
-                            <a href="{% url 'auth_reset_teamspeak3_perm' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            </a>
-                            <a href="{% url 'auth_deactivate_teamspeak3' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
-                        {% endifequal %}
-                    </td>
-                </tr>
-            {% endif %}
-        </table>
-    {% elif perms.auth.member %}
-        <table class="table table-bordered">
-            <tr>
-                <th class="text-center">{% trans "Service" %}</th>
-                <th class="text-center">{% trans "Username" %}</th>
-                <th class="text-center">{% trans "Password" %}</th>
-                <th class="text-center">{% trans "Domain" %}</th>
-                <th class="text-center">{% trans "Action" %}</th>
-            </tr>
-            {% if ENABLE_AUTH_FORUM %}
+            {% if SHOW_FORUM %}
                 <tr>
                     <td class="text-center">Forums</td>
                     <td class="text-center">{{ authinfo.forum_username }}</td>
-                    <td class="text-center">{{ authinfo.forum_password }}</td>
                     <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.forum_username "" %}
-                            <a href="{% url 'auth_activate_forum' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_forum' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_set_forum_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
+                            <a href="{% url 'auth_set_forum_password' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
                             </a>
-                            <a href="{% url 'auth_reset_forum_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_reset_forum_password' %}" class="btn btn-primary">
+                                 <span class="glyphicon glyphicon-refresh"></span>
                             </a>
-                            <a href="{% url 'auth_deactivate_forum' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_deactivate_forum' %}" class="btn btn-danger">
+                                 <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_SMF %}
+            {% if SHOW_SMF %}
                 <tr>
                     <td class="text-center">SMF Forums</td>
                     <td class="text-center">{{ authinfo.smf_username }}</td>
-                    <td class="text-center">{{ authinfo.smf_password }}</td>
                     <td class="text-center"><a href="{{ SMF_URL }}">{{ SMF_URL }}</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.smf_username "" %}
-                            <a href="{% url 'auth_activate_smf' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_smf' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_set_smf_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
+                            <a href="{% url 'auth_set_smf_password' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
                             </a>
-                            <a href="{% url 'auth_reset_smf_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_reset_smf_password' %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-refresh"></span>
                             </a>
-                            <a href="{% url 'auth_deactivate_smf' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_deactivate_smf' %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_IPBOARD %}
+            {% if SHOW_IPBOARD %}
                 <tr>
                 <td class="text-center">IPBoard Forums</td>
                 <td class="text-center">{{ authinfo.ipboard_username }}</td>
-                <td class="text-center">{{ authinfo.ipboard_password }}</td>
                 <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.ipboard_username "" %}
-                        <a href="{% url 'auth_activate_ipboard' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
+                        <a href="{% url 'auth_activate_ipboard' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
                     {% else %}
-                        <a href="{% url 'auth_set_ipboard_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_set_ipboard_password' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a href="{% url 'auth_reset_ipboard_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
+                        <a href="{% url 'auth_reset_ipboard_password' %}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-refresh"></span>
                         </a>
-                        <a href="{% url 'auth_deactivate_ipboard' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_deactivate_ipboard' %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     {% endifequal %}
                 </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_XENFORO %}
+            {% if SHOW_XENFORO %}
                 <tr>
                 <td class="text-center">XenForo Forums</td>
                 <td class="text-center">{{ authinfo.xenforo_username }}</td>
-                <td class="text-center">{{ authinfo.xenforo_password }}</td>
                 <td class="text-center"><a href="{{ FORUM_URL }}">{{ FORUM_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.xenforo_username "" %}
-                        <a href="{% url 'auth_activate_xenforo' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
+                        <a href="{% url 'auth_activate_xenforo' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
                     {% else %}
-                        <a href="{% url 'auth_set_xenforo_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_set_xenforo_password' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a href="{% url 'auth_reset_xenforo_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
+                        <a href="{% url 'auth_reset_xenforo_password' %}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-refresh"></span>
                         </a>
-                        <a href="{% url 'auth_deactivate_xenforo' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_deactivate_xenforo' %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     {% endifequal %}
                 </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_MARKET %}
+            {% if SHOW_MARKET %}
                 <tr>
                 <td class="text-center">Alliance Market</td>
                 <td class="text-center">{{ authinfo.market_username }}</td>
-                <td class="text-center">{{ authinfo.market_password }}</td>
                 <td class="text-center"><a href="{{ MARKET_URL }}">{{ MARKET_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.market_username "" %}
-                        <a href="{% url 'auth_activate_market' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
+                        <a href="{% url 'auth_activate_market' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
                     {% else %}
-                        <a href="{% url 'auth_set_market_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_set_market_password' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a href="{% url 'auth_reset_market_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
+                        <a href="{% url 'auth_reset_market_password' %}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-refresh"></span>
                         </a>
-                        <a href="{% url 'auth_deactivate_market' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_deactivate_market' %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     {% endifequal %}
                 </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_PATHFINDER %}
-                <tr>
-                <td class="text-center">Pathfinder</td>
-                <td class="text-center">{{ authinfo.pathfinder_username }}</td>
-                <td class="text-center">{{ authinfo.pathfinder_password }}</td>
-                <td class="text-center"><a href="{{ PATHFINDER_URL }}">{{ PATHFINDER_URL }}</a></td>
-                <td class="text-center">
-                    {% ifequal authinfo.pathfinder_username "" %}
-                        <a href="{% url 'auth_activate_pathfinder' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_set_pathfinder_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
-                        </a>
-                        <a href="{% url 'auth_reset_pathfinder_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
-                        </a>
-                        <a href="{% url 'auth_deactivate_pathfinder' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
-                        </a>
-                    {% endifequal %}
-                </td>
-                </tr>
-            {% endif %}
-            {% if ENABLE_AUTH_JABBER %}
+            {% if SHOW_JABBER %}
                 <tr>
                     <td class="text-center">Jabber</td>
                     <td class="text-center">{{ authinfo.jabber_username }}</td>
-                    <td class="text-center">{{ authinfo.jabber_password }}</td>
                     <td class="text-center">{{ JABBER_URL }}</td>
                     <td class="text-center">
                         {% ifequal authinfo.jabber_username "" %}
-                            <a href="{% url 'auth_activate_jabber' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_jabber' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_set_jabber_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
+                            <a href="{% url 'auth_set_jabber_password' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
                             </a>
-                            <a href="{% url 'auth_reset_jabber_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_reset_jabber_password' %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-refresh"></span>
                             </a>
-                            <a href="{% url 'auth_deactivate_jabber' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_deactivate_jabber' %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_MUMBLE %}
+            {% if SHOW_MUMBLE %}
                 <tr>
                     <td class="text-center">Mumble</td>
                     <td class="text-center">{{ authinfo.mumble_username }}</td>
-                    <td class="text-center">{{ authinfo.mumble_password }}</td>
                     <td class="text-center">{{ MUMBLE_URL }}</td>
                     <td class="text-center">
                         {% ifequal authinfo.mumble_username "" %}
-                            <a href="{% url 'auth_activate_mumble' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_mumble' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_set_mumble_password' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-pencil"></span></button>
+                            <a href="{% url 'auth_set_mumble_password' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
                             </a>
-                            <a href="{% url 'auth_reset_mumble_password' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_reset_mumble_password' %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-refresh"></span>
                             </a>
-                            <a href="{% url 'auth_deactivate_mumble' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_deactivate_mumble' %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_IPS4 %}
+            {% if SHOW_IPS4 %}
                 <td class="text-center">IPS4</td>
                 <td class="text-center">{{ authinfo.ips4_username }}</td>
-                <td class="text-center">{{ authinfo.ips4_password }}</td>
                 <td class="text-center"><a href="{{ IPS4_URL }}">{{ IPS4_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.ips4_username "" %}
-                        <a href="{% url 'auth_activate_ips4' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
+                        <a href="{% url 'auth_activate_ips4' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
                     {% else %}
-                        <a href="{% url 'auth_set_ips4_password' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_set_ips4_password' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a href="{% url 'auth_reset_ips4_password' %}">
-                            <button type="button" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-refresh"></span></button>
+                        <a href="{% url 'auth_reset_ips4_password' %}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-refresh"></span>
                         </a>
-                        <a href="{% url 'auth_deactivate_ips4' %}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_deactivate_ips4' %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     {% endifequal %}
                 </td>
             {% endif %}
-            {% if ENABLE_AUTH_DISCORD %}
+            {% if SHOW_DISCORD %}
                 <tr>
                     <td class="text-center">Discord</td>
                     <td class="text-center"></td>
@@ -648,43 +223,37 @@
                     <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
                     <td class="text-center">
                         {% ifequal authinfo.discord_uid "" %}
-                            <a href="{% url 'auth_activate_discord' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_discord' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_reset_discord' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_reset_discord' %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-refresh"></span>
                             </a>
-                            <a href="{% url 'auth_deactivate_discord' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_deactivate_discord' %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ENABLE_AUTH_DISCOURSE %}
+            {% if SHOW_DISCOURSE %}
                 <td class="text-center">Discourse</td>
                 <td class="text-center">{{ authinfo.discourse_username }}</td>
-                <td class="text-center">{{ authinfo.discourse_password }}</td>
                 <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.discourse_username "" %}
-                        <a href="{% url 'auth_activate_discourse' %}">
-                            <button type="button" class="btn btn-warning"><span
-                                    class="glyphicon glyphicon-ok"></span></button>
+                        <a href="{% url 'auth_activate_discourse' %}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
                     {% else %}
-                            <a href="{% url 'auth_deactivate_discourse' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
-                            </a>
+                        <a href="{% url 'auth_deactivate_discourse' %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
                     {% endifequal %}
                 </td>
             {% endif %}
-            {% if ENABLE_AUTH_TEAMSPEAK3 %}
+            {% if SHOW_TEAMSPEAK3 %}
                 <tr>
                     <th class="text-center">{% trans "Service" %}</th>
                     <th class="text-center">{% trans "Unique ID" %}</th>
@@ -705,32 +274,24 @@
                     </td>
                     <td class="text-center">
                         {% ifequal authinfo.teamspeak3_uid "" %}
-                            <a href="{% url 'auth_activate_teamspeak3' %}">
-                                <button type="button" class="btn btn-warning"><span
-                                        class="glyphicon glyphicon-ok"></span></button>
+                            <a href="{% url 'auth_activate_teamspeak3' %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-ok"></span>
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_verify_teamspeak3' %}" class="btn btn-success" title="Verify"><span class="glyphicon glyphicon-log-in"></a>
-                            <a href="{% url 'auth_reset_teamspeak3_perm' %}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <a href="{% url 'auth_verify_teamspeak3' %}" class="btn btn-success" title="Verify">
+                                <span class="glyphicon glyphicon-log-in">
                             </a>
-                            <a href="{% url 'auth_deactivate_teamspeak3' %}">
-                                <button type="button" class="btn btn-danger"><span
-                                        class="glyphicon glyphicon-remove"></span></button>
+                            <a href="{% url 'auth_reset_teamspeak3_perm' %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </a>
+                            <a href="{% url 'auth_deactivate_teamspeak3' %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
                         {% endifequal %}
                     </td>
                 </tr>
             {% endif %}
         </table>
-    {% else %}
-        {% if IS_CORP %}
-            <div class="alert alert-danger" role="alert">{% trans "You are not in the corporation." %}</div>
-        {% else %}
-            <div class="alert alert-danger" role="alert">{% trans "You are not in the alliance." %}</div>
-        {% endif %}
-    {% endif %}
     </div>
 
 {% endblock content %}

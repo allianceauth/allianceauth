@@ -1,8 +1,8 @@
+from __future__ import unicode_literals
 from django.contrib import admin
 
-from models import SrpFleetMain
-from models import SrpUserRequest
+from srp.models import SrpFleetMain
+from srp.models import SrpUserRequest
 
-# Register your models here.
 admin.site.register(SrpFleetMain)
 admin.site.register(SrpUserRequest)

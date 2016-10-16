@@ -10,13 +10,9 @@
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Participation data statistics for" %} {{ year }}
             <div class="text-right">
-                <a href="{% url 'auth_fatlink_view_personal_statistics_year' previous_year %}">
-                    <button type="button" class="btn btn-info">{% trans "Previous year" %}</button>
-                </a>
+                <a href="{% url 'auth_fatlink_view_personal_statistics_year' previous_year %}" class="btn btn-info">{% trans "Previous year" %}</a>
                 {%  if next_year %}
-                <a href="{% url 'auth_fatlink_view_personal_statistics_year' next_year  %}">
-                    <button type="button" class="btn btn-info">{% trans "Next year" %}</button>
-                </a>
+                <a href="{% url 'auth_fatlink_view_personal_statistics_year' next_year  %}" class="btn btn-info">{% trans "Next year" %}</a>
                 {%  endif %}
             </div>
         </h1>

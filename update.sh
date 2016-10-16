@@ -1,5 +1,4 @@
 pip install -r requirements.txt
-yes yes | python manage.py syncdb
-yes yes | python manage.py evolve --hint --execute
+python manage.py migrate
 yes yes | python manage.py collectstatic
 python manage.py shell < run_alliance_corp_update.py

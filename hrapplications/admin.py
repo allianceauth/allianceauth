@@ -1,10 +1,11 @@
+from __future__ import unicode_literals
 from django.contrib import admin
 
-from models import Application
-from models import ApplicationQuestion
-from models import ApplicationForm
-from models import ApplicationResponse
-from models import ApplicationComment
+from hrapplications.models import Application
+from hrapplications.models import ApplicationQuestion
+from hrapplications.models import ApplicationForm
+from hrapplications.models import ApplicationResponse
+from hrapplications.models import ApplicationComment
 
 admin.site.register(Application)
 admin.site.register(ApplicationComment)

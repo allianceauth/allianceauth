@@ -1,11 +1,14 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.contrib.auth.models import User
 import logging
 
 logger = logging.getLogger(__name__)
 
-class Notification(models.Model):
 
+@python_2_unicode_compatible
+class Notification(models.Model):
     LEVEL_CHOICES = (
         ('danger', 'CRITICAL'),
         ('danger', 'ERROR'),
@@ -26,9 +29,11 @@ class Notification(models.Model):
         self.viewed = True
         self.save()
 
-    def __unicode__(self):
-        output = "%s: %s" % (self.user, self.title)
-        return output.encode('utf-8')
+    def __str__(self):
+        return "%s: %s" % (self.user, self.title)
 
     def set_level(self, level):
         self.level = [item[0] for item in self.LEVEL_CHOICES if item[1] == level][0]
+
+    class Meta:
+        ordering = ['-timestamp']

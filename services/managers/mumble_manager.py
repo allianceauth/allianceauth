@@ -1,10 +1,6 @@
+from __future__ import unicode_literals
 import os
 import hashlib
-import sys
-
-import django
-from django.db import connections
-from django.conf import settings
 
 from services.models import MumbleUser
 
@@ -12,7 +8,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class MumbleManager:
+    def __init__(self):
+        pass
 
     @staticmethod
     def __santatize_username(username):
@@ -41,10 +40,11 @@ class MumbleManager:
         username_clean = MumbleManager.__santatize_username(MumbleManager.__generate_username(username, corp_ticker))
         password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
-        logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (username_clean, pwhash[0:5]))
+        logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (
+            username_clean, pwhash[0:5]))
         if MumbleUser.objects.filter(username=username_clean).exists() is False:
             logger.info("Creating mumble user %s" % username_clean)
-            model = MumbleUser.objects.create(username=username_clean, pwhash=pwhash)
+            MumbleUser.objects.create(username=username_clean, pwhash=pwhash)
             return username_clean, password
         else:
             logger.warn("Mumble user %s already exists. Updating password")
@@ -57,13 +57,15 @@ class MumbleManager:
     @staticmethod
     def create_blue_user(corp_ticker, username):
         logger.debug("Creating mumble blue user with username %s and ticker %s" % (username, corp_ticker))
-        username_clean = MumbleManager.__santatize_username(MumbleManager.__generate_username_blue(username, corp_ticker))
+        username_clean = MumbleManager.__santatize_username(
+            MumbleManager.__generate_username_blue(username, corp_ticker))
         password = MumbleManager.__generate_random_pass()
         pwhash = MumbleManager._gen_pwhash(password)
-        logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (username_clean, pwhash[0:5]))
+        logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (
+            username_clean, pwhash[0:5]))
         if MumbleUser.objects.filter(username=username_clean).exists() is False:
             logger.info("Creating mumble user %s" % username_clean)
-            model = MumbleUser.objects.create(username=username_clean, pwhash=pwhash)
+            MumbleUser.objects.create(username=username_clean, pwhash=pwhash)
             return username_clean, password
         else:
             logger.warn("Mumble user %s already exists. Updating password")
@@ -102,7 +104,7 @@ class MumbleManager:
     def update_groups(username, groups):
         logger.debug("Updating mumble user %s groups %s" % (username, groups))
         safe_groups = list(set([g.replace(' ', '-') for g in groups]))
-        groups =''
+        groups = ''
         for g in safe_groups:
             groups = groups + g + ','
         groups = groups.strip(',')

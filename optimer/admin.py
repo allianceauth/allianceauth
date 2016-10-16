@@ -1,6 +1,6 @@
+from __future__ import unicode_literals
 from django.contrib import admin
 
-from models import optimer
+from optimer.models import optimer
 
 admin.site.register(optimer)
-# Register your models here.

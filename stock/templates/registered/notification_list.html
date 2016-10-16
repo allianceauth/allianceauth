@@ -13,6 +13,10 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#unread">{% trans "Unread" %} <b>({{unread|length}})</b></a></li>
                         <li><a data-toggle="tab" href="#read">{% trans "Read" %} <b>({{read|length}})</b></a></li>
+                        <div class="text-right">
+                            <a href="{% url 'auth_mark_all_notifications_read' %}" class="btn btn-primary">Mark All Read</a>
+                            <a href="{% url 'auth_delete_all_read_notifications' %}" class="btn btn-danger">Delete All Read</a>
+                        </div>
                     </ul>
                     <div class="tab-content">
                         <div id="unread" class="tab-pane fade in active">
@@ -22,22 +26,18 @@
                                         <tr>
                                             <th class="text-center">{% trans "Timestamp" %}</th>
                                             <th class="text-center">{% trans "Title" %}</th>
-                                            <th class="text-center">{% trans "View" %}</th>
+                                            <th class="text-center">{% trans "Action" %}</th>
                                         </tr>
                                         {% for notif in unread %}
                                             <tr class="{{ notif.level }}">
                                                 <td class="text-center">{{ notif.timestamp }}</td>
                                                 <td class="text-center">{{ notif.title }}</td>
                                                 <td class="text-center">
-                                                    <a href="{% url 'auth_notification_view' notif.id %}">
-                                                        <button type="button" class="btn btn-success" title="View">
-                                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                                        </button>
+                                                    <a href="{% url 'auth_notification_view' notif.id %}" class="btn btn-success" title="View">
+                                                        <span class="glyphicon glyphicon-eye-open"></span>
                                                      </a>
-                                                    <a href="{% url 'auth_remove_notification' notif.id %}">
-                                                        <button type="button" class="btn btn-danger" title="remove">
-                                                            <span class="glyphicon glyphicon-remove"></span>
-                                                        </button>
+                                                    <a href="{% url 'auth_remove_notification' notif.id %}" class="btn btn-danger" title="Remove">
+                                                        <span class="glyphicon glyphicon-remove"></span>
                                                     </a>
                                                  </td>
                                              </tr>
@@ -53,22 +53,18 @@
                                         <tr>
                                             <th class="text-center">{% trans "Timestamp" %}</th>
                                             <th class="text-center">{% trans "Title" %}</th>
-                                            <th class="text-center">{% trans "View" %}</th>
+                                            <th class="text-center">{% trans "Action" %}</th>
                                         </tr>
                                         {% for notif in read %}
                                             <tr class="{{ notif.level }}">
                                                 <td class="text-center">{{ notif.timestamp }}</td>
                                                 <td class="text-center">{{ notif.title }}</td>
                                                 <td class="text-center">
-                                                    <a href="{% url 'auth_notification_view' notif.id %}">
-                                                        <button type="button" class="btn btn-success" title="View">
-                                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                                        </button>
+                                                    <a href="{% url 'auth_notification_view' notif.id %}" class="btn btn-success" title="View">
+                                                        <span class="glyphicon glyphicon-eye-open"></span>
                                                     </a>
-                                                    <a href="{% url 'auth_remove_notification' notif.id %}">
-                                                        <button type="button" class="btn btn-danger" title="remove">
-                                                            <span class="glyphicon glyphicon-remove"></span>
-                                                        </button>
+                                                    <a href="{% url 'auth_remove_notification' notif.id %}" class="btn btn-danger" title="remove">
+                                                        <span class="glyphicon glyphicon-remove"></span>
                                                     </a>
                                                 </td>
                                             </tr>

@@ -1,26 +1,20 @@
+from __future__ import unicode_literals
 import logging
-from django.conf import settings
-import requests
 import os
 from django.db import connections
 from passlib.hash import bcrypt
-from django.utils import timezone
-
 
 logger = logging.getLogger(__name__)
 
-class Ips4Manager:
 
+class Ips4Manager:
     SQL_ADD_USER = r"INSERT INTO core_members (name, email, members_pass_hash, members_pass_salt, " \
                    r"member_group_id) VALUES (%s, %s, %s, %s, %s)"
     SQL_GET_ID = r"SELECT member_id FROM core_members WHERE name = %s"
     SQL_UPDATE_PASSWORD = r"UPDATE core_members SET members_pass_hash = %s, members_pass_salt = %s WHERE name = %s"
     SQL_DEL_USER = r"DELETE FROM core_members WHERE member_id = %s"
 
-
-
     MEMBER_GROUP_ID = 3
-
 
     @staticmethod
     def add_user(username, email):
@@ -30,7 +24,6 @@ class Ips4Manager:
         hash_result = hash
         rounds_striped = hash_result.strip('$2a$13$')
         salt = rounds_striped[:22]
-        joined_date = timezone.now
         group = Ips4Manager.MEMBER_GROUP_ID
         cursor = connections['ips4'].cursor()
         cursor.execute(Ips4Manager.SQL_ADD_USER, [username, email, hash, salt, group])
@@ -52,7 +45,6 @@ class Ips4Manager:
     @staticmethod
     def __generate_random_pass():
         return os.urandom(8).encode('hex')
-
 
     @staticmethod
     def delete_user(id):

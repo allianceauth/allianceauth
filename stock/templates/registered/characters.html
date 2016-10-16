@@ -30,15 +30,11 @@
                                                 {{ character.character_name }}
                                             </div>
                                             <div class="text-right col-md-4">
-                                                <a href="/main_character_change/{{ character.character_id }}">
+                                                <a href="{% url 'auth_main_character_change' character.character_id %}" class="btn btn-default btn-xs">
                                                     {% ifequal character.character_id authinfo.main_char_id %}
-                                                        {% blocktrans %}<button type="button" class="btn btn-default btn-xs">
-                                                            Refresh Primary
-                                                        </button>{% endblocktrans %}
+                                                        {% blocktrans %}Refresh Primary{% endblocktrans %}
                                                     {% else %}
-                                                        {% blocktrans %}<button type="button" class="btn btn-primary btn-xs">Make
-                                                            Primary
-                                                        </button>{% endblocktrans %}
+                                                        {% blocktrans %}Make Primary{% endblocktrans %}
                                                     {% endifequal %}
                                                 </a>
                                             </div>
@@ -48,9 +44,8 @@
                             </div>
 
                             <div class="panel-body">
-                                <div class="col-lg-5 col-sm-2"><img class=
-                                                                            "ra-avatar img-responsive" src=
-                                                                            "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                                <div class="col-lg-5 col-sm-2">
+                                    <img class="ra-avatar img-responsive" src="https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
                                 </div>
 
                                 <div class="col-lg-7 col-sm-2">

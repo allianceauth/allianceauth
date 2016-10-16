@@ -25,12 +25,9 @@
                             <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Create SRP Fleet" %}</button>
                         </form>
                     {% else %}
-                        <div class="alert alert-success" role="alert">{% trans "Fleet Created Successfully!" %}</div>
-                        <div class="alert alert-info" role="alert">{% blocktrans %}Give this <a
-                                href="/srp_request/{{ completed_srp_code }}">Link</a> to the line members{% endblocktrans %}
-                        </div>
+                        <div class="alert alert-info" role="alert">{% blocktrans %}Give this link to the line members{% endblocktrans %}.</div>
                         <div class="alert alert-info" role="alert">
-                            http://{{ request.get_host }}/srp_request/{{ completed_srp_code }}</div>
+                            http://{{ request.get_host }}{% url 'auth_srp_request_view' completed_srp_code %}</div>
                     {% endif %}
                 </div>
             </div>

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -30,4 +31,3 @@ class SrpFleetUpdateCostForm(forms.Form):
 
 class SrpFleetMainUpdateForm(forms.Form):
     fleet_aar_link = forms.CharField(required=True, label=_("After Action Report Link"))
-

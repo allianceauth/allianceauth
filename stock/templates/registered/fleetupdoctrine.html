@@ -21,11 +21,11 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/fleetup/">{% trans "Ops and Timers" %}</a></li>
-                <li class="active"><a href="/fleetup/doctrines/">{% trans "Doctrines" %} <span class="sr-only">(current)</span></a></li>
-                <li><a href="/fleetup/fittings/">{% trans "Fittings" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_view' %}">{% trans "Ops and Timers" %}</a></li>
+                <li class="active"><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %} <span class="sr-only">(current)</span></a></li>
+                <li><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %}</a></li>
                 {% if perms.auth.corp_stats %}
-                <li><a href="/fleetup/characters/">{% trans "Characters" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %}</a></li>
                 {% endif %}
                 <li></li>
             </ul>
@@ -56,7 +56,7 @@
                                 {% for item in Role.list %}
                                 <tr>
                                     <td>
-                                       <a href="/fleetup/fittings/{{ item.FittingId }}/"><img src="https://image.eveonline.com/InventoryType/{{ item.EveTypeId }}_32.png"></a>
+                                       <a href="{% url 'auth_fleetup_fitting' item.FittingId %}"><img src="https://image.eveonline.com/InventoryType/{{ item.EveTypeId }}_32.png"></a>
                                     </td>
                                     <td>
                                         {{ item.Name }}

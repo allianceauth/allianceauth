@@ -1,8 +1,10 @@
+from __future__ import unicode_literals
 import logging
 import requests
 import os
 import datetime
 import json
+import re
 from django.conf import settings
 from django.utils import timezone
 from services.models import GroupCache
@@ -113,7 +115,11 @@ ENDPOINTS = {
     },
 }
 
+
 class DiscourseManager:
+    def __init__(self):
+        pass
+
     GROUP_CACHE_MAX_AGE = datetime.timedelta(minutes=30)
     REVOKED_EMAIL = 'revoked@' + settings.DOMAIN
     SUSPEND_DAYS = 99999
@@ -136,7 +142,7 @@ class DiscourseManager:
             if arg in kwargs:
                 data[arg] = kwargs[arg]
         for arg in kwargs:
-            if not arg in endpoint['args']['required'] and not arg in endpoint['args']['optional']:
+            if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional']:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
         r = endpoint['method'](settings.DISCOURSE_URL + path, params=params, json=data)
         out = r.text
@@ -218,10 +224,10 @@ class DiscourseManager:
 
     @staticmethod
     def __generate_group_dict(names):
-        dict = {}
+        group_dict = {}
         for name in names:
-            dict[name] = DiscourseManager.__group_name_to_id(name)
-        return dict
+            group_dict[name] = DiscourseManager.__group_name_to_id(name)
+        return group_dict
 
     @staticmethod
     def __get_user_groups(username):
@@ -271,7 +277,8 @@ class DiscourseManager:
     def __suspend_user(username):
         id = DiscourseManager.__user_name_to_id(username)
         endpoint = ENDPOINTS['users']['suspend']
-        return DiscourseManager.__exc(endpoint, id, duration=DiscourseManager.SUSPEND_DAYS, reason=DiscourseManager.SUSPEND_REASON)
+        return DiscourseManager.__exc(endpoint, id, duration=DiscourseManager.SUSPEND_DAYS,
+                                      reason=DiscourseManager.SUSPEND_REASON)
 
     @staticmethod
     def __unsuspend(username):
@@ -287,8 +294,14 @@ class DiscourseManager:
     @staticmethod
     def _sanatize_username(username):
         sanatized = username.replace(" ", "_")
+        sanatized = sanatized.strip(' _')
         sanatized = sanatized.replace("'", "")
         return sanatized
+
+    @staticmethod
+    def _sanitize_groupname(name):
+        name = name.strip(' _')
+        return re.sub('[^\w]', '', name)
 
     @staticmethod
     def add_user(username, email):
@@ -306,7 +319,7 @@ class DiscourseManager:
             return safe_username, password
         except:
             logger.exception("Failed to add new discourse user %s" % username)
-            return "",""
+            return "", ""
 
     @staticmethod
     def delete_user(username):
@@ -323,15 +336,16 @@ class DiscourseManager:
     def update_groups(username, raw_groups):
         groups = []
         for g in raw_groups:
-            groups.append(g[:20])
+            groups.append(DiscourseManager._sanitize_groupname(g[:20]))
         logger.debug("Updating discourse user %s groups to %s" % (username, groups))
         group_dict = DiscourseManager.__generate_group_dict(groups)
-        inv_group_dict = {v:k for k,v in group_dict.items()}
+        inv_group_dict = {v: k for k, v in group_dict.items()}
         user_groups = DiscourseManager.__get_user_groups(username)
         add_groups = [group_dict[x] for x in group_dict if not group_dict[x] in user_groups]
         rem_groups = [x for x in user_groups if not inv_group_dict[x] in groups]
         if add_groups or rem_groups:
-            logger.info("Updating discourse user %s groups: adding %s, removing %s" % (username, add_groups, rem_groups))
+            logger.info(
+                "Updating discourse user %s groups: adding %s, removing %s" % (username, add_groups, rem_groups))
             for g in add_groups:
                 DiscourseManager.__add_user_to_group(g, username)
             for g in rem_groups:

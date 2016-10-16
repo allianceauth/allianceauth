@@ -21,11 +21,11 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/fleetup/">{% trans "Ops and Timers" %}</a></li>
-                <li><a href="/fleetup/doctrines/">{% trans "Doctrines" %}</a></li>
-                <li class="active"><a href="/fleetup/fittings/">{% trans "Fittings" %} <span class="sr-only">(current)</span></a></li>
+                <li><a href="{% url 'auth_fleetup_view' %}">{% trans "Ops and Timers" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %}</a></li>
+                <li class="active"><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %} <span class="sr-only">(current)</span></a></li>
                 {% if perms.auth.corp_stats %}
-                <li><a href="/fleetup/characters/">{% trans "Characters" %}</a></li>
+                <li><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %}</a></li>
                 {% endif %}
                 <li></li>
             </ul>
@@ -82,7 +82,7 @@
                             {% for arbit, orbit in doctrines_list.items %}
                               
                                 {% for fitting in orbit.Data %}
-                                <a href="/fleetup/fittings/{{ fitting.FittingId }}/" class="list-group-item">
+                                <a href="{% url 'auth_fleetup_fitting' fitting.FittingId %}" class="list-group-item">
                                 
                                 <h4 class="list-group-item-heading">{{ fitting.Name }}<span class="pull-right"><img src="https://image.eveonline.com/InventoryType/{{ fitting.EveTypeId }}_32.png" class="img-circle"></span></h4>
                                 <p class="list-group-item-heading">{{ fitting.Role }} - {{ fitting.ShipType }}</p>

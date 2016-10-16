@@ -1,6 +1,6 @@
+from __future__ import unicode_literals
 from django.contrib import admin
 
-from models import Timer
+from timerboard.models import Timer
 
 admin.site.register(Timer)
-# Register your models here.

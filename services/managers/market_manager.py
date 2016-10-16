@@ -1,18 +1,21 @@
+from __future__ import unicode_literals
 import logging
-from django.conf import settings
-import requests
 import os
 
 from django.db import connections
 from passlib.hash import bcrypt
-## requires yum install libffi-devel and pip install bcrypt
+
+# requires yum install libffi-devel and pip install bcrypt
 
 logger = logging.getLogger(__name__)
 
-class marketManager:
 
-    SQL_ADD_USER = r"INSERT INTO fos_user (username, username_canonical, email, email_canonical, enabled, salt, password," \
-                   r"locked, expired, roles, credentials_expired, characterid, characterName)" \
+class marketManager:
+    def __init__(self):
+        pass
+
+    SQL_ADD_USER = r"INSERT INTO fos_user (username, username_canonical, email, email_canonical, enabled, salt," \
+                   r"password, locked, expired, roles, credentials_expired, characterid, characterName)" \
                    r"VALUES (%s, %s, %s, %s, 1,%s, %s, 0, 0, 'a:0:{}', 0, %s, %s) "
     SQL_GET_USER_ID = r"SELECT id FROM fos_user WHERE username = %s"
     SQL_DISABLE_USER = r"UPDATE fos_user SET enabled = '0' WHERE username = %s"
@@ -21,7 +24,6 @@ class marketManager:
     SQL_CHECK_EMAIL = r"SELECT email FROM fos_user WHERE email = %s"
     SQL_CHECK_USERNAME = r"SELECT username FROM fos_user WHERE username = %s"
     SQL_UPDATE_USER = r"UPDATE fos_user SET password = %s, salt = %s, enabled = '1' WHERE username = %s"
-
 
     @staticmethod
     def __santatize_username(username):
@@ -56,7 +58,6 @@ class marketManager:
         logger.debug("User %s email address not found on alliance market" % username)
         return False
 
-
     @staticmethod
     def add_user(username, email, characterid, charactername):
         logger.debug("Adding new market user %s" % username)
@@ -66,8 +67,8 @@ class marketManager:
         rounds_striped = hash_result.strip('$2a$13$')
         salt = rounds_striped[:22]
         username_clean = marketManager.__santatize_username(username)
-        if marketManager.check_username(username)== False:
-            if marketManager.check_user_email(username, email) == False:
+        if not marketManager.check_username(username):
+            if not marketManager.check_user_email(username, email):
                 try:
                     logger.debug("Adding user %s to alliance market" % username)
                     cursor = connections['market'].cursor()

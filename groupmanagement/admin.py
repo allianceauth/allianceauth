@@ -1,9 +1,10 @@
+from __future__ import unicode_literals
 from django.contrib import admin
 
-from models import GroupDescription
-from models import GroupRequest
-from models import HiddenGroup
-from models import OpenGroup
+from groupmanagement.models import GroupDescription
+from groupmanagement.models import GroupRequest
+from groupmanagement.models import HiddenGroup
+from groupmanagement.models import OpenGroup
 
 
 admin.site.register(GroupDescription)

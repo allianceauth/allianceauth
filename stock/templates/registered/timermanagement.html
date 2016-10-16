@@ -12,11 +12,9 @@
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Structure Timers" %}
             <div class="text-right">
-                <a href="{% url 'auth_add_timer_view' %}">
-                    {% if perms.auth.timer_management %}
-                        <button type="button" class="btn btn-success">{% trans "Create Structure Timer" %}</button>
-                    {% endif %}
-                </a>
+                {% if perms.auth.timer_management %}
+                    <a href="{% url 'auth_add_timer_view' %}" class="btn btn-success">{% trans "Create Structure Timer" %}</a>
+                {% endif %}
             </div>
         </h1>
         <div class="col-lg-12 text-center">
@@ -113,13 +111,11 @@
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
-                        <a href="/remove_timer/{{ timer.id }}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_remove_timer' timer.id %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
-                        <a href="/edit_timer/{{ timer.id }}">
-                           <button type="button" class="btn btn-info"><span
-                                   class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_edit_timer' timer.id %}" class="btn btn-info">
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                     </td>
                 {% endif %}
@@ -165,8 +161,8 @@
                     </div>
                 {% endifequal %}
                 </td>
-                <td class="text-center"><a
-                        href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
+                <td class="text-center">
+                    <a href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }}</a>
                 </td>
                 <td class="text-center">
                 {% ifequal timer.structure "I-HUB" %}
@@ -215,13 +211,11 @@
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
-                        <a href="/remove_timer/{{ timer.id }}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_remove_timer' timer.id %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
-                                      <a href="/edit_timer/{{ timer.id }}">
-                           <button type="button" class="btn btn-info"><span
-                                   class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_edit_timer' timer.id %}" class="btn btn-info">
+                            <span class="glyphicon glyphicon-pencil"></span>
                     </td>
                 {% endif %}
                 </tr>
@@ -265,8 +259,8 @@
                     </div>
                 {% endifequal %}
                 </td>
-                <td class="text-center"><a
-                        href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
+                <td class="text-center">
+                    <a href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }}</a>
                 </td>
                 <td class="text-center">
                 {% ifequal timer.structure "I-HUB" %}
@@ -315,13 +309,12 @@
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
-                        <a href="/remove_timer/{{ timer.id }}">
-                            <button type="button" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-remove"></span></button>
+                        <a href="{% url 'auth_remove_timer' timer.id %}" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
-                                      <a href="/edit_timer/{{ timer.id }}">
-                           <button type="button" class="btn btn-info"><span
-                                   class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="{% url 'auth_edit_timer' timer.id %}" class="btn btn-info">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
                     </td>
                 {% endif %}
                 </tr>

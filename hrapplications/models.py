@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -6,6 +8,8 @@ from eveonline.models import EveCorporationInfo
 from eveonline.models import EveApiKeyPair
 from authentication.models import AuthServicesInfo
 
+
+@python_2_unicode_compatible
 class ApplicationQuestion(models.Model):
     title = models.CharField(max_length=254)
     help_text = models.CharField(max_length=254, blank=True, null=True)
@@ -13,6 +17,8 @@ class ApplicationQuestion(models.Model):
     def __str__(self):
         return "Question: " + self.title.encode('utf-8')
 
+
+@python_2_unicode_compatible
 class ApplicationForm(models.Model):
     questions = models.ManyToManyField(ApplicationQuestion)
     corp = models.OneToOneField(EveCorporationInfo)
@@ -20,6 +26,8 @@ class ApplicationForm(models.Model):
     def __str__(self):
         return str(self.corp)
 
+
+@python_2_unicode_compatible
 class Application(models.Model):
     form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE, related_name='applications')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
@@ -32,7 +40,9 @@ class Application(models.Model):
         return str(self.user) + " Application To " + str(self.form)
 
     class Meta:
-        permissions = (('approve_application', 'Can approve applications'), ('reject_application', 'Can reject applications'), ('view_apis', 'Can view applicant APIs'),)
+        permissions = (
+            ('approve_application', 'Can approve applications'), ('reject_application', 'Can reject applications'),
+            ('view_apis', 'Can view applicant APIs'),)
         unique_together = ('form', 'user')
 
     @property
@@ -62,6 +72,7 @@ class Application(models.Model):
             return None
 
 
+@python_2_unicode_compatible
 class ApplicationResponse(models.Model):
     question = models.ForeignKey(ApplicationQuestion, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='responses')
@@ -73,6 +84,8 @@ class ApplicationResponse(models.Model):
     class Meta:
         unique_together = ('question', 'application')
 
+
+@python_2_unicode_compatible
 class ApplicationComment(models.Model):
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -82,12 +95,11 @@ class ApplicationComment(models.Model):
     def __str__(self):
         return str(self.user) + " comment on " + str(self.application)
 
+
 ################
 # Legacy Models
 ################
-# Can't delete or evolutions explodes.
-# They do nothing.
-################
+@python_2_unicode_compatible
 class HRApplication(models.Model):
     character_name = models.CharField(max_length=254, default="")
     full_api_id = models.CharField(max_length=254, default="")
@@ -109,6 +121,7 @@ class HRApplication(models.Model):
         return self.character_name + " - Application"
 
 
+@python_2_unicode_compatible
 class HRApplicationComment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     comment = models.CharField(max_length=254, default="")
