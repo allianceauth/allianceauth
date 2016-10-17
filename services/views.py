@@ -830,8 +830,8 @@ def activate_discourse(request):
         logger.debug("Updated authserviceinfo for user %s with discourse credentials. Updating groups." % request.user)
         update_discourse_groups.delay(request.user.pk)
         logger.info("Successfully activated discourse for user %s" % request.user)
-        messages.success('Activated Discourse account.')
-        messages.warning('Do not lose your Discourse password. It cannot be reset through auth.')
+        messages.success(request, 'Activated Discourse account.')
+        messages.warning(request, 'Do not lose your Discourse password. It cannot be reset through auth.')
         credentials = {
             'username': result[0],
             'password': result[1],
@@ -839,7 +839,7 @@ def activate_discourse(request):
         return render(request, 'registered/service_credentials.html',
                       context={'credentials': credentials, 'service': 'Discourse'})
     else:
-        logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
+        logger.error("Unsuccessful attempt to activate discourse for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your Discourse account.')
     return redirect("auth_services")
 
