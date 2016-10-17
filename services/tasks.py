@@ -24,6 +24,7 @@ from authentication.states import MEMBER_STATE, BLUE_STATE
 from notifications import notify
 from celery.task import periodic_task
 from celery.task.schedules import crontab
+from eveonline.managers import EveManager
 
 logger = logging.getLogger(__name__)
 
