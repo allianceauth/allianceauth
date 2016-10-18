@@ -72,11 +72,14 @@ class TS3Proto:
                 break
 
         if resp['command'] == 'error':
-            if data and resp['keys']['id'] == '0':
-                if len(data) > 1:
-                    return data
+            if resp['keys']['id'] == '0':
+                if data:
+                    if len(data) > 1:
+                        return data
+                    else:
+                        return data[0]
                 else:
-                    return data[0]
+                    return resp['keys']['id']
             else:
                 raise TeamspeakError(resp['keys']['id'])
 
