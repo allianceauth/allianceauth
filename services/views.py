@@ -853,7 +853,7 @@ def deactivate_discourse(request):
     if result:
         AuthServicesInfoManager.update_user_discourse_info("", request.user)
         logger.info("Successfully deactivated discourse for user %s" % request.user)
-        messages.success('Deactivated Discourse account.')
+        messages.success(request, 'Deactivated Discourse account.')
     else:
         logger.error("Unsuccessful attempt to activate discourse for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your Discourse account.')
