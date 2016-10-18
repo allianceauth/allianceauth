@@ -162,7 +162,7 @@ class TS3Proto:
         if isinstance(value, int):
             return "%d" % value
         value = value.replace("\\", r'\\')
-        for i, j in ts3_escape:
+        for i, j in ts3_escape.items():
             value = value.replace(i, j)
         return value
 
@@ -177,7 +177,7 @@ class TS3Proto:
         if isinstance(value, int):
             return "%d" % value
         value = value.replace(r"\\", "\\")
-        for i, j in ts3_escape:
+        for i, j in ts3_escape.items():
             value = value.replace(j, i)
         return value
 
