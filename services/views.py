@@ -714,7 +714,7 @@ def set_forum_password(request):
                                                         password=password)
             if result != "":
                 logger.info("Successfully set forum password for user %s" % request.user)
-                messages.success('Set forum password.')
+                messages.success(request, 'Set forum password.')
             else:
                 logger.error("Failed to install custom forum password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your forum account.')

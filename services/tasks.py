@@ -71,10 +71,6 @@ def disable_forum():
             logger.info("Clearing %s forum username" % auth.user)
             auth.forum_username = ''
             auth.save()
-        if auth.forum_password:
-            logger.info("Clearing %s forum password" % auth.user)
-            auth.forum_password = ''
-            auth.save()
 
 
 def disable_jabber():
@@ -87,10 +83,6 @@ def disable_jabber():
             logger.info("Clearing %s jabber username" % auth.user)
             auth.jabber_username = ''
             auth.save()
-        if auth.jabber_password:
-            logger.info("Clearing %s jabber password" % auth.user)
-            auth.jabber_password = ''
-            auth.save()
 
 
 def disable_mumble():
@@ -102,10 +94,6 @@ def disable_mumble():
         if auth.mumble_username:
             logger.info("Clearing %s mumble username" % auth.user)
             auth.mumble_username = ''
-            auth.save()
-        if auth.mumble_password:
-            logger.info("Clearing %s mumble password" % auth.user)
-            auth.mumble_password = ''
             auth.save()
     logger.info("Deleting all MumbleUser models")
     MumbleUser.objects.all().delete()
@@ -123,10 +111,6 @@ def disable_ipboard():
             logger.info("Clearing %s ipboard username" % auth.user)
             auth.ipboard_username = ''
             auth.save()
-        if auth.ipboard_password:
-            logger.info("Clearing %s ipboard password" % auth.user)
-            auth.ipboard_password = ''
-            auth.save()
 
 
 def disable_discord():
@@ -138,6 +122,19 @@ def disable_discord():
         if auth.discord_uid:
             logger.info("Clearing %s Discord UID" % auth.user)
             auth.discord_uid = ''
+            auth.save()
+
+
+def disable_market():
+    if settings.ENABLE_AUTH_MARKET:
+        logger.warn("ENABLE_AUTH_MARKET still True, after disabling users will still be able to activate Market accounts")
+    if settings.ENABLE_BLUE_DISCORD:
+        logger.warn("ENABLE_BLUE_MARKET still True, after disabling blues will still be able to activate Market accounts")
+    for auth in AuthServicesInfo.objects.all():
+        if auth.market_username:
+            logger.info("Clearing %s market username" % auth.user)
+            marketManager.disable_user(auth.market_username)
+            auth.market_username = ''
             auth.save()
 
 
