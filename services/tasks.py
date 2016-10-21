@@ -133,7 +133,6 @@ def disable_market():
     for auth in AuthServicesInfo.objects.all():
         if auth.market_username:
             logger.info("Clearing %s market username" % auth.user)
-            marketManager.disable_user(auth.market_username)
             auth.market_username = ''
             auth.save()
 
