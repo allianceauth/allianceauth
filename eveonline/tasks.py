@@ -63,6 +63,8 @@ def refresh_api(api):
                message="Your API key ID %s no longer meets access mask requirements. Required: %s Got: %s" % (
                    api.api_id, e.required_mask, e.api_mask), level="danger")
         still_valid = False
+    except EveApiManager.ApiServerUnreachableError as e:
+        logger.warn("Error updating API %s\n%s" % (api.api_id, str(e)))
     finally:
         if not still_valid:
             EveManager.delete_characters_by_api_id(api.api_id, api.user.id)
@@ -95,6 +97,10 @@ def refresh_user_apis(user):
 
 @periodic_task(run_every=crontab(minute=0, hour="*/3"))
 def run_api_refresh():
+    if not EveApiManager.check_if_api_server_online():
+        logger.warn("Aborted scheduled API key refresh: API server unreachable")
+        return
+
     for u in User.objects.all():
         refresh_user_apis.delay(u)
 

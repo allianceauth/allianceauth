@@ -6,6 +6,11 @@ from authentication.states import MEMBER_STATE, BLUE_STATE
 from authentication.models import AuthServicesInfo
 from eveonline.models import EveCharacter
 from django.conf import settings
+import requests
+try:
+    from urllib2 import HTTPError, URLError
+except ImportError: # py3
+    from urllib.error import URLError, HTTPError
 
 import logging
 
@@ -40,6 +45,13 @@ class EveApiManager:
         def __init__(self, api_id):
             msg = 'Key is invalid.'
             super(EveApiManager.ApiInvalidError, self).__init__(msg, api_id)
+
+    class ApiServerUnreachableError(Exception):
+        def __init__(self, e):
+            self.error = e
+
+        def __str__(self):
+            return 'Unable to reach API servers: %s' % str(self.error)
 
     @staticmethod
     def get_characters_from_api(api_id, api_key):
@@ -312,6 +324,8 @@ class EveApiManager:
             if int(e.code) in [221, 222]:
                 raise e
             raise EveApiManager.ApiInvalidError(api_id)
+        except (requests.exceptions.RequestExeception, HTTPError, URLError) as e:
+            raise EveApiManager.ApiServerUnreachableError(e)
         except Exception:
             raise EveApiManager.ApiInvalidError(api_id)
         auth, c = AuthServicesInfo.objects.get_or_create(user=user)
