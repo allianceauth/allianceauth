@@ -181,10 +181,11 @@ def deactivate_services(user):
         marketManager.disable_user(authinfo.market_username)
         AuthServicesInfoManager.update_user_market_info("", user)
         change = True
-    if authinfo.discourse_username and authinfo.discourse_username != "":
-        logger.debug("User %s has a Discourse account %s. Deleting." % (user, authinfo.discourse_username))
-        DiscourseManager.delete_user(authinfo.discourse_username)
-        AuthServicesInfoManager.update_user_discourse_info("", user)
+    if authinfo.discourse_enabled:
+        logger.debug("User %s has a Discourse account. Disabling login." % user)
+        DiscourseManager.disable_user(user)
+        authinfo.discourse_enabled = False
+        authinfo.save()
         change = True
     if authinfo.smf_username and authinfo.smf_username != "":
         logger.debug("User %s has a SMF account %s. Deleting." % (user, authinfo.smf_username))
@@ -195,8 +196,8 @@ def deactivate_services(user):
         notify(user, "Services Disabled", message="Your services accounts have been disabled.", level="danger")
 
 
-@task
-def validate_services(user, state):
+@task(bind=True)
+def validate_services(self, user, state):
     if state == MEMBER_STATE:
         setting_string = 'AUTH'
     elif state == BLUE_STATE:
@@ -238,9 +239,10 @@ def validate_services(user, state):
         marketManager.disable_user(auth.market_username)
         AuthServicesInfoManager.update_user_market_info("", user)
         notify(user, 'Alliance Market Account Disabled', level='danger')
-    if auth.discourse_username and not getattr(settings, 'ENABLE_%s_DISCOURSE' % setting_string, False):
-        DiscourseManager.delete_user(auth.discourse_username)
-        AuthServicesInfoManager.update_user_discourse_info("", user)
+    if auth.discourse_enabled and not getattr(settings, 'ENABLE_%s_DISCOURSE' % setting_string, False):
+        DiscourseManager.disable_user(user)
+        authinfo.discourse_enabled = False
+        autninfo.save()
         notify(user, 'Discourse Account Disabled', level='danger')
     if auth.smf_username and not getattr(settings, 'ENABLE_%s_SMF' % setting_string, False):
         smfManager.disable_user(auth.smf_username)
@@ -248,8 +250,8 @@ def validate_services(user, state):
         notify(user, "SMF Account Disabled", level='danger')
 
 
-@task
-def update_jabber_groups(pk):
+@task(bind=True)
+def update_jabber_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating jabber groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -274,8 +276,8 @@ def update_all_jabber_groups():
         update_jabber_groups.delay(user.user_id)
 
 
-@task
-def update_mumble_groups(pk):
+@task(bind=True)
+def update_mumble_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating mumble groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -300,8 +302,8 @@ def update_all_mumble_groups():
         update_mumble_groups.delay(user.user_id)
 
 
-@task
-def update_forum_groups(pk):
+@task(bind=True)
+def update_forum_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating forum groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -326,8 +328,8 @@ def update_all_forum_groups():
         update_forum_groups.delay(user.user_id)
 
 
-@task
-def update_smf_groups(pk):
+@task(bind=True)
+def update_smf_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating smf groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -352,8 +354,8 @@ def update_all_smf_groups():
         update_smf_groups.delay(user.user_id)
 
 
-@task
-def update_ipboard_groups(pk):
+@task(bind=True)
+def update_ipboard_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating user %s ipboard groups." % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -378,8 +380,8 @@ def update_all_ipboard_groups():
         update_ipboard_groups.delay(user.user_id)
 
 
-@task
-def update_teamspeak3_groups(pk):
+@task(bind=True)
+def update_teamspeak3_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating user %s teamspeak3 groups" % user)
     usergroups = user.groups.all()
@@ -407,8 +409,8 @@ def update_all_teamspeak3_groups():
         update_teamspeak3_groups.delay(user.user_id)
 
 
-@task
-def update_discord_groups(pk):
+@task(bind=True)
+def update_discord_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discord groups for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -434,8 +436,8 @@ def update_all_discord_groups():
         update_discord_groups.delay(user.user_id)
 
 
-@task
-def update_discord_nickname(pk):
+@task(bind=True)
+def update_discord_nickname(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discord nickname for user %s" % user)
     authserviceinfo = AuthServicesInfo.objects.get(user=user)
@@ -456,22 +458,14 @@ def update_all_discord_nicknames():
         update_discord_nickname(user.user_id)
 
 
-@task
-def update_discourse_groups(pk):
+@task(bind=True)
+def update_discourse_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discourse groups for user %s" % user)
-    authserviceinfo = AuthServicesInfo.objects.get(user=user)
-    groups = []
-    for group in user.groups.all():
-        groups.append(str(group.name))
-    if len(groups) == 0:
-        logger.debug("No syncgroups found for user. Adding empty group.")
-        groups.append('empty')
-    logger.debug("Updating user %s discourse groups to %s" % (user, groups))
     try:
-        DiscourseManager.update_groups(authserviceinfo.discourse_username, groups)
+        DiscourseManager.update_groups(user)
     except:
-        logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user, exc_info=True)
+        logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown=60 * 10)
     logger.debug("Updated user %s discourse groups." % user)
 

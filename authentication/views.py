@@ -28,7 +28,10 @@ def login_user(request):
                 if user.is_active:
                     logger.info("Successful login attempt from user %s" % user)
                     login(request, user)
-                    return redirect("auth_dashboard")
+                    redirect_to = request.POST.get('next', request.GET.get('next', ''))
+                    if not redirect_to:
+                        redirect_to = 'auth_dashboard'
+                    return redirect(redirect_to)
                 else:
                     logger.info("Login attempt failed for user %s: user marked inactive." % user)
                     messages.warning(request, 'Your account has been disabled.')

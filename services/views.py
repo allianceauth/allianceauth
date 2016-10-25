@@ -38,6 +38,18 @@ from services.forms import TeamspeakJoinForm
 from authentication.decorators import members_and_blues
 from authentication.states import MEMBER_STATE, BLUE_STATE
 
+import base64
+import hmac
+import hashlib
+try:
+    from urllib import unquote, urlencode
+except ImportError: #py3
+    from urllib.parse import unquote, urlencode
+try:
+    from urlparse import parse_qs
+except ImportError: #py3
+    from urllib.parse import parse_qs
+
 import datetime
 
 import logging
@@ -131,6 +143,12 @@ def jabber_broadcast_view(request):
 def services_view(request):
     logger.debug("services_view called by user %s" % request.user)
     auth = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    char = None
+    if auth.main_char_id:
+        try:
+            char = EveCharacter.objects.get(character_id=auth.main_char_id)
+        except EveCharacter.DoesNotExist:
+            messages.warning(request, "There's a problem with your main character. Please select a new one.")
 
     services = [
         'FORUM',
@@ -146,7 +164,10 @@ def services_view(request):
         'XENFORO',
     ]
 
-    context = {'authinfo': auth}
+    context = {
+        'authinfo': auth,
+        'char': char,
+    }
 
     for s in services:
         context['SHOW_' + s] = (getattr(settings, 'ENABLE_AUTH_' + s) and (
@@ -819,49 +840,6 @@ def set_ipboard_password(request):
 
 @login_required
 @members_and_blues()
-def activate_discourse(request):
-    logger.debug("activate_discourse called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
-    character = EveManager.get_character_by_id(authinfo.main_char_id)
-    logger.debug("Adding discourse user for user %s with main character %s" % (request.user, character))
-    result = DiscourseManager.add_user(character.character_name, request.user.email)
-    if result[0] != "":
-        AuthServicesInfoManager.update_user_discourse_info(result[0], request.user)
-        logger.debug("Updated authserviceinfo for user %s with discourse credentials. Updating groups." % request.user)
-        update_discourse_groups.delay(request.user.pk)
-        logger.info("Successfully activated discourse for user %s" % request.user)
-        messages.success(request, 'Activated Discourse account.')
-        messages.warning(request, 'Do not lose your Discourse password. It cannot be reset through auth.')
-        credentials = {
-            'username': result[0],
-            'password': result[1],
-        }
-        return render(request, 'registered/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'Discourse'})
-    else:
-        logger.error("Unsuccessful attempt to activate discourse for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your Discourse account.')
-    return redirect("auth_services")
-
-
-@login_required
-@members_and_blues()
-def deactivate_discourse(request):
-    logger.debug("deactivate_discourse called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
-    result = DiscourseManager.delete_user(authinfo.discourse_username)
-    if result:
-        AuthServicesInfoManager.update_user_discourse_info("", request.user)
-        logger.info("Successfully deactivated discourse for user %s" % request.user)
-        messages.success(request, 'Deactivated Discourse account.')
-    else:
-        logger.error("Unsuccessful attempt to activate discourse for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your Discourse account.')
-    return redirect("auth_services")
-
-
-@login_required
-@members_and_blues()
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
@@ -1145,3 +1123,87 @@ def set_market_password(request):
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'Market'}
     return render(request, 'registered/service_password.html', context=context)
+
+
+@login_required
+def discourse_sso(request):
+
+    ## Check if user has access
+
+    auth, c = AuthServicesInfo.objects.get_or_create(user=request.user)
+    if not request.user.is_superuser:
+        if auth.state == MEMBER_STATE and not settings.ENABLE_AUTH_DISCOURSE:
+            messages.error(request, 'You are not authorized to access Discourse.')
+            return redirect('auth_dashboard')
+        elif auth.state == BLUE_STATE and not settings.ENABLE_BLUE_DISCOURSE:
+            messages.error(request, 'You are not authorized to access Discourse.')
+            return redirect('auth_dashboard')
+        else:
+            messages.error(request, 'You are not authorized to access Discourse.')
+            return redirect('auth_dashboard')
+
+    if not auth.main_char_id:
+        messages.error(request, "You must have a main character set to access Discourse.")
+        return redirect('auth_characters')
+    try:
+       main_char = EveCharacter.objects.get(character_id=auth.main_char_id)
+    except EveCharacter.DoesNotExist:
+       messages.error(request, "Your main character is missing a database model. Please select a new one.")
+       return redirect('auth_characters')
+
+    payload = request.GET.get('sso')
+    signature = request.GET.get('sig')
+
+    if None in [payload, signature]:
+        messages.error(request, 'No SSO payload or signature. Please contact support if this problem persists.')
+        return redirect('auth_dashboard')
+
+    ## Validate the payload
+
+    try:
+        payload = unquote(payload).encode('utf-8')
+        decoded = base64.decodestring(payload).decode('utf-8')
+        assert 'nonce' in decoded
+        assert len(payload) > 0
+    except AssertionError:
+        messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
+        return redirect('auth_dashboard')
+
+    key = str(settings.DISCOURSE_SSO_SECRET).encode('utf-8')
+    h = hmac.new(key, payload, digestmod=hashlib.sha256)
+    this_signature = h.hexdigest()
+
+    if this_signature != signature:
+        messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
+        return redirect('auth_dashboard')
+
+    ## Build the return payload
+
+    username = DiscourseManager._sanitize_username(main_char.character_name)
+
+    qs = parse_qs(decoded)
+    params = {
+        'nonce': qs['nonce'][0],
+        'email': request.user.email,
+        'external_id': request.user.pk,
+        'username': username,
+        'name': username,
+    }
+
+    if auth.main_char_id:
+        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % auth.main_char_id
+
+    return_payload = base64.encodestring(urlencode(params).encode('utf-8'))
+    h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
+    query_string = urlencode({'sso': return_payload, 'sig': h.hexdigest()})
+
+    ## Record activation and queue group sync
+
+    auth.discourse_enabled = True
+    auth.save()
+    update_discourse_groups.delay(request.user.pk)
+
+    ## Redirect back to Discourse
+
+    url = '%s/session/sso_login' % settings.DISCOURSE_URL
+    return redirect('%s?%s' % (url, query_string))

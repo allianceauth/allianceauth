@@ -43,7 +43,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
             update_discord_groups.delay(instance.pk)
         if auth.mumble_username:
             update_mumble_groups.delay(instance.pk)
-        if auth.discourse_username:
+        if auth.discourse_enabled:
             update_discourse_groups.delay(instance.pk)
         if auth.smf_username:
             update_smf_groups.delay(instance.pk)

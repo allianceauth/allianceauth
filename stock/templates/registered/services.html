@@ -238,18 +238,10 @@
             {% endif %}
             {% if SHOW_DISCOURSE %}
                 <td class="text-center">Discourse</td>
-                <td class="text-center">{{ authinfo.discourse_username }}</td>
+                <td class="text-center">{{ char.character_name }}</td>
                 <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
                 <td class="text-center">
-                    {% ifequal authinfo.discourse_username "" %}
-                        <a href="{% url 'auth_activate_discourse' %}" class="btn btn-warning">
-                            <span class="glyphicon glyphicon-ok"></span>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'auth_deactivate_discourse' %}" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
-                    {% endifequal %}
+                    <a class="btn btn-success" href="{{ DISCOURSE_URL }}"><span class="glyphicon glyphicon-arrow-right"></span></a>
                 </td>
             {% endif %}
             {% if SHOW_TEAMSPEAK3 %}

@@ -125,7 +125,7 @@ WSGI_APPLICATION = 'alliance_auth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aa_test',
+        'NAME': 'alliance_auth',
         'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceserver'),
         'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
@@ -477,11 +477,12 @@ DISCORD_SYNC_NAMES = 'True' == os.environ.get('AA_DISCORD_SYNC_NAMES', 'False')
 # DISCOURSE_URL - Web address of the forums (no trailing slash)
 # DISCOURSE_API_USERNAME - API account username
 # DISCOURSE_API_KEY - API Key
+# DISCOURSE_SSO_SECRET - SSO secret key
 ######################################
 DISCOURSE_URL = os.environ.get('AA_DISCOURSE_URL', '')
 DISCOURSE_API_USERNAME = os.environ.get('AA_DISCOURSE_API_USERNAME', '')
 DISCOURSE_API_KEY = os.environ.get('AA_DISCOURSE_API_KEY', '')
-
+DISCOURSE_SSO_SECRET = os.environ.get('AA_DISCOURSE_SSO_SECRET', '')
 
 #####################################
 # IPS4 Configuration

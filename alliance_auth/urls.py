@@ -94,8 +94,7 @@ urlpatterns = [
     url(r'^discord_add_bot/$', services.views.discord_add_bot, name='auth_discord_add_bot'),
 
     # Discourse Service Control
-    url(r'^activate_discourse/$', services.views.activate_discourse, name='auth_activate_discourse'),
-    url(r'^deactivate_discourse/$', services.views.deactivate_discourse, name='auth_deactivate_discourse'),
+    url(r'^discourse_sso$', services.views.discourse_sso, name='auth_discourse_sso'),
 
     # IPS4 Service Control
     url(r'^activate_ips4/$', services.views.activate_ips4,

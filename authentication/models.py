@@ -21,7 +21,7 @@ class AuthServicesInfo(models.Model):
     teamspeak3_uid = models.CharField(max_length=254, blank=True, default="")
     teamspeak3_perm_key = models.CharField(max_length=254, blank=True, default="")
     discord_uid = models.CharField(max_length=254, blank=True, default="")
-    discourse_username = models.CharField(max_length=254, blank=True, default="")
+    discourse_enabled = models.BooleanField(default=False, blank=True)
     ips4_username = models.CharField(max_length=254, blank=True, default="")
     ips4_id = models.CharField(max_length=254, blank=True, default="")
     smf_username = models.CharField(max_length=254, blank=True, default="")

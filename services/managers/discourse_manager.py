@@ -11,6 +11,13 @@ from services.models import GroupCache
 
 logger = logging.getLogger(__name__)
 
+class DiscourseError(Exception):
+    def __init__(self, endpoint, errors):
+        self.endpoint = endpoint
+        self.errors = errors
+    def __str__(self):
+        return "API execution failed.\nErrors: %s\nEndpoint: %s" % (self.errors, self.endpoint)
+
 # not exhaustive, only the ones we need
 ENDPOINTS = {
     'groups': {
@@ -112,6 +119,22 @@ ENDPOINTS = {
                 'optional': [],
             },
         },
+        'logout': {
+            'path': "/admin/users/%s/log_out",
+            'method': requests.post,
+            'args': {
+                'required': [],
+                'optional': [],
+            },
+        },
+        'external': {
+            'path': "/users/by-external/%s.json",
+            'method': requests.get,
+            'args': {
+                'required': [],
+                'optional': [],
+            },
+        },
     },
 }
 
@@ -131,10 +154,9 @@ class DiscourseManager:
             'api_key': settings.DISCOURSE_API_KEY,
             'api_username': settings.DISCOURSE_API_USERNAME,
         }
+        silent = kwargs.pop('silent', False)
         if args:
-            path = endpoint['path'] % args
-        else:
-            path = endpoint['path']
+            endpoint['path'] = endpoint['path'] % args
         data = {}
         for arg in endpoint['args']['required']:
             data[arg] = kwargs[arg]
@@ -142,21 +164,24 @@ class DiscourseManager:
             if arg in kwargs:
                 data[arg] = kwargs[arg]
         for arg in kwargs:
-            if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional']:
+            if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = endpoint['method'](settings.DISCOURSE_URL + path, params=params, json=data)
-        out = r.text
+        r = endpoint['method'](settings.DISCOURSE_URL + endpoint['path'], params=params, json=data)
         try:
-            if 'errors' in r.json():
+            if 'errors' in r.json() and not silent:
                 logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))
-            r.raise_for_status()
+                raise DiscourseError(endpoint, r.json()['errors'])
             if 'success' in r.json():
-                if not r.json()['success']:
-                    raise Exception("Execution failed")
+                if not r.json()['success'] and not silent:
+                    raise DiscourseError(endpoint, None)
             out = r.json()
         except ValueError:
-            logger.warn("No json data received for endpoint %s" % endpoint)
-        r.raise_for_status()
+            out = r.text
+        finally:
+            try:
+                r.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                raise DiscourseError(endpoint, e.response.status_code)
         return out
 
     @staticmethod
@@ -235,8 +260,8 @@ class DiscourseManager:
         return [g['id'] for g in data['user']['groups'] if not g['automatic']]
 
     @staticmethod
-    def __user_name_to_id(name):
-        data = DiscourseManager.__get_user(name)
+    def __user_name_to_id(name, silent=False):
+        data = DiscourseManager.__get_user(name, silent=silent)
         return data['user']['id']
 
     @staticmethod
@@ -244,9 +269,9 @@ class DiscourseManager:
         raise NotImplementedError
 
     @staticmethod
-    def __get_user(username):
+    def __get_user(username, silent=False):
         endpoint = ENDPOINTS['users']['get']
-        return DiscourseManager.__exc(endpoint, username)
+        return DiscourseManager.__exc(endpoint, username, silent=silent)
 
     @staticmethod
     def __activate_user(username):
@@ -268,7 +293,7 @@ class DiscourseManager:
     @staticmethod
     def __check_if_user_exists(username):
         try:
-            DiscourseManager.__user_name_to_id(username)
+            DiscourseManager.__user_name_to_id(username, silent=True)
             return True
         except:
             return False
@@ -292,11 +317,26 @@ class DiscourseManager:
         return DiscourseManager.__exc(endpoint, username, email=email)
 
     @staticmethod
-    def _sanatize_username(username):
-        sanatized = username.replace(" ", "_")
-        sanatized = sanatized.strip(' _')
-        sanatized = sanatized.replace("'", "")
-        return sanatized
+    def __logout(id):
+        endpoint = ENDPOINTS['users']['logout']
+        return DiscourseManager.__exc(endpoint, id)
+
+    @staticmethod
+    def __get_user_by_external(id):
+        endpoint = ENDPOINTS['users']['external']
+        return DiscourseManager.__exc(endpoint, id)
+
+    @staticmethod
+    def __user_id_by_external_id(id):
+        data = DiscourseManager.__get_user_by_external(id)
+        return data['user']['id']
+
+    @staticmethod
+    def _sanitize_username(username):
+        sanitized = username.replace(" ", "_")
+        sanitized = sanitized.strip(' _')
+        sanitized = sanitized.replace("'", "")
+        return sanitized
 
     @staticmethod
     def _sanitize_groupname(name):
@@ -304,42 +344,14 @@ class DiscourseManager:
         return re.sub('[^\w]', '', name)
 
     @staticmethod
-    def add_user(username, email):
-        logger.debug("Adding new discourse user %s" % username)
-        password = DiscourseManager.__generate_random_pass()
-        safe_username = DiscourseManager._sanatize_username(username)
-        try:
-            if DiscourseManager.__check_if_user_exists(safe_username):
-                logger.debug("Discourse user %s already exists. Reactivating" % safe_username)
-                DiscourseManager.__unsuspend(safe_username)
-            else:
-                logger.debug("Creating new user account for %s" % username)
-                DiscourseManager.__create_user(safe_username, email, password)
-            logger.info("Added new discourse user %s" % username)
-            return safe_username, password
-        except:
-            logger.exception("Failed to add new discourse user %s" % username)
-            return "", ""
-
-    @staticmethod
-    def delete_user(username):
-        logger.debug("Deleting discourse user %s" % username)
-        try:
-            DiscourseManager.__suspend_user(username)
-            logger.info("Deleted discourse user %s" % username)
-            return True
-        except:
-            logger.exception("Failed to delete discourse user %s" % username)
-            return False
-
-    @staticmethod
-    def update_groups(username, raw_groups):
+    def update_groups(user):
         groups = []
-        for g in raw_groups:
-            groups.append(DiscourseManager._sanitize_groupname(g[:20]))
-        logger.debug("Updating discourse user %s groups to %s" % (username, groups))
+        for g in user.groups.all():
+            groups.append(DiscourseManager._sanitize_groupname(str(g)[:20]))
+        logger.debug("Updating discourse user %s groups to %s" % (user, groups))
         group_dict = DiscourseManager.__generate_group_dict(groups)
         inv_group_dict = {v: k for k, v in group_dict.items()}
+        username = DiscourseManager.__get_user_by_external(user.pk)['user']['username']
         user_groups = DiscourseManager.__get_user_groups(username)
         add_groups = [group_dict[x] for x in group_dict if not group_dict[x] in user_groups]
         rem_groups = [x for x in user_groups if not x in inv_group_dict]
@@ -350,3 +362,12 @@ class DiscourseManager:
                 DiscourseManager.__add_user_to_group(g, username)
             for g in rem_groups:
                 DiscourseManager.__remove_user_from_group(g, username)
+
+    @staticmethod
+    def disable_user(user):
+        logger.debug("Disabling user %s Discourse access." % user)
+        d_user = DiscourseManager.__get_user_by_external(user.pk)
+        DiscourseManager.__logout(d_user['user']['id'])
+        DiscourseManager.__suspend_user(d_user['user']['username'])
+        logger.info("Disabled user %s Discourse access." % user)
+        return True

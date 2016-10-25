@@ -249,7 +249,7 @@ class TS3Server(TS3Proto):
             self.send_command('use', keys={'sid': id})
 
 
-class TeamspeakError:
+class TeamspeakError(Exception):
     def __init__(self, code, msg=None):
         self.code = str(code)
         if not msg:

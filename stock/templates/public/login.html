@@ -60,6 +60,7 @@
                     {% csrf_token %}
                     <h2 class="form-signin-heading text-center">{% trans "Please sign in" %}</h2>
                     {{ form|bootstrap }}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}" />
                     <div class="row">
                     <div class="col-md-12">
                         <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Sign in" %}</button>
