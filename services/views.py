@@ -36,7 +36,7 @@ from services.forms import FleetFormatterForm
 from services.forms import ServicePasswordForm
 from services.forms import TeamspeakJoinForm
 from authentication.decorators import members_and_blues
-from authentication.states import MEMBER_STATE, BLUE_STATE
+from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
 
 import base64
 import hmac
@@ -1132,13 +1132,13 @@ def discourse_sso(request):
 
     auth, c = AuthServicesInfo.objects.get_or_create(user=request.user)
     if not request.user.is_superuser:
-        if auth.state == MEMBER_STATE and not settings.ENABLE_AUTH_DISCOURSE:
-            messages.error(request, 'You are not authorized to access Discourse.')
+        if not settings.ENABLE_AUTH_DISCOURSE and auth.state == MEMBER_STATE:
+            messages.error(request, 'Members are not authorized to access Discourse.')
             return redirect('auth_dashboard')
-        elif auth.state == BLUE_STATE and not settings.ENABLE_BLUE_DISCOURSE:
-            messages.error(request, 'You are not authorized to access Discourse.')
+        elif not settings.ENABLE_BLUE_DISCOURSE and auth.state == BLUE_STATE:
+            messages.error(request, 'Blues are not authorized to access Discourse.')
             return redirect('auth_dashboard')
-        else:
+        elif auth.state == NONE_STATE:
             messages.error(request, 'You are not authorized to access Discourse.')
             return redirect('auth_dashboard')
 

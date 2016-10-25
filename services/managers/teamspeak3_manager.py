@@ -40,10 +40,15 @@ class Teamspeak3Manager:
     def _get_userid(uid):
         logger.debug("Looking for uid %s on TS3 server." % uid)
         server = Teamspeak3Manager.__get_created_server()
-        ret = server.send_command('customsearch', {'ident': 'sso_uid', 'pattern': uid})
-        if ret and 'keys' in ret and 'cldbid' in ret['keys']:
-            logger.debug("Got userid %s for uid %s" % (ret['keys']['cldbid'], uid))
-            return ret['keys']['cldbid']
+        try:
+            ret = server.send_command('customsearch', {'ident': 'sso_uid', 'pattern': uid})
+            if ret and 'keys' in ret and 'cldbid' in ret['keys']:
+                logger.debug("Got userid %s for uid %s" % (ret['keys']['cldbid'], uid))
+                return ret['keys']['cldbid']
+        except TeamspeakError as e:
+            if not e.code == '1281':
+                raise e
+        return None
 
     @staticmethod
     def _group_id_by_name(groupname):
@@ -85,7 +90,13 @@ class Teamspeak3Manager:
     def _user_group_list(cldbid):
         logger.debug("Retrieving group list for user with id %s" % cldbid)
         server = Teamspeak3Manager.__get_created_server()
-        groups = server.send_command('servergroupsbyclientid', {'cldbid': cldbid})
+        try:
+            groups = server.send_command('servergroupsbyclientid', {'cldbid': cldbid})
+        except TeamspeakError as e:
+            if e.code == '1281': # no groups
+                groups = []
+            else:
+                raise e
         logger.debug("Retrieved group list: %s" % groups)
         outlist = {}
 
@@ -231,28 +242,34 @@ class Teamspeak3Manager:
         user = Teamspeak3Manager._get_userid(uid)
         logger.debug("Deleting user %s with id %s from TS3 server." % (user, uid))
         if user:
-            for client in server.send_command('clientlist'):
+            clients = server.send_command('clientlist')
+            logger.debug(clients['keys'])
+            if clients['keys']:
+                for client in clients:
+                    try:
+                        if client['keys']['client_database_id'] == user:
+                            logger.debug("Found user %s on TS3 server - issuing deletion command." % user)
+                            server.send_command('clientkick', {'clid': client['keys']['clid'], 'reasonid': 5,
+                                                               'reasonmsg': 'Auth service deleted'})
+                    except:
+                        logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, client))
+                        return False
+
                 try:
-                    if client['keys']['client_database_id'] == user:
-                        logger.debug("Found user %s on TS3 server - issuing deletion command." % user)
-                        server.send_command('clientkick', {'clid': client['keys']['clid'], 'reasonid': 5,
-                                                           'reasonmsg': 'Auth service deleted'})
-                except:
-                    logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, client))
+                    ret = server.send_command('clientdbdelete', {'cldbid': user})
+                except TeamspeakError as e:
+                    logger.error("Failed to delete teamspeak user %s: %s" % (uid, str(e)))
                     return False
 
-            try:
-                ret = server.send_command('clientdbdelete', {'cldbid': user})
-            except TeamspeakError as e:
-                logger.error("Failed to delete teamspeak user %s: %s" % (uid, str(e)))
-                return False
-
-            if ret == '0':
-                logger.info("Deleted user with id %s from TS3 server." % uid)
-                return True
+                if ret == '0':
+                    logger.info("Deleted user with id %s from TS3 server." % uid)
+                    return True
+                else:
+                    logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, ret))
+                    return False
             else:
-                logger.exception("Failed to delete user id %s from TS3 - received response %s" % (uid, ret))
-                return False
+                logger.warning('Received no clients from TS3 server. Assuming user %s already deleted.' % uid)
+                return True
         else:
             logger.warn("User with id %s not found on TS3 server. Assuming succesful deletion." % uid)
             return True
