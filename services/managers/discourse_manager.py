@@ -156,7 +156,9 @@ class DiscourseManager:
         }
         silent = kwargs.pop('silent', False)
         if args:
-            endpoint['path'] = endpoint['path'] % args
+            endpoint['parsed_url'] = endpoint['path'] % args
+        else:
+            endpoint['parsed_url'] = endpoint['path']
         data = {}
         for arg in endpoint['args']['required']:
             data[arg] = kwargs[arg]
@@ -166,7 +168,7 @@ class DiscourseManager:
         for arg in kwargs:
             if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = endpoint['method'](settings.DISCOURSE_URL + endpoint['path'], params=params, json=data)
+        r = endpoint['method'](settings.DISCOURSE_URL + endpoint['parsed_url'], params=params, json=data)
         try:
             if 'errors' in r.json() and not silent:
                 logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))

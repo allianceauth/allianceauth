@@ -1199,9 +1199,10 @@ def discourse_sso(request):
 
     ## Record activation and queue group sync
 
-    auth.discourse_enabled = True
-    auth.save()
-    update_discourse_groups.delay(request.user.pk)
+    if not auth.discourse_enabled:
+        auth.discourse_enabled = True
+        auth.save()
+        update_discourse_groups.apply_async(args=[request.user.pk], countdown=30) # wait 30s for new user creation on Discourse
 
     ## Redirect back to Discourse
 
