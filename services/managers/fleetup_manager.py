@@ -31,7 +31,7 @@ class FleetUpManager:
                                     "corporation": row["Corporation"]} for row in fmembers["Data"]}
         except requests.exceptions.ConnectionError:
             logger.warn("Can't connect to Fleet-Up API, is it offline?!")
-        except (ValueError, UnicodeDecodeError):
+        except (ValueError, UnicodeDecodeError, TypeError):
             logger.debug("No fleetup members retrieved.")
         return {}
 
@@ -75,7 +75,7 @@ class FleetUpManager:
                                            "notes": row["Notes"]} for row in ftimers["Data"]}
         except requests.exceptions.ConnectionError:
             logger.warn("Can't connect to Fleet-Up API, is it offline?!")
-        except (ValueError, UnicodeDecodeError):
+        except (ValueError, UnicodeDecodeError, TypeError):
             logger.debug("No fleetup timers retrieved.")
         return {}
 
@@ -127,7 +127,7 @@ class FleetUpManager:
                     ffittings["Data"]}
         except requests.exceptions.ConnectionError:
             logger.warn("Can't connect to Fleet-Up API, is it offline?!")
-        except (ValueError, UnicodeDecodeError):
+        except (ValueError, UnicodeDecodeError, TypeError):
             logger.debug("No fleetup fittings retrieved.")
         return {}
 
