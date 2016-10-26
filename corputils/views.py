@@ -59,7 +59,7 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
     try:
         user_main = EveCharacter.objects.get(
             character_id=AuthServicesInfo.objects.get_or_create(user=request.user)[0].main_char_id)
-        user_corp_id = int(user_main.corporation_id)
+        user_corp_id = user_main.corporation_id
     except (ValueError, EveCharacter.DoesNotExist):
         user_corp_id = settings.CORP_ID
 
@@ -88,9 +88,7 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
             corpid = membercorplist[0][0]
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
-
-    if request.user.has_perm('auth.alliance_apis') or (
-                request.user.has_perm('auth.corp_apis') and (user_corp_id == corpid)):
+    if request.user.has_perm('auth.alliance_apis') or (request.user.has_perm('auth.corp_apis') and user_corp_id == corpid):
         logger.debug("Retreiving and sending API-information")
 
         if settings.IS_CORP:
@@ -201,7 +199,22 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
         context["this_month"] = start_of_month
 
         return render(request, 'registered/corputils.html', context=context)
+    else:
+        logger.warn('User %s (%s) not authorized to view corp stats for corp id %s' % (request.user, user_corp_id, corpid))
     return redirect("auth_dashboard")
+
+
+def can_see_api(user, character):
+    if user.has_perm('auth.alliance_apis'):
+        return True
+    try:
+        user_main = EveCharacter.objects.get(
+                    character_id=AuthServicesInfo.objects.get_or_create(user=user)[0].main_char_id)
+        if user.has_perm('auth.corp_apis') and user_main.corporation_id == character.corporation_id:
+            return True
+    except EveCharacter.DoesNotExist:
+        return False
+    return False
 
 
 @login_required
@@ -233,14 +246,11 @@ def corputils_search(request, corpid=settings.CORP_ID):
                 searchstring = form.cleaned_data['search_string']
                 logger.debug("Searching for player with character name %s for user %s" % (searchstring, request.user))
 
+                member_list = {}
                 if settings.IS_CORP:
-                    try:
-                        member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID,
-                                                                            settings.CORP_API_VCODE)
-                    except APIError:
-                        logger.debug("Corp API does not have membertracking scope, using EveWho data instead.")
-                        member_list = EveWhoManager.get_corporation_members(corpid)
-                else:
+                    member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
+                if not member_list:
+                    logger.debug('Unable to fetch members from API. Pulling from EveWho')
                     member_list = EveWhoManager.get_corporation_members(corpid)
 
                 SearchResult = namedtuple('SearchResult',
@@ -254,8 +264,12 @@ def corputils_search(request, corpid=settings.CORP_ID):
                             user = char.user
                             mainid = int(AuthServicesInfo.objects.get_or_create(user=user)[0].main_char_id)
                             main = EveCharacter.objects.get(character_id=mainid)
-                            api_registered = True
-                            apiinfo = EveApiKeyPair.objects.get(api_id=char.api_id)
+                            if can_see_api(request.user, char):
+                                api_registered = True
+                                apiinfo = EveApiKeyPair.objects.get(api_id=char.api_id)
+                            else:
+                                api_registered = False
+                                apiinfo = None
                         except EveCharacter.DoesNotExist:
                             api_registered = False
                             char = None
@@ -282,4 +296,6 @@ def corputils_search(request, corpid=settings.CORP_ID):
         else:
             logger.debug("Returning empty search form for user %s" % request.user)
             return redirect("auth_corputils")
+    else:
+        logger.warn('User %s not authorized to view corp stats for corp ID %s' % (request.user, corpid))
     return redirect("auth_dashboard")
