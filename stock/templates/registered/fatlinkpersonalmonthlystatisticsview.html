@@ -17,7 +17,7 @@
             {% endif %}
         </h1>
         <h2>{% blocktrans %}{{ user }} has collected {{ n_fats }} links this month.{% endblocktrans %}</h2>
-        <table class="table table-responsive table-bordered">
+        <table class="table table-responsive">
             <tr>
                 <th class="col-md-2 text-center">{% trans "Ship" %}</th>
                 <th class="col-md-2 text-center">{% trans "Times used" %}</th>
@@ -31,7 +31,8 @@
         </table>
         {%  if created_fats %}
          <h2>{% blocktrans %}{{ user }} has created {{ n_created_fats }} links this month.{% endblocktrans %}</h2>
-        <table class="table table-bordered">
+        {% if created_fats %}
+        <table class="table">
             <tr>
                 <th class="text-center">{% trans "Name" %}</th>
                 <th class="text-center">{% trans "Creator" %}</th>
@@ -57,6 +58,7 @@
             {%  endfor %}
 
         </table>
+        {% endif %}
         {% endif %}
     </div>
 

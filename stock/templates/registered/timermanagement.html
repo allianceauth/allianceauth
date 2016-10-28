@@ -24,7 +24,7 @@
         </div>
         {% if corp_timers %}
             <h4><b>{% trans "Corp Timers" %}</b></h4>
-            <table class="table table-bordered">
+            <table class="table">
                 <tr>
                     <th style="width:150px" class="text-center">{% trans "Details" %}</th>
                     <th class="text-center">{% trans "Objective" %}</th>
@@ -124,7 +124,8 @@
             </table>
         {% endif %}
         <h4><b>{% trans "Next Timers" %}</b></h4>
-        <table class="table table-bordered">
+        {% if future_timers %}
+        <table class="table">
             <tr>
                 <th style="width:150px" class="text-center">{% trans "Details" %}</th>
                 <th class="text-center">{% trans "Objective" %}</th>
@@ -221,8 +222,12 @@
                 </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <div class="alert alert-warning text-center">No upcoming timers.</div>
+        {% endif %}
         <h4><b>{% trans "Past Timers" %}</b></h4>
-        <table class="table table-bordered">
+        {% if past_timers %}
+        <table class="table">
             <tr>
                 <th style="width:150px" class="text-center">{% trans "Details" %}</th>
                 <th class="text-center">{% trans "Objective" %}</th>
@@ -320,6 +325,9 @@
                 </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <div class="alert alert-warning text-center">No past timers.</div>
+        {% endif %}
     </div>
 
 

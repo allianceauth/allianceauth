@@ -39,6 +39,7 @@ urlpatterns = [
     # Eve Online
     url(r'^main_character_change/(\w+)/$', eveonline.views.main_character_change,
         name='auth_main_character_change'),
+    url(r'^api_verify_owner/(\w+)/$', eveonline.views.api_sso_validate, name='auth_api_sso'),
 
     # Forum Service Control
     url(r'^activate_forum/$', services.views.activate_forum, name='auth_activate_forum'),

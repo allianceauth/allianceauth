@@ -99,7 +99,7 @@ class AuthServicesInfoManager(admin.ModelAdmin):
     def sync_discourse(self, request, queryset):
         count = 0
         for a in queryset:
-            if a.discourse_username != "":
+            if a.discourse_enabled:
                 update_discourse_groups.delay(a.user.pk)
                 count += 1
         self.message_user(request, "%s discourse accounts queued for group sync." % count)
@@ -137,7 +137,6 @@ class AuthServicesInfoManager(admin.ModelAdmin):
         'mumble_username',
         'teamspeak3_uid',
         'discord_uid',
-        'discourse_username',
         'ips4_username',
         'smf_username',
         'market_username',

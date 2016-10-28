@@ -14,7 +14,7 @@ class EveCharacter(models.Model):
     alliance_id = models.CharField(max_length=254)
     alliance_name = models.CharField(max_length=254)
     api_id = models.CharField(max_length=254)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
         return self.character_name
@@ -24,10 +24,10 @@ class EveCharacter(models.Model):
 class EveApiKeyPair(models.Model):
     api_id = models.CharField(max_length=254)
     api_key = models.CharField(max_length=254)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username + " - ApiKeyPair"
+        return self.api_id
 
 
 @python_2_unicode_compatible

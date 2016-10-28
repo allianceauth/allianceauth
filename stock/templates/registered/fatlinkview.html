@@ -22,7 +22,8 @@
                     </th>
                 </tr>
         </table>
-        <table class="table table-responsive table-bordered">
+        {% if fats %}
+        <table class="table table-responsive">
             <tr>
                 <th class="text-center">{% trans "fatname" %}</th>
                 <th class="text-center">{% trans "Character" %}</th>
@@ -44,6 +45,9 @@
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <div class="alert alert-warning text-center">No fleet activity on record.</div>
+        {% endif %}
 
         {% if perms.auth.fleetactivitytracking%}
             <table class="table">
@@ -64,7 +68,8 @@
                     </th>
                 </tr>
             </table>
-        <table class="table table-bordered">
+        {% if fatlinks %}
+        <table class="table">
             <tr>
                 <th class="text-center">{% trans "Name" %}</th>
                 <th class="text-center">{% trans "Creator" %}</th>
@@ -89,6 +94,9 @@
             {%  endfor %}
 
         </table>
+        {% else %}
+        <div class="alert alert-warning text-center">No created fatlinks on record.</div>
+        {% endif %}
         {% endif %}
     </div>
 

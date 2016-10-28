@@ -29,7 +29,8 @@
                     <b>{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</b>
                 </div>
             </div>
-            <table class="table table-bordered">
+            {% if srpfleets %}
+            <table class="table">
                 <tr>
                     <th class="text-center">{% trans "Fleet Name" %}</th>
                     <th class="text-center">{% trans "Fleet Time" %}</th>
@@ -117,6 +118,9 @@
                     </tr>
                 {% endfor %}
             </table>
+            {% else %}
+            <div class="alert alert-warning text-center">No SRP fleets created.</div>
+            {% endif %}
         </div>
     </div>
 

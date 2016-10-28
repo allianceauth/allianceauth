@@ -22,6 +22,7 @@
                         <div id="unread" class="tab-pane fade in active">
                             <div class="panel-body">
                                 <div class="table-responsive">
+                                    {% if unread %}
                                     <table class="table table-condensed table-hover table-striped">
                                         <tr>
                                             <th class="text-center">{% trans "Timestamp" %}</th>
@@ -43,12 +44,16 @@
                                              </tr>
                                          {% endfor %}
                                      </table>
+                                     {% else %}
+                                     <div class="alert alert-warning text-center">No unread notifications.</div>
+                                     {% endif %}
                                  </div>
                              </div>
                          </div>
                         <div id="read" class="tab-pane fade">
                             <div class="panel-body">
                                 <div class="table-responsive">
+                                    {% if read %}
                                     <table class="table table-condensed table-hover table-striped">
                                         <tr>
                                             <th class="text-center">{% trans "Timestamp" %}</th>
@@ -70,6 +75,9 @@
                                             </tr>
                                         {% endfor %}
                                     </table>
+                                    {% else %}
+                                    <div class="alert alert-warning text-center">No read notifications.</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

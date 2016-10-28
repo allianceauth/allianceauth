@@ -17,13 +17,14 @@
                 {% endif %}
             </div>
         </h1>
-     <div class="col-lg-12 text-center">
+     <div class="col-lg-12 text-center row">
         <div class="label label-info text-left">
             <b>{% trans "Current Eve Time:" %} </b>
         </div><div class="label label-info text-left" id="current-time"></div>
-        <br/>
+        <br  />
      </div>
-        <table class="table table-responsive table-bordered">
+     {% if optimer %}
+        <table class="table table-responsive">
             <tr>
                 <th class="text-center">{% trans "Operation Name" %}</th>
 		<th class="text-center">{% trans "Doctrine" %}</th>
@@ -70,7 +71,9 @@
                 {% endfor %}
             </tr>
         </table>
-
+        {% else %}
+        <br  /><div class="alert alert-warning text-center">No fleet operations found.</div>
+        {% endif %}
     </div>
 
 <script src="/static/js/dateformat.js"></script>

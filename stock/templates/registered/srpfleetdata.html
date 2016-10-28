@@ -34,7 +34,8 @@
                     <b>{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</b>
                 </div>
             </div>
-            <table class="table table-bordered">
+            {% if srpfleetrequests %}
+            <table class="table">
                 <tr>
                     <th class="text-center">{% trans "Pilot Name" %}</th>
                     <th class="text-center">{% trans "Killboard Link" %}</th>
@@ -120,6 +121,9 @@
                     </tr>
                 {% endfor %}
             </table>
+            {% else %}
+            <div class="alert alert-warning text-center">No SRP requests for this fleet.</div>
+            {% endif %}
         </div>
     </div>
 

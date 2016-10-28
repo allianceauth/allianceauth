@@ -343,7 +343,10 @@ class DiscourseManager:
     @staticmethod
     def _sanitize_groupname(name):
         name = name.strip(' _')
-        return re.sub('[^\w]', '', name)
+        name = re.sub('[^\w]', '', name)
+        if len(name) < 3:
+            name = name + "".join('_' for i in range(3-len(name)))
+        return name[:20]
 
     @staticmethod
     def update_groups(user):

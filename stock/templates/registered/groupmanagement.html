@@ -10,59 +10,73 @@
 {% block content %}
     <div class="col-lg-12">
         <h3 class="page-header text-center">{% trans "Group Management" %}</h3>
-        <h4 class="page-header text-center">{% trans "Group Add Request" %}</h4>
-
-        <table class="table table-bordered">
-            <tr>
-                <th class="text-center">{% trans "RequestID" %}</th>
-                <th class="text-center">{% trans "CharacterName" %}</th>
-                <th class="text-center">{% trans "GroupName" %}</th>
-                <th class="text-center">{% trans "Action" %}</th>
-            </tr>
-
-            {% for acceptrequest in acceptrequests %}
-                <tr>
-                    <td class="text-center">{{ acceptrequest.id }}</td>
-                    <td class="text-center">{{ acceptrequest.main_char.character_name }}</td>
-                    <td class="text-center">{{ acceptrequest.group.name }}</td>
-                    <td class="text-center">
-                        <a href="{% url 'auth_group_accept_request' acceptrequest.id %}" class="btn btn-success">
-                            {% trans "Accept" %}
-                        </a>
-
-                        <a href="{% url 'auth_group_reject_request' acceptrequest.id %}" class="btn btn-danger">
-                            {% trans "Reject" %}
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-        <h4 class="page-header text-center">{% trans "Group Leave Request" %}</h4>
-        <table class="table table-bordered">
-            <tr>
-                <th class="text-center">{% trans "RequestID" %}</th>
-                <th class="text-center">{% trans "CharacterName" %}</th>
-                <th class="text-center">{% trans "GroupName" %}</th>
-                <th class="text-center">{% trans "Action" %}</th>
-            </tr>
-
-            {% for leaverequest in leaverequests %}
-                <tr>
-                    <td class="text-center">{{ leaverequest.id }}</td>
-                    <td class="text-center">{{ leaverequest.main_char.character_name }}</td>
-                    <td class="text-center">{{ leaverequest.group.name }}</td>
-                    <td class="text-center">
-                        <a href="{% url 'auth_group_leave_accept_request' leaverequest.id %}" class="btn btn-success">
-                            {% trans "Accept" %}
-                        </a>
-
-                        <a href="{% url 'auth_group_leave_reject_request' leaverequest.id %}" class="btn btn-danger">
-                            {% trans "Reject" %}
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#add">{% trans "Group Add Requests" %}</a></li>
+            <li><a data-toggle="tab" href="#leave">{% trans "Group Leave Requests" %}</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="add" class="tab-pane fade in active">
+                <div class="panel-body">
+                {% if acceptrequests %}
+                    <table class="table">
+                        <tr>
+                            <th class="text-center">{% trans "RequestID" %}</th>
+                            <th class="text-center">{% trans "CharacterName" %}</th>
+                            <th class="text-center">{% trans "GroupName" %}</th>
+                            <th class="text-center">{% trans "Action" %}</th>
+                        </tr>
+                        {% for acceptrequest in acceptrequests %}
+                            <tr>
+                                <td class="text-center">{{ acceptrequest.id }}</td>
+                                <td class="text-center">{{ acceptrequest.main_char.character_name }}</td>
+                                <td class="text-center">{{ acceptrequest.group.name }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'auth_group_accept_request' acceptrequest.id %}" class="btn btn-success">
+                                        {% trans "Accept" %}
+                                    </a>
+                                    <a href="{% url 'auth_group_reject_request' acceptrequest.id %}" class="btn btn-danger">
+                                        {% trans "Reject" %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="alert alert-warning text-center">No group add requests.</div>
+                {% endif %}
+                </div>
+            </div>
+            <div id="leave" class="tab-pane fade">
+                <div class="panel-body">
+                {% if leaverequests %}
+                    <table class="table">
+                        <tr>
+                            <th class="text-center">{% trans "RequestID" %}</th>
+                            <th class="text-center">{% trans "CharacterName" %}</th>
+                            <th class="text-center">{% trans "GroupName" %}</th>
+                            <th class="text-center">{% trans "Action" %}</th>
+                        </tr>
+                        {% for leaverequest in leaverequests %}
+                            <tr>
+                                <td class="text-center">{{ leaverequest.id }}</td>
+                                <td class="text-center">{{ leaverequest.main_char.character_name }}</td>
+                                <td class="text-center">{{ leaverequest.group.name }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'auth_group_leave_accept_request' leaverequest.id %}" class="btn btn-success">
+                                        {% trans "Accept" %}
+                                    </a>
+                                    <a href="{% url 'auth_group_leave_reject_request' leaverequest.id %}" class="btn btn-danger">
+                                        {% trans "Reject" %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="alert alert-warning text-center">No group leave requests.</div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-
 {% endblock content %}

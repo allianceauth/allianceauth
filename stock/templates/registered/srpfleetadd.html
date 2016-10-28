@@ -28,6 +28,9 @@
                         <div class="alert alert-info" role="alert">{% blocktrans %}Give this link to the line members{% endblocktrans %}.</div>
                         <div class="alert alert-info" role="alert">
                             http://{{ request.get_host }}{% url 'auth_srp_request_view' completed_srp_code %}</div>
+                        <div class="text-center">
+                            <a href="{% url 'auth_srp_management_view' %}" class="btn btn-primary btn-lg">{% trans "Continue" %}</a>
+                        </div>
                     {% endif %}
                 </div>
             </div>

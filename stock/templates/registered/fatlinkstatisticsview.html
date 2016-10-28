@@ -16,7 +16,8 @@
                 {%  endif %}
             </div>
         </h1>
-        <table class="table table-responsive table-bordered">
+        {% if fatStats %}
+        <table class="table table-responsive">
             <tr>
                 <th class="col-md-1"></th>
                 <th class="col-md-2 text-center">{% trans "Ticker" %}</th>
@@ -38,6 +39,7 @@
             </tr>
             {% endfor %}
         </table>
+        {% endif %}
     </div>
 
 

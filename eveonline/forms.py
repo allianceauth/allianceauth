@@ -4,6 +4,7 @@ from django.conf import settings
 
 from services.managers.eve_api_manager import EveApiManager
 from eveonline.managers import EveManager
+from eveonline.models import EveApiKeyPair
 import evelink
 
 import logging
@@ -31,7 +32,9 @@ class UpdateKeyForm(forms.Form):
 
         if EveManager.check_if_api_key_pair_exist(self.cleaned_data['api_id']):
             logger.debug("UpdateKeyForm failed cleaning as API id %s already exists." % self.cleaned_data['api_id'])
-            raise forms.ValidationError('API key already exist')
+            if EveApiKeyPair.objects.get(api_id=self.cleaned_data['api_id']).user:
+                # allow orphaned APIs to proceed to SSO validation upon re-entry
+                raise forms.ValidationError('API key already exist')
         if settings.REJECT_OLD_APIS and not EveManager.check_if_api_key_pair_is_new(
                         self.cleaned_data['api_id'],
                         settings.REJECT_OLD_APIS_MARGIN):

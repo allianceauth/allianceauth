@@ -1,0 +1,21 @@
+{% extends 'public/base.html' %}
+{% load staticfiles %}
+{% block title %}Verify API Ownership{% endblock %}
+{% block page_title%}Verify API Ownership{% endblock %}
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Verify API Ownership</div>
+        <div class="col-xs-4 col-xs-offset-4">
+            <div class="panel panel-default>
+                <div class="panel-header">Please authenticate as a character on API {{ api.api_id }} to prove ownership.</div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <a href="{% url 'auth_api_sso' api.api_id %}">
+                            <img class="img-responsive center-block" src="{% static 'img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

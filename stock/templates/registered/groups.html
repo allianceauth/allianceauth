@@ -11,9 +11,9 @@
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Available Groups" %}</h1>
         {% if STATE == MEMBER_STATE or user.is_superuser %}
-            <table class="table table-bordered">
+            {% if pairs %}
+            <table class="table">
                 <tr>
-                    <th class="text-center">{% trans "GroupID" %}</th>
                     <th class="text-center">{% trans "GroupName" %}</th>
                     <th class="text-center">{% trans "GroupDesc" %}</th>
                     <th class="text-center">{% trans "Action" %}</th>
@@ -21,7 +21,6 @@
 
                 {% for pair in pairs %}
                     <tr>
-                        <td class="text-center">{{ pair.0.id }}</td>
                         <td class="text-center">{{ pair.0.name }}</td>
                         <td class="text-center">{{ pair.1.description }}</td>
                         <td class="text-center">
@@ -48,6 +47,9 @@
                     </tr>
                 {% endfor %}
             </table>
+            {% else %}
+            <div class="alert alert-warning text-center">No groups available.</div>
+            {% endif %}
         {% else %}
             {% if IS_CORP %}
                 <div class="alert alert-danger" role="alert">{% trans "You are not in the corporation." %}</div>
