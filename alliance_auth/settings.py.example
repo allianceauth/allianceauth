@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'notifications',
     'eve_sso',
     'geelweb.django.navhelper',
+    'rest_framework',
+    'authapi',
 ]
 
 MIDDLEWARE = [
@@ -154,6 +156,17 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL = 'auth_login_user'
 
 SUPERUSER_STATE_BYPASS = 'True' == os.environ.get('AA_SUPERUSER_STATE_BYPASS', 'True')
+
+# REST API
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': {
+        'rest_framework.authentication.TokenAuthentication',
+    },
+    'DEFAULT_PERMISSION_CLASSES': {
+        'rest_framework.permissions.IsAdminUser',
+    },
+    'URL_FIELD_NAME': 'href',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

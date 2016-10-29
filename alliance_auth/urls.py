@@ -17,6 +17,7 @@ import srp.views
 import notifications.views
 import hrapplications.views
 import eve_sso.urls
+import authapi.urls
 
 # Functional/Untranslated URL's
 urlpatterns = [
@@ -25,6 +26,9 @@ urlpatterns = [
 
     # Admin urls
     url(r'^admin/', include(admin.site.urls)),
+
+    # API
+    url(r'^api/', include(authapi.urls), name='api'),
 
     # SSO
     url (r'^sso/', include(eve_sso.urls, namespace='eve_sso')),
