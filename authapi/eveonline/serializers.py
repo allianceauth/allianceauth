@@ -2,13 +2,25 @@ from eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, 
 from authapi.auth.serializers import UserSerializer
 from authapi.serializers import GenericSerializer, UsernameHyperlinkSerializerMixin
 
-EveCharacterSerializer = GenericSerializer(EveCharacter)
-EveCorporationInfoSerializer = GenericSerializer(EveCorporationInfo)
-EveAllianceInfoSerializer = GenericSerializer(EveAllianceInfo)
-EveApiKeyPairSerializer = GenericSerializer(EveApiKeyPair)
+class EveCharacterSerializer(GenericSerializer(EveCharacter)):
+    pass
+
+
+class EveCorporationInfoSerializer(GenericSerializer(EveCorporationInfo)):
+    pass
+
+
+class EveAllianceInfoSerializer(GenericSerializer(EveAllianceInfo)):
+    pass
+
+
+class EveApiKeyPairSerializer(GenericSerializer(EveApiKeyPair)):
+    pass
+
 
 class EveCharacterExpandedSerializer(EveCharacterSerializer):
     user = UserSerializer()
+
 
 class EveApiKeyPairExpandedSerializer(EveApiKeyPairSerializer):
     user = UserSerializer()
