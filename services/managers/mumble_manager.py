@@ -115,3 +115,7 @@ class MumbleManager:
             model.save()
         else:
             logger.error("User %s not found on mumble. Unable to update groups." % username)
+
+    @staticmethod
+    def user_exists(username):
+        return MumbleUser.objects.filter(username=username).exists()

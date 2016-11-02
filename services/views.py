@@ -514,9 +514,8 @@ def activate_mumble(request):
 def deactivate_mumble(request):
     logger.debug("deactivate_mumble called by user %s" % request.user)
     authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
-    result = MumbleManager.delete_user(authinfo.mumble_username)
-    # if false we failed
-    if result:
+    # if we successfully remove the user or the user is already removed
+    if MumbleManager.delete_user(authinfo.mumble_username) or not MumbleManager.user_exists(authinfo.mumble_username):
         AuthServicesInfoManager.update_user_mumble_info("", request.user)
         logger.info("Successfully deactivated mumble for user %s" % request.user)
         messages.success(request, 'Deactivated Mumble account.')
