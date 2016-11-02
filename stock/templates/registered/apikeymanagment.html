@@ -20,11 +20,24 @@
                 <table class="table">
                     <tr>
                         <th class="text-center">{% trans "API ID" %}</th>
+                        {% if api_sso_validation %}
+                        <th class="text-center">{% trans "SSO Verified" %}</th>
+                        {% endif %}
                         <th class="text-center">{% trans "Action" %}</th>
                     </tr>
                     {% for pair in apikeypairs %}
                         <tr>
                             <td class="text-center">{{ pair.api_id }}</td>
+                            {% if api_sso_validation %}
+                            <th class="text-center" style="font-size: 2em;">
+                                {% if pair.sso_verified %}
+                                <span class="glyphicon glyphicon-ok text-success" title="API key verified"></span>
+                                {% else %}
+                                <span class="glyphicon glyphicon-remove text-danger" title="API key not verified">
+                                </span>
+                                {% endif %}
+                            </th>
+                            {% endif %}
                             <td class="text-center">
                                 <a href="{% url 'auth_user_refresh_api' pair.api_id %}" class="btn btn-success">
                                     <span class="glyphicon glyphicon-refresh"></span>
@@ -32,6 +45,12 @@
                                 <a href="{% url 'auth_api_key_removal' pair.api_id %}" class="btn btn-danger">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
+                                {% if api_sso_validation and not pair.sso_verified %}
+                                <a href="{% url 'auth_api_sso' pair.api_id %}" class="btn btn-info"
+                                   title="EVE SSO verify this key">
+                                    <i class="fa fa-shield" aria-hidden="true"></i>
+                                </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

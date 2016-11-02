@@ -73,15 +73,20 @@ def add_api_key(request):
 def api_sso_validate(request, tokens, api_id):
     logger.debug('api_sso_validate called by user %s for api %s' % (request.user, api_id))
     api = get_object_or_404(EveApiKeyPair, api_id=api_id)
-    if api.user:
+    if api.user and api.user != request.user:
         logger.warning('User %s attempting to take ownership of api %s from %s' % (request.user, api_id, api.user))
         messages.warning(request, 'API %s already claimed by user %s' % (api_id, api.user))
         return redirect('auth_api_key_management')
+    elif api.sso_verified:
+        logger.debug('API %s has already been verified.' % api_id)
+        messages.info(request, 'API %s has already been verified' % api_id)
+        return redirect('auth_api_key_management')
     token = tokens[0]
-    logger.debug('API %s has no owner. Checking if token for %s matches.' % (api_id, token.character_name))
+    logger.debug('API %s has not been verified. Checking if token for %s matches.' % (api_id, token.character_name))
     characters = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
     if token.character_id in characters:
         api.user = request.user
+        api.sso_verified = True
         api.save()
         EveCharacter.objects.filter(character_id__in=characters).update(user=request.user, api_id=api_id)
         messages.success(request, 'Confirmed ownership of API %s' % api.api_id)
@@ -92,12 +97,15 @@ def api_sso_validate(request, tokens, api_id):
     else:
         messages.warning(request, '%s not found on API %s. Please SSO as a character on the API.' % (token.character_name, api.api_id))
     return render(request, 'registered/apisso.html', context={'api':api})
-    
+
 
 @login_required
 def api_key_management_view(request):
     logger.debug("api_key_management_view called by user %s" % request.user)
-    context = {'apikeypairs': EveManager.get_api_key_pairs(request.user.id)}
+    context = {
+        'apikeypairs': EveManager.get_api_key_pairs(request.user.id),
+        'api_sso_validation': settings.API_SSO_VALIDATION or False
+    }
 
     return render(request, 'registered/apikeymanagment.html', context=context)
 
