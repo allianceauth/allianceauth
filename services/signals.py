@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.db import transaction
 from django.db.models.signals import m2m_changed
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -26,7 +27,8 @@ logger = logging.getLogger(__name__)
 @receiver(m2m_changed, sender=User.groups.through)
 def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
     logger.debug("Received m2m_changed from %s groups with action %s" % (instance, action))
-    if action == "post_add" or action == "post_remove" or action == "post_clear":
+
+    def trigger_service_group_update():
         logger.debug("Triggering service group update for %s" % instance)
         auth, c = AuthServicesInfo.objects.get_or_create(user=instance)
         if auth.jabber_username:
@@ -47,6 +49,10 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
             update_discourse_groups.delay(instance.pk)
         if auth.smf_username:
             update_smf_groups.delay(instance.pk)
+
+    if action == "post_add" or action == "post_remove" or action == "post_clear":
+        logger.debug("Waiting for commit to trigger service group update for %s" % instance)
+        transaction.on_commit(trigger_service_group_update)
 
 
 def trigger_all_ts_update():
