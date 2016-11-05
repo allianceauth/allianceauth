@@ -25,8 +25,37 @@ from notifications import notify
 from celery.task import periodic_task
 from celery.task.schedules import crontab
 from eveonline.managers import EveManager
+import redis
+
+REDIS_CLIENT = redis.Redis()
 
 logger = logging.getLogger(__name__)
+
+# http://loose-bits.com/2010/10/distributed-task-locking-in-celery.html
+def only_one(function=None, key="", timeout=None):
+    """Enforce only one celery task at a time."""
+
+    def _dec(run_func):
+        """Decorator."""
+
+        def _caller(*args, **kwargs):
+            """Caller."""
+            ret_value = None
+            have_lock = False
+            lock = REDIS_CLIENT.lock(key, timeout=timeout)
+            try:
+                have_lock = lock.acquire(blocking=False)
+                if have_lock:
+                    ret_value = run_func(*args, **kwargs)
+            finally:
+                if have_lock:
+                    lock.release()
+
+            return ret_value
+
+        return _caller
+
+    return _dec(function) if function is not None else _dec
 
 
 @periodic_task(run_every=crontab(minute="*/30"))
@@ -410,6 +439,7 @@ def update_all_teamspeak3_groups():
 
 
 @task(bind=True)
+@only_one(key="Discord", timeout=60*5)
 def update_discord_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discord groups for user %s" % user)
@@ -459,6 +489,7 @@ def update_all_discord_nicknames():
 
 
 @task(bind=True)
+@only_one(key="Discourse", timeout=60*5)
 def update_discourse_groups(self, pk):
     user = User.objects.get(pk=pk)
     logger.debug("Updating discourse groups for user %s" % user)

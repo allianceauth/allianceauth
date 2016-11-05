@@ -322,8 +322,8 @@ class EveApiManager:
             chars = EveApiManager.get_characters_from_api(api_id, api_key).result
         except evelink.api.APIError as e:
             if int(e.code) in [221, 222]:
-                raise e
-            raise EveApiManager.ApiInvalidError(api_id)
+                raise EveApiManager.ApiInvalidError(api_id)
+            raise e
         except (requests.exceptions.RequestExeception, HTTPError, URLError) as e:
             raise EveApiManager.ApiServerUnreachableError(e)
         except Exception:

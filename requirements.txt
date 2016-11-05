@@ -9,6 +9,7 @@ zeroc-ice
 slugify
 requests-oauthlib
 sleekxmpp
+redis
 
 # Django Stuff #
 django>=1.10,<2.0
