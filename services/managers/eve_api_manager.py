@@ -321,13 +321,11 @@ class EveApiManager:
             info = EveApiManager.get_api_info(api_id, api_key).result
             chars = EveApiManager.get_characters_from_api(api_id, api_key).result
         except evelink.api.APIError as e:
-            if int(e.code) in [221, 222]:
-                raise e
-            raise EveApiManager.ApiInvalidError(api_id)
+            if int(e.code) == 222:
+                raise EveApiManager.ApiInvalidError(api_id)
+            raise e
         except (requests.exceptions.RequestExeception, HTTPError, URLError) as e:
             raise EveApiManager.ApiServerUnreachableError(e)
-        except Exception:
-            raise EveApiManager.ApiInvalidError(api_id)
         auth, c = AuthServicesInfo.objects.get_or_create(user=user)
         states = [auth.state]
         from authentication.tasks import determine_membership_by_character  # circular import issue

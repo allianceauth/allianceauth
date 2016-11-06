@@ -46,7 +46,4 @@ class UpdateKeyForm(forms.Form):
             raise forms.ValidationError(str(e))
         except evelink.api.APIError as e:
             logger.debug("Got error code %s while validating API %s" % (e.code, self.cleaned_data['api_id']))
-            if int(e.code) in [221, 222]:
-                raise forms.ValidationError("API key failed validation")
-            else:
-                raise forms.ValidationError("Failed to reach API servers")
+            raise forms.ValidationError('Error while checking API key (%s)' % e.code)
