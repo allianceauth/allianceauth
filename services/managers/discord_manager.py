@@ -17,8 +17,10 @@ EVE_IMAGE_SERVER = "https://image.eveonline.com"
 AUTH_URL = "https://discordapp.com/api/oauth2/authorize"
 TOKEN_URL = "https://discordapp.com/api/oauth2/token"
 
-# kick, manage roles, manage nicknames
-BOT_PERMISSIONS = 0x00000002 + 0x10000000 + 0x08000000
+# needs administrator, since Discord can't get their permissions system to work
+# was kick members, manage roles, manage nicknames
+#BOT_PERMISSIONS = 0x00000002 + 0x10000000 + 0x08000000
+BOT_PERMISSIONS = 0x00000008
 
 # get user ID, accept invite
 SCOPES = [
