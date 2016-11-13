@@ -22,12 +22,13 @@ class EveCharacterAdmin(admin.ModelAdmin):
 
     @staticmethod
     def main_character(obj):
-        auth = AuthServicesInfo.objects.get_or_create(user=obj.user)[0]
-        if auth and auth.main_char_id:
-            try:
-                return EveCharacter.objects.get(character_id=auth.main_char_id)
-            except EveCharacter.DoesNotExist:
-                pass
+        if obj.user:
+            auth = AuthServicesInfo.objects.get_or_create(user=obj.user)[0]
+            if auth and auth.main_char_id:
+                try:
+                    return EveCharacter.objects.get(character_id=auth.main_char_id)
+                except EveCharacter.DoesNotExist:
+                    pass
         return None
 
 
