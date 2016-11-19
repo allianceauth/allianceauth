@@ -242,7 +242,7 @@ def validate_services(self, user, state):
     if auth.discourse_enabled and not getattr(settings, 'ENABLE_%s_DISCOURSE' % setting_string, False):
         DiscourseManager.disable_user(user)
         authinfo.discourse_enabled = False
-        autninfo.save()
+        authinfo.save()
         notify(user, 'Discourse Account Disabled', level='danger')
     if auth.smf_username and not getattr(settings, 'ENABLE_%s_SMF' % setting_string, False):
         smfManager.disable_user(auth.smf_username)
@@ -473,5 +473,5 @@ def update_discourse_groups(self, pk):
 @task
 def update_all_discourse_groups():
     logger.debug("Updating ALL discourse groups")
-    for user in AuthServicesInfo.objects.exclude(discourse_username__exact=''):
-        update_discourse_groups.delay(user.user_id)
+    for user in AuthServicesInfo.objects.filter(discourse_enabled=True):
+        update_discourse_groups.delay(user.pk)
