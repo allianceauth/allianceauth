@@ -228,6 +228,10 @@ class EveManager:
         return None
 
     @staticmethod
+    def get_characters_by_api_id(api_id):
+        return EveCharacter.objects.filter(api_id=api_id)
+
+    @staticmethod
     def get_charater_alliance_id_by_id(char_id):
         if EveCharacter.objects.filter(character_id=char_id).exists():
             return EveCharacter.objects.get(character_id=char_id).alliance_id
