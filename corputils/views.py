@@ -109,6 +109,8 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
                 char = EveCharacter.objects.get(character_id=char_id)
                 char_owner = char.user
                 try:
+                    if not char_owner:
+                        raise AttributeError("Character has no assigned user.")
                     mainid = int(AuthServicesInfo.objects.get_or_create(user=char_owner)[0].main_char_id)
                     mainchar = EveCharacter.objects.get(character_id=mainid)
                     mainname = mainchar.character_name
@@ -116,12 +118,22 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
                     maincorpid = mainchar.corporation_id
                     api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
                 except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
-                    logger.info("No main character seem to be set for character %s" % char.character_name)
+                    logger.debug("No main character seem to be set for character %s" % char.character_name)
                     mainname = "User: " + char_owner.username
                     mainchar = char
                     maincorp = "Not set."
                     maincorpid = None
                     api_pair = None
+                except AttributeError:
+                    logger.debug("No associated user for character %s" % char.character_name)
+                    mainname = None
+                    mainchar = None
+                    maincorp = None
+                    maincorpid = None
+                    try:
+                        api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
+                    except EveApiKeyPair.DoesNotExist:
+                        api_pair = None
                 num_registered_characters += 1
                 characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                                 user=char_owner,
@@ -139,9 +151,11 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
 
         for char in EveCharacter.objects.filter(corporation_id=corpid):
             if not int(char.character_id) in member_list:
-                logger.info("Character '%s' does not exist in EveWho dump." % char.character_name)
+                logger.debug("Character '%s' does not exist in EveWho dump." % char.character_name)
                 char_owner = char.user
                 try:
+                    if not char_owner:
+                        raise AttributeError("Character has no assigned user.")
                     mainid = int(AuthServicesInfo.objects.get_or_create(user=char_owner)[0].main_char_id)
                     mainchar = EveCharacter.objects.get(character_id=mainid)
                     mainname = mainchar.character_name
@@ -149,12 +163,22 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
                     maincorpid = mainchar.corporation_id
                     api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
                 except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
-                    logger.info("No main character seem to be set for character %s" % char.character_name)
+                    logger.debug("No main character seem to be set for character %s" % char.character_name)
                     mainname = "User: " + char_owner.username
                     mainchar = char
                     maincorp = "Not set."
                     maincorpid = None
                     api_pair = None
+                except AttributeError:
+                    logger.debug("No associated user for character %s" % char.character_name)
+                    mainname = None
+                    mainchar = None
+                    maincorp = None
+                    maincorpid = None
+                    try:
+                        api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
+                    except EveApiKeyPair.DoesNotExist:
+                        api_pair = None
                 num_registered_characters += 1
                 characters_with_api.setdefault(mainname, Player(main=mainchar,
                                                                 user=char_owner,
