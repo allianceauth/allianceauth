@@ -118,8 +118,7 @@ def dashboard_view(request):
         for api in apikeypairs:
             api_chars.append({
                 'id': api.api_id,
-                'sso_verified': api.sso_verified,
-                'is_valid': api.sso_verified if sso_validation else True,
+                'sso_verified': api.sso_verified if sso_validation else True,
                 'characters': EveManager.get_characters_by_api_id(api.api_id),
             })
 
