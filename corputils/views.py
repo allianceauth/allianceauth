@@ -127,7 +127,7 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
                 except AttributeError:
                     logger.debug("No associated user for character %s" % char.character_name)
                     mainname = None
-                    mainchar = None
+                    mainchar = char
                     maincorp = None
                     maincorpid = None
                     try:
@@ -172,7 +172,7 @@ def corp_member_view(request, corpid=None, year=datetime.date.today().year, mont
                 except AttributeError:
                     logger.debug("No associated user for character %s" % char.character_name)
                     mainname = None
-                    mainchar = None
+                    mainchar = char
                     maincorp = None
                     maincorpid = None
                     try:
