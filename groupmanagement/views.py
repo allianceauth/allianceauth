@@ -48,11 +48,8 @@ def group_management(request):
 def group_membership(request):
     logger.debug("group_membership called by user %s" % request.user)
     # Get all open and closed groups
-    opengroups = OpenGroup.objects.all().annotate(num_members=Count('group__user'))
-    closedgroups = HiddenGroup.objects.all().annotate(num_members=Count('group__user'))
-
-    groups = list(chain(opengroups, closedgroups))
-    groups.sort(key=lambda g: g.group.name.lower())
+    groups = [group for group in Group.objects.all().annotate(num_members=Count('user')).order_by('name')
+              if joinable_group(group)]
 
     render_items = {'groups': groups}
 
@@ -67,7 +64,7 @@ def group_membership_list(request, group_id):
         group = Group.objects.get(id=group_id)
 
         # Check its a joinable group i.e. not corp or internal
-        if not hasattr(group, 'hiddengroup') and not hasattr(group, 'opengroup'):
+        if not joinable_group(group):
             raise PermissionDenied
 
     except ObjectDoesNotExist:
@@ -221,13 +218,7 @@ def groups_view(request):
 
     for group in Group.objects.all():
         # Check if group is a corp
-        if "Corp_" in group.name:
-            pass
-        elif "Alliance_" in group.name:
-            pass
-        elif settings.DEFAULT_AUTH_GROUP in group.name:
-            pass
-        elif settings.DEFAULT_BLUE_GROUP in group.name:
+        if not joinable_group(group):
             pass
         elif HiddenGroup.objects.filter(group=group).exists():
             pass
@@ -291,3 +282,18 @@ def group_request_leave(request, group_id):
     logger.info("Created group leave request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
     messages.success(request, 'Applied to leave group %s.' % group)
     return redirect("auth_groups")
+
+
+def joinable_group(group):
+    """
+    Check if a group is a user joinable group, i.e.
+    not an internal group for Corp, Alliance, Members etc
+    :param group: django.contrib.auth.models.Group object
+    :return: bool True if its joinable, False otherwise
+    """
+    return (
+        "Corp_" not in group.name and
+        "Alliance_" not in group.name and
+        settings.DEFAULT_AUTH_GROUP not in group.name and
+        settings.DEFAULT_BLUE_GROUP not in group.name
+    )
