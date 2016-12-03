@@ -13,6 +13,10 @@ from groupmanagement.models import OpenGroup
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.http import Http404
+from itertools import chain
 
 import logging
 
@@ -37,6 +41,73 @@ def group_management(request):
     render_items = {'acceptrequests': acceptrequests, 'leaverequests': leaverequests}
 
     return render(request, 'registered/groupmanagement.html', context=render_items)
+
+
+@login_required
+@permission_required('auth.group_management')
+def group_membership(request):
+    logger.debug("group_membership called by user %s" % request.user)
+    # Get all open and closed groups
+    opengroups = OpenGroup.objects.all().annotate(num_members=Count('group__user'))
+    closedgroups = HiddenGroup.objects.all().annotate(num_members=Count('group__user'))
+
+    groups = list(chain(opengroups, closedgroups))
+    groups.sort(key=lambda g: g.group.name.lower())
+
+    render_items = {'groups': groups}
+
+    return render(request, 'registered/groupmembership.html', context=render_items)
+
+
+@login_required
+@permission_required('auth.group_management')
+def group_membership_list(request, group_id):
+    logger.debug("group_membership_list called by user %s for group id %s" % (request.user, group_id))
+    try:
+        group = Group.objects.get(id=group_id)
+
+        # Check its a joinable group i.e. not corp or internal
+        if not hasattr(group, 'hiddengroup') and not hasattr(group, 'opengroup'):
+            raise PermissionDenied
+
+    except ObjectDoesNotExist:
+        raise Http404("Group does not exist")
+
+    members = list()
+
+    for member in group.user_set.all():
+        authinfo = AuthServicesInfo.objects.get_or_create(user=member)[0]
+
+        members.append({
+            'user': member,
+            'main_char': EveManager.get_character_by_id(authinfo.main_char_id)
+        })
+
+    render_items = {'group': group, 'members': members}
+
+    return render(request, 'registered/groupmembers.html', context=render_items)
+
+
+@login_required
+@permission_required('auth.group_management')
+def group_membership_remove(request, group_id, user_id):
+    logger.debug("group_membership_remove called by user %s for group id %s on user id %s" %
+                 (request.user, group_id, user_id))
+    try:
+        group = Group.objects.get(id=group_id)
+
+        try:
+            user = group.user_set.get(id=user_id)
+            # Remove group from user
+            user.groups.remove(group)
+            messages.success(request, "Removed user %s from group %s" % (user, group))
+        except ObjectDoesNotExist:
+            messages.warning(request, "User does not exist in that group")
+
+    except ObjectDoesNotExist:
+        messages.warning(request, "Group does not exist")
+
+    return redirect('auth_group_membership_list', group_id)
 
 
 @login_required

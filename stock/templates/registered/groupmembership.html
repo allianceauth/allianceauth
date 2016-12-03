@@ -1,0 +1,54 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}{% trans "Groups Membership" %}{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        {% include 'registered/groupmanagementmenu.html' with page="auth_group_membership"  %}
+        <div>
+            {% if groups %}
+            <h3>Groups</h3>
+            <table class="table">
+                <tr>
+                    <th class="text-center">{% trans "Name" %}</th>
+                    <th class="text-center">{% trans "Description" %}</th>
+                    <th class="text-center">{% trans "Status" %}</th>
+                    <th class="text-center">{% trans "Member Count" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
+                </tr>
+                {% for group in groups %}
+                    <tr>
+                        <td class="text-center">{{ group.group.name }}</td>
+                        <td class="text-center">{{ group.group.groupdescription.description }}</td>
+                        <td class="text-center">
+                            {% if group.group.hiddengroup %}
+                                <span class="label label-info">{% trans "Hidden" %}</span>
+                            {% elif group.group.opengroup %}
+                                <span class="label label-success">{% trans "Open" %}</span>
+                            {% else %}
+                                <span class="label label-default">{% trans "Other" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {{ group.num_members }}
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'auth_group_membership_list' group.group.id %}" class="btn btn-primary"
+                                title="{% trans "View Members" %}">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <div class="alert alert-warning text-center">No groups to list.</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
