@@ -246,6 +246,11 @@ def groups_view(request):
 def group_request_add(request, group_id):
     logger.debug("group_request_add called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
+    if not joinable_group(group):
+        logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
+                       (request.user, group_id))
+        messages.warning(request, "You cannot join that group")
+        return redirect('auth_groups')
     if OpenGroup.objects.filter(group=group).exists():
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
@@ -267,6 +272,16 @@ def group_request_add(request, group_id):
 def group_request_leave(request, group_id):
     logger.debug("group_request_leave called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
+    if not joinable_group(group):
+        logger.warning("User %s attempted to leave group id %s but it is not a joinable group" %
+                       (request.user, group_id))
+        messages.warning(request, "You cannot leave that group")
+        return redirect('auth_groups')
+    if group not in request.user.groups.all():
+        logger.debug("User %s attempted to leave group id %s but they are not a member" %
+                     (request.user, group_id))
+        messages.warning(request, "You are not a member of that group")
+        return redirect('auth_groups')
     if OpenGroup.objects.filter(group=group).exists():
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
