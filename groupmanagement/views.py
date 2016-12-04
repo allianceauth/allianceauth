@@ -1,22 +1,18 @@
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from notifications import notify
-from groupmanagement.models import GroupDescription
+from groupmanagement.managers import GroupManager
 from groupmanagement.models import GroupRequest
-from groupmanagement.models import HiddenGroup
-from groupmanagement.models import OpenGroup
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
-from itertools import chain
 
 import logging
 
@@ -48,8 +44,7 @@ def group_management(request):
 def group_membership(request):
     logger.debug("group_membership called by user %s" % request.user)
     # Get all open and closed groups
-    groups = [group for group in Group.objects.all().annotate(num_members=Count('user')).order_by('name')
-              if joinable_group(group)]
+    groups = Group.objects.exclude(authgroup__internal=True).annotate(num_members=Count('user')).order_by('name')
 
     render_items = {'groups': groups}
 
@@ -64,7 +59,7 @@ def group_membership_list(request, group_id):
         group = Group.objects.get(id=group_id)
 
         # Check its a joinable group i.e. not corp or internal
-        if not joinable_group(group):
+        if not GroupManager.joinable_group(group):
             raise PermissionDenied
 
     except ObjectDoesNotExist:
@@ -214,31 +209,16 @@ def group_leave_reject_request(request, group_request_id):
 @login_required
 def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
-    paired_list = []
+    groups = []
 
-    for group in Group.objects.all():
-        # Check if group is a corp
-        if not joinable_group(group):
-            pass
-        elif HiddenGroup.objects.filter(group=group).exists():
-            pass
-        else:
-            # Get the descriptionn
-            group_desc = GroupDescription.objects.filter(group=group)
+    for group in GroupManager.get_joinable_groups():
+        # Exclude hidden
+        if not group.authgroup.hidden:
             group_request = GroupRequest.objects.filter(user=request.user).filter(group=group)
 
-            if group_desc:
-                if group_request:
-                    paired_list.append((group, group_desc[0], group_request[0]))
-                else:
-                    paired_list.append((group, group_desc[0], ""))
-            else:
-                if group_request:
-                    paired_list.append((group, "", group_request[0]))
-                else:
-                    paired_list.append((group, "", ""))
+            groups.append({'group': group, 'request': group_request[0] if group_request else None})
 
-    render_items = {'pairs': paired_list}
+    render_items = {'groups': groups}
     return render(request, 'registered/groups.html', context=render_items)
 
 
@@ -246,12 +226,12 @@ def groups_view(request):
 def group_request_add(request, group_id):
     logger.debug("group_request_add called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
-    if not joinable_group(group):
+    if not GroupManager.joinable_group(group):
         logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, "You cannot join that group")
         return redirect('auth_groups')
-    if OpenGroup.objects.filter(group=group).exists():
+    if group.authgroup.open:
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
         return redirect("auth_groups")
@@ -272,7 +252,7 @@ def group_request_add(request, group_id):
 def group_request_leave(request, group_id):
     logger.debug("group_request_leave called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
-    if not joinable_group(group):
+    if not GroupManager.joinable_group(group):
         logger.warning("User %s attempted to leave group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, "You cannot leave that group")
@@ -282,7 +262,7 @@ def group_request_leave(request, group_id):
                      (request.user, group_id))
         messages.warning(request, "You are not a member of that group")
         return redirect('auth_groups')
-    if OpenGroup.objects.filter(group=group).exists():
+    if group.authgroup.open:
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
         return redirect("auth_groups")
@@ -297,18 +277,3 @@ def group_request_leave(request, group_id):
     logger.info("Created group leave request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
     messages.success(request, 'Applied to leave group %s.' % group)
     return redirect("auth_groups")
-
-
-def joinable_group(group):
-    """
-    Check if a group is a user joinable group, i.e.
-    not an internal group for Corp, Alliance, Members etc
-    :param group: django.contrib.auth.models.Group object
-    :return: bool True if its joinable, False otherwise
-    """
-    return (
-        "Corp_" not in group.name and
-        "Alliance_" not in group.name and
-        settings.DEFAULT_AUTH_GROUP not in group.name and
-        settings.DEFAULT_BLUE_GROUP not in group.name
-    )

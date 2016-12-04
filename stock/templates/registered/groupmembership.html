@@ -24,11 +24,11 @@
                 {% for group in groups %}
                     <tr>
                         <td class="text-center">{{ group.name }}</td>
-                        <td class="text-center">{{ group.groupdescription.description }}</td>
+                        <td class="text-center">{{ group.authgroup.description }}</td>
                         <td class="text-center">
-                            {% if group.hiddengroup %}
+                            {% if group.authgroup.hidden %}
                                 <span class="label label-info">{% trans "Hidden" %}</span>
-                            {% elif group.opengroup %}
+                            {% elif group.authgroup.open %}
                                 <span class="label label-success">{% trans "Open" %}</span>
                             {% else %}
                                 <span class="label label-default">{% trans "Requestable" %}</span>
