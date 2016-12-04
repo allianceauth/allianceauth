@@ -50,12 +50,12 @@ class AuthGroup(models.Model):
                                help_text="Group is open and users will be automatically added upon request. <br>"
                                          "If the group is not open users will need their request manually approved.")
     # Group leaders have management access to this group
-    group_leaders = models.ManyToManyField(User, related_name='leads_groups',
+    group_leaders = models.ManyToManyField(User, related_name='leads_groups', blank=True,
                                            help_text="Group leaders can process group requests for this group "
                                                      "specifically. Use the auth.group_management permission to allow "
                                                      "a user to manage all groups.")
 
-    description = models.CharField(max_length=512, help_text="Description of the group shown to users.")
+    description = models.CharField(max_length=512, blank=True, help_text="Description of the group shown to users.")
 
     def __str__(self):
         return self.group.name

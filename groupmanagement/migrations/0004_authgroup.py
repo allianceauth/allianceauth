@@ -82,9 +82,9 @@ class Migration(migrations.Migration):
                 ('internal', models.BooleanField(default=True, help_text='Internal group, users cannot see, join or request to join this group.<br>Used for groups such as Members, Corp_*, Alliance_* etc.<br><b>Overrides Hidden and Open options when selected.</b>')),
                 ('hidden', models.BooleanField(default=True, help_text='Group is hidden from users but can still join with the correct link.')),
                 ('open', models.BooleanField(default=False, help_text='Group is open and users will be automatically added upon request. <br>If the group is not open users will need their request manually approved.')),
-                ('description', models.CharField(max_length=512, help_text='Description of the group shown to users.', )),
+                ('description', models.CharField(max_length=512, blank=True,  help_text='Description of the group shown to users.', )),
 
-                ('group_leaders', models.ManyToManyField(related_name='leads_groups', to=settings.AUTH_USER_MODEL, help_text='Group leaders can process group requests for this group specifically. Use the auth.group_management permission to allow a user to manage all groups.',)),
+                ('group_leaders', models.ManyToManyField(related_name='leads_groups', to=settings.AUTH_USER_MODEL, blank=True, help_text='Group leaders can process group requests for this group specifically. Use the auth.group_management permission to allow a user to manage all groups.',)),
             ],
         ),
         migrations.RunPython(combine_group_models, reverse_group_models),
