@@ -165,7 +165,7 @@
                             </li>
                         {% endif %}
 
-                        {% if perms.auth.group_management %}
+                        {% if can_manage_groups %}
                             <li>
                                 <a class="{% navactive request 'auth_group_management' %}" href="{% url 'auth_group_management' %}">
                                     <i class="fa fa-lock fa-sitemap fa-fw grayiconecolor"></i>{% trans " Group Management" %}

@@ -111,6 +111,7 @@ TEMPLATES = [
                 'authentication.context_processors.states',
                 'authentication.context_processors.membership_state',
                 'authentication.context_processors.sso',
+                'groupmanagement.context_processors.can_manage_groups',
             ],
         },
     },
