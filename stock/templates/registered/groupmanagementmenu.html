@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load i18n %}
+{% load navactive %}
 
 <nav class="navbar navbar-default">
 <div class="container-fluid">
@@ -14,10 +15,10 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li {% if page == 'auth_group_management' %}class="active"{% endif %}>
+            <li class="{% navactive request 'auth_group_management' %}">
                 <a href="{% url 'auth_group_management' %}">{% trans "Group Requests" %}</a>
             </li>
-            <li {% if page == 'auth_group_membership' %}class="active"{% endif %}>
+            <li class="{% navactive request 'auth_group_membership auth_group_membership_list' %}">
                 <a href="{% url 'auth_group_membership' %}">{% trans "Group Membership" %}</a>
             </li>
         </ul>
