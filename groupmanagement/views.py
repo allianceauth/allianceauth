@@ -97,6 +97,7 @@ def group_membership_remove(request, group_id, user_id):
             user = group.user_set.get(id=user_id)
             # Remove group from user
             user.groups.remove(group)
+            logger.info("User %s removed user %s from group %s" % (request.user, user, group))
             messages.success(request, "Removed user %s from group %s" % (user, group))
         except ObjectDoesNotExist:
             messages.warning(request, "User does not exist in that group")
