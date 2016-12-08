@@ -85,7 +85,7 @@ def group_membership_list(request, group_id):
 
     members = list()
 
-    for member in group.user_set.all():
+    for member in group.user_set.all().order_by('username'):
         authinfo = AuthServicesInfo.objects.get_or_create(user=member)[0]
 
         members.append({
