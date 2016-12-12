@@ -13,6 +13,8 @@ from eveonline.managers import EveManager
 from fleetactivitytracking.forms import FatlinkForm
 from fleetactivitytracking.models import Fatlink, Fat
 
+from esi.decorators import token_required
+
 from slugify import slugify
 
 from collections import OrderedDict
@@ -177,51 +179,54 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
 
 
 @login_required
-def click_fatlink_view(request, hash, fatname):
-    # Take IG-header data and register the fatlink if not existing already.
-    # use obj, created = Fat.objects.get_or_create()
-    # onload="CCPEVE.requestTrust('http://www.mywebsite.com')"
+@token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-universe.read_structures.v1'])
+def click_fatlink_view(request, token, hash, fatname):
+    try:
+        fatlink = Fatlink.objects.filter(hash=hash)[0]
 
-    if 'HTTP_EVE_TRUSTED' in request.META and request.META['HTTP_EVE_TRUSTED'] == "Yes":
-        # Retrieve the latest fatlink using the hash.
-        try:
-            fatlink = Fatlink.objects.filter(hash=hash)[0]
+        if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
 
-            if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
+            character = EveManager.get_character_by_id(token.character_id)
 
-                character = EveManager.get_character_by_id(request.META['HTTP_EVE_CHARID'])
-
-                if character:
-                    fat = Fat()
-                    fat.system = request.META['HTTP_EVE_SOLARSYSTEMNAME']
-                    if 'HTTP_EVE_STATIONNAME' in request.META:
-                        fat.station = request.META['HTTP_EVE_STATIONNAME']
-                    else:
-                        fat.station = "No Station"
-                    fat.shiptype = request.META['HTTP_EVE_SHIPTYPENAME']
-                    fat.fatlink = fatlink
-                    fat.character = character
-                    fat.user = character.user
-                    try:
-                        fat.full_clean()
-                        fat.save()
-                        context = {'trusted': True, 'registered': True}
-                    except ValidationError as e:
-                        messages = []
-                        for errorname, message in e.message_dict.items():
-                            messages.append(message[0].decode())
-                        context = {'trusted': True, 'errormessages': messages}
+            if character:
+                # get data
+                c = token.get_esi_client()
+                location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
+                ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
+                location['solar_system_name'] = c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['solar_system_name']
+                if location['structure_id']:
+                    location['station_name'] = c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()['name']
+                elif location['station_id']:
+                    location['station_name'] = c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['station_name']
                 else:
-                    context = {'character_id': request.META['HTTP_EVE_CHARID'],
-                               'character_name': request.META['HTTP_EVE_CHARNAME']}
-                    return render(request, 'public/characternotexisting.html', context=context)
+                    location['station_name'] = "No Station"
+                ship['ship_type_name'] = c.Universe.get_universe_types_type_id(type_id=ship['ship_type_id']).result()['type_name']
+
+                fat = Fat()
+                fat.system = location['solar_system_name']
+                fat.station = location['station_name']
+                fat.shiptype = ship['ship_type_name']
+                fat.fatlink = fatlink
+                fat.character = character
+                fat.user = character.user
+                try:
+                    fat.full_clean()
+                    fat.save()
+                    context = {'registered': True}
+                except ValidationError as e:
+                    messages = []
+                    for errorname, message in e.message_dict.items():
+                        messages.append(message[0].decode())
+                    context = {'errormessages': messages}
             else:
-                context = {'trusted': True, 'expired': True}
-        except ObjectDoesNotExist:
-            context = {'trusted': True}
-    else:
-        context = {'trusted': False, 'fatname': fatname}
-    return render(request, 'public/clickfatlinkview.html', context=context)
+                context = {'character_id': token.character_id,
+                           'character_name': token.character_name}
+                return render(request, 'registered/characternotexisting.html', context=context)
+        else:
+            context = {'expired': True}
+    except (ObjectDoesNotExist, KeyError):
+        context = {}
+    return render(request, 'registered/clickfatlinkview.html', context=context)
 
 
 @login_required
