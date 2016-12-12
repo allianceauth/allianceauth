@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-
+from django.contrib import messages
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.managers import EveManager
@@ -71,7 +71,7 @@ def fatlink_view(request):
     else:
         context = {'user': user, 'fats': latest_fats}
 
-    return render(request, 'registered/fatlinkview.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkview.html', context=context)
 
 
 @login_required
@@ -113,7 +113,7 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
         context = {'fatStats': fatStatsList, 'month': start_of_month.strftime("%B"), 'year': year,
                    'previous_month': start_of_previous_month}
 
-    return render(request, 'registered/fatlinkstatisticsview.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkstatisticsview.html', context=context)
 
 
 @login_required
@@ -141,7 +141,7 @@ def fatlink_personal_statistics_view(request, year=datetime.date.today().year, m
     else:
         context = {'user': user, 'monthlystats': monthlystats, 'year': year, 'previous_year': year - 1}
 
-    return render(request, 'registered/fatlinkpersonalstatisticsview.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkpersonalstatisticsview.html', context=context)
 
 
 @login_required
@@ -175,7 +175,7 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
     context["created_fats"] = created_fats
     context["n_created_fats"] = len(created_fats)
 
-    return render(request, 'registered/fatlinkpersonalmonthlystatisticsview.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html', context=context)
 
 
 @login_required
@@ -212,21 +212,21 @@ def click_fatlink_view(request, token, hash, fatname):
                 try:
                     fat.full_clean()
                     fat.save()
-                    context = {'registered': True}
+                    messages.success(request, 'Fleet participation registered.')
                 except ValidationError as e:
-                    messages = []
+                    err_messages = []
                     for errorname, message in e.message_dict.items():
-                        messages.append(message[0].decode())
-                    context = {'errormessages': messages}
+                        err_messages.append(message[0].decode())
+                    messages.error(request, ' '.join(err_messages))
             else:
                 context = {'character_id': token.character_id,
                            'character_name': token.character_name}
-                return render(request, 'registered/characternotexisting.html', context=context)
+                return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
         else:
-            context = {'expired': True}
+            messages.error(request, 'FAT link has expired.')
     except (ObjectDoesNotExist, KeyError):
-        context = {}
-    return render(request, 'registered/clickfatlinkview.html', context=context)
+        messages.error(request, 'Invalid FAT link.')
+    return redirect('auth_fatlink_view')
 
 
 @login_required
@@ -255,7 +255,7 @@ def create_fatlink_view(request):
                     for errorname, message in e.message_dict.items():
                         messages.append(message[0].decode())
                     context = {'form': form, 'errormessages': messages}
-                    return render(request, 'registered/fatlinkformatter.html', context=context)
+                    return render(request, 'fleetactivitytracking/fatlinkformatter.html', context=context)
             else:
                 form = FatlinkForm()
                 context = {'form': form, 'badrequest': True}
@@ -268,7 +268,7 @@ def create_fatlink_view(request):
 
     context = {'form': form}
 
-    return render(request, 'registered/fatlinkformatter.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkformatter.html', context=context)
 
 
 @login_required
@@ -296,4 +296,4 @@ def modify_fatlink_view(request, hash=""):
 
     context = {'fatlink': fatlink, 'registered_fats': registered_fats}
 
-    return render(request, 'registered/fatlinkmodify.html', context=context)
+    return render(request, 'fleetactivitytracking/fatlinkmodify.html', context=context)
