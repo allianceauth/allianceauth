@@ -16,7 +16,7 @@ import fleetup.views
 import srp.views
 import notifications.views
 import hrapplications.views
-import eve_sso.urls
+import esi.urls
 
 # Functional/Untranslated URL's
 urlpatterns = [
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # SSO
-    url (r'^sso/', include(eve_sso.urls, namespace='eve_sso')),
+    url (r'^sso/', include(esi.urls, namespace='esi')),
     url (r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
 
     # Index

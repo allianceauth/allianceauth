@@ -12,7 +12,7 @@ from authentication.models import AuthServicesInfo
 from authentication.tasks import set_state
 from eveonline.tasks import refresh_api
 
-from eve_sso.decorators import token_required
+from esi.decorators import token_required
 from django.conf import settings
 import logging
 
@@ -70,7 +70,7 @@ def add_api_key(request):
 
 @login_required
 @token_required(new=True)
-def api_sso_validate(request, tokens, api_id):
+def api_sso_validate(request, token, api_id):
     logger.debug('api_sso_validate called by user %s for api %s' % (request.user, api_id))
     api = get_object_or_404(EveApiKeyPair, api_id=api_id)
     if api.user and api.user != request.user:
@@ -81,7 +81,6 @@ def api_sso_validate(request, tokens, api_id):
         logger.debug('API %s has already been verified.' % api_id)
         messages.info(request, 'API %s has already been verified' % api_id)
         return redirect('auth_api_key_management')
-    token = tokens[0]
     logger.debug('API %s has not been verified. Checking if token for %s matches.' % (api_id, token.character_name))
     characters = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
     if token.character_id in characters:

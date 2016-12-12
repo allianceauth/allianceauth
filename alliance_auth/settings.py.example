@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'corputils',
     'fleetactivitytracking',
     'notifications',
-    'eve_sso',
+    'esi',
     'geelweb.django.navhelper',
 ]
 
@@ -237,9 +237,9 @@ FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 # Callback URL should be http://mydomain.com/sso/callback
 # Leave callback blank to hide SSO button on login page
 ###################
-EVE_SSO_CLIENT_ID = os.environ.get('AA_EVE_SSO_CLIENT_ID', '')
-EVE_SSO_CLIENT_SECRET = os.environ.get('AA_EVE_SSO_CLIENT_SECRET', '')
-EVE_SSO_CALLBACK_URL = os.environ.get('AA_EVE_SSO_CALLBACK_URL', '')
+ESI_SSO_CLIENT_ID = os.environ.get('AA_EVE_SSO_CLIENT_ID', '')
+ESI_SSO_CLIENT_SECRET = os.environ.get('AA_EVE_SSO_CLIENT_SECRET', '')
+ESI_SSO_CALLBACK_URL = os.environ.get('AA_EVE_SSO_CALLBACK_URL', '')
 
 #########################
 # Default Group Settings
