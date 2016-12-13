@@ -157,9 +157,9 @@
                             </li>
                         {% endif %}
 
-                        {% if perms.auth.corp_apis or perms.auth.alliance_apis %}
+                        {% if perms.corputils.view_corpstats %}
                             <li>
-                                <a class="{% navactive request 'auth_corputils auth_corputils_search auth_corputils_corp_view auth_corputils_month' %}" href="{% url 'auth_corputils' %}">
+                                <a class="{% navactive request 'corputils:view corputils:search' %}" href="{% url 'corputils:view' %}">
                                     <i class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}
                                 </a>
                             </li>

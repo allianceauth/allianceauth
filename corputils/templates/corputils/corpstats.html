@@ -1,0 +1,92 @@
+{% extends 'corputils/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load bootstrap_pagination %}
+{% block member_data %}
+            {% if corpstats %}
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <table class="table">
+                            <tr>
+                                <td class="text-center col-lg-6 {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}"><img class="ra-avatar" src="{{ corpstats.corp_logo }}"></td>
+                                {% if corpstats.corp.alliance %}
+                                    <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance_logo }}"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-center">{{ corpstats.corp.corporation_name }}</td>
+                                {% if corpstats.corp.alliance %}
+                                    <td class="text-center">{{ corpstats.corp.alliance.alliance_name }}</td>
+                                {% endif %}
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <b>{% trans "API Index:" %}</b>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_members }}" aria-valuemin="0" aria-valuemax="{{ corpstats.total_members }}" style="width: {% widthratio corpstats.registered_members corpstats.total_members 100 %}%;">
+                                {{ corpstats.registered_members }}/{{ corpstats.total_members }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="panel-title pull-left">
+                                    <h4>Members</h4>
+                                </div>
+                                <div class="panel-title pull-right">
+                                    Last update: {{ corpstats.last_updated|naturaltime }}
+                                    {% if corpstats.can_update %}
+                                        <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
+                                            <span class="glyphicon glyphicon-refresh"></span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="text-center">
+                                    {% bootstrap_paginate members range=10 %}
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-center">Character</th>
+                                            {% if corpstats.show_apis %}
+                                                <th class="text-center">API</th>
+                                            {% endif %}
+                                            <th class="text-center">zKillboard</th>
+                                            <th class="text-center">Main Character</th>
+                                            <th class="text-center">Main Corporation</th>
+                                            <th class="text-center">Main Alliance</th>
+                                        </tr>
+                                        {% for member in members %}
+                                            <tr>
+                                                <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
+                                                <td class="text-center">{{ member.character_name }}</td>
+                                                {% if corpstats.show_apis %}
+                                                    {% if member.api %}
+                                                        <td class="text-center"><a href="{{ JACK_KNIFE_URL }}?usid={{ member.api.api_id }}&apik={{ member.api.api_key }}" target="_blank" class="label label-primary">{{ member.api.api_id }}</td>
+                                                    {% else %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <td class="text-center"><a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
+                                                <td class="text-center">{{ member.main.character_name }}</td>
+                                                <td class="text-center">{{ member.main.corporation_name }}</td>
+                                                <td class="text-center">{{ member.main.alliance_name }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+{% endblock %}

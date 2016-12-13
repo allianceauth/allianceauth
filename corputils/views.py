@@ -1,325 +1,112 @@
 from __future__ import unicode_literals
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-
-from collections import namedtuple
-
-from authentication.models import AuthServicesInfo
-from services.managers.eve_api_manager import EveApiManager
-from services.managers.evewho_manager import EveWhoManager
-from eveonline.models import EveCorporationInfo
-from eveonline.models import EveAllianceInfo
-from eveonline.models import EveCharacter
-from eveonline.models import EveApiKeyPair
-from fleetactivitytracking.models import Fat
+from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+from django.db import IntegrityError
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
+from eveonline.models import EveCharacter, EveCorporationInfo
+from corputils.models import CorpStats
 from corputils.forms import CorputilsSearchForm
-from evelink.api import APIError
+from esi.decorators import token_required
 
-import logging
-import datetime
+MEMBERS_PER_PAGE = int(getattr(settings, 'CORPSTATS_MEMBERS_PER_PAGE', 20))
 
-logger = logging.getLogger(__name__)
-
-
-class Player(object):
-    def __init__(self, main, user, maincorp, maincorpid, altlist, apilist, n_fats):
-        self.main = main
-        self.user = user
-        self.maincorp = maincorp
-        self.maincorpid = maincorpid
-        self.altlist = altlist
-        self.apilist = apilist
-        self.n_fats = n_fats
-
-
-def first_day_of_next_month(year, month):
-    if month == 12:
-        return datetime.datetime(year + 1, 1, 1)
-    else:
-        return datetime.datetime(year, month + 1, 1)
-
-
-def first_day_of_previous_month(year, month):
-    if month == 1:
-        return datetime.datetime(year - 1, 12, 1)
-    else:
-        return datetime.datetime(year, month - 1, 1)
-
+def get_page(model_list, page_num):
+    p = Paginator(model_list, MEMBERS_PER_PAGE)
+    try:
+        members = p.page(page_num)
+    except PageNotAnInteger:
+        members = p.page(1)
+    except EmptyPage:
+        members = p.page(p.num_pages)
+    return members
 
 @login_required
-def corp_member_view(request, corpid=None, year=datetime.date.today().year, month=datetime.date.today().month):
-    year = int(year)
-    month = int(month)
-    start_of_month = datetime.datetime(year, month, 1)
-    start_of_next_month = first_day_of_next_month(year, month)
-    start_of_previous_month = first_day_of_previous_month(year, month)
-    logger.debug("corp_member_view called by user %s" % request.user)
-
+@permission_required('corputils.view_corpstats')
+@permission_required('corputils.add_corpstats')
+@token_required(scopes='esi-corporations.read_corporation_membership.v1')
+def corpstats_add(request, token):
     try:
-        user_main = EveCharacter.objects.get(
-            character_id=AuthServicesInfo.objects.get_or_create(user=request.user)[0].main_char_id)
-        user_corp_id = user_main.corporation_id
-    except (ValueError, EveCharacter.DoesNotExist):
-        user_corp_id = settings.CORP_ID
-
-    if not settings.IS_CORP:
-        alliance = EveAllianceInfo.objects.get(alliance_id=settings.ALLIANCE_ID)
-        alliancecorps = EveCorporationInfo.objects.filter(alliance=alliance)
-        membercorplist = [(int(membercorp.corporation_id), str(membercorp.corporation_name)) for membercorp in
-                          alliancecorps]
-        membercorplist.sort(key=lambda tup: tup[1])
-        membercorp_id_list = [int(membercorp.corporation_id) for membercorp in alliancecorps]
-
-        bluecorps = EveCorporationInfo.objects.filter(is_blue=True)
-        bluecorplist = [(int(bluecorp.corporation_id), str(bluecorp.corporation_name)) for bluecorp in bluecorps]
-        bluecorplist.sort(key=lambda tup: tup[1])
-        bluecorp_id_list = [int(bluecorp.corporation_id) for bluecorp in bluecorps]
-
-        if not (user_corp_id in membercorp_id_list or user_corp_id not in bluecorp_id_list):
-            user_corp_id = None
-
-    if not corpid:
-        if settings.IS_CORP:
-            corpid = settings.CORP_ID
-        elif user_corp_id:
-            corpid = user_corp_id
+        if EveCharacter.objects.filter(character_id=token.character_id).exists():
+            corp_id = EveCharacter.objects.get(character_id=token.character_id).corporation_id
         else:
-            corpid = membercorplist[0][0]
-
-    corp = EveCorporationInfo.objects.get(corporation_id=corpid)
-    if request.user.has_perm('auth.alliance_apis') or (request.user.has_perm('auth.corp_apis') and user_corp_id == corpid):
-        logger.debug("Retreiving and sending API-information")
-
-        if settings.IS_CORP:
-            try:
-                member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
-            except APIError:
-                logger.debug("Corp API does not have membertracking scope, using EveWho data instead.")
-                member_list = EveWhoManager.get_corporation_members(corpid)
-        else:
-            member_list = EveWhoManager.get_corporation_members(corpid)
-
-        characters_with_api = {}
-        characters_without_api = {}
-
-        num_registered_characters = 0
-        for char_id, member_data in member_list.items():
-            try:
-                char = EveCharacter.objects.get(character_id=char_id)
-                char_owner = char.user
-                try:
-                    if not char_owner:
-                        raise AttributeError("Character has no assigned user.")
-                    mainid = int(AuthServicesInfo.objects.get_or_create(user=char_owner)[0].main_char_id)
-                    mainchar = EveCharacter.objects.get(character_id=mainid)
-                    mainname = mainchar.character_name
-                    maincorp = mainchar.corporation_name
-                    maincorpid = mainchar.corporation_id
-                    api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
-                except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
-                    logger.debug("No main character seem to be set for character %s" % char.character_name)
-                    mainname = "User: " + char_owner.username
-                    mainchar = char
-                    maincorp = "Not set."
-                    maincorpid = None
-                    api_pair = None
-                except AttributeError:
-                    logger.debug("No associated user for character %s" % char.character_name)
-                    mainname = None
-                    mainchar = char
-                    maincorp = None
-                    maincorpid = None
-                    try:
-                        api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
-                    except EveApiKeyPair.DoesNotExist:
-                        api_pair = None
-                num_registered_characters += 1
-                characters_with_api.setdefault(mainname, Player(main=mainchar,
-                                                                user=char_owner,
-                                                                maincorp=maincorp,
-                                                                maincorpid=maincorpid,
-                                                                altlist=[],
-                                                                apilist=[],
-                                                                n_fats=0)
-                                               ).altlist.append(char)
-                if api_pair:
-                    characters_with_api[mainname].apilist.append(api_pair)
-
-            except EveCharacter.DoesNotExist:
-                characters_without_api.update({member_data["name"]: member_data["id"]})
-
-        for char in EveCharacter.objects.filter(corporation_id=corpid):
-            if not int(char.character_id) in member_list:
-                logger.debug("Character '%s' does not exist in EveWho dump." % char.character_name)
-                char_owner = char.user
-                try:
-                    if not char_owner:
-                        raise AttributeError("Character has no assigned user.")
-                    mainid = int(AuthServicesInfo.objects.get_or_create(user=char_owner)[0].main_char_id)
-                    mainchar = EveCharacter.objects.get(character_id=mainid)
-                    mainname = mainchar.character_name
-                    maincorp = mainchar.corporation_name
-                    maincorpid = mainchar.corporation_id
-                    api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
-                except (ValueError, EveCharacter.DoesNotExist, EveApiKeyPair.DoesNotExist):
-                    logger.debug("No main character seem to be set for character %s" % char.character_name)
-                    mainname = "User: " + char_owner.username
-                    mainchar = char
-                    maincorp = "Not set."
-                    maincorpid = None
-                    api_pair = None
-                except AttributeError:
-                    logger.debug("No associated user for character %s" % char.character_name)
-                    mainname = None
-                    mainchar = char
-                    maincorp = None
-                    maincorpid = None
-                    try:
-                        api_pair = EveApiKeyPair.objects.get(api_id=char.api_id)
-                    except EveApiKeyPair.DoesNotExist:
-                        api_pair = None
-                num_registered_characters += 1
-                characters_with_api.setdefault(mainname, Player(main=mainchar,
-                                                                user=char_owner,
-                                                                maincorp=maincorp,
-                                                                maincorpid=maincorpid,
-                                                                altlist=[],
-                                                                apilist=[],
-                                                                n_fats=0)
-                                               ).altlist.append(char)
-                if api_pair:
-                    characters_with_api[mainname].apilist.append(api_pair)
-
-        n_unacounted = corp.member_count - (num_registered_characters + len(characters_without_api))
-
-        for mainname, player in characters_with_api.items():
-            fats_this_month = Fat.objects.filter(user=player.user).filter(
-                fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lt=start_of_next_month)
-            characters_with_api[mainname].n_fats = len(fats_this_month)
-
-        if start_of_next_month > datetime.datetime.now():
-            start_of_next_month = None
-
-        if not settings.IS_CORP:
-            context = {"membercorplist": membercorplist,
-                       "corp": corp,
-                       "characters_with_api": sorted(characters_with_api.items()),
-                       'n_registered': num_registered_characters,
-                       'n_unacounted': n_unacounted,
-                       "characters_without_api": sorted(characters_without_api.items()),
-                       "search_form": CorputilsSearchForm()}
-        else:
-            logger.debug("corp_member_view running in corportation mode")
-            context = {"corp": corp,
-                       "characters_with_api": sorted(characters_with_api.items()),
-                       'n_registered': num_registered_characters,
-                       'n_unacounted': n_unacounted,
-                       "characters_without_api": sorted(characters_without_api.items()),
-                       "search_form": CorputilsSearchForm()}
-
-        context["next_month"] = start_of_next_month
-        context["previous_month"] = start_of_previous_month
-        context["this_month"] = start_of_month
-
-        return render(request, 'registered/corputils.html', context=context)
-    else:
-        logger.warn('User %s (%s) not authorized to view corp stats for corp id %s' % (request.user, user_corp_id, corpid))
-    return redirect("auth_dashboard")
-
-
-def can_see_api(user, character):
-    if user.has_perm('auth.alliance_apis'):
-        return True
-    try:
-        user_main = EveCharacter.objects.get(
-                    character_id=AuthServicesInfo.objects.get_or_create(user=user)[0].main_char_id)
-        if user.has_perm('auth.corp_apis') and user_main.corporation_id == character.corporation_id:
-            return True
-    except EveCharacter.DoesNotExist:
-        return False
-    return False
-
+            corp_id = token.get_esi_client().Character.get_characters_character_id(character_id=token.character_id).result()['corporation_id']
+        corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
+        CorpStats.objects.create(token=token, corp=corp)
+    except EveCorporationInfo.DoesNotExist:
+        messages.error(request, 'Unrecognized corporation. Please ensure it is a member of the alliance or a blue.')
+    except IntegrityError:
+        messages.error(request, 'Selected corp already has a statistics module.')
+    return redirect('corputils:view')
 
 @login_required
-def corputils_search(request, corpid=settings.CORP_ID):
-    logger.debug("corputils_search called by user %s" % request.user)
+@permission_required('corputils.view_corpstats')
+def corpstats_view(request, corp_id=None):
+    corpstats = None
+    show_apis = False
 
-    corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+    # get requested model
+    if corp_id:
+        corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
+        corpstats = get_object_or_404(CorpStats, corp=corp)
 
-    authorized = False
-    try:
-        user_main = EveCharacter.objects.get(
-            character_id=AuthServicesInfo.objects.get_or_create(user=request.user)[0].main_char_id)
-        if request.user.has_perm('auth.alliance_apis') or (
-                    request.user.has_perm('auth.corp_apis') and (user_main.corporation_id == corpid)):
-            logger.debug("Retreiving and sending API-information")
-            authorized = True
-    except (ValueError, EveCharacter.DoesNotExist):
-        if request.user.has_perm('auth.alliance_apis'):
-            logger.debug("Retrieving and sending API-information")
-            authorized = True
+    # get available models
+    available = CorpStats.objects.visible_to(request.user)
 
-    if authorized:
-        if request.method == 'POST':
-            form = CorputilsSearchForm(request.POST)
-            logger.debug("Request type POST contains form valid: %s" % form.is_valid())
-            if form.is_valid():
-                # Really dumb search and only checks character name
-                # This can be improved but it does the job for now
-                searchstring = form.cleaned_data['search_string']
-                logger.debug("Searching for player with character name %s for user %s" % (searchstring, request.user))
+    # ensure we can see this one
+    if corpstats and not corpstats in available:
+        raise PermissionDenied('You do not have permission to view the selected corporation statistics module.')
 
-                member_list = {}
-                if settings.IS_CORP:
-                    member_list = EveApiManager.get_corp_membertracking(settings.CORP_API_ID, settings.CORP_API_VCODE)
-                if not member_list:
-                    logger.debug('Unable to fetch members from API. Pulling from EveWho')
-                    member_list = EveWhoManager.get_corporation_members(corpid)
+    context = {
+        'available': available,
+    }
 
-                SearchResult = namedtuple('SearchResult',
-                                          ['name', 'id', 'main', 'api_registered', 'character', 'apiinfo'])
+    # paginate
+    members = []
+    if corpstats:
+        page = request.GET.get('page', 1)
+        members = get_page(corpstats.get_member_objects(request.user), page)
 
-                searchresults = []
-                for memberid, member_data in member_list.items():
-                    if searchstring.lower() in member_data["name"].lower():
-                        try:
-                            char = EveCharacter.objects.get(character_name=member_data["name"])
-                            user = char.user
-                            mainid = int(AuthServicesInfo.objects.get_or_create(user=user)[0].main_char_id)
-                            main = EveCharacter.objects.get(character_id=mainid)
-                            if can_see_api(request.user, char):
-                                api_registered = True
-                                apiinfo = EveApiKeyPair.objects.get(api_id=char.api_id)
-                            else:
-                                api_registered = False
-                                apiinfo = None
-                        except EveCharacter.DoesNotExist:
-                            api_registered = False
-                            char = None
-                            main = ""
-                            apiinfo = None
+    if corpstats:
+        context.update({
+        'corpstats': corpstats.get_view_model(request.user),
+        'members': members,
+        })
 
-                        searchresults.append(SearchResult(name=member_data["name"], id=memberid, main=main,
-                                                          api_registered=api_registered,
-                                                          character=char, apiinfo=apiinfo))
+    return render(request, 'corputils/corpstats.html', context=context)
 
-                logger.info("Found %s members for user %s matching search string %s" % (
-                    len(searchresults), request.user, searchstring))
-
-                context = {'corp': corp, 'results': searchresults, 'search_form': CorputilsSearchForm(),
-                           "year": datetime.datetime.now().year, "month": datetime.datetime.now().month}
-
-                return render(request, 'registered/corputilssearchview.html',
-                              context=context)
-            else:
-                logger.debug("Form invalid - returning for user %s to retry." % request.user)
-                context = {'corp': corp, 'members': None, 'search_form': CorputilsSearchForm()}
-                return render(request, 'registered/corputilssearchview.html', context=context)
-
-        else:
-            logger.debug("Returning empty search form for user %s" % request.user)
-            return redirect("auth_corputils")
+@login_required
+@permission_required('corputils.view_corpstats')
+def corpstats_update(request, corp_id):
+    corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
+    corpstats = get_object_or_404(CorpStats, corp=corp)
+    if corpstats.can_update(request.user):
+        corpstats.update()
     else:
-        logger.warn('User %s not authorized to view corp stats for corp ID %s' % (request.user, corpid))
-    return redirect("auth_dashboard")
+        raise PermissionDenied('You do not have permission to update member data for the selected corporation statistics module.')
+    return redirect('corputils:view_corp', corp_id=corp.corporation_id)
+
+@login_required
+@permission_required('corputils.view_corpstats')
+def corpstats_search(request):
+    results = []
+    search_string = request.GET.get('search_string', None)
+    if search_string:
+        has_similar = CorpStats.objects.filter(_members__icontains=search_string).visible_to(request.user)
+        for corpstats in has_similar:
+            similar = [(member_id, corpstats.members[member_id]) for member_id in corpstats.members if search_string.lower() in corpstats.members[member_id].lower()]
+            for s in similar:
+                results.append((corpstats, CorpStats.MemberObject(s[0], s[1], show_apis=corpstats.show_apis(request.user))))
+        page = request.GET.get('page', 1)
+        results = sorted(results, key=lambda x: x[1].character_name)
+        results_page = get_page(results, page)
+        context = {
+            'available': CorpStats.objects.visible_to(request.user),
+            'results': results_page,
+            'search_string': search_string,
+        }
+        return render(request, 'corputils/search.html', context=context)
+    return redirect('corputils:view')
