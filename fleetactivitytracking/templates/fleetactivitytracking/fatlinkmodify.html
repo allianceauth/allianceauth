@@ -2,13 +2,13 @@
 {% load bootstrap %}
 {% load staticfiles %}
 {% load i18n %}
-
+{% load bootstrap_pagination %}
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}{% trans "Fatlink view" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% blocktrans %}Edit fatlink "{{ fatlink.name }}"{% endblocktrans %}
+        <h1 class="page-header text-center">{% blocktrans %}Edit fatlink "{{ fatlink }}"{% endblocktrans %}
             <div class="text-right">
                 <form>
                     <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" name="deletefat" value="True">
@@ -17,36 +17,44 @@
                 </form>
             </div>
         </h1>
-        <h4><b>{% trans "Registered characters" %}</b></h4>
-        <table class="table table-responsive table-bordered">
-            <tr>
-                <th class="text-center">{% trans "User" %}</th>
-                <th class="text-center">{% trans "Character" %}</th>
-                <th class="text-center">{% trans "System" %}</th>
-                <th class="text-center">{% trans "Ship" %}</th>
-                <th class="text-center">{% trans "Eve Time" %}</th>
-                <th></th>
-            </tr>
-            {% for fat in registered_fats %}
-            <tr>
-                <td class="text-center">{{ fat.user }}</td>
-                <td class="text-center">{{ fat.character.character_name }}</td>
-                {%  if fat.station != "No Station" %}
-                <td class="text-center">Docked in {{ fat.system }}</td>
-                {% else %}
-                <td class="text-center">{{ fat.system }}</td>
-                {% endif %}
-                <td class="text-center">{{ fat.shiptype }}</td>
-                <td class="text-center">{{ fat.fatlink.fatdatetime }}</td>
-                <td class="text-center">
-                    <form>
-                        <button type="submit" class="btn btn-warning" name="removechar" value="{{ fat.character.character_id }}"><span
-                                class="glyphicon glyphicon-remove"></span></button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="panel panel-default">
+            <div class="panel-heading">{% trans "Registered characters" %}</div>
+            <div class="panel-body">
+                <div class="text-center">
+                    {% bootstrap_paginate registered_fats range=10 %}
+                </div>
+                <table class="table table-responsive table-hover">
+                    <tr>
+                        <th class="text-center">{% trans "User" %}</th>
+                        <th class="text-center">{% trans "Character" %}</th>
+                        <th class="text-center">{% trans "System" %}</th>
+                        <th class="text-center">{% trans "Ship" %}</th>
+                        <th class="text-center">{% trans "Eve Time" %}</th>
+                        <th></th>
+                    </tr>
+                    {% for fat in registered_fats %}
+                        <tr>
+                            <td class="text-center">{{ fat.user }}</td>
+                            <td class="text-center">{{ fat.character.character_name }}</td>
+                            {%  if fat.station != "No Station" %}
+                                <td class="text-center">Docked in {{ fat.system }}</td>
+                            {% else %}
+                                <td class="text-center">{{ fat.system }}</td>
+                            {% endif %}
+                            <td class="text-center">{{ fat.shiptype }}</td>
+                            <td class="text-center">{{ fat.fatlink.fatdatetime }}</td>
+                            <td class="text-center">
+                                <form>
+                                    <button type="submit" class="btn btn-warning" name="removechar" value="{{ fat.character.character_id }}">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
 
 
