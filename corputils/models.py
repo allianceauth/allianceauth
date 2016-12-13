@@ -32,7 +32,8 @@ class CorpStats(models.Model):
             'delete',
             'view',
         )
-        verbose_name = "Corp stats"
+        verbose_name = "corp stats"
+        verbose_name_plural = "corp stats"
 
     objects = CorpStatsManager()
 

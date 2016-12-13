@@ -35,11 +35,17 @@ def corpstats_add(request, token):
         else:
             corp_id = token.get_esi_client().Character.get_characters_character_id(character_id=token.character_id).result()['corporation_id']
         corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
-        CorpStats.objects.create(token=token, corp=corp)
+        cs = CorpStats.objects.create(token=token, corp=corp)
+        cs.update()
+        assert cs.pk # ensure update was succesful
+        if CorpStats.objects.filter(pk=cs.pk).visible_to(request.user).exists():
+            return redirect('corputils:view_corp', corp_id=corp.corporation_id)
     except EveCorporationInfo.DoesNotExist:
         messages.error(request, 'Unrecognized corporation. Please ensure it is a member of the alliance or a blue.')
     except IntegrityError:
         messages.error(request, 'Selected corp already has a statistics module.')
+    except AssertionError:
+        messages.error(request, 'Failed to gather corporation statistics with selected token.')
     return redirect('corputils:view')
 
 @login_required
