@@ -9,7 +9,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from eveonline.models import EveCharacter, EveCorporationInfo
 from corputils.models import CorpStats
-from corputils.forms import CorputilsSearchForm
 from esi.decorators import token_required
 
 MEMBERS_PER_PAGE = int(getattr(settings, 'CORPSTATS_MEMBERS_PER_PAGE', 20))

@@ -12,14 +12,13 @@ class CorpStatsQuerySet(models.QuerySet):
         auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
         try:
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
-
             # build all accepted queries
             queries = []
-            if user.has_perm('corpstats.corp_apis'):
+            if user.has_perm('corputils.corp_apis'):
                 queries.append(models.Q(corp__corporation_id=char.corporation_id))
-            if user.has_perm('corpstats.alliance_apis'):
-                queries.append(models.Q(corp__alliance_id=char.alliance_id))
-            if user.has_perm('corpstats.blue_apis'):
+            if user.has_perm('corputils.alliance_apis'):
+                queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
+            if user.has_perm('corputils.blue_apis'):
                 queries.append(models.Q(corp__is_blue=True))
 
             # filter based on queries

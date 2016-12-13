@@ -29,7 +29,8 @@ class CorpStats(models.Model):
         )
         default_permissions = (
             'add',
-            'delete',
+            'change',
+            'remove',
             'view',
         )
         verbose_name = "corp stats"
