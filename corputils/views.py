@@ -61,9 +61,13 @@ def corpstats_view(request, corp_id=None):
     # get available models
     available = CorpStats.objects.visible_to(request.user)
 
-    # ensure we can see this one
+    # ensure we can see the requested model
     if corpstats and not corpstats in available:
         raise PermissionDenied('You do not have permission to view the selected corporation statistics module.')
+
+    # get default model if none requested
+    if not corp_id and available.count() == 1:
+        corpstats = available[0]
 
     context = {
         'available': available,
