@@ -19,7 +19,7 @@ from django.contrib import messages
 djcelery.setup_loader()
 
 # Celery configuration
-BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+BROKER_URL = 'redis://localhost:6379/0'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
