@@ -66,7 +66,7 @@
                                             <th class="text-center">Main Alliance</th>
                                         </tr>
                                         {% for member in members %}
-                                            <tr>
+                                            <tr {% if not member.registered %}class="danger"{% endif %}>
                                                 <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                 <td class="text-center">{{ member.character_name }}</td>
                                                 {% if corpstats.show_apis %}

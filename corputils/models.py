@@ -90,9 +90,9 @@ class CorpStats(models.Model):
                 char = EveCharacter.objects.get(id=auth.main_char_id)
                 if char.corporation_id == self.corp.corporation_id and user.has_perm('corputils.corp_apis'):
                     return True
-                elif char.alliance_id == self.corp.alliance_id and user.has_perm('corputils.alliance_apis'):
+                if self.corp.alliance and char.alliance_id == self.corp.alliance.alliance_id and user.has_perm('corputils.alliance_apis'):
                     return True
-                elif user.has_perm('corputils.blue_apis') and self.corp.is_blue:
+                if user.has_perm('corputils.blue_apis') and self.corp.is_blue:
                     return True
             except EveCharacter.DoesNotExist:
                 pass
@@ -117,13 +117,19 @@ class CorpStats(models.Model):
                     self.main = EveCharacter.objects.get(character_id=auth.main_char_id)
                 except EveCharacter.DoesNotExist:
                     self.main = None
+                api = EveApiKeyPair.objects.get(api_id=char.api_id)
+                self.registered = True
                 if show_apis:
-                    self.api = EveApiKeyPair.objects.get(api_id=char.api_id)
+                    self.api = api
+                else:
+                    self.api = None
             except (EveCharacter.DoesNotExist, AuthServicesInfo.DoesNotExist):
                 self.main = None
                 self.api = None
+                self.registered = False
             except EveApiKeyPair.DoesNotExist:
                 self.api = None
+                self.registered = False
 
         def __str__(self):
             return self.character_name

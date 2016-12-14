@@ -22,7 +22,7 @@
                     <th class="text-center">Main Alliance</th>
                 </tr>
                 {% for result in results %}
-                    <tr>
+                    <tr {% if not result.1.registered %}class="danger"{% endif %}>
                         <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle"></td>
                         <td class="text-center">{{ result.1.character_name }}</td>
                         <td class="text-center">{{ result.0.corp.corporation_name }}</td>
