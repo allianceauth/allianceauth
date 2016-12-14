@@ -87,7 +87,7 @@ class CorpStats(models.Model):
         auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
         if auth.main_char_id:
             try:
-                char = EveCharacter.objects.get(id=auth.main_char_id)
+                char = EveCharacter.objects.get(character_id=auth.main_char_id)
                 if char.corporation_id == self.corp.corporation_id and user.has_perm('corputils.corp_apis'):
                     return True
                 if self.corp.alliance and char.alliance_id == self.corp.alliance.alliance_id and user.has_perm('corputils.alliance_apis'):
