@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-from django.db.models import Q
 
 PERMISSIONS = {
     'user': [
@@ -118,6 +117,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('corputils', '0001_initial'),
         ('authentication', '0005_delete_perms'),
+        ('auth', '0008_alter_user_username_max_length'),
     ]
 
     operations = [
