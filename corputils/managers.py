@@ -14,11 +14,11 @@ class CorpStatsQuerySet(models.QuerySet):
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
             # build all accepted queries
             queries = []
-            if user.has_perm('corputils.corp_apis'):
+            if user.has_perm('corputils.view_corp_corpstats'):
                 queries.append(models.Q(corp__corporation_id=char.corporation_id))
-            if user.has_perm('corputils.alliance_apis'):
+            if user.has_perm('corputils.view_alliance_corpstats'):
                 queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
-            if user.has_perm('corputils.blue_apis'):
+            if user.has_perm('corputils.view_blue_corpstats'):
                 queries.append(models.Q(corp__is_blue=True))
 
             # filter based on queries

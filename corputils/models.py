@@ -31,7 +31,9 @@ class CorpStats(models.Model):
             'add',
             'change',
             'remove',
-            'view',
+            'view_corp',
+            'view_alliance',
+            'view_blue',
         )
         verbose_name = "corp stats"
         verbose_name_plural = "corp stats"

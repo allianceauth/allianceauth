@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.conf import settings
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -23,8 +23,11 @@ def get_page(model_list, page_num):
         members = p.page(p.num_pages)
     return members
 
+def access_corpstats_test(user):
+    return user.has_perm('corputils.view_corp_corpstats') or user.has_perm('corputils.view_alliance_corpstats') or user.has_perm('corputils.view_blue_corpstats')
+
 @login_required
-@permission_required('corputils.view_corpstats')
+@user_passes_test(access_corpstats_test)
 @permission_required('corputils.add_corpstats')
 @token_required(scopes='esi-corporations.read_corporation_membership.v1')
 def corpstats_add(request, token):
@@ -48,7 +51,7 @@ def corpstats_add(request, token):
     return redirect('corputils:view')
 
 @login_required
-@permission_required('corputils.view_corpstats')
+@user_passes_test(access_corpstats_test)
 def corpstats_view(request, corp_id=None):
     corpstats = None
     show_apis = False
@@ -88,7 +91,7 @@ def corpstats_view(request, corp_id=None):
     return render(request, 'corputils/corpstats.html', context=context)
 
 @login_required
-@permission_required('corputils.view_corpstats')
+@user_passes_test(access_corpstats_test)
 def corpstats_update(request, corp_id):
     corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
     corpstats = get_object_or_404(CorpStats, corp=corp)
@@ -99,7 +102,7 @@ def corpstats_update(request, corp_id):
     return redirect('corputils:view_corp', corp_id=corp.corporation_id)
 
 @login_required
-@permission_required('corputils.view_corpstats')
+@user_passes_test(access_corpstats_test)
 def corpstats_search(request):
     results = []
     search_string = request.GET.get('search_string', None)
