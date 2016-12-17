@@ -96,15 +96,20 @@ class EveProvider:
         raise NotImplementedError()
 
 
+@python_2_unicode_compatible
 class EveSwaggerProvider(EveProvider):
-    def __init__(self, token=None):
+    def __init__(self, token=None, adapter=None):
         self.client = esi_client_factory(token=token)
+        self.adapter = adapter or self
+
+    def __str__(self):
+        return 'esi'
 
     def get_alliance(self, alliance_id):
         data = self.client.Alliance.get_alliances_alliance_id(alliance_id=alliance_id).result()
         corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
         model = Alliance(
-            self,
+            self.adapter,
             alliance_id,
             data['alliance_name'],
             data['ticker'],
@@ -115,7 +120,7 @@ class EveSwaggerProvider(EveProvider):
     def get_corp(self, corp_id):
         data = self.client.Corporation.get_corporations_corporation_id(corporation_id=corp_id).result()
         model = Corporation(
-            self,
+            self.adapter,
             corp_id,
             data['corporation_name'],
             data['ticker'],
@@ -127,9 +132,9 @@ class EveSwaggerProvider(EveProvider):
 
     def get_character(self, character_id):
         data = self.client.Character.get_characters_character_id(character_id=character_id).result()
-        alliance_id = self.get_corp(data['corporation_id']).alliance_id
+        alliance_id = self.adapter.get_corp(data['corporation_id']).alliance_id
         model = Character(
-            self,
+            self.adapter,
             character_id,
             data['name'],
             data['corporation_id'],
@@ -138,19 +143,24 @@ class EveSwaggerProvider(EveProvider):
         return model
 
 
+@python_2_unicode_compatible
 class EveXmlProvider(EveProvider):
-    def __init__(self, api_key=None):
+    def __init__(self, api_key=None, adapter=None):
         """
         :param api_key: eveonline.EveApiKeyPair
         """
         self.api = evelink.api.API(api_key=(api_key.api_id, api_key.api_key)) if api_key else evelink.api.API()
-        
+        self.adapter = adapter or self
+
+    def __str__(self):
+        return 'xml'
+
     def get_alliance(self, id):
         api = evelink.eve.EVE(api=self.api)
         alliances = api.alliances().result
         results = alliances[int(id)]
         model = Alliance(
-            self,
+            self.adapter,
             id,
             results['name'],
             results['ticker'],
@@ -162,7 +172,7 @@ class EveXmlProvider(EveProvider):
         api = evelink.corp.Corp(api=self.api)
         corpinfo = api.corporation_sheet(corp_id=int(id)).result
         model = Corporation(
-            self,
+            self.adapter,
             id,
             corpinfo['name'],
             corpinfo['ceo']['id'],
@@ -176,40 +186,52 @@ class EveXmlProvider(EveProvider):
         api = evelink.eve.EVE(api=self.api)
         charinfo = api.character_info_from_id(id).result
         model = Character(
-            self,
+            self.adapter,
             id,
             charinfo['name'],
             charinfo['corp']['id'],
             charinfo['alliance']['id'],
         )
         return model
-            
 
 
 class EveAdapter(EveProvider):
     """
     Redirects queries to appropriate data source.
     """
-    def __init__(self, provider):
-        self.provider = provider
+    def __init__(self, char_provider, corp_provider, alliance_provider):
+        self.char_provider = char_provider
+        self.corp_provider = corp_provider
+        self.alliance_provider = alliance_provider
+        self.char_provider.adapter = self
+        self.corp_provider.adapter = self
+        self.alliance_provider.adapter = self
 
     def __repr__(self):
-        return "<{} ({})>".format(self.__class__.__name__, self.provider.__class__.__name__)
+        return "<{} (char:{}, corp:{}, alliance:{})>".format(self.__class__.__name__, str(self.char_provider), str(self.corp_provider), str(self.alliance_provider))
 
     def get_character(self, id):
-        return self.provider.get_character(id)
+        return self.char_provider.get_character(id)
 
-    def get_corporation(self, id):
-        return self.provider.get_corporation(id)
+    def get_corp(self, id):
+        return self.corp_provider.get_corp(id)
 
     def get_alliance(self, id):
-        return self.provider.get_alliance(id)
+        return self.alliance_provider.get_alliance(id)
 
 
-def adapter_factory(source=settings.EVEONLINE_DATA_PROVIDER, **kwargs):
-    if source == 'xml':
-        return EveAdapter(EveXmlProvider(**kwargs))
-    elif source == 'esi':
-        return EveAdapter(EveSwaggerProvider(**kwargs))
-    else:
-        raise ValueError('Unrecognized data source.')
+def eve_adapter_factory(character_source=settings.EVEONLINE_CHARACTER_PROVIDER, corp_source=settings.EVEONLINE_CORP_PROVIDER, alliance_source=settings.EVEONLINE_ALLIANCE_PROVIDER, api_key=None, token=None):
+    sources = [character_source, corp_source, alliance_source]
+    providers = []
+
+    xml = EveXmlProvider(api_key=api_key)
+    esi = EveSwaggerProvider(token=token)
+
+    for source in sources:
+        if source == 'xml':
+            providers.append(xml)
+        elif source == 'esi':
+            providers.append(esi)
+        else:
+            raise ValueError('Unrecognized data source "%s"' % source)
+    return EveAdapter(providers[0], providers[1], providers[2])

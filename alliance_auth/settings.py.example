@@ -359,10 +359,15 @@ API_SSO_VALIDATION = 'True' == os.environ.get('AA_API_SSO_VALIDATION', 'False')
 #######################
 # EVE Provider Settings
 #######################
-# EVEONLINE_DATA_PROVIDER - Name of default data source for getting eve entity data
-#                           Available soruces are 'esi' and 'xml'
+# EVEONLINE_CHARACTER_PROVIDER - Name of default data source for getting eve character data
+# EVEONLINE_CORP_PROVIDER - Name of default data source for getting eve corporation data
+# EVEONLINE_ALLIANCE_PROVIDER - Name of default data source for getting eve alliance data
+#
+# Available soruces are 'esi' and 'xml'
 #######################
-EVEONLINE_DATA_PROVIDER = os.environ.get('AA_EVEONLINE_DATA_PROVIDER', 'esi')
+EVEONLINE_CHARACTER_PROVIDER = os.environ.get('AA_EVEONLINE_CHARACTER_PROVIDER', 'esi')
+EVEONLINE_CORP_PROVIDER = os.environ.get('AA_EVEONLINE_CORP_PROVIDER', 'esi')
+EVEONLINE_ALLIANCE_PROVIDER = os.environ.get('AA_EVEONLINE_ALLIANCE_PROVIDER', 'esi')
 
 #####################
 # Alliance Market
