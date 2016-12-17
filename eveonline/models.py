@@ -38,7 +38,6 @@ class EveAllianceInfo(models.Model):
     alliance_ticker = models.CharField(max_length=254)
     executor_corp_id = models.CharField(max_length=254)
     is_blue = models.BooleanField(default=False)
-    member_count = models.IntegerField()
 
     def __str__(self):
         return self.alliance_name
