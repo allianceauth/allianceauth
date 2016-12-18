@@ -1,7 +1,18 @@
 from django.utils.encoding import python_2_unicode_compatible
 from esi.clients import esi_client_factory
 from django.conf import settings
+from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
 import evelink
+
+@python_2_unicode_compatible
+class ObjectNotFound(Exception):
+    def __init__(self, id, type):
+        self.id = id
+        self.type = type
+
+    def __str__(self):
+        return '%s with ID %s not found.' % (self.type, self.id)
+
 
 @python_2_unicode_compatible
 class Entity(object):
@@ -43,11 +54,12 @@ class Corporation(Entity):
 
 
 class Alliance(Entity):
-    def __init__(self, provider, id, name, ticker, corp_ids):
+    def __init__(self, provider, id, name, ticker, corp_ids, executor_corp_id):
         super(Alliance, self).__init__(id, name)
         self.provider = provider
         self.ticker = ticker
         self.corp_ids = corp_ids
+        self.executor_corp_id = executor_corp_id
 
     def corp(self, id):
         assert id in self.corp_ids
@@ -56,6 +68,10 @@ class Alliance(Entity):
     @property
     def corps(self):
         return sorted([self.corp(id) for id in self.corp_ids], key=lambda x: x.name)
+
+    @property
+    def executor_corp(self):
+        return self.provider.get_corp(self.executor_corp_id)
 
 
 class Character(Entity):
@@ -105,42 +121,52 @@ class EveSwaggerProvider(EveProvider):
     def __str__(self):
         return 'esi'
 
-    def get_alliance(self, alliance_id):
-        data = self.client.Alliance.get_alliances_alliance_id(alliance_id=alliance_id).result()
-        corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
-        model = Alliance(
-            self.adapter,
-            alliance_id,
-            data['alliance_name'],
-            data['ticker'],
-            corps,
-        )
-        return model
+    def get_alliance(self, id):
+        try:
+            data = self.client.Alliance.get_alliances_alliance_id(alliance_id=id).result()
+            corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=id).result()
+            model = Alliance(
+                self.adapter,
+                id,
+                data['alliance_name'],
+                data['ticker'],
+                corps,
+                data['executor_corp'],
+            )
+            return model
+        except HTTPNotFound:
+            raise ObjectNotFound(id, 'alliance')
 
-    def get_corp(self, corp_id):
-        data = self.client.Corporation.get_corporations_corporation_id(corporation_id=corp_id).result()
-        model = Corporation(
-            self.adapter,
-            corp_id,
-            data['corporation_name'],
-            data['ticker'],
-            data['ceo_id'],
-            data['member_count'],
-            data['alliance_id'] if 'alliance_id' in data else None,
-        )
-        return model
+    def get_corp(self, id):
+        try:
+            data = self.client.Corporation.get_corporations_corporation_id(corporation_id=id).result()
+            model = Corporation(
+                self.adapter,
+                id,
+                data['corporation_name'],
+                data['ticker'],
+                data['ceo_id'],
+                data['member_count'],
+                data['alliance_id'] if 'alliance_id' in data else None,
+            )
+            return model
+        except HTTPNotFound:
+            raise ObjectNotFound(id, 'corporation')
 
-    def get_character(self, character_id):
-        data = self.client.Character.get_characters_character_id(character_id=character_id).result()
-        alliance_id = self.adapter.get_corp(data['corporation_id']).alliance_id
-        model = Character(
-            self.adapter,
-            character_id,
-            data['name'],
-            data['corporation_id'],
-            alliance_id,
-        )
-        return model
+    def get_character(self, id):
+        try:
+            data = self.client.Character.get_characters_character_id(character_id=id).result()
+            alliance_id = self.adapter.get_corp(data['corporation_id']).alliance_id
+            model = Character(
+                self.adapter,
+                id,
+                data['name'],
+                data['corporation_id'],
+                alliance_id,
+            )
+            return model
+        except (HTTPNotFound, HTTPUnprocessableEntity):
+            raise ObjectNotFound(id, 'character')
 
 
 @python_2_unicode_compatible
@@ -158,19 +184,28 @@ class EveXmlProvider(EveProvider):
     def get_alliance(self, id):
         api = evelink.eve.EVE(api=self.api)
         alliances = api.alliances().result
-        results = alliances[int(id)]
+        try:
+            results = alliances[int(id)]
+        except KeyError:
+            raise ObjectNotFound(id, 'alliance')
         model = Alliance(
             self.adapter,
             id,
             results['name'],
             results['ticker'],
             results['member_corps'],
+            results['executor_id'],
         )
         return model
 
     def get_corp(self, id):
         api = evelink.corp.Corp(api=self.api)
-        corpinfo = api.corporation_sheet(corp_id=int(id)).result
+        try:
+            corpinfo = api.corporation_sheet(corp_id=int(id)).result
+        except evelink.api.APIError as e:
+            if int(e.code) == 523:
+                raise ObjectNotFound(id, 'corporation')
+            raise e
         model = Corporation(
             self.adapter,
             id,
@@ -184,7 +219,12 @@ class EveXmlProvider(EveProvider):
 
     def get_character(self, id):
         api = evelink.eve.EVE(api=self.api)
-        charinfo = api.character_info_from_id(id).result
+        try:
+            charinfo = api.character_info_from_id(id).result
+        except evelink.api.APIError as e:
+            if int(e.code) == 105:
+                raise ObjectNotFound(id, 'character')
+            raise e
         model = Character(
             self.adapter,
             id,
