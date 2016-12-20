@@ -10,7 +10,7 @@ from authentication.models import AuthServicesInfo
 from authentication.forms import LoginForm, RegistrationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
-from eve_sso.decorators import token_required
+from esi.decorators import token_required
 import logging
 
 logger = logging.getLogger(__name__)
@@ -102,13 +102,14 @@ def help_view(request):
     return render(request, 'registered/help.html')
 
 @token_required(new=True)
-def sso_login(request, tokens=[]):
-    token = tokens[0]
+def sso_login(request, token):
     try:
         char = EveCharacter.objects.get(character_id=token.character_id)
         if char.user:
             if char.user.is_active:
                 login(request, char.user)
+                token.user = char.user
+                token.save()
                 return redirect(dashboard_view)
             else:
                 messages.error(request, 'Your account has been disabled.')
