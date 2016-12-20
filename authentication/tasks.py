@@ -63,15 +63,13 @@ def make_blue(auth):
 
 
 def determine_membership_by_character(char):
-    if settings.IS_CORP:
-        if int(char.corporation_id) == int(settings.CORP_ID):
-            logger.debug("Character %s in owning corp id %s" % (char, char.corporation_id))
-            return MEMBER_STATE
-    else:
-        if int(char.alliance_id) == int(settings.ALLIANCE_ID):
-            logger.debug("Character %s in owning alliance id %s" % (char, char.alliance_id))
-            return MEMBER_STATE
-    if EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists() is False:
+    if char.corporation_id in settings.STR_CORP_IDS:
+        logger.debug("Character %s in member corp id %s" % (char, char.corporation_id))
+        return MEMBER_STATE
+    elif char.alliance_id in settings.STR_ALLIANCE_IDS:
+        logger.debug("Character %s in member alliance id %s" % (char, char.alliance_id))
+        return MEMBER_STATE
+    elif not EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists():
         logger.debug("No corp model for character %s corp id %s. Unable to check standings. Non-member." % (
             char, char.corporation_id))
         return NONE_STATE

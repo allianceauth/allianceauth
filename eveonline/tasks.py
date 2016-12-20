@@ -113,30 +113,25 @@ def update_alliance(id):
 
 @periodic_task(run_every=crontab(minute=0, hour="*/2"))
 def run_corp_update():
-    if EveApiManager.check_if_api_server_online() is False:
+    if not EveApiManager.check_if_api_server_online():
         logger.warn("Aborted updating corp and alliance models: API server unreachable")
         return
-    standing_level = 'alliance'
-    alliance_id = settings.ALLIANCE_ID
 
-    # get corp info for owning corp if required
-    if settings.IS_CORP:
-        standing_level = 'corp'
-        if EveCorporationInfo.objects.filter(corporation_id=settings.CORP_ID).exists():
-            update_corp(settings.CORP_ID)
+    # generate member corps
+    for corp_id in settings.STR_CORP_IDS:
+        if EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
+            update_corp(corp_id)
         else:
-            EveManager.create_corporation(settings.CORP_ID)
-        
-        alliance_id = eve_adapter_factory().get_corp(settings.CORP_ID).alliance_id
+            EveManager.create_corporation(corp_id)
 
-    # get and create alliance info for owning alliance if required
-    if alliance_id:
+    # generate member alliances
+    for alliance_id in settings.STR_ALLIANCE_IDS:
         if EveAllianceInfo.objects.filter(alliance_id=alliance_id).exists():
             logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
             update_alliance(alliance_id)
         else:
-            EveManager.create_alliance(id)
-            EveManager.populate_alliance(id)
+            EveManager.create_alliance(alliance_id)
+            EveManager.populate_alliance(alliance_id)
 
     # update existing corp models
     for corp in EveCorporationInfo.objects.all():
@@ -150,9 +145,9 @@ def run_corp_update():
         # create standings
         standings = EveApiManager.get_corp_standings()
         if standings:
-            standings = standings[standing_level]
+            standings = standings[settings.STANDING_LEVEL]
             for standing in standings:
-                if int(standings[standing]['standing']) >= settings.BLUE_STANDING:
+                if float(standings[standing]['standing']) >= settings.BLUE_STANDING:
                     logger.debug("Standing %s meets threshold" % standing)
                     if EveApiManager.check_if_id_is_alliance(standing):
                         logger.debug("Standing %s is an alliance" % standing)
@@ -211,37 +206,20 @@ def run_corp_update():
     # delete unnecessary alliance models
     for alliance in EveAllianceInfo.objects.filter(is_blue=False):
         logger.debug("Checking to delete alliance %s" % alliance)
-        if not settings.IS_CORP:
-            if not alliance.alliance_id == settings.ALLIANCE_ID:
-                logger.info("Deleting unnecessary alliance model %s" % alliance)
-                alliance.delete()
-        else:
-            if not alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists():
-                logger.info("Deleting unnecessary alliance model %s" % alliance)
-                alliance.delete()
+        if not alliance.alliance_id in settings.STR_ALLIANCE_IDS:
+            logger.info("Deleting unnecessary alliance model %s" % alliance)
+            alliance.delete()
 
     # delete unnecessary corp models
     for corp in EveCorporationInfo.objects.filter(is_blue=False):
         logger.debug("Checking to delete corp %s" % corp)
-        if not settings.IS_CORP:
+        if not corp.corporation_id in settings.STR_CORP_IDS:
+            logger.debug("Corp %s is not member corp" % corp)
             if corp.alliance:
                 logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
-                if not corp.alliance.alliance_id == settings.ALLIANCE_ID:
+                if not corp.alliance.alliance_id in settings.STR_ALLIANCE_IDS:
                     logger.info("Deleting unnecessary corp model %s" % corp)
                     corp.delete()
             else:
                 logger.info("Deleting unnecessary corp model %s" % corp)
                 corp.delete()
-        else:
-            if corp.corporation_id != settings.CORP_ID:
-                logger.debug("Corp %s is not owning corp" % corp)
-                if corp.alliance:
-                    logger.debug("Corp %s has alliance %s" % (corp, corp.alliance))
-                    if not corp.alliance.evecorporationinfo_set.filter(corporation_id=settings.CORP_ID).exists():
-                        logger.info("Deleting unnecessary corp model %s" % corp)
-                        corp.delete()
-                else:
-                    logger.info("Deleting unnecessary corp model %s" % corp)
-                    corp.delete()
-            else:
-                logger.debug("Corp %s is owning corp" % corp)
