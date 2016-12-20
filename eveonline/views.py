@@ -47,7 +47,7 @@ def add_api_key(request):
                 owner = request.user
             # Grab characters associated with the key pair
             characters = EveManager.get_characters_from_api(api_key)
-            [EveManager.create_character(c.id, owner, api_key.api_id) for c in characters if not EveCharacter.objects.filter(character_id=c.id).exists()]
+            [EveManager.create_character_obj(c, owner, api_key.api_id) for c in characters if not EveCharacter.objects.filter(character_id=c.id).exists()]
             logger.info("Successfully processed api add form for user %s" % request.user)
             if not settings.API_SSO_VALIDATION:
                 messages.success(request, 'Added API key %s to your account.' % form.cleaned_data['api_id'])
