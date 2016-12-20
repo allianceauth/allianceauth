@@ -33,42 +33,6 @@ class EveManager:
         )
 
     @staticmethod
-    def create_xml_character(character_id, character_name, corporation_id,
-                         corporation_name, corporation_ticker, alliance_id,
-                         alliance_name, user, api_id):
-        logger.debug("Creating model for character %s id %s" % (character_name, character_id))
-        if not EveCharacter.objects.filter(character_id=character_id).exists():
-            eve_char = EveCharacter()
-            eve_char.character_id = character_id
-            eve_char.character_name = character_name
-            eve_char.corporation_id = corporation_id
-            eve_char.corporation_name = corporation_name
-            eve_char.corporation_ticker = corporation_ticker
-            eve_char.alliance_id = alliance_id
-            eve_char.alliance_name = alliance_name
-            eve_char.user = user
-            eve_char.api_id = api_id
-            eve_char.save()
-            logger.info("Created new character model %s for user %s" % (eve_char, user))
-        else:
-            logger.warn("Attempting to create existing character model with id %s" % character_id)
-
-    @staticmethod
-    def create_characters_from_list(chars, user, api_id):
-        logger.debug("Creating characters from batch: %s" % chars.result)
-        for char in chars.result:
-            if not EveManager.check_if_character_exist(chars.result[char]['name']):
-                EveManager.create_character(chars.result[char]['id'],
-                                            chars.result[char]['name'],
-                                            chars.result[char]['corp']['id'],
-                                            chars.result[char]['corp']['name'],
-                                            EveApiManager.get_corporation_ticker_from_id(
-                                                chars.result[char]['corp']['id']),
-                                            chars.result[char]['alliance']['id'],
-                                            chars.result[char]['alliance']['name'],
-                                            user, api_id)
-
-    @staticmethod
     def update_character(id):
         return EveManager.update_character_obj(adapter.get_character(id))
 
@@ -81,25 +45,6 @@ class EveManager:
         model.alliance_id = char.alliance.id
         model.alliance_name = char.alliance.name
         model.save()
-
-    @staticmethod
-    def update_characters_from_list(chars):
-        logger.debug("Updating characters from list: %s" % chars.result)
-        for char in chars.result:
-            if EveManager.check_if_character_exist(chars.result[char]['name']):
-                eve_char = EveManager.get_character_by_character_name(chars.result[char]['name'])
-                logger.debug("Got existing character model %s" % eve_char)
-                eve_char.corporation_id = chars.result[char]['corp']['id']
-                eve_char.corporation_name = chars.result[char]['corp']['name']
-                eve_char.corporation_ticker = EveApiManager.get_corporation_ticker_from_id(
-                    chars.result[char]['corp']['id'])
-                eve_char.alliance_id = chars.result[char]['alliance']['id']
-                eve_char.alliance_name = chars.result[char]['alliance']['name']
-                eve_char.save()
-                logger.info("Updated character model %s" % eve_char)
-            else:
-                logger.warn(
-                    "Attempting to update non-existing character model with name %s" % chars.result[char]['name'])
 
     @staticmethod
     def create_api_keypair(api_id, api_key, user_id):
