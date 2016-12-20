@@ -3,7 +3,7 @@ from eveonline.models import EveCharacter
 from eveonline.models import EveApiKeyPair
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCorporationInfo
-from eveonline.providers import eve_adapter_factory
+from eveonline.providers import eve_adapter_factory, EveXmlProvider
 from services.managers.eve_api_manager import EveApiManager
 import logging
 
@@ -33,7 +33,7 @@ class EveManager:
         )
 
     @staticmethod
-    def create_character(character_id, character_name, corporation_id,
+    def create_xml_character(character_id, character_name, corporation_id,
                          corporation_name, corporation_ticker, alliance_id,
                          alliance_name, user, api_id):
         logger.debug("Creating model for character %s id %s" % (character_name, character_id))
@@ -183,6 +183,12 @@ class EveManager:
             model.alliance = None
         model.is_blue = model.is_blue if is_blue == None else is_blue
         model.save()
+
+    @staticmethod
+    def get_characters_from_api(api):
+        char_result = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
+        provider = EveXmlProvider(adapter=adapter)
+        return [provider._build_character(result) for id, result in char_result.items()]
 
     @staticmethod
     def get_api_key_pairs(user):

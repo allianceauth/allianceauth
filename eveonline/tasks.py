@@ -27,21 +27,16 @@ def refresh_api(api):
     try:
         EveApiManager.validate_api(api.api_id, api.api_key, api.user)
         # Update characters
-        characters = EveApiManager.get_characters_from_api(api.api_id, api.api_key)
-        EveManager.update_characters_from_list(characters)
-        new_character = False
-        for char in characters.result:
-            # Ensure we have a model for all characters on key
-            if not EveManager.check_if_character_exist(characters.result[char]['name']):
-                logger.debug(
-                    "API key %s has a new character on the account: %s" % (api.api_id, characters.result[char]['name']))
-                new_character = True
-        if new_character:
-            logger.debug("Creating new character %s from api key %s" % (characters.result[char]['name'], api.api_id))
-            EveManager.create_characters_from_list(characters, api.user, api.api_id)
+        characters = EveManager.get_characters_from_api(api)
+        for c in characters:
+            try:
+                EveManager.update_character_obj(c)
+            except EveCharacter.DoesNotExist:
+                logger.debug("API key %s has a new character on the account: %s" % (api.api_id, c))
+                EveManager.create_character_obj(c, api.user, api.api_id)
         current_chars = EveCharacter.objects.filter(api_id=api.api_id)
         for c in current_chars:
-            if not int(c.character_id) in characters.result:
+            if not int(c.character_id) in [c.id for c in characters]:
                 logger.info("Character %s no longer found on API ID %s" % (c, api.api_id))
                 c.delete()
     except evelink.api.APIError as e:

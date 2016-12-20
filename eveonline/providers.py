@@ -217,6 +217,15 @@ class EveXmlProvider(EveProvider):
         )
         return model
 
+    def _build_character(self, result):
+        return Character(
+            self.adapter,
+            result['id'],
+            result['name'],
+            result['corp']['id'],
+            result['alliance']['id'],
+        )
+
     def get_character(self, id):
         api = evelink.eve.EVE(api=self.api)
         try:
@@ -225,14 +234,7 @@ class EveXmlProvider(EveProvider):
             if int(e.code) == 105:
                 raise ObjectNotFound(id, 'character')
             raise e
-        model = Character(
-            self.adapter,
-            id,
-            charinfo['name'],
-            charinfo['corp']['id'],
-            charinfo['alliance']['id'],
-        )
-        return model
+        return self._build_character(charinfo)
 
 
 class EveAdapter(EveProvider):
