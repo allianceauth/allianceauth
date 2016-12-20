@@ -46,11 +46,7 @@
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="container-fluid">
             <a class="navbar-brand">
-                    {% if IS_CORP %}
-                        {{ CORP_NAME }}
-                    {% else %}
-                        {{ ALLIANCE_NAME }}
-                    {% endif %}
+                    {% SITE_NAME %}
             </a>
             <!-- /.navbar-header -->
 

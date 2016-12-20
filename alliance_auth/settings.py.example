@@ -190,15 +190,6 @@ MESSAGE_TAGS = {
 ##
 #####################################################
 
-###########################
-# ALLIANCE / CORP TOGGLE
-###########################
-# Specifies to run membership checks against corp or alliance
-# Set to FALSE for alliance
-# Set to TRUE for corp
-###########################
-IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
-
 #################
 # EMAIL SETTINGS
 #################
@@ -222,11 +213,12 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 # KILLBOARD_URL - URL for your killboard. Blank to hide link
 # MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
 # FORUM_URL - URL for your forums. Blank to hide link
-# SMF_URL - URL for your SMF forums.
+# SITE_NAME - Name of the auth site.
 ####################
 KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
 EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
+SITE_NAME = os.environ.get('AA_SITE_NAME', 'Alliance Auth')
 
 ###################
 # SSO Settings
@@ -286,7 +278,6 @@ ENABLE_AUTH_XENFORO = 'True' == os.environ.get('AA_ENABLE_AUTH_XENFORO', 'False'
 #####################
 # Blue service Setup
 #####################
-# BLUE_STANDING - The default lowest standings setting to consider blue
 # ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
 # ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
 # ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
@@ -299,7 +290,6 @@ ENABLE_AUTH_XENFORO = 'True' == os.environ.get('AA_ENABLE_AUTH_XENFORO', 'False'
 # ENABLE_BLUE_PATHFINDER = Enable Pathfinder support in the auth for blues
 # ENABLE_BLUE_XENFORO = Enable XenForo forum support in the auth for blue 
 #####################
-BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
 ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'False')
 ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'False')
@@ -313,27 +303,28 @@ ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'False')
 ENABLE_BLUE_XENFORO = 'True' == os.environ.get('AA_ENABLE_BLUE_XENFORO', 'False')
 
 #########################
-# Corp Configuration
+# Tenant Configuration
 #########################
-# If running in alliance mode, the following should be for the executor corp#
-# CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
-# CORP_NAME - Set this to your Corporation Name
-# CORP_API_ID - Set this to the api id for the corp API key
-# CORP_API_VCODE - Set this to the api vcode for the corp API key
-########################
-CORP_ID = os.environ.get('AA_CORP_ID', '')
-CORP_NAME = os.environ.get('AA_CORP_NAME', '')
-CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
-CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
+# CORP_IDS - A list of corporation IDs to treat as members.
+# ALLIANCE_IDS - A list of alliance IDs to treat as members.
+# Any corps in a specified alliance will be treated as members, so do not include them in CORP_IDS
+#########################
+CORP_IDS = []
+ALLIANCE_IDS = []
 
 #########################
-# Alliance Configuration
+# Standings Configuration
 #########################
-# ALLIANCE_ID - Set this to your Alliance ID (get this from https://zkillboard.com/alliance/#######)
-# ALLIANCE_NAME - Set this to your Alliance Name
+# Add a corp API key to add blue standings to grant access.
+# CORP_API_ID - Set this to the api id for the corp API key
+# CORP_API_VCODE - Set this to the api vcode for the corp API key
+# BLUE_STANDING - The lowest standings value to consider blue
+# STANDING_LEVEL - The level of standings to query. Accepted values are 'corp' and 'alliance'.
 ########################
-ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '')
-ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', '')
+CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
+CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
+BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
+STANDING_LEVEL = os.environ.get('AA_STANDING_LEVEL', 'corp')
 
 ########################
 # API Configuration
@@ -653,3 +644,7 @@ if ENABLE_AUTH_MARKET or ENABLE_BLUE_MARKET:
     DATABASES['market'] = MARKET_DB
 if ENABLE_AUTH_IPS4 or ENABLE_BLUE_IPS4:
     DATABASES['ips4'] = IPS4_DB
+
+# Ensure corp/alliance IDs are expected types
+STR_CORP_IDS = [str(id) for id in CORP_IDS]
+STR_ALLIANCE_IDS = [str(id) for id in ALLIANCE_IDS]
