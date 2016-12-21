@@ -6,8 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 class TimerForm(forms.Form):
     structure_choices = [('POCO', 'POCO'), ('I-HUB', 'I-HUB'), ('POS[S]', 'POS[S]'),
-                         ('POS[M]', 'POS[M]'), ('POS[L]', 'POS[L]'), ('Station', 'Station'), ('TCU', 'TCU'),
-                         (_('Other'), _('Other'))]
+                         ('POS[M]', 'POS[M]'), ('POS[L]', 'POS[L]'), ('Citadel[M]', 'Citadel[M]'),
+                         ('Citadel[L]', 'Citadel[L]'), ('Citadel[XL]', 'Citadel[XL]'),
+                         ('Engineering Complex[M]', 'Engineering Complex[M]'),
+                         ('Engineering Complex[L]', 'Engineering Complex[L]'),
+                         ('Engineering Complex[XL]', 'Engineering Complex[XL]'),
+                         ('Station', 'Station'), ('TCU', 'TCU'), (_('Other'), _('Other'))]
     objective_choices = [('Friendly', _('Friendly')), ('Hostile', _('Hostile')), ('Neutral', _('Neutral'))]
 
     details = forms.CharField(max_length=254, required=True, label=_('Details'))

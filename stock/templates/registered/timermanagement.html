@@ -90,6 +90,37 @@
                             POS [L]
                         </div>
                     {% endifequal %}
+                    {% ifequal timer.structure "Citadel[M]" %}
+                        <div class="label label-danger">
+                            Citadel [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Citadel[L]" %}
+                        <div class="label label-danger">
+                            Citadel [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Citadel[XL]" %}
+                        <div class="label label-danger">
+                            Citadel [XL]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[M]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[L]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[XL]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [XL]
+                        </div>
+                    {% endifequal %}
+
                     {% ifequal timer.structure "Station" %}
                         <div class="label label-danger">
                             Station
@@ -191,11 +222,41 @@
                         POS [L]
                     </div>
                 {% endifequal %}
+              {% ifequal timer.structure "Citadel[M]" %}
+                    <div class="label label-danger">
+                        Citadel [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Citadel[L]" %}
+                    <div class="label label-danger">
+                        Citadel [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Citadel[XL]" %}
+                    <div class="label label-danger">
+                        Citadel [XL]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[M]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[L]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[XL]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [XL]
+                    </div>
+                {% endifequal %}
                 {% ifequal timer.structure "Station" %}
                     <div class="label label-danger">
                         Station
                     </div>
-		{% endifequal %}
+	        	{% endifequal %}
                 {% ifequal timer.structure "TCU" %}
                     <div class="label label-danger">
                         TCU
@@ -291,6 +352,36 @@
                 {% ifequal timer.structure "POS[L]" %}
                     <div class="label label-info">
                         POS [L]
+                    </div>
+                {% endifequal %}
+                 {% ifequal timer.structure "Citadel[M]" %}
+                    <div class="label label-danger">
+                        Citadel [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Citadel[L]" %}
+                    <div class="label label-danger">
+                        Citadel [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Citadel[XL]" %}
+                    <div class="label label-danger">
+                        Citadel [XL]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[M]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[L]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Engineering Complex[XL]" %}
+                    <div class="label label-warning">
+                        Engineering Complex [XL]
                     </div>
                 {% endifequal %}
                 {% ifequal timer.structure "Station" %}
