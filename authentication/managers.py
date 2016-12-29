@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
-
+from django.conf import settings
+from authentication.states import NONE_STATE, BLUE_STATE, MEMBER_STATE
 from authentication.models import AuthServicesInfo
 
 import logging
@@ -143,3 +144,44 @@ class AuthServicesInfoManager:
             logger.info("Updated user %s market info in authservicesinfo model." % user)
         else:
             logger.error("Failed to update user %s market info: user does not exist." % user)
+
+
+class UserState:
+    def __init__(self):
+        pass
+
+    MEMBER_STATE = MEMBER_STATE
+    BLUE_STATE = BLUE_STATE
+    NONE_STATE = NONE_STATE
+
+    @classmethod
+    def member_state(cls, user):
+        return cls.state_required(user, [cls.MEMBER_STATE])
+
+    @classmethod
+    def member_or_blue_state(cls, user):
+        return cls.state_required(user, [cls.MEMBER_STATE, cls.BLUE_STATE])
+
+    @classmethod
+    def blue_state(cls, user):
+        return cls.state_required(user, [cls.BLUE_STATE])
+
+    @classmethod
+    def none_state(cls, user):
+        return cls.state_required(user, [cls.NONE_STATE])
+
+    @classmethod
+    def get_membership_state(cls, request):
+        if request.user.is_authenticated:
+            auth = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            return {'STATE': auth.state}
+        return {'STATE': cls.NONE_STATE}
+
+    @staticmethod
+    def state_required(user, states):
+        if user.is_superuser and settings.SUPERUSER_STATE_BYPASS:
+            return True
+        if user.is_authenticated:
+            auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+            return auth.state in states
+        return False
