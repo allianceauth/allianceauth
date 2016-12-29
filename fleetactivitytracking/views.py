@@ -98,10 +98,10 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
     
 
     # get FAT stats for member corps
-    if settings.IS_CORP:
-        fat_stats[settings.CORP_ID] = CorpStat(settings.CORP_ID, start_of_month, start_of_next_month)
-    else:
-        alliance_corps = EveCorporationInfo.objects.filter(alliance__alliance_id=settings.ALLIANCE_ID)
+    for corp_id in settings.STR_CORP_IDS:
+        fat_stats[corp_id] = CorpStat(corp_id, start_of_month, start_of_next_month)
+    for alliance_id in settings.STR_ALLIANCE_IDS:
+        alliance_corps = EveCorporationInfo.objects.filter(alliance__alliance_id=alliance_id)
         for corp in alliance_corps:
             fat_stats[corp.corporation_id] = CorpStat(corp.corporation_id, start_of_month, start_of_next_month)
 

@@ -23,9 +23,5 @@ def auth_settings(request):
         'MEMBER_API_MASK': settings.MEMBER_API_MASK,
         'MEMBER_API_ACCOUNT': settings.MEMBER_API_ACCOUNT,
         'JABBER_URL': settings.JABBER_URL,
-        'ALLIANCE_NAME': settings.ALLIANCE_NAME,
-        'ALLIANCE_ID': settings.ALLIANCE_ID,
-        'CORP_NAME': settings.CORP_NAME,
-        'CORP_ID': settings.CORP_ID,
-        'IS_CORP': settings.IS_CORP,
+        'SITE_NAME': settings.SITE_NAME,
     }
