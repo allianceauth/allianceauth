@@ -100,13 +100,6 @@ def api_sso_validate(request, tokens, api_id):
 
 
 @login_required
-def api_key_management_view(request):
-    logger.debug("DEPRECIATED api_key_management_view called by user %s" % request.user)
-    # Legacy redirect in case some links still ghost here
-    return redirect('auth_dashboard')
-
-
-@login_required
 def dashboard_view(request):
     logger.debug("dashboard_view called by user %s" % request.user)
     auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
