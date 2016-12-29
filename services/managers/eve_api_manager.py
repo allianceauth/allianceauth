@@ -319,7 +319,6 @@ class EveApiManager:
     def validate_api(api_id, api_key, user):
         try:
             info = EveApiManager.get_api_info(api_id, api_key).result
-            chars = EveApiManager.get_characters_from_api(api_id, api_key).result
         except evelink.api.APIError as e:
             if int(e.code) == 222:
                 raise EveApiManager.ApiInvalidError(api_id)
@@ -329,6 +328,7 @@ class EveApiManager:
         auth, c = AuthServicesInfo.objects.get_or_create(user=user)
         states = [auth.state]
         from authentication.tasks import determine_membership_by_character  # circular import issue
+        chars = info['characters']
         for char in chars:
             evechar = EveCharacter()
             evechar.character_name = chars[char]['name']

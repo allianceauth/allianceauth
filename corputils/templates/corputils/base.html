@@ -1,0 +1,39 @@
+{% extends 'public/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Corporation Member Data" %}{% endblock %}
+{% block page_title %}{% trans "Corporation Member Data" %}{% endblock %}
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">{% trans "Corporation Member Data" %}</h1>
+        <div class="col-lg-10 col-lg-offset-1 container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Corporations<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% for corpstat in available %}
+                                    <li>
+                                        <a href="{% url 'corputils:view_corp' corpstat.corp.corporation_id %}">{{ corpstat.corp.corporation_name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% if perms.corputils.add_corpstats %}
+                            <li>
+                                <a href="{% url 'corputils:add' %}">Add</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <form class="navbar-form navbar-right" role="search" action="{% url 'corputils:search' %}" method="GET">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="search_string" placeholder="{% if search_string %}{{ search_string }}{% else %}Search characters...{% endif %}">
+                        </div>
+                    </form>
+                </div>
+            </nav>
+            {% block member_data %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+

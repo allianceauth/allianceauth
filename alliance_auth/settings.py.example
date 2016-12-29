@@ -61,8 +61,9 @@ INSTALLED_APPS = [
     'corputils',
     'fleetactivitytracking',
     'notifications',
-    'eve_sso',
+    'esi',
     'geelweb.django.navhelper',
+    'bootstrap_pagination',
 ]
 
 MIDDLEWARE = [
@@ -238,9 +239,9 @@ FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 # Callback URL should be http://mydomain.com/sso/callback
 # Leave callback blank to hide SSO button on login page
 ###################
-EVE_SSO_CLIENT_ID = os.environ.get('AA_EVE_SSO_CLIENT_ID', '')
-EVE_SSO_CLIENT_SECRET = os.environ.get('AA_EVE_SSO_CLIENT_SECRET', '')
-EVE_SSO_CALLBACK_URL = os.environ.get('AA_EVE_SSO_CALLBACK_URL', '')
+ESI_SSO_CLIENT_ID = os.environ.get('AA_EVE_SSO_CLIENT_ID', '')
+ESI_SSO_CLIENT_SECRET = os.environ.get('AA_EVE_SSO_CLIENT_SECRET', '')
+ESI_SSO_CALLBACK_URL = os.environ.get('AA_EVE_SSO_CALLBACK_URL', '')
 
 #########################
 # Default Group Settings
@@ -355,6 +356,19 @@ BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
 REJECT_OLD_APIS = 'True' == os.environ.get('AA_REJECT_OLD_APIS', 'False')
 REJECT_OLD_APIS_MARGIN = os.environ.get('AA_REJECT_OLD_APIS_MARGIN', 50)
 API_SSO_VALIDATION = 'True' == os.environ.get('AA_API_SSO_VALIDATION', 'False')
+
+#######################
+# EVE Provider Settings
+#######################
+# EVEONLINE_CHARACTER_PROVIDER - Name of default data source for getting eve character data
+# EVEONLINE_CORP_PROVIDER - Name of default data source for getting eve corporation data
+# EVEONLINE_ALLIANCE_PROVIDER - Name of default data source for getting eve alliance data
+#
+# Available soruces are 'esi' and 'xml'
+#######################
+EVEONLINE_CHARACTER_PROVIDER = os.environ.get('AA_EVEONLINE_CHARACTER_PROVIDER', 'esi')
+EVEONLINE_CORP_PROVIDER = os.environ.get('AA_EVEONLINE_CORP_PROVIDER', 'esi')
+EVEONLINE_ALLIANCE_PROVIDER = os.environ.get('AA_EVEONLINE_ALLIANCE_PROVIDER', 'esi')
 
 #####################
 # Alliance Market
