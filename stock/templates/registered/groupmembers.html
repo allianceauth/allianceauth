@@ -1,0 +1,44 @@
+{% extends "public/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}{% trans "Group Members" %}{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        {% include 'registered/groupmanagementmenu.html' %}
+        <h3>{{ group.name }} {% trans 'Members' %}</h3>
+        <div id="list" class="">
+            {% if group.user_set %}
+            <table class="table">
+                <tr>
+                    <th class="text-center">{% trans "User" %}</th>
+                    <th class="text-center">{% trans "Character" %}</th>
+                    <th class="text-center">{% trans "Corp" %}</th>
+                    <th class="text-center">{% trans "Alliance" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
+                </tr>
+                {% for member in members %}
+                    <tr>
+                        <td class="text-center">{{ member.user.username }}</td>
+                        <td class="text-center">{{ member.main_char.character_name }}</td>
+                        <td class="text-center">{{ member.main_char.corporation_name }}</td>
+                        <td class="text-center">{{ member.main_char.alliance_name }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'auth_group_membership_remove' group.id member.user.id %}" class="btn btn-danger"
+                                title="{% trans "Remove from group" %}">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <div class="alert alert-warning text-center">No group members to list.</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
