@@ -55,9 +55,7 @@
                                 <table class="table table-striped">
                                         {% for group in user.groups.all %}
                                             <tr>
-                                                <td>
-                                                    <p>{{ group.name }}</p>
-                                                </td>
+                                                <td>{{ group.name }}</td>
                                             </tr>
                                         {% endfor %}
                                     </table>

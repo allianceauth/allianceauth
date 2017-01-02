@@ -110,12 +110,6 @@
                             </a>
                         </li>
 
-                        <li>
-                            <a class="{% navactive request 'auth_characters' %}" href="{% url 'auth_characters' %}">
-                                <i class="fa fa-users fa-fw grayiconecolor"></i>{% trans " Characters" %}
-                            </a>
-                        </li>
-
                         {% if STATE == MEMBER_STATE or user.is_superuser %}
                             <li>
                                 <a class="{% navactive request 'auth_groups' %}" href="{% url 'auth_groups' %}">

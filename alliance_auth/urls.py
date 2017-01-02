@@ -182,8 +182,6 @@ urlpatterns += i18n_patterns(
 
     # Eveonline Urls
     url(_(r'^add_api_key/'), eveonline.views.add_api_key, name='auth_add_api_key'),
-    url(_(r'^api_key_management/'), eveonline.views.api_key_management_view,
-        name='auth_api_key_management'),
     url(_(r'^refresh_api_pair/([0-9]+)/$'), eveonline.views.user_refresh_api, name='auth_user_refresh_api'),
     url(_(r'^delete_api_pair/(\w+)/$'), eveonline.views.api_key_removal, name='auth_api_key_removal'),
     url(_(r'^characters/'), eveonline.views.characters_view, name='auth_characters'),
