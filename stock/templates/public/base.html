@@ -155,7 +155,7 @@
 
                         {% if can_manage_groups %}
                             <li>
-                                <a class="{% navactive request 'auth_group_management' %}" href="{% url 'auth_group_management' %}">
+                                <a class="{% navactive request 'auth_group_management auth_group_membership auth_group_membership_list' %}" href="{% url 'auth_group_management' %}">
                                     <i class="fa fa-lock fa-sitemap fa-fw grayiconecolor"></i>{% trans " Group Management" %}
                                 </a>
                             </li>
