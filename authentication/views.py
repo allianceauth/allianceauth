@@ -89,17 +89,10 @@ def index_view(request):
 
 
 @login_required
-def dashboard_view(request):
-    logger.debug("dashboard_view called by user %s" % request.user)
-    render_items = {'characters': EveManager.get_characters_by_owner_id(request.user.id),
-                    'authinfo': AuthServicesInfo.objects.get_or_create(user=request.user)[0]}
-    return render(request, 'registered/dashboard.html', context=render_items)
-
-
-@login_required
 def help_view(request):
     logger.debug("help_view called by user %s" % request.user)
     return render(request, 'registered/help.html')
+
 
 @token_required(new=True)
 def sso_login(request, tokens=[]):
@@ -109,7 +102,7 @@ def sso_login(request, tokens=[]):
         if char.user:
             if char.user.is_active:
                 login(request, char.user)
-                return redirect(dashboard_view)
+                return redirect('auth_dashboard')
             else:
                 messages.error(request, 'Your account has been disabled.')
         else:

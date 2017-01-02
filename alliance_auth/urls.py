@@ -177,7 +177,7 @@ urlpatterns += i18n_patterns(
         django.contrib.auth.views.password_reset_confirm, name='password_reset_confirm'),
 
     # Portal Urls
-    url(_(r'^dashboard/$'), authentication.views.dashboard_view, name='auth_dashboard'),
+    url(_(r'^dashboard/$'), eveonline.views.dashboard_view, name='auth_dashboard'),
     url(_(r'^help/$'), authentication.views.help_view, name='auth_help'),
 
     # Eveonline Urls
