@@ -19,5 +19,5 @@ def states(request):
 
 def sso(request):
     return {
-        'EVE_SSO_CALLBACK_URL': settings.EVE_SSO_CALLBACK_URL,
+        'EVE_SSO_CALLBACK_URL': settings.ESI_SSO_CALLBACK_URL,
     }

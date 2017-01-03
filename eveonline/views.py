@@ -12,7 +12,7 @@ from authentication.models import AuthServicesInfo
 from authentication.tasks import set_state
 from eveonline.tasks import refresh_api
 
-from eve_sso.decorators import token_required
+from esi.decorators import token_required
 from django.conf import settings
 import logging
 
@@ -46,9 +46,8 @@ def add_api_key(request):
                 api_key.save()
                 owner = request.user
             # Grab characters associated with the key pair
-            characters = EveApiManager.get_characters_from_api(form.cleaned_data['api_id'],
-                                                               form.cleaned_data['api_key'])
-            EveManager.create_characters_from_list(characters, owner, form.cleaned_data['api_id'])
+            characters = EveManager.get_characters_from_api(api_key)
+            [EveManager.create_character_obj(c, owner, api_key.api_id) for c in characters if not EveCharacter.objects.filter(character_id=c.id).exists()]
             logger.info("Successfully processed api add form for user %s" % request.user)
             if not settings.API_SSO_VALIDATION:
                 messages.success(request, 'Added API key %s to your account.' % form.cleaned_data['api_id'])
@@ -70,7 +69,7 @@ def add_api_key(request):
 
 @login_required
 @token_required(new=True)
-def api_sso_validate(request, tokens, api_id):
+def api_sso_validate(request, token, api_id):
     logger.debug('api_sso_validate called by user %s for api %s' % (request.user, api_id))
     api = get_object_or_404(EveApiKeyPair, api_id=api_id)
     if api.user and api.user != request.user:
@@ -81,7 +80,6 @@ def api_sso_validate(request, tokens, api_id):
         logger.debug('API %s has already been verified.' % api_id)
         messages.info(request, 'API %s has already been verified' % api_id)
         return redirect('auth_dashboard')
-    token = tokens[0]
     logger.debug('API %s has not been verified. Checking if token for %s matches.' % (api_id, token.character_name))
     characters = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
     if token.character_id in characters:

@@ -10,13 +10,13 @@ import services.views
 import groupmanagement.views
 import optimer.views
 import timerboard.views
-import corputils.views
 import fleetactivitytracking.views
 import fleetup.views
 import srp.views
 import notifications.views
 import hrapplications.views
-import eve_sso.urls
+import corputils.urls
+import esi.urls
 from alliance_auth import NAME
 
 admin.site.site_header = NAME
@@ -30,8 +30,11 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # SSO
-    url (r'^sso/', include(eve_sso.urls, namespace='eve_sso')),
-    url (r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
+    url(r'^sso/', include(esi.urls, namespace='esi')),
+    url(r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
+
+    # Corputils
+    url(r'^corpstats/', include(corputils.urls, namespace='corputils')),
 
     # Index
     url(_(r'^$'), authentication.views.index_view, name='auth_index'),
@@ -147,14 +150,6 @@ urlpatterns = [
 # User viewed/translated URLS
 urlpatterns += i18n_patterns(
 
-    # corputils
-    url(r'^corputils/$', corputils.views.corp_member_view, name='auth_corputils'),
-    url(r'^corputils/(?P<corpid>[0-9]+)/$', corputils.views.corp_member_view, name='auth_corputils_corp_view'),
-    url(r'^corputils/(?P<corpid>[0-9]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', corputils.views.corp_member_view,
-        name='auth_corputils_month'),
-    url(r'^corputils/search/$', corputils.views.corputils_search, name="auth_corputils_search"),
-    url(r'^corputils/search/(?P<corpid>[0-9]+)/$', corputils.views.corputils_search, name='auth_corputils_search_corp'),
-
     # Fleetup
     url(r'^fleetup/$', fleetup.views.fleetup_view, name='auth_fleetup_view'),
     url(r'^fleetup/fittings/$', fleetup.views.fleetup_fittings, name='auth_fleetup_fittings'),
@@ -251,12 +246,6 @@ urlpatterns += i18n_patterns(
 
     # Teamspeak Urls
     url(r'verify_teamspeak3/$', services.views.verify_teamspeak3, name='auth_verify_teamspeak3'),
-
-    # corputils
-    url(_(r'^corputils/$'), corputils.views.corp_member_view, name='auth_corputils'),
-    url(_(r'^corputils/(?P<corpid>[0-9]+)/$'), corputils.views.corp_member_view, name='auth_corputils_corp_view'),
-    url(_(r'^corputils/search/$'), corputils.views.corputils_search, name="auth_corputils_search"),
-    url(_(r'^corputils/search/(?P<corpid>[0-9]+)/$'), corputils.views.corputils_search, name='auth_corputils_search_corp'),
 
     # Timer URLS
     url(_(r'^timers/$'), timerboard.views.timer_view, name='auth_timer_view'),

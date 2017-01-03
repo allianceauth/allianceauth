@@ -11,8 +11,8 @@ class EveCharacter(models.Model):
     corporation_id = models.CharField(max_length=254)
     corporation_name = models.CharField(max_length=254)
     corporation_ticker = models.CharField(max_length=254)
-    alliance_id = models.CharField(max_length=254)
-    alliance_name = models.CharField(max_length=254)
+    alliance_id = models.CharField(max_length=254, blank=True, null=True, default='')
+    alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
     api_id = models.CharField(max_length=254)
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -38,7 +38,6 @@ class EveAllianceInfo(models.Model):
     alliance_ticker = models.CharField(max_length=254)
     executor_corp_id = models.CharField(max_length=254)
     is_blue = models.BooleanField(default=False)
-    member_count = models.IntegerField()
 
     def __str__(self):
         return self.alliance_name

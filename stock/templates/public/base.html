@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{% block title %}Empty title{% endblock title %}</title>
+    <title>{% block title %}Alliance Auth{% endblock title %}</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -46,11 +46,7 @@
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="container-fluid">
             <a class="navbar-brand">
-                    {% if IS_CORP %}
-                        {{ CORP_NAME }}
-                    {% else %}
-                        {{ ALLIANCE_NAME }}
-                    {% endif %}
+                    {{ SITE_NAME }}
             </a>
             <!-- /.navbar-header -->
 
@@ -145,9 +141,9 @@
                             </li>
                         {% endif %}
 
-                        {% if perms.auth.corp_apis or perms.auth.alliance_apis %}
+                        {% if perms.corputils.view_corp_corpstats or perms.corputils.view_alliance_corpstats or perms.corputils.view_blue_corpstats %}
                             <li>
-                                <a class="{% navactive request 'auth_corputils auth_corputils_search auth_corputils_corp_view auth_corputils_month' %}" href="{% url 'auth_corputils' %}">
+                                <a class="{% navactive request 'corputils:view corputils:search' %}" href="{% url 'corputils:view' %}">
                                     <i class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}
                                 </a>
                             </li>
@@ -187,7 +183,7 @@
                             {% endif %}
 
                             <li>
-                                <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
+                                <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_view_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
                                     <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i> Fleet Activity Tracking
                                 </a>
                             </li>
