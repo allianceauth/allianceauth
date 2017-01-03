@@ -158,7 +158,7 @@ def run_corp_update():
                                 alliance.is_blue = True
                                 alliance.save()
                         else:
-                            EveManager.create_alliance(standing, blue=True)
+                            EveManager.create_alliance(standing, is_blue=True)
                     elif EveApiManager.check_if_id_is_corp(standing):
                         logger.debug("Standing %s is a corp" % standing)
                         if EveCorporationInfo.objects.filter(corporation_id=standing).exists():
@@ -169,7 +169,7 @@ def run_corp_update():
                                 corp.save()
                         else:
                             logger.info("Creating model for blue corp with id %s" % standing)
-                            EveManager.create_corporation(standing, blue=True)
+                            EveManager.create_corporation(standing, is_blue=True)
 
         # update alliance standings
         for alliance in EveAllianceInfo.objects.filter(is_blue=True):
