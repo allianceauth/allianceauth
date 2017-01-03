@@ -17,6 +17,9 @@ import srp.views
 import notifications.views
 import hrapplications.views
 import eve_sso.urls
+from alliance_auth import NAME
+
+admin.site.site_header = NAME
 
 # Functional/Untranslated URL's
 urlpatterns = [
