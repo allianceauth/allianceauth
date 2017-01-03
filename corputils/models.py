@@ -26,14 +26,9 @@ class CorpStats(models.Model):
             ('corp_apis', 'Can view API keys of members of their corporation.'),
             ('alliance_apis', 'Can view API keys of members of their alliance.'),
             ('blue_apis', 'Can view API keys of members of blue corporations.'),
-        )
-        default_permissions = (
-            'add',
-            'change',
-            'remove',
-            'view_corp',
-            'view_alliance',
-            'view_blue',
+            ('view_corp_corpstats', 'Can view corp stats of their corporation.'),
+            ('view_alliance_corpstats', 'Can view corp stats of members of their alliance.'),
+            ('view_blue_corpstats', 'Can view corp stats of blue corporations.'),
         )
         verbose_name = "corp stats"
         verbose_name_plural = "corp stats"

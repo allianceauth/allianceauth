@@ -13,9 +13,9 @@ PERMISSIONS = {
         'corp_apis': 'Can view API keys of members of their corporation.',
         'alliance_apis': 'Can view API keys of members of their alliance.',
         'blue_apis': 'Can view API keys of members of blue corporations.',
-        'view_corp_corpstats': 'Can view_corp corpstats',
-        'view_alliance_corpstats': 'Can view_alliance corpstats',
-        'view_blue_corpstats': 'Can view_blue corpstats',
+        'view_corp_corpstats': 'Can view corp stats of their corporation.',
+        'view_alliance_corpstats': 'Can view corp stats of members of their alliance.',
+        'view_blue_corpstats': 'Can view corp stats of blue corporations.',
     }
 }
 
@@ -30,7 +30,7 @@ def user_permissions_dict(apps):
 
     return {
         'user': {x: Permission.objects.get_or_create(name=x, codename=x, content_type=user_ct)[0] for x in PERMISSIONS['user']},
-        'corpstats': {x: Permission.objects.get_or_create(codename=x, content_type=corpstats_ct)[0] for x, y in PERMISSIONS['corpstats'].items()},
+        'corpstats': {x: Permission.objects.get_or_create(codename=x, name=y, content_type=corpstats_ct)[0] for x, y in PERMISSIONS['corpstats'].items()},
     }
 
 def users_with_permission(apps, perm):
