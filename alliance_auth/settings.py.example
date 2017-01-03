@@ -111,7 +111,6 @@ TEMPLATES = [
                 'notifications.context_processors.user_notification_count',
                 'authentication.context_processors.states',
                 'authentication.context_processors.membership_state',
-                'authentication.context_processors.sso',
                 'groupmanagement.context_processors.can_manage_groups',
             ],
         },
@@ -225,15 +224,13 @@ SITE_NAME = os.environ.get('AA_SITE_NAME', 'Alliance Auth')
 ###################
 # SSO Settings
 ###################
-# Optional SSO.
 # Get client ID and client secret from registering an app at
 # https://developers.eveonline.com/
-# Callback URL should be http://mydomain.com/sso/callback
-# Leave callback blank to hide SSO button on login page
+# Callback URL should be https://mydomain.com/sso/callback
 ###################
-ESI_SSO_CLIENT_ID = os.environ.get('AA_EVE_SSO_CLIENT_ID', '')
-ESI_SSO_CLIENT_SECRET = os.environ.get('AA_EVE_SSO_CLIENT_SECRET', '')
-ESI_SSO_CALLBACK_URL = os.environ.get('AA_EVE_SSO_CALLBACK_URL', '')
+ESI_SSO_CLIENT_ID = os.environ.get('AA_ESI_SSO_CLIENT_ID', '')
+ESI_SSO_CLIENT_SECRET = os.environ.get('AA_ESI_SSO_CLIENT_SECRET', '')
+ESI_SSO_CALLBACK_URL = os.environ.get('AA_ESI_SSO_CALLBACK_URL', '')
 
 #########################
 # Default Group Settings

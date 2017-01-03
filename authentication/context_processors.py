@@ -15,9 +15,3 @@ def states(request):
         'NONE_STATE': NONE_STATE,
         'MEMBER_BLUE_STATE': [MEMBER_STATE, BLUE_STATE],
     }
-
-
-def sso(request):
-    return {
-        'EVE_SSO_CALLBACK_URL': settings.ESI_SSO_CALLBACK_URL,
-    }
