@@ -50,7 +50,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
         if auth.smf_username:
             update_smf_groups.delay(instance.pk)
 
-    if action == "post_add" or action == "post_remove" or action == "post_clear":
+    if instance.pk and (action == "post_add" or action == "post_remove" or action == "post_clear"):
         logger.debug("Waiting for commit to trigger service group update for %s" % instance)
         transaction.on_commit(trigger_service_group_update)
 
