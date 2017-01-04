@@ -643,7 +643,7 @@ def reset_teamspeak3_perm(request):
     if result != "":
         AuthServicesInfoManager.update_user_teamspeak3_info(result[0], result[1], request.user)
         logger.debug("Updated authserviceinfo for user %s with TS3 credentials. Updating groups." % request.user)
-        update_teamspeak3_groups.delay(request.user)
+        update_teamspeak3_groups.delay(request.user.pk)
         logger.info("Successfully reset TS3 permission key for user %s" % request.user)
         messages.success(request, 'Reset TeamSpeak3 permission key.')
     else:
