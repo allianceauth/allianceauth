@@ -63,10 +63,10 @@ def make_blue(auth):
 
 
 def determine_membership_by_character(char):
-    if char.corporation_id in settings.STR_CORP_IDS:
+    if str(char.corporation_id) in settings.STR_CORP_IDS:
         logger.debug("Character %s in member corp id %s" % (char, char.corporation_id))
         return MEMBER_STATE
-    elif char.alliance_id in settings.STR_ALLIANCE_IDS:
+    elif str(char.alliance_id) in settings.STR_ALLIANCE_IDS:
         logger.debug("Character %s in member alliance id %s" % (char, char.alliance_id))
         return MEMBER_STATE
     elif not EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists():
