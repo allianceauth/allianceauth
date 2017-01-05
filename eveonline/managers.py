@@ -26,6 +26,7 @@ class EveManager:
             character_name = character.name,
             corporation_id = character.corp.id,
             corporation_name = character.corp.name,
+            corporation_ticker = character.corp.ticker,
             alliance_id = character.alliance.id,
             alliance_name = character.alliance.name,
             user = user,
@@ -42,6 +43,7 @@ class EveManager:
         model.character_name = char.name
         model.corporation_id = char.corp.id
         model.corporation_name = char.corp.name
+        model.corporation_ticker = char.corp.ticker
         model.alliance_id = char.alliance.id
         model.alliance_name = char.alliance.name
         model.save()
