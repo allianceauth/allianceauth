@@ -41,16 +41,22 @@ class Corporation(Entity):
         self.ceo_id = ceo_id
         self.members = members
         self.alliance_id = alliance_id
+        self._alliance = None
+        self._ceo = None
 
     @property
     def alliance(self):
         if self.alliance_id:
-            return self.provider.get_alliance(self.alliance_id)
+            if not self._alliance:
+                self._alliance = self.provider.get_alliance(self.alliance_id)
+            return self._alliance
         return Entity(None, None)
 
     @property
     def ceo(self):
-        return self.provider.get_character(self.ceo_id)
+        if not self._ceo:
+            self._ceo = self.provider.get_character(self.ceo_id)
+        return self._ceo
 
 
 class Alliance(Entity):
@@ -60,10 +66,14 @@ class Alliance(Entity):
         self.ticker = ticker
         self.corp_ids = corp_ids
         self.executor_corp_id = executor_corp_id
+        self._corps = {}
 
     def corp(self, id):
         assert id in self.corp_ids
-        return self.provider.get_corp(id)
+        if not id in self._corps:
+            self._corps[id] = self.provider.get_corp(id)
+            self._corps[id]._alliance = self
+        return self._corps[id]
 
     @property
     def corps(self):
@@ -71,7 +81,7 @@ class Alliance(Entity):
 
     @property
     def executor_corp(self):
-        return self.provider.get_corp(self.executor_corp_id)
+        return self.corp(self.executor_corp_id)
 
 
 class Character(Entity):
@@ -80,15 +90,19 @@ class Character(Entity):
         self.provider = provider
         self.corp_id = corp_id
         self.alliance_id = alliance_id
+        self._corp = None
+        self._alliance = None
 
     @property
     def corp(self):
-        return self.provider.get_corp(self.corp_id)
+        if not self._corp:
+            self._corp =  self.provider.get_corp(self.corp_id)
+        return self._corp
 
     @property
     def alliance(self):
         if self.alliance_id:
-            return self.provider.get_alliance(self.alliance_id)
+            return self.corp.alliance
         return Entity(None, None)
 
 
