@@ -8,12 +8,10 @@ from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
 from django.conf import settings
 
 def determine_membership_by_character(char, apps):
-    if settings.IS_CORP:
-        if int(char.corporation_id) == int(settings.CORP_ID):
-            return MEMBER_STATE
-    else:
-        if int(char.alliance_id) == int(settings.ALLIANCE_ID):
-            return MEMBER_STATE
+    if str(char.corporation_id) in settings.STR_CORP_IDS:
+        return MEMBER_STATE
+    elif str(char.alliance_id) in settings.STR_ALLIANCE_IDS:
+        return MEMBER_STATE
     EveCorporationInfo = apps.get_model('eveonline', 'EveCorporationInfo')
     if EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists() is False:
          return NONE_STATE
