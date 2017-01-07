@@ -44,8 +44,16 @@ class CorpStats(models.Model):
             assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()['corporation_id'] == int(self.corp.corporation_id)
             members = c.Corporation.get_corporations_corporation_id_members(corporation_id=self.corp.corporation_id).result()
             member_ids = [m['character_id'] for m in members]
-            member_names = c.Character.get_characters_names(character_ids=member_ids).result()
-            member_list = {m['character_id']:m['character_name'] for m in member_names}
+
+            # requesting too many ids per call results in a HTTP400
+            # the swagger spec doesn't have a maxItems count
+            # manual testing says we can do over 350, but let's not risk it
+            member_id_chunks = [member_ids[i:i+255] for i in range(0, len(member_ids), 255)]
+            member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in member_id_chunks]
+            member_list = {}
+            for name_chunk in member_name_chunks:
+                member_list.update({m['character_id']:m['character_name'] for m in name_chunk})
+
             self.members = member_list
             self.save()
         except TokenError as e:
