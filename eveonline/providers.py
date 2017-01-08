@@ -280,8 +280,10 @@ def eve_adapter_factory(character_source=settings.EVEONLINE_CHARACTER_PROVIDER, 
     sources = [character_source, corp_source, alliance_source]
     providers = []
 
-    xml = EveXmlProvider(api_key=api_key)
-    esi = EveSwaggerProvider(token=token)
+    if 'xml' in sources:
+        xml = EveXmlProvider(api_key=api_key)
+    if 'esi' in sources:
+        esi = EveSwaggerProvider(token=token)
 
     for source in sources:
         if source == 'xml':
