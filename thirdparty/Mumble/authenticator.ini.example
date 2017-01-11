@@ -33,7 +33,7 @@ servers      =
 [log]
 ; Available loglevels: 10 = DEBUG (default) | 20 = INFO | 30 = WARNING | 40 = ERROR
 level   =
-file    = allianceauth.log
+file    = authenticator.log
 
 [iceraw]
 Ice.ThreadPool.Server.Size = 5
