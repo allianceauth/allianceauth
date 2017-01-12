@@ -8,5 +8,6 @@
     centos
     settings
     apache
+    supervisor
     quickstart
 ```
