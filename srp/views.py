@@ -15,6 +15,7 @@ from services.managers.srp_manager import srpManager
 from notifications import notify
 from django.utils import timezone
 from authentication.decorators import members_and_blues
+from esi.clients import esi_client_factory
 import uuid
 
 import logging
@@ -254,7 +255,8 @@ def srp_request_view(request, fleet_srp):
                 messages.error(request,
                                "Your SRP request Killmail link is invalid. Please make sure you are using zKillboard.")
                 return redirect("auth_srp_management_view")
-            srp_ship_name = srpManager.get_ship_name(srp_kill_data)
+            c = esi_client_factory()
+            srp_ship_name = c.Universe.get_universe_types_type_id(type_id=srp_kill_data).result()['type_name']
             srp_request.srp_ship_name = srp_ship_name
             kb_total_loss = ship_value
             srp_request.kb_total_loss = kb_total_loss
