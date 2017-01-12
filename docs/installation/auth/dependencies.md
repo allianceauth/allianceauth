@@ -45,7 +45,7 @@ Required for base auth site
 
 #### Python
 
-    python python-devel MySQL-python python-setuptools  mysql-connector-python python-pip
+    python python-devel MySQL-python python-setuptools  mysql-connector-python python-pip bzip2-devel
 
 #### MySQL
 

@@ -1,6 +1,6 @@
 # CentOS Installation
 
-It’s recommended to update all packages before proceeding.
+It's recommended to update all packages before proceeding.
     `sudo yum update`
     `sudo yum upgrade`
     `sudo reboot`
@@ -10,7 +10,12 @@ Now install all [dependencies](dependencies.md). For this guide you'll need the 
     sudo yum install xxxxxxx
 replacing the x's with the list of packages.
 
-For security and permissions, it’s highly recommended you create a user to install under who is not the root account.
+Make sure redis is running before continuing:
+
+    systemctl enable redis.service
+    systemctl start redis.service
+
+For security and permissions, it's highly recommended you create a user to install under who is not the root account.
 
     sudo adduser allianceserver
     sudo passwd allianceserver
@@ -57,7 +62,7 @@ The settings file needs configuring. See this lengthy guide for specifics.
 
 Django needs to install models to the database before it can start.
 
-    python manage.py syncdb
+    python manage.py migrate
 
 AllianceAuth needs to generate corp and alliance models before it can assign users to them.
 
