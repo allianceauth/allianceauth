@@ -1,4 +1,4 @@
 from __future__ import unicode_literals
 
-__version__ = '1.14'
+__version__ = '1.14.1'
 NAME = 'Alliance Auth v%s' % __version__
