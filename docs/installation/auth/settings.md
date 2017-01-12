@@ -246,8 +246,6 @@ Allow members of the owning corp or alliance to generate accounts on an alliance
 ### ENABLE_AUTH_XENFORO
 Allow members of the owning corp or alliance to generate accounts on a XenForo install.
 ## Blue Service Setup
-### BLUE_STANDING
-The lowest standings to consider blue. Default is 5.0
 ### ENABLE_BLUE_FORUM
 Allow blues of the owning corp or alliance to generate accounts on a Phpbb3 install.
 ### ENABLE_BLUE_JABBER

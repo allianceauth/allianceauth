@@ -80,7 +80,7 @@ To use this feature, users will require some of the following:
 | corpstats.alliance_apis               | None             | Can view API keys of members of their alliance.    |
 +---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.blue_apis                   | None             | Can view API keys of members of blue corporations. |
-----------------------------------------+------------------+----------------------------------------------------+
++---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.view_corp_corpstats         | None             | Can view corp stats of their corporation.          |
 +---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.view_alliance_corpstats     | None             | Can view corp stats of members of their alliance.  |
