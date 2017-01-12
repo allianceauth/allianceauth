@@ -9,7 +9,7 @@ class CorpStatsQuerySet(models.QuerySet):
         if user.is_superuser:
             return self
 
-        auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+        auth = AuthServicesInfo.objects.get(user=user)
         try:
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
             # build all accepted queries

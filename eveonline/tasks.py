@@ -77,7 +77,7 @@ def refresh_user_apis(user):
     for x in apis:
         refresh_api(x)
     # Check our main character
-    auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.main_char_id:
         if EveCharacter.objects.filter(character_id=auth.main_char_id).exists() is False:
             logger.info(

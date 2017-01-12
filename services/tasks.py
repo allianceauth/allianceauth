@@ -169,7 +169,7 @@ def disable_market():
 def deactivate_services(user):
     change = False
     logger.debug("Deactivating services for user %s" % user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=user)
     if authinfo.mumble_username and authinfo.mumble_username != "":
         logger.debug("User %s has mumble account %s. Deleting." % (user, authinfo.mumble_username))
         MumbleManager.delete_user(authinfo.mumble_username)
@@ -235,7 +235,7 @@ def validate_services(self, user, state):
         deactivate_services(user)
         return
     logger.debug('Ensuring user %s services are available to state %s' % (user, state))
-    auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.mumble_username and not getattr(settings, 'ENABLE_%s_MUMBLE' % setting_string, False):
         MumbleManager.delete_user(auth.mumble_username)
         AuthServicesInfoManager.update_user_mumble_info("", user)

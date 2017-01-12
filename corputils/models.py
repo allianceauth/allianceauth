@@ -89,7 +89,7 @@ class CorpStats(models.Model):
         return [name for id, name in self.members.items()]
 
     def show_apis(self, user):
-        auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+        auth = AuthServicesInfo.objects.get(user=user)
         if auth.main_char_id:
             try:
                 char = EveCharacter.objects.get(character_id=auth.main_char_id)

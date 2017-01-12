@@ -142,7 +142,7 @@ def jabber_broadcast_view(request):
 @members_and_blues()
 def services_view(request):
     logger.debug("services_view called by user %s" % request.user)
-    auth = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    auth = AuthServicesInfo.objects.get(user=request.user)
     char = None
     if auth.main_char_id:
         try:
@@ -185,7 +185,7 @@ def superuser_test(user):
 @members_and_blues()
 def activate_forum(request):
     logger.debug("activate_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding phpbb user for user %s with main character %s" % (request.user, character))
@@ -213,7 +213,7 @@ def activate_forum(request):
 @members_and_blues()
 def deactivate_forum(request):
     logger.debug("deactivate_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = Phpbb3Manager.disable_user(authinfo.forum_username)
     # false we failed
     if result:
@@ -230,7 +230,7 @@ def deactivate_forum(request):
 @members_and_blues()
 def reset_forum_password(request):
     logger.debug("reset_forum_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = Phpbb3Manager.update_user_password(authinfo.forum_username, authinfo.main_char_id)
     # false we failed
     if result != "":
@@ -252,7 +252,7 @@ def reset_forum_password(request):
 @members_and_blues()
 def activate_xenforo_forum(request):
     logger.debug("activate_xenforo_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding XenForo user for user %s with main character %s" % (request.user, character))
     result = XenForoManager.add_user(character.character_name, request.user.email)
@@ -278,7 +278,7 @@ def activate_xenforo_forum(request):
 @members_and_blues()
 def deactivate_xenforo_forum(request):
     logger.debug("deactivate_xenforo_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = XenForoManager.disable_user(authinfo.xenforo_username)
     if result.status_code == 200:
         AuthServicesInfoManager.update_user_xenforo_info("", request.user)
@@ -293,7 +293,7 @@ def deactivate_xenforo_forum(request):
 @members_and_blues()
 def reset_xenforo_password(request):
     logger.debug("reset_xenforo_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = XenForoManager.reset_password(authinfo.xenforo_username)
     # Based on XenAPI's response codes
     if result['response']['status_code'] == 200:
@@ -322,7 +322,7 @@ def set_xenforo_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = XenForoManager.update_user_password(authinfo.xenforo_username, password)
             if result['response']['status_code'] == 200:
                 logger.info("Successfully reset XenForo password for user %s" % request.user)
@@ -344,7 +344,7 @@ def set_xenforo_password(request):
 @members_and_blues()
 def activate_ipboard_forum(request):
     logger.debug("activate_ipboard_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding ipboard user for user %s with main character %s" % (request.user, character))
@@ -371,7 +371,7 @@ def activate_ipboard_forum(request):
 @members_and_blues()
 def deactivate_ipboard_forum(request):
     logger.debug("deactivate_ipboard_forum called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = IPBoardManager.disable_user(authinfo.ipboard_username)
     # false we failed
     if result:
@@ -388,7 +388,7 @@ def deactivate_ipboard_forum(request):
 @members_and_blues()
 def reset_ipboard_password(request):
     logger.debug("reset_ipboard_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = IPBoardManager.update_user_password(authinfo.ipboard_username, request.user.email)
     if result != "":
         logger.info("Successfully reset ipboard password for user %s" % request.user)
@@ -409,7 +409,7 @@ def reset_ipboard_password(request):
 @members_and_blues()
 def activate_jabber(request):
     logger.debug("activate_jabber called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding jabber user for user %s with main character %s" % (request.user, character))
     info = OpenfireManager.add_user(character.character_name)
@@ -436,7 +436,7 @@ def activate_jabber(request):
 @members_and_blues()
 def deactivate_jabber(request):
     logger.debug("deactivate_jabber called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = OpenfireManager.delete_user(authinfo.jabber_username)
     # If our username is blank means we failed
     if result:
@@ -453,7 +453,7 @@ def deactivate_jabber(request):
 @members_and_blues()
 def reset_jabber_password(request):
     logger.debug("reset_jabber_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = OpenfireManager.update_user_pass(authinfo.jabber_username)
     # If our username is blank means we failed
     if result != "":
@@ -476,7 +476,7 @@ def reset_jabber_password(request):
 @members_and_blues()
 def activate_mumble(request):
     logger.debug("activate_mumble called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     ticker = character.corporation_ticker
 
@@ -513,7 +513,7 @@ def activate_mumble(request):
 @members_and_blues()
 def deactivate_mumble(request):
     logger.debug("deactivate_mumble called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # if we successfully remove the user or the user is already removed
     if MumbleManager.delete_user(authinfo.mumble_username) or not MumbleManager.user_exists(authinfo.mumble_username):
         AuthServicesInfoManager.update_user_mumble_info("", request.user)
@@ -529,7 +529,7 @@ def deactivate_mumble(request):
 @members_and_blues()
 def reset_mumble_password(request):
     logger.debug("reset_mumble_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = MumbleManager.update_user_password(authinfo.mumble_username)
 
     # if blank we failed
@@ -552,7 +552,7 @@ def reset_mumble_password(request):
 @members_and_blues()
 def activate_teamspeak3(request):
     logger.debug("activate_teamspeak3 called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     ticker = character.corporation_ticker
 
@@ -583,7 +583,7 @@ def activate_teamspeak3(request):
 @members_and_blues()
 def verify_teamspeak3(request):
     logger.debug("verify_teamspeak3 called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     if not authinfo.teamspeak3_uid:
         logger.warn("Unable to validate user %s teamspeak: no teamspeak data" % request.user)
         return redirect("auth_services")
@@ -606,7 +606,7 @@ def verify_teamspeak3(request):
 @members_and_blues()
 def deactivate_teamspeak3(request):
     logger.debug("deactivate_teamspeak3 called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
 
     # if false we failed
@@ -624,7 +624,7 @@ def deactivate_teamspeak3(request):
 @members_and_blues()
 def reset_teamspeak3_perm(request):
     logger.debug("reset_teamspeak3_perm called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Deleting TS3 user for user %s" % request.user)
     Teamspeak3Manager.delete_user(authinfo.teamspeak3_uid)
@@ -656,7 +656,7 @@ def reset_teamspeak3_perm(request):
 @members_and_blues()
 def deactivate_discord(request):
     logger.debug("deactivate_discord called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = DiscordOAuthManager.delete_user(authinfo.discord_uid)
     if result:
         AuthServicesInfoManager.update_user_discord_info("", request.user)
@@ -672,7 +672,7 @@ def deactivate_discord(request):
 @members_and_blues()
 def reset_discord(request):
     logger.debug("reset_discord called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = DiscordOAuthManager.delete_user(authinfo.discord_uid)
     if result:
         AuthServicesInfoManager.update_user_discord_info("", request.user)
@@ -729,7 +729,7 @@ def set_forum_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = Phpbb3Manager.update_user_password(authinfo.forum_username, authinfo.main_char_id,
                                                         password=password)
             if result != "":
@@ -759,7 +759,7 @@ def set_mumble_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = MumbleManager.update_user_password(authinfo.mumble_username, password=password)
             if result != "":
                 logger.info("Successfully reset forum password for user %s" % request.user)
@@ -788,7 +788,7 @@ def set_jabber_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = OpenfireManager.update_user_pass(authinfo.jabber_username, password=password)
             if result != "":
                 logger.info("Successfully set jabber password for user %s" % request.user)
@@ -818,7 +818,7 @@ def set_ipboard_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = IPBoardManager.update_user_password(authinfo.ipboard_username, request.user.email,
                                                          plain_password=password)
             if result != "":
@@ -841,7 +841,7 @@ def set_ipboard_password(request):
 @members_and_blues()
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding IPS4 user for user %s with main character %s" % (request.user, character))
@@ -869,7 +869,7 @@ def activate_ips4(request):
 @members_and_blues()
 def reset_ips4_password(request):
     logger.debug("reset_ips4_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = Ips4Manager.update_user_password(authinfo.ips4_username)
     # false we failed
     if result != "":
@@ -898,7 +898,7 @@ def set_ips4_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = Ips4Manager.update_custom_password(authinfo.ips4_username, plain_password=password)
             if result != "":
                 logger.info("Successfully set IPS4 password for user %s" % request.user)
@@ -920,7 +920,7 @@ def set_ips4_password(request):
 @members_and_blues()
 def deactivate_ips4(request):
     logger.debug("deactivate_ips4 called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = Ips4Manager.delete_user(authinfo.ips4_id)
     if result != "":
         AuthServicesInfoManager.update_user_ips4_info("", "", request.user)
@@ -936,7 +936,7 @@ def deactivate_ips4(request):
 @members_and_blues()
 def activate_smf(request):
     logger.debug("activate_smf called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding smf user for user %s with main character %s" % (request.user, character))
@@ -964,7 +964,7 @@ def activate_smf(request):
 @members_and_blues()
 def deactivate_smf(request):
     logger.debug("deactivate_smf called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = smfManager.disable_user(authinfo.smf_username)
     # false we failed
     if result:
@@ -981,7 +981,7 @@ def deactivate_smf(request):
 @members_and_blues()
 def reset_smf_password(request):
     logger.debug("reset_smf_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = smfManager.update_user_password(authinfo.smf_username, authinfo.main_char_id)
     # false we failed
     if result != "":
@@ -1010,7 +1010,7 @@ def set_smf_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = smfManager.update_user_password(authinfo.smf_username, authinfo.main_char_id, password=password)
             if result != "":
                 logger.info("Successfully set smf password for user %s" % request.user)
@@ -1032,7 +1032,7 @@ def set_smf_password(request):
 @members_and_blues()
 def activate_market(request):
     logger.debug("activate_market called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
     logger.debug("Adding market user for user %s with main character %s" % (request.user, character))
@@ -1060,7 +1060,7 @@ def activate_market(request):
 @members_and_blues()
 def deactivate_market(request):
     logger.debug("deactivate_market called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = marketManager.disable_user(authinfo.market_username)
     # false we failed
     if result:
@@ -1077,7 +1077,7 @@ def deactivate_market(request):
 @members_and_blues()
 def reset_market_password(request):
     logger.debug("reset_market_password called by user %s" % request.user)
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     result = marketManager.update_user_password(authinfo.market_username)
     # false we failed
     if result != "":
@@ -1106,7 +1106,7 @@ def set_market_password(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             result = marketManager.update_custom_password(authinfo.market_username, password)
             if result != "":
                 logger.info("Successfully reset market password for user %s" % request.user)
@@ -1129,7 +1129,7 @@ def discourse_sso(request):
 
     ## Check if user has access
 
-    auth, c = AuthServicesInfo.objects.get_or_create(user=request.user)
+    auth = AuthServicesInfo.objects.get(user=request.user)
     if not request.user.is_superuser:
         if not settings.ENABLE_AUTH_DISCOURSE and auth.state == MEMBER_STATE:
             messages.error(request, 'Members are not authorized to access Discourse.')

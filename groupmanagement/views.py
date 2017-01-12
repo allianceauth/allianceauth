@@ -86,7 +86,7 @@ def group_membership_list(request, group_id):
     members = list()
 
     for member in group.user_set.all().order_by('username'):
-        authinfo = AuthServicesInfo.objects.get_or_create(user=member)[0]
+        authinfo = AuthServicesInfo.objects.get(user=member)
 
         members.append({
             'user': member,
@@ -294,7 +294,7 @@ def group_request_add(request, group_id):
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
         return redirect("auth_groups")
-    auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
@@ -325,7 +325,7 @@ def group_request_leave(request, group_id):
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
         return redirect("auth_groups")
-    auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group

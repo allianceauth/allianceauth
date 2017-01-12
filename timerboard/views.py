@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def timer_util_test(user):
-    return AuthServicesInfo.objects.get_or_create(user=user)[0].state in [BLUE_STATE, MEMBER_STATE]
+    return AuthServicesInfo.objects.get(user=user).state in [BLUE_STATE, MEMBER_STATE]
 
 
 @login_required
@@ -28,7 +28,7 @@ def timer_util_test(user):
 @permission_required('auth.timer_view')
 def timer_view(request):
     logger.debug("timer_view called by user %s" % request.user)
-    auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
     char = EveManager.get_character_by_id(auth_info.main_char_id)
     if char:
         corp = EveManager.get_corporation_info_by_id(char.corporation_id)
@@ -64,7 +64,7 @@ def add_timer_view(request):
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             # Get character
-            auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            auth_info = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
             logger.debug(
@@ -127,7 +127,7 @@ def edit_timer(request, timer_id):
         form = TimerForm(request.POST)
         logger.debug("Received POST request containing updated timer form, is valid: %s" % form.is_valid())
         if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            auth_info = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
             logger.debug(

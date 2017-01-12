@@ -16,41 +16,35 @@ They're handled as strings because when settings are exported from shell command
 
 When changing these booleans, edit the setting within the brackets (eg `('AA_MEMBER_CORP_GROUPS', 'True')` vs `('AA_MEMBER_CORP_GROUPS', 'False')`) and not the `True` earlier in the statement. Otherwise these will have unexpected behaviours.
 
-## Fields to Modify
+# Fields to Modify
 
-### Required
+## Required
  - [SECRET_KEY](#secret_key)
    - Use [this tool](http://www.miniwebtool.com/django-secret-key-generator/) to generate a key on initial install
  - [DEBUG](#debug)
    - If issues are encountered, set this to `True` to view a more detailed error report, otherwise set `False`
  - [ALLOWED_HOSTS](#allowed_hosts)
+   - This restricts web addresses auth will answer to. Separate with commas. 
    - Should include localhost `127.0.0.1` and `yourdomain.com`
+   - To allow from all, include `'*'`
  - [DATABASES](#databases)
    - Fill out the database name and user credentials to manage the auth database.
- - [IS_CORP](#is_corp)
-   - Set to `True` to run in corp mode, or `False` to run in alliance mode
  - [DOMAIN](#domain)
    - Set to the domain name AllianceAuth will be accessible under
  - [EMAIL_HOST_USER](#email_host_user)
    - Username to send emails from. If gmail account, the full gmail address.
  - [EMAIL_HOST_PASSWORD](#email_host_password)
    - Password for the email user.
- - [CORP_ID](#corp_id)
-   - If running in corp mode, set to the corp ID of the owning corp.
- - [CORP_NAME](#corp_name)
-   - If running in corp mode, set to the name of the owning corp.
- - [ALLIANCE_ID](#alliance_id)
-   - If running in alliance mode, set to the alliance ID of the owning alliance.
- - [ALLIANCE_NAME](#alliance_name)
-   - If running in alliance mode, set to the name of the owning alliance.
- - [MEMBER_API_MASK](#member_api_mask)
-   - Set the minimum access mask for member API keys.
- - [MEMBER_API_ACCOUNT](#member_api_account)
-   - Set to `True` to require member API keys be account keys.
- - [BLUE_API_MASK](#blue_api_mask)
-   - Set the minimum access mask for blue API keys.
- - [BLUE_API_ACCOUNT](#blue_api_account)
-   - Set to `True` to require blue API keys be account keys.
+ - [CORP_IDS](#corp_ids)
+   - List of corp IDs who are members. Exclude if their alliance is in `ALLIANCE_IDS`
+ - [ALLIANCE_IDS](#alliance_ids)
+   - List of alliance IDs who are members.
+ - [ESI_SSO_CLIENT_ID](#esi_sso_client_id)
+   - EVE application ID from the developers site. See the [SSO Configuration Instruction](#ESI_SSO_CLIENT_ID)
+ - [ESI_SSO_CLIENT_SECRET](#esi_sso_client_secret)
+   - EVE application secret from the developers site.
+ - [ESI_SSO_CALLBACK_URL](#esi_sso_callback_url)
+   - OAuth callback URL. Should be `https://mydomain.com/sso/callback`
 
 ## Services
 ### Member Services
@@ -130,6 +124,7 @@ If connecting to Discourse, set the following
  - [DISCOURSE_URL](#discourse_url)
  - [DISCOURSE_API_USERNAME](#discourse_api_username)
  - [DISCOURSE_API_KEY](#discourse_api_key)
+ - [DISCOURSE_SSO_SECRET](#discourse_sso_secret)
 
 ### IPSuite4
 If using IPSuite4 (aka IPBoard4) the following are required:
@@ -184,9 +179,6 @@ Absolute URL to serve static files from.
 Root folder to store static files in.
 ### SUPERUSER_STATE_BYPASS
 Overrides superuser account states to always return True on membership tests. If issues are encountered, or you want to test access to certain portions of the site, set to False to disable.
-## ALLIANCE / CORP TOGGLE
-### IS_CORP
-Used to determine the criteria used for member and blue validation, either requiring membership in the corp or alliance specified later, and being a standing of the corp or alliance specified later.
 ## EMAIL SETTINGS
 ### DOMAIN
 The URL to which emails will link.
@@ -195,11 +187,11 @@ The host address of the email server.
 ### EMAIL_PORT
 The host port of the email server.
 ### EMAIL_HOST_USER
-The username to authenticate as on the email server.
+The username to authenticate as on the email server. For GMail, this is the full address.
 ### EMAIL_HOST_PASSWORD
 The password of the user used to authenticate on the email server.
 ### EMAIL_USE_TLS
-Enable TLS connections to the email server.
+Enable TLS connections to the email server. Default is True.
 ## Front Page Links
 ### KILLBOARD_URL
 Link to a killboard.
@@ -207,13 +199,15 @@ Link to a killboard.
 Link to another media site, eg YouTube channel.
 ### FORUM_URL
 Link to forums. Also used as the phpbb3 URL if enabled.
+### SITE_NAME
+Name to show in the top-left corner of auth.
 ## SSO Settings
-If defined below, a `LOG IN WITH EVE ONLINE` button will be present on the login page. This allows registered users to log in as their characters instead of username/password.
-### EVE_SSO_CLIENT_ID
+An application will need to be created on the developers site. Please select `Authenticated API Access`, and choose all scopes starting with `esi`.
+### ESI_SSO_CLIENT_ID
 The application cliend ID generated from the [developers site.](https://developers.eveonline.com)
-### EVE_SSO_CLIENT_SECRET
+### ESI_SSO_CLIENT_SECRET
 The application secret key generated from the [developers site.](https://developers.eveonline.com)
-### EVE_SSO_CALLBACK_URL
+### ESI_SSO_CALLBACK_URL
 The callback URL for authentication handshake. Should be `https://mydomain.com/sso/callback`.
 ## Default Group Settings
 ### DEFAULT_AUTH_GROUP
@@ -276,20 +270,22 @@ Allow blues of the owning corp or alliance to generate accounts on a SMF install
 Allow blues of the owning corp or alliance to generate accounts on an alliance market install.
 ### ENABLE_BLUE_XENFORO
 Allow blues of the owning corp or alliance to generate accounts on a XenForo install.
-## Corp Configuration
-### CORP_ID
-EVE corp ID of the owning corp, if `IS_CORP` is set to `True`
-## CORP_NAME
-Name of the owning corp, if `IS_CORP` is set to `True`
-## CORP_API_ID
+## Tenant Configuration
+Characters of any corp or alliance with their ID here will be treated as a member.
+### CORP_IDS
+EVE corp IDs of member corps. Separate with a comma.
+### ALLIANCE_IDS
+EVE alliance IDs of member alliances. Separate with a comma.
+## Standings Configuration
+To allow blues to access auth, standings must be pulled from a corp-level API. This API needs access mask 16 (ContactList).
+### CORP_API_ID
 The ID of an API key for a corp from which to pull standings, if desired. Needed for blues to gain access.
-## CORP_API_VCODE
+### CORP_API_VCODE
 The verification code of an API key for a corp from which to pull standings, if desired. Needed for blues to gain access.
-## Alliance Configuration
-### ALLIANCE_ID
-EVE alliance ID of the owning alliance, if `IS_CORP` is set to `False`
-### ALLIANCE_NAME
-Name of the owning alliance, if `IS_CORP` is set to `False`
+### BLUE_STANDING
+The minimum standing value to consider blue. Default is 5.0
+### STANDING_LEVEL
+Standings from the API come at two levels: `corp` and `alliance`. Select which level to consider here.
 ## API Configuration
 ### MEMBER_API_MASK
 Required access mask for members' API keys to be considered valid.
@@ -303,10 +299,28 @@ If `True`, require API keys from blues to be account-wide, not character-restric
 Require each submitted API be newer than the latest submitted API. Protects against recycled or stolen API keys.
 ### REJECT_OLD_APIS_MARGIN
 Allows newly submitted APIs to have their ID this value lower than the highest API ID on record and still be accepted. Default is 50, 0 is safest.
+## EVE Provider Settings
+Data about EVE objects (characters, corps, alliances) can come from two sources: the XML API or the EVE Swagger Interface.
+These settings define the default source.
+
+For most situations, the EVE Swagger Interface is best. But if it goes down or experiences issues, these can be reverted to the XML API.
+
+Accepted values are `esi` and `xml`.
+### EVEONLINE_CHARACTER_PROVIDER
+The default data source to get character information. Default is `esi`
+### EVEONLINE_CORP_PROVIDER
+The default data source to get corporation information. Default is `esi`
+### EVEONLINE_ALLIANCE_PROVIDER
+The default data source to get alliance information. Default is `esi`
+## Alliance Market
+### MARKET_URL
+The web address to access the Evernus Alliance Market application.
+### MARKET_DB
+The Evernus Alliance Market database connection information.
 ## HR Configuration
 ### JACK_KNIFE_URL
 Link to an install of [eve-jackknife](https://code.google.com/archive/p/eve-jackknife/)
-## Forum Configuration
+## IPBoard3 Configuration
 ### IPBOARD_ENDPOINT
 URL to the `index.php` file of a IPBoard install's API server.
 ### IPBOARD_APIKEY
@@ -340,6 +354,8 @@ Name of the broadcast service running on an Openfire install. Usually `broadcast
 ## Mumble Configuration
 ### MUMBLE_URL
 Address to instruct members to connect their Mumble clients to.
+### MUMBLE_SERVER_ID
+Depreciated. We're too scared to delete it.
 ## Teamspeak3 Configuration
 ### TEAMSPEAK3_SERVER_IP
 IP of a Teamspeak3 server on which to manage users. Usually `127.0.0.1`
@@ -375,11 +391,13 @@ The web address of the Discourse server to direct users to.
 Username of the account which generated the API key on Discourse.
 ### DISCOURSE_API_KEY
 API key defined on Discourse.
+### DISCOURSE_SSO_SECRET
+The SSO secret key defined on Discourse.
 ## IPS4 Configuration
 ### IPS4_URL
 URL of the IPSuite4 install to direct users to.
 ### IPS4_API_KEY
-Depreciated.
+Depreciated. We're too scared to delete it.
 ### IPS4_DB
 The database connection to manage users on.
 ## SMF Configuration
@@ -398,3 +416,7 @@ API ID as [defined on Fleet-Up.](http://fleet-up.com/Api/MyKeys)
 The group ID from which to pull data. Can be [retrieved from Fleet-Up](http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships)
 ## Logging Configuration
 This section is used to manage how logging messages are processed.
+
+To turn off logging notifications, change the `handlers` `notifications` `class` to `logging.NullHandler`
+
+## Everything below logging is magic. Do Not Touch

@@ -104,7 +104,7 @@ def srp_fleet_add_view(request):
         form = SrpFleetMainForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(authinfo.main_char_id)
 
             srp_fleet_main = SrpFleetMain()
@@ -231,7 +231,7 @@ def srp_request_view(request, fleet_srp):
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
 
         if form.is_valid():
-            authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            authinfo = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(authinfo.main_char_id)
             srp_fleet_main = SrpFleetMain.objects.get(fleet_srp_code=fleet_srp)
             post_time = timezone.now()

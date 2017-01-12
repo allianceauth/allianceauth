@@ -6,4 +6,5 @@
     :caption: Contents
 
     hrapplications
+    corpstats
 ```

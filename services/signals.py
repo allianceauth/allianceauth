@@ -30,7 +30,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
 
     def trigger_service_group_update():
         logger.debug("Triggering service group update for %s" % instance)
-        auth, c = AuthServicesInfo.objects.get_or_create(user=instance)
+        auth = AuthServicesInfo.objects.get(user=instance)
         if auth.jabber_username:
             update_jabber_groups.delay(instance.pk)
         if auth.teamspeak3_uid:

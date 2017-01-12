@@ -85,7 +85,7 @@ def determine_membership_by_character(char):
 
 def determine_membership_by_user(user):
     logger.debug("Determining membership of user %s" % user)
-    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.main_char_id:
         if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
             char = EveCharacter.objects.get(character_id=auth.main_char_id)
@@ -105,7 +105,7 @@ def set_state(user):
     else:
         state = NONE_STATE
     logger.debug("Assigning user %s to state %s" % (user, state))
-    auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.state != state:
         auth.state = state
         auth.save()

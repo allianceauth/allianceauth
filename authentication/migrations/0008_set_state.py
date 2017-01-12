@@ -24,7 +24,7 @@ def determine_membership_by_character(char, apps):
 
 def determine_membership_by_user(user, apps):
     AuthServicesInfo = apps.get_model('authentication', 'AuthServicesInfo')
-    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.main_char_id:
         EveCharacter = apps.get_model('eveonline', 'EveCharacter')
         if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
@@ -41,7 +41,7 @@ def set_state(user, apps):
     else:
         state = NONE_STATE
     AuthServicesInfo = apps.get_model('authentication', 'AuthServicesInfo')
-    auth = AuthServicesInfo.objects.get_or_create(user=user)[0]
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.state != state:
        auth.state = state
        auth.save()

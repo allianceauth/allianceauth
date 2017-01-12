@@ -51,7 +51,7 @@ def add_api_key(request):
             logger.info("Successfully processed api add form for user %s" % request.user)
             if not settings.API_SSO_VALIDATION:
                 messages.success(request, 'Added API key %s to your account.' % form.cleaned_data['api_id'])
-                auth = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+                auth = AuthServicesInfo.objects.get(user=request.user)
                 if not auth.main_char_id:
                     return redirect('auth_characters')
                 return redirect("auth_dashboard")
@@ -88,7 +88,7 @@ def api_sso_validate(request, token, api_id):
         api.save()
         EveCharacter.objects.filter(character_id__in=characters).update(user=request.user, api_id=api_id)
         messages.success(request, 'Confirmed ownership of API %s' % api.api_id)
-        auth, c = AuthServicesInfo.objects.get_or_create(user=request.user)
+        auth = AuthServicesInfo.objects.get(user=request.user)
         if not auth.main_char_id:
             return redirect('auth_characters')
         return redirect('auth_dashboard')
@@ -100,7 +100,7 @@ def api_sso_validate(request, token, api_id):
 @login_required
 def dashboard_view(request):
     logger.debug("dashboard_view called by user %s" % request.user)
-    auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
     apikeypairs = EveManager.get_api_key_pairs(request.user.id)
     sso_validation = settings.API_SSO_VALIDATION or False
     api_chars = []
@@ -124,7 +124,7 @@ def dashboard_view(request):
 @login_required
 def api_key_removal(request, api_id):
     logger.debug("api_key_removal called by user %s for api id %s" % (request.user, api_id))
-    authinfo = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+    authinfo = AuthServicesInfo.objects.get(user=request.user)
     EveManager.delete_api_key_pair(api_id, request.user.id)
     EveManager.delete_characters_by_api_id(api_id, request.user.id)
     messages.success(request, 'Deleted API key %s' % api_id)
@@ -140,7 +140,7 @@ def api_key_removal(request, api_id):
 def characters_view(request):
     logger.debug("characters_view called by user %s" % request.user)
     render_items = {'characters': EveManager.get_characters_by_owner_id(request.user.id),
-                    'authinfo': AuthServicesInfo.objects.get_or_create(user=request.user)[0]}
+                    'authinfo': AuthServicesInfo.objects.get(user=request.user)}
     return render(request, 'registered/characters.html', context=render_items)
 
 

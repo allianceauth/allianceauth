@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_application_test(user):
-    auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+    auth = AuthServicesInfo.objects.get(user=user)
     if auth.main_char_id:
         return True
     else:
@@ -31,7 +31,7 @@ def hr_application_management_view(request):
     logger.debug("hr_application_management_view called by user %s" % request.user)
     corp_applications = []
     finished_corp_applications = []
-    auth_info, c = AuthServicesInfo.objects.get_or_create(user=request.user)
+    auth_info = AuthServicesInfo.objects.get(user=request.user)
     main_char = None
     if auth_info.main_char_id:
         try:

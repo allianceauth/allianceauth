@@ -37,7 +37,7 @@ def add_optimer_view(request):
             # Get Current Time
             post_time = timezone.now()
             # Get character
-            auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            auth_info = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             # handle valid form
             op = optimer()
@@ -88,7 +88,7 @@ def edit_optimer(request, optimer_id):
         form = opForm(request.POST)
         logger.debug("Received POST request containing update optimer form, is valid: %s" % form.is_valid())
         if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get_or_create(user=request.user)[0]
+            auth_info = AuthServicesInfo.objects.get(user=request.user)
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             op.doctrine = form.cleaned_data['doctrine']
             op.system = form.cleaned_data['system']

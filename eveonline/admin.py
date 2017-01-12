@@ -23,7 +23,7 @@ class EveCharacterAdmin(admin.ModelAdmin):
     @staticmethod
     def main_character(obj):
         if obj.user:
-            auth = AuthServicesInfo.objects.get_or_create(user=obj.user)[0]
+            auth = AuthServicesInfo.objects.get(user=obj.user)
             if auth and auth.main_char_id:
                 try:
                     return EveCharacter.objects.get(character_id=auth.main_char_id)

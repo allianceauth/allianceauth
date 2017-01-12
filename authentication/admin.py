@@ -26,6 +26,14 @@ class AuthServicesInfoManager(admin.ModelAdmin):
                 pass
         return None
 
+    @staticmethod
+    def has_delete_permission(request, obj=None):
+        return False
+
+    @staticmethod
+    def has_add_permission(request, obj=None):
+        return False
+
     def sync_jabber(self, request, queryset):
         count = 0
         for a in queryset:  # queryset filtering doesn't work here?

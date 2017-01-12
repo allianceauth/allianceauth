@@ -325,7 +325,7 @@ class EveApiManager:
             raise e
         except (requests.exceptions.RequestExeception, HTTPError, URLError) as e:
             raise EveApiManager.ApiServerUnreachableError(e)
-        auth, c = AuthServicesInfo.objects.get_or_create(user=user)
+        auth = AuthServicesInfo.objects.get(user=user)
         states = [auth.state]
         from authentication.tasks import determine_membership_by_character  # circular import issue
         chars = info['characters']

@@ -7,6 +7,9 @@ from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
 
 @python_2_unicode_compatible
 class AuthServicesInfo(models.Model):
+    class Meta:
+        default_permissions = ('change',)
+
     STATE_CHOICES = (
         (NONE_STATE, 'None'),
         (BLUE_STATE, 'Blue'),
@@ -27,7 +30,7 @@ class AuthServicesInfo(models.Model):
     smf_username = models.CharField(max_length=254, blank=True, default="")
     market_username = models.CharField(max_length=254, blank=True, default="")
     main_char_id = models.CharField(max_length=64, blank=True, default="")
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User)
     state = models.CharField(blank=True, null=True, choices=STATE_CHOICES, default=NONE_STATE, max_length=10)
 
     def __str__(self):
