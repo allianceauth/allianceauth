@@ -54,6 +54,10 @@ Now we clone the source code:
 
 Enter the folder by issuing `cd allianceauth`
 
+Ensure you're on the latest version with the following:
+
+    git tag | sort -n | tail -1 | xargs git checkout
+
 Python package dependencies can be installed from the requirements file:
 
     sudo pip install -r requirements.txt
