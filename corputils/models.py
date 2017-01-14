@@ -14,6 +14,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @python_2_unicode_compatible
 class CorpStats(models.Model):
     token = models.ForeignKey(Token, on_delete=models.CASCADE)
@@ -41,35 +42,42 @@ class CorpStats(models.Model):
     def update(self):
         try:
             c = self.token.get_esi_client()
-            assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()['corporation_id'] == int(self.corp.corporation_id)
-            members = c.Corporation.get_corporations_corporation_id_members(corporation_id=self.corp.corporation_id).result()
+            assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()[
+                       'corporation_id'] == int(self.corp.corporation_id)
+            members = c.Corporation.get_corporations_corporation_id_members(
+                corporation_id=self.corp.corporation_id).result()
             member_ids = [m['character_id'] for m in members]
 
             # requesting too many ids per call results in a HTTP400
             # the swagger spec doesn't have a maxItems count
             # manual testing says we can do over 350, but let's not risk it
-            member_id_chunks = [member_ids[i:i+255] for i in range(0, len(member_ids), 255)]
-            member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in member_id_chunks]
+            member_id_chunks = [member_ids[i:i + 255] for i in range(0, len(member_ids), 255)]
+            member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in
+                                  member_id_chunks]
             member_list = {}
             for name_chunk in member_name_chunks:
-                member_list.update({m['character_id']:m['character_name'] for m in name_chunk})
+                member_list.update({m['character_id']: m['character_name'] for m in name_chunk})
 
             self.members = member_list
             self.save()
         except TokenError as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
-                notify(self.token.user, "%s failed to update with your ESI token." % self, message="Your token has expired or is no longer valid. Please add a new one to create a new CorpStats.", level="error")
+                notify(self.token.user, "%s failed to update with your ESI token." % self,
+                       message="Your token has expired or is no longer valid. Please add a new one to create a new CorpStats.",
+                       level="error")
             self.delete()
         except HTTPForbidden as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
-                notify(self.token.user, "%s failed to update with your ESI token." % self, message="%s: %s" % (e.status_code, e.message), level="error")
+                notify(self.token.user, "%s failed to update with your ESI token." % self,
+                       message="%s: %s" % (e.status_code, e.message), level="error")
             self.delete()
         except AssertionError:
             logger.warning("%s token character no longer in corp." % self)
             if self.token.user:
-                notify(self.token.user, "%s cannot update with your ESI token." % self, message="%s cannot update with your ESI token as you have left corp." % self, level="error")
+                notify(self.token.user, "%s cannot update with your ESI token." % self,
+                       message="%s cannot update with your ESI token as you have left corp." % self, level="error")
             self.delete()
 
     @property
@@ -95,7 +103,8 @@ class CorpStats(models.Model):
                 char = EveCharacter.objects.get(character_id=auth.main_char_id)
                 if char.corporation_id == self.corp.corporation_id and user.has_perm('corputils.corp_apis'):
                     return True
-                if self.corp.alliance and char.alliance_id == self.corp.alliance.alliance_id and user.has_perm('corputils.alliance_apis'):
+                if self.corp.alliance and char.alliance_id == self.corp.alliance.alliance_id and user.has_perm(
+                        'corputils.alliance_apis'):
                     return True
                 if user.has_perm('corputils.blue_apis') and self.corp.is_blue:
                     return True
@@ -108,7 +117,6 @@ class CorpStats(models.Model):
 
     def member_count(self):
         return len(self.members)
-
 
     @python_2_unicode_compatible
     class MemberObject(object):
@@ -144,11 +152,11 @@ class CorpStats(models.Model):
 
     def get_member_objects(self, user):
         show_apis = self.show_apis(user)
-        return sorted([CorpStats.MemberObject(id, name, show_apis=show_apis) for id, name in self.members.items()], key=attrgetter('character_name'))
+        return sorted([CorpStats.MemberObject(id, name, show_apis=show_apis) for id, name in self.members.items()],
+                      key=attrgetter('character_name'))
 
     def can_update(self, user):
         return user.is_superuser or user == self.token.user
-
 
     @python_2_unicode_compatible
     class ViewModel(object):
