@@ -54,7 +54,7 @@ Required for base auth site
 
 #### Utilities
 
-    screen gcc unzip git redis curl nano
+    screen gcc gcc-c++ unzip git redis curl nano
 
 ### Apache
 Required for displaying web content
