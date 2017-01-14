@@ -14,7 +14,7 @@ One additional package is required - [openjdk8](http://askubuntu.com/questions/4
 ### Download Installer
 Openfire is not available through repositories so we need to get a debian from the developer.
 
-On your PC, naviage to the [Ignite Realtime downloads section](https://www.igniterealtime.org/downloads/index.jsp), and under Openfire select Linux, click on the debian file (2nd in list, ends with .deb).
+On your PC, naviage to the [Ignite Realtime downloads section](https://www.igniterealtime.org/downloads/index.jsp), and under Openfire select Linux, click on the debian file (2nd from bottom of list, ends with .deb).
 
 Retrieve the file location by copying the url from the “click here” link.
 
@@ -22,11 +22,11 @@ In the console, ensure you’re in your user’s home directory: `cd ~`
 
 Now download the package. Replace the link below with the link you got earlier.
 
-    wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_3.10.2_all.deb
+    wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_4.1.1_all.deb
 
 Now install from the debian. Replace the filename with your file name (the last part of the download url is the file name)
 
-    sudo dpkg -i openfire_3.10.2_all.deb
+    sudo dpkg -i openfire_4.1.1_all.deb
 
 ### Web Configuration
 The remainder of the setup occurs through Openfire’s web interface. Navigate to http://yourdomain.com:9090, or if you’re behind CloudFlare, go straight to your server’s IP:9090.
@@ -58,7 +58,7 @@ Once loaded, press the green plus on the right for `REST API`.
 
 Navigate the `Server` tab, `Sever Settings` subtab. At the bottom of the left navigation bar select `REST API`.
 
-Select `Enabled`, and `Secret Key Auth`. Enter the secret key from OPENFIRE_SECRET_KEY here.
+Select `Enabled`, and `Secret Key Auth`. Update Alliance Auth settings with this secret key as `OPENFIRE_SECRET_KEY`.
 
 ### Broadcast Plugin Setup
 

@@ -3,6 +3,8 @@
 
 AllianceAuth gets served using a Web Server Gateway Interface (WSGI) script. This script passes web requests to AllianceAuth which generates the content to be displayed and returns it. This means very little has to be configured in Apache to host AllianceAuth.
 
+In the interest of ~~laziness~~ time-efficiency, scroll down for example configs. Use these, changing the ServerName to your domain name.
+
 ### Required Parameters for AllianceAuth Core
 
 The AllianceAuth core requires the following parameters to be set:
@@ -58,11 +60,13 @@ You can supply your own SSL certificates if you so desire. The alternative is ru
    - [000-default](http://pastebin.com/HfyKpQNu)
    - [default-ssl](http://pastebin.com/2WCS5jnb)
 
-### No SSL or Cloudflare
+### No SSL Cloudflare, or LetsEncrypt
  - Apache 2.4 or newer:
    - [000-default.conf](http://pastebin.com/j1Ps3ZK6)
  - Apache 2.3 or older:
    - [000-default](http://pastebin.com/BHQzf2pj)
+
+To have LetsEncrypt automatically install SSL certs, comment out the three lines starting with `WSGI`, install certificates, then uncomment them in `000-default-ls-ssl.conf`
 
 ## Enabling and Disabling Sites
 

@@ -50,7 +50,6 @@ Ensure you're on the latest version with the following:
 
 Python package dependencies can be installed from the requirements file:
 
-    sudo pip install requests>=2.9.1
     sudo pip install -r requirements.txt
 
 The settings file needs configuring. See [this lengthy guide](settings.md) for specifics.

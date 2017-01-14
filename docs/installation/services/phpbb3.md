@@ -14,11 +14,11 @@ In the console, navigate to your user’s home directory: `cd ~`
 
 Now download using wget, replacing the url with the url for the package you just retrieved
 
-    wget https://www.phpbb.com/files/release/phpBB-3.1.6.zip
+    wget https://www.phpbb.com/files/release/phpBB-3.2.0.zip
 
 This needs to be unpackaged. Unzip it, replacing the file name with that of the file you just downloaded
 
-    unzip phpBB-3.1.6.zip
+    unzip phpBB-3.2.0.zip
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
 
@@ -47,7 +47,7 @@ You should see `Succesful Connection` and proceed.
 
 Enter administrator credentials on the next page.
 
-Everything from hereon out should be intuitive.
+Everything from here should be intuitive.
 
 phpBB will then write its own config file.
 
@@ -59,11 +59,11 @@ Before users can see the forums, we need to remove the install directory
 ### Enabling Avatars
 AllianceAuth sets user avatars to their character portrait when the account is created or password reset. We need to allow external URLs for avatars for them to behave properly. Navigate to the admin control panel for phpbb3, and under the `General` tab, along the left navigation bar beneath `Board Configuration`, select `Avatar Settings`. Set `Enable Remote Avatars` to `Yes` and then `Submit`.
 
-[Screenshot of this page](http://imgur.com/UOgaq6J)
+![location of the remote avatar setting](http://i.imgur.com/eWrotRX.png)
 
 You can allow members to overwrite the portrait with a custom image if desired. Navigate to `Users and Groups`, `Group Permissions`, select the appropriate group (usually `Member` if you want everyone to have this ability), expand `Advanced Permissions`, under the `Profile` tab, set `Can Change Avatars` to `Yes`, and press `Apply Permissions`.
 
-[Screenshot of this page](http://i.imgur.com/VGHwdxM.png)
+![location of change avatar setting](http://i.imgur.com/Nc6Rzo9.png)
 
 ## Setup Complete
 You’ve finished the steps required to make AllianceAuth work with phpBB. Play around with it and make it your own.

@@ -5,9 +5,10 @@ It's recommended to update all packages before proceeding.
     `sudo yum upgrade`
     `sudo reboot`
 
-Now install all [dependencies](dependencies.md). For this guide you'll need the optional [JDK](dependencies.md) and [Apache](dependencies.md) sections as well.
+Now install all [dependencies](dependencies.md).
 
     sudo yum install xxxxxxx
+
 replacing the x's with the list of packages.
 
 Make sure redis is running before continuing:
@@ -28,9 +29,9 @@ Find the line which says `root    ALL=(ALL)       ALL` - beneath it add another 
 
 **From this point on you need to be logged in as the allianceserver user**
 
-start your mariadb server `sudo systemctl start mariadb`
+Start your mariadb server `sudo systemctl start mariadb`
 
-secure your MYSQL / Maria-db server by typing `mysql_secure_installation `
+Secure your MYSQL / Maria-db server by typing `mysql_secure_installation `
 
 AllianceAuth needs a MySQL user account. Create one as follows, replacing `PASSWORD` with an actual secure password:
 

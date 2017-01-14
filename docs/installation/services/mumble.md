@@ -21,7 +21,7 @@ REQUIRED: To enable the ICE authenticator, edit the following:
 
  - `icesecretwrite=MY_CLEVER_PASSWORD`, obviously choosing a secure password
 
-To customize the database, edit the following:
+By default mumble operates on sqlite which is fine, but slower than a dedicated MySQL server. To customize the database, edit the following:
 
  - uncomment the database line, and change it to `database=alliance_mumble`
  - `dbDriver=QMYSQL`
@@ -30,7 +30,7 @@ To customize the database, edit the following:
  - `dbPort=3306`
  - `dbPrefix=murmur_`
 
-To name your root channel, uncomment and edit `registerName=` whatever cool name you want
+To name your root channel, uncomment and set `registerName=` to whatever cool name you want
 
 Save and close the file (control + O, control + X).
 
@@ -64,7 +64,7 @@ Edit `authenticator.ini` and change these values:
 
 Test your configuration by starting it: `python authenticator.py`
 
-#Running the Authenticator
+## Running the Authenticator
 
 The authenticator needs to be running 24/7 to validate users on Mumble. The best way is to run it in a screen much like celery:
 

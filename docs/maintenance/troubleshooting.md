@@ -3,7 +3,6 @@
 ## Something broken? Stuck on an issue? Can't get it set up?
 
 Start here:
- - read the [documentation](https://github.com/R4stl1n/allianceauth/wiki)
  - check the [issues](https://github.com/R4stl1n/allianceauth/issues?utf8=%E2%9C%93&q=is%3Aissue) - especially closed ones
  - check the [forums](https://forums.eveonline.com/default.aspx?g=posts&t=383030)
 
@@ -16,9 +15,7 @@ No answer?
 
 ### `pip install -r requirements.txt` is failing
 
-Most commonly, your repositories did not include the `requests` package. Install it and try again: `sudo pip install requests`
-
-Otherwise it's usually a missing dependency. Check [the list](../installation/auth/dependencies.md), reinstall, and try again.
+Either you need to `sudo` that command, or it's a missing dependency. Check [the list](../installation/auth/dependencies.md), reinstall, and try again.
 
 ### I'm getting an error 500 trying to connect to the website on a new install
 
@@ -26,7 +23,11 @@ Read the apache error log: `sudo nano /var/log/apache2/error.log`
 
 If it talks about failing to import something, google its name and install it.
 
-If it whines about being unable to configure logger, make sure the log directory is write-able: `chmod -R 777 /home/allianceserver/allianceauth/log`, then reload apache.
+If it whines about being unable to configure logger, see below. 
+
+### Failed to configure log handler
+
+Make sure the log directory is write-able: `chmod -R 777 /home/allianceserver/allianceauth/log`, then reload apache/celery/supervisor/etc.
 
 ### Groups aren't syncing to services
 
@@ -34,9 +35,7 @@ Make sure the background processes are running: `ps aux | grep celery` should re
 
 If that doesn't do it, try clearing the worker queue. First kill all celery processes as described above, then do the following:
 
-    sudo rabbitmqctl stop_app
-    sudo rabbitmqctl reset
-    sudo rabbitmqctl start_app
+    redis-cli FLUSHALL
     python manage.py celeryd --purge
 
 Press control+C once.

@@ -8,6 +8,7 @@
     centos
     settings
     apache
+    cloudflare
     supervisor
     quickstart
 ```

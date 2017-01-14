@@ -1,16 +1,12 @@
 # IPBoard3
 
-Yes, you read that right. AllianceAuth only supports IPBoard 3, not the new shiny 4. Why? Because InvisionPower removed the API we used to manage it.
-
-Moving right along.
-
 You’re on your own for the initial install of IPBoard. It’s pretty much just download, unzip, and move to `/var/www/ipboard/`. Make sure to
 
     sudo chown -R www-data:www-data /var/www/ipboard
 
 a few times because it’s pretty finicky.
 
-You’ll need to add another alias in your [apache config](https://github.com/R4stl1n/allianceauth/wiki/Apache-Setup#additional-parameters-for-full-setup), this one for `/ipboard/` pointing to `/var/www/ipboard` and add another `<directory>` block for `/var/www/ipboard` with `Require all granted` or `Allow from all` depending on your apache version.
+You’ll need to add another alias in your apache config, this one for `/ipboard` pointing to `/var/www/ipboard` and add another `<directory>` block for `/var/www/ipboard` with `Require all granted` or `Allow from all` depending on your apache version.
 
 IPBoard needs a database table. Log in to mysql and run:
 
@@ -35,10 +31,10 @@ Copy the API key. Now edit your settings.py as follows:
  - IPBOARD_APIKEY is the key you just copied
  - IPBOARD_ENDPOINT is `http://yourdomain.com/ipboard/interface/board/index.php`
 
-Now enable IPBoard for Auth and/or Blue by editing the [booleans](#alliance-service-setup).
+Now enable IPBoard for Auth and/or Blue by editing the auth settings.
 
 Save and exit. Restart apache or gunicorn.
 
-Test it by creating a user through AllianceAuth. Just note right now there’s no real error handling, so if account creation fails it’ll still return a username/password combo.
+Test it by creating a user through Alliance Auth. Just note right now there’s no real error handling, so if account creation fails it’ll still return a username/password combo.
 
 Good luck!

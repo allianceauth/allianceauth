@@ -6,6 +6,5 @@
 
     changelog
     troubleshooting
-    cloudflare
 
 ```
