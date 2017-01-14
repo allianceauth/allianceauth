@@ -10,8 +10,10 @@ from django.conf import settings
 from eveonline.models import EveCharacter, EveCorporationInfo
 from corputils.models import CorpStats
 from esi.decorators import token_required
+from bravado.exception import HTTPError
 
 MEMBERS_PER_PAGE = int(getattr(settings, 'CORPSTATS_MEMBERS_PER_PAGE', 20))
+
 
 def get_page(model_list, page_num):
     p = Paginator(model_list, MEMBERS_PER_PAGE)
@@ -23,8 +25,11 @@ def get_page(model_list, page_num):
         members = p.page(p.num_pages)
     return members
 
+
 def access_corpstats_test(user):
-    return user.has_perm('corputils.view_corp_corpstats') or user.has_perm('corputils.view_alliance_corpstats') or user.has_perm('corputils.view_blue_corpstats')
+    return user.has_perm('corputils.view_corp_corpstats') or user.has_perm(
+        'corputils.view_alliance_corpstats') or user.has_perm('corputils.view_blue_corpstats')
+
 
 @login_required
 @user_passes_test(access_corpstats_test)
@@ -35,11 +40,13 @@ def corpstats_add(request, token):
         if EveCharacter.objects.filter(character_id=token.character_id).exists():
             corp_id = EveCharacter.objects.get(character_id=token.character_id).corporation_id
         else:
-            corp_id = token.get_esi_client().Character.get_characters_character_id(character_id=token.character_id).result()['corporation_id']
+            corp_id = \
+                token.get_esi_client().Character.get_characters_character_id(character_id=token.character_id).result()[
+                    'corporation_id']
         corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         cs = CorpStats.objects.create(token=token, corp=corp)
         cs.update()
-        assert cs.pk # ensure update was succesful
+        assert cs.pk  # ensure update was succesful
         if CorpStats.objects.filter(pk=cs.pk).visible_to(request.user).exists():
             return redirect('corputils:view_corp', corp_id=corp.corporation_id)
     except EveCorporationInfo.DoesNotExist:
@@ -50,11 +57,11 @@ def corpstats_add(request, token):
         messages.error(request, 'Failed to gather corporation statistics with selected token.')
     return redirect('corputils:view')
 
+
 @login_required
 @user_passes_test(access_corpstats_test)
 def corpstats_view(request, corp_id=None):
     corpstats = None
-    show_apis = False
 
     # get requested model
     if corp_id:
@@ -65,7 +72,7 @@ def corpstats_view(request, corp_id=None):
     available = CorpStats.objects.visible_to(request.user)
 
     # ensure we can see the requested model
-    if corpstats and not corpstats in available:
+    if corpstats and corpstats not in available:
         raise PermissionDenied('You do not have permission to view the selected corporation statistics module.')
 
     # get default model if none requested
@@ -84,11 +91,12 @@ def corpstats_view(request, corp_id=None):
 
     if corpstats:
         context.update({
-        'corpstats': corpstats.get_view_model(request.user),
-        'members': members,
+            'corpstats': corpstats.get_view_model(request.user),
+            'members': members,
         })
 
     return render(request, 'corputils/corpstats.html', context=context)
+
 
 @login_required
 @user_passes_test(access_corpstats_test)
@@ -96,10 +104,18 @@ def corpstats_update(request, corp_id):
     corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
     corpstats = get_object_or_404(CorpStats, corp=corp)
     if corpstats.can_update(request.user):
-        corpstats.update()
+        try:
+            corpstats.update()
+        except HTTPError as e:
+            messages.error(request, str(e))
     else:
-        raise PermissionDenied('You do not have permission to update member data for the selected corporation statistics module.')
-    return redirect('corputils:view_corp', corp_id=corp.corporation_id)
+        raise PermissionDenied(
+            'You do not have permission to update member data for the selected corporation statistics module.')
+    if corpstats.pk:
+        return redirect('corputils:view_corp', corp_id=corp.corporation_id)
+    else:
+        return redirect('corputils:view')
+
 
 @login_required
 @user_passes_test(access_corpstats_test)
@@ -109,9 +125,11 @@ def corpstats_search(request):
     if search_string:
         has_similar = CorpStats.objects.filter(_members__icontains=search_string).visible_to(request.user)
         for corpstats in has_similar:
-            similar = [(member_id, corpstats.members[member_id]) for member_id in corpstats.members if search_string.lower() in corpstats.members[member_id].lower()]
+            similar = [(member_id, corpstats.members[member_id]) for member_id in corpstats.members if
+                       search_string.lower() in corpstats.members[member_id].lower()]
             for s in similar:
-                results.append((corpstats, CorpStats.MemberObject(s[0], s[1], show_apis=corpstats.show_apis(request.user))))
+                results.append(
+                    (corpstats, CorpStats.MemberObject(s[0], s[1], show_apis=corpstats.show_apis(request.user))))
         page = request.GET.get('page', 1)
         results = sorted(results, key=lambda x: x[1].character_name)
         results_page = get_page(results, page)

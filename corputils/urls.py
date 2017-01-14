@@ -1,7 +1,7 @@
 from django.conf.urls import url
 import corputils.views
 
-app_name='corputils'
+app_name = 'corputils'
 urlpatterns = [
     url(r'^$', corputils.views.corpstats_view, name='view'),
     url(r'^add/$', corputils.views.corpstats_add, name='add'),

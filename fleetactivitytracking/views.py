@@ -13,6 +13,7 @@ from eveonline.models import EveCorporationInfo
 from eveonline.managers import EveManager
 from fleetactivitytracking.forms import FatlinkForm
 from fleetactivitytracking.models import Fatlink, Fat
+from bravado.exception import HTTPError
 
 from esi.decorators import token_required
 
@@ -28,14 +29,15 @@ logger = logging.getLogger(__name__)
 
 FATS_PER_PAGE = int(getattr(settings, 'FATS_PER_PAGE', 20))
 
+
 def get_page(model_list, page_num):
     p = Paginator(model_list, FATS_PER_PAGE)
     try:
         fats = p.page(page_num)
     except PageNotAnInteger:
-        fatss = p.page(1)
+        fats = p.page(1)
     except EmptyPage:
-        fatss = p.page(p.num_pages)
+        fats = p.page(p.num_pages)
     return fats
 
 
@@ -45,7 +47,8 @@ class CorpStat(object):
             self.corp = corp
         else:
             self.corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
-        self.n_fats = Fat.objects.filter(character__corporation_id=self.corp.corporation_id).filter(fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
+        self.n_fats = Fat.objects.filter(character__corporation_id=self.corp.corporation_id).filter(
+            fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
         self.blue = self.corp.is_blue
 
     def avg_fat(self):
@@ -95,7 +98,6 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
     start_of_previous_month = first_day_of_previous_month(year, month)
 
     fat_stats = {}
-    
 
     # get FAT stats for member corps
     for corp_id in settings.STR_CORP_IDS:
@@ -110,8 +112,9 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
         fatlink__fatdatetime__lt=start_of_next_month).exclude(character__corporation_id__in=fat_stats)
 
     for fat in fats_in_span:
-        if not fat.character.corporation_id in fat_stats:
-            fat_stats[fat.character.corporation_id] = CorpStat(fat.character.corporation_id, start_of_month, start_of_next_month)
+        if fat.character.corporation_id not in fat_stats:
+            fat_stats[fat.character.corporation_id] = CorpStat(fat.character.corporation_id, start_of_month,
+                                                               start_of_next_month)
 
     # collect and sort stats
     stat_list = [fat_stats[x] for x in fat_stats]
@@ -129,7 +132,7 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
 
 
 @login_required
-def fatlink_personal_statistics_view(request, year=datetime.date.today().year, main_name=None):
+def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
     year = int(year)
     logger.debug("Personal statistics view for year %i called by %s" % (year, request.user))
 
@@ -191,7 +194,8 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
 
 
 @login_required
-@token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-universe.read_structures.v1'])
+@token_required(
+    scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-universe.read_structures.v1'])
 def click_fatlink_view(request, token, hash, fatname):
     try:
         fatlink = Fatlink.objects.filter(hash=hash)[0]
@@ -205,14 +209,21 @@ def click_fatlink_view(request, token, hash, fatname):
                 c = token.get_esi_client()
                 location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
                 ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
-                location['solar_system_name'] = c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['solar_system_name']
+                location['solar_system_name'] = \
+                    c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
+                        'solar_system_name']
                 if location['structure_id']:
-                    location['station_name'] = c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()['name']
+                    location['station_name'] = \
+                        c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
+                            'name']
                 elif location['station_id']:
-                    location['station_name'] = c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['station_name']
+                    location['station_name'] = \
+                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()[
+                            'station_name']
                 else:
                     location['station_name'] = "No Station"
-                ship['ship_type_name'] = c.Universe.get_universe_types_type_id(type_id=ship['ship_type_id']).result()['type_name']
+                ship['ship_type_name'] = c.Universe.get_universe_types_type_id(type_id=ship['ship_type_id']).result()[
+                    'type_name']
 
                 fat = Fat()
                 fat.system = location['solar_system_name']
@@ -238,6 +249,8 @@ def click_fatlink_view(request, token, hash, fatname):
             messages.error(request, 'FAT link has expired.')
     except (ObjectDoesNotExist, KeyError):
         messages.error(request, 'Invalid FAT link.')
+    except HTTPError as e:
+        messages.error(request, str(e))
     return redirect('auth_fatlink_view')
 
 
