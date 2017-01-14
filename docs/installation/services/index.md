@@ -14,5 +14,6 @@
     teamspeak3
     xenforo
     jacknife
+    pathfinder
 
 ```
