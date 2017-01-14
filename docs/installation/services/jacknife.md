@@ -14,7 +14,7 @@ Download the code: `sudo git clone https://github.com/whinis/eve-jacknife`
 
 ### Create Database
 
-    mysql -u root -p -e 'create database jackknife; grant all privileges on jackknife.* to 'allianceserver'@'localhost';
+    mysql -u root -p -e "create database jackknife; grant all privileges on jackknife.* to 'allianceserver'@'localhost';"
 
 ### Configure Settings
 
