@@ -67,6 +67,7 @@ def register_user_view(request):
 
                 user.save()
                 logger.info("Created new user %s" % user)
+                login(request, user)
                 messages.warning(request, 'Add an API key to set up your account.')
                 return redirect("auth_dashboard")
 
