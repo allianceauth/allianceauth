@@ -185,6 +185,16 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 #####################################################
 ##
 ## Auth configuration starts here
@@ -259,7 +269,6 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
 # ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
 # ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
-# ENABLE_AUTH_PATHFINDER = Enable Alliance Pathfinder suppor in auth for auth'd members
 # ENABLE_AUTH_XENFORO = Enable XenForo forums support in the auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
@@ -286,7 +295,6 @@ ENABLE_AUTH_XENFORO = 'True' == os.environ.get('AA_ENABLE_AUTH_XENFORO', 'False'
 # ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
 # ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
 # ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
-# ENABLE_BLUE_PATHFINDER = Enable Pathfinder support in the auth for blues
 # ENABLE_BLUE_XENFORO = Enable XenForo forum support in the auth for blue 
 #####################
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -352,7 +360,7 @@ API_SSO_VALIDATION = 'True' == os.environ.get('AA_API_SSO_VALIDATION', 'False')
 # EVEONLINE_CORP_PROVIDER - Name of default data source for getting eve corporation data
 # EVEONLINE_ALLIANCE_PROVIDER - Name of default data source for getting eve alliance data
 #
-# Available soruces are 'esi' and 'xml'
+# Available sources are 'esi' and 'xml'
 #######################
 EVEONLINE_CHARACTER_PROVIDER = os.environ.get('AA_EVEONLINE_CHARACTER_PROVIDER', 'esi')
 EVEONLINE_CORP_PROVIDER = os.environ.get('AA_EVEONLINE_CORP_PROVIDER', 'esi')
