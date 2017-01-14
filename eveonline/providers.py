@@ -1,8 +1,17 @@
 from django.utils.encoding import python_2_unicode_compatible
 from esi.clients import esi_client_factory
 from django.conf import settings
+from django.core.cache import cache
+import json
 from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
 import evelink
+import logging
+
+logger = logging.getLogger(__name__)
+
+# optional setting to control cached object lifespan
+OBJ_CACHE_DURATION = int(getattr(settings, 'EVEONLINE_OBJ_CACHE_DURATION', 300))
+
 
 @python_2_unicode_compatible
 class ObjectNotFound(Exception):
@@ -32,6 +41,16 @@ class Entity(object):
     def __eq__(self, other):
         return self.id == other.id
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+        }
+
+    @classmethod
+    def from_dict(cls, dict):
+        return cls(dict['id'], dict['name'])
+
 
 class Corporation(Entity):
     def __init__(self, provider, id, name, ticker, ceo_id, members, alliance_id):
@@ -58,6 +77,28 @@ class Corporation(Entity):
             self._ceo = self.provider.get_character(self.ceo_id)
         return self._ceo
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'ticker': self.ticker,
+            'ceo_id': self.ceo_id,
+            'members': self.members,
+            'alliance_id': self.alliance_id
+        }
+
+    @classmethod
+    def from_dict(cls, dict):
+        return cls(
+            None,
+            dict['id'],
+            dict['name'],
+            dict['ticker'],
+            dict['ceo_id'],
+            dict['members'],
+            dict['alliance_id'],
+        )
+
 
 class Alliance(Entity):
     def __init__(self, provider, id, name, ticker, corp_ids, executor_corp_id):
@@ -70,7 +111,7 @@ class Alliance(Entity):
 
     def corp(self, id):
         assert id in self.corp_ids
-        if not id in self._corps:
+        if id not in self._corps:
             self._corps[id] = self.provider.get_corp(id)
             self._corps[id]._alliance = self
         return self._corps[id]
@@ -82,6 +123,26 @@ class Alliance(Entity):
     @property
     def executor_corp(self):
         return self.corp(self.executor_corp_id)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'ticker': self.ticker,
+            'corp_ids': self.corp_ids,
+            'executor_corp_id': self.executor_corp_id,
+        }
+
+    @classmethod
+    def from_dict(cls, dict):
+        return cls(
+            None,
+            dict['id'],
+            dict['name'],
+            dict['ticker'],
+            dict['corp_ids'],
+            dict['executor_corp_id'],
+        )
 
 
 class Character(Entity):
@@ -96,7 +157,7 @@ class Character(Entity):
     @property
     def corp(self):
         if not self._corp:
-            self._corp =  self.provider.get_corp(self.corp_id)
+            self._corp = self.provider.get_corp(self.corp_id)
         return self._corp
 
     @property
@@ -105,8 +166,26 @@ class Character(Entity):
             return self.corp.alliance
         return Entity(None, None)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'corp_id': self.corp_id,
+            'alliance_id': self.alliance_id,
+        }
 
-class EveProvider:
+    @classmethod
+    def from_dict(cls, dict):
+        return cls(
+            None,
+            dict['id'],
+            dict['name'],
+            dict['corp_id'],
+            dict['alliance_id'],
+        )
+
+
+class EveProvider(object):
     def get_alliance(self, alliance_id):
         """
         :return: an Alliance object for the given ID
@@ -255,6 +334,7 @@ class EveAdapter(EveProvider):
     """
     Redirects queries to appropriate data source.
     """
+
     def __init__(self, char_provider, corp_provider, alliance_provider):
         self.char_provider = char_provider
         self.corp_provider = corp_provider
@@ -264,19 +344,65 @@ class EveAdapter(EveProvider):
         self.alliance_provider.adapter = self
 
     def __repr__(self):
-        return "<{} (char:{}, corp:{}, alliance:{})>".format(self.__class__.__name__, str(self.char_provider), str(self.corp_provider), str(self.alliance_provider))
+        return "<{} (char:{}, corp:{}, alliance:{})>".format(self.__class__.__name__, str(self.char_provider),
+                                                             str(self.corp_provider), str(self.alliance_provider))
+
+    @staticmethod
+    def _get_from_cache(obj_class, id):
+        data = cache.get('%s__%s' % (obj_class.__name__.lower(), id))
+        if data:
+            obj = obj_class.from_dict(json.loads(data))
+            logger.debug('Got from cache: %s' % obj.__repr__())
+            return obj
+        else:
+            return None
+
+    @staticmethod
+    def _cache(obj):
+        logger.debug('Caching: %s ' % obj.__repr__())
+        cache.set('%s__%s' % (obj.__class__.__name__.lower(), obj.id), json.dumps(obj.serialize()),
+                  int(OBJ_CACHE_DURATION))
 
     def get_character(self, id):
-        return self.char_provider.get_character(id)
+        obj = self._get_from_cache(Character, id)
+        if obj:
+            obj.provider = self
+        else:
+            obj = self._get_character(id)
+            self._cache(obj)
+        return obj
 
     def get_corp(self, id):
-        return self.corp_provider.get_corp(id)
+        obj = self._get_from_cache(Corporation, id)
+        if obj:
+            obj.provider = self
+        else:
+            obj = self._get_corp(id)
+            self._cache(obj)
+        return obj
 
     def get_alliance(self, id):
+        obj = self._get_from_cache(Alliance, id)
+        if obj:
+            obj.provider = self
+        else:
+            obj = self._get_alliance(id)
+            self._cache(obj)
+        return obj
+
+    def _get_character(self, id):
+        return self.char_provider.get_character(id)
+
+    def _get_corp(self, id):
+        return self.corp_provider.get_corp(id)
+
+    def _get_alliance(self, id):
         return self.alliance_provider.get_alliance(id)
 
 
-def eve_adapter_factory(character_source=settings.EVEONLINE_CHARACTER_PROVIDER, corp_source=settings.EVEONLINE_CORP_PROVIDER, alliance_source=settings.EVEONLINE_ALLIANCE_PROVIDER, api_key=None, token=None):
+def eve_adapter_factory(character_source=settings.EVEONLINE_CHARACTER_PROVIDER,
+                        corp_source=settings.EVEONLINE_CORP_PROVIDER,
+                        alliance_source=settings.EVEONLINE_ALLIANCE_PROVIDER, api_key=None, token=None):
     sources = [character_source, corp_source, alliance_source]
     providers = []
 
