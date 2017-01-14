@@ -31,6 +31,7 @@ Required for phpBB, smf, evernus alliance market, etc
 
 ### Java
 Required for hosting jabber server
+
     oracle-java8-installer
 
 ## CentOS 7
