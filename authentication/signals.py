@@ -31,4 +31,4 @@ def post_save_user(sender, instance, created, *args, **kwargs):
     # ensure all users have a model
     if created:
         AuthServicesInfo.objects.get_or_create(user=instance)
-    
+

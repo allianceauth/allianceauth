@@ -110,6 +110,8 @@ def set_state(user):
         auth.state = state
         auth.save()
         notify(user, "Membership State Change", message="You membership state has been changed to %s" % state)
+    assign_corp_group(auth)
+    assign_alliance_group(auth)
 
 
 def assign_corp_group(auth):

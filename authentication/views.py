@@ -108,7 +108,8 @@ def sso_login(request, token):
             else:
                 messages.error(request, 'Your account has been disabled.')
         else:
-            messages.warning(request, 'Authenticated character has no owning account. Please log in with username and password.')
+            messages.warning(request,
+                             'Authenticated character has no owning account. Please log in with username and password.')
     except EveCharacter.DoesNotExist:
         messages.error(request, 'No account exists with the authenticated character. Please create an account first.')
     return redirect(login_user)
