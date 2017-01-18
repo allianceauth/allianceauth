@@ -51,14 +51,10 @@
                 </tr>
                 {% for srpfleetrequest in srpfleetrequests %}
                     <tr>
-                        <td class="text-center">
-                            <div class="label label-info">
-                                {{ srpfleetrequest.character.character_name }}
-                            </div>
-                        </td>
+                        <td class="text-center">{{ srpfleetrequest.character.character_name }}</td>
                         <td class="text-center">
                             <a href="{{ srpfleetrequest.killboard_link }}"
-                               target="_blank">{{ srpfleetrequest.killboard_link }}</a>
+                               target="_blank" class="label label-warning">Link</a>
                         </td>
                         <td class="text-center">{{ srpfleetrequest.additional_info }}</td>
                         <td class="text-center">{{ srpfleetrequest.srp_ship_name }}</td>
@@ -83,36 +79,28 @@
                         {% if perms.auth.srp_management %}
 
                             <td class="text-center">
-                                <a href="{% url 'auth_srp_request_update_amount_view' srpfleetrequest.id %}" class="btn btn-info">
-                                    <span class="glyphicon glyphicon-pencil"></span>
+                                <a href="{% url 'auth_srp_request_update_amount_view' srpfleetrequest.id %}" class="btn btn-info" title="Update Value">
+                                    <span class="glyphicon glyphicon-usd"></span>
                                 </a>
-                                {% if srpfleetrequest.srp_status == "Rejected" %}
-                                    <a href="{% url 'auth_srp_request_approve' srpfleetrequest.id %}" class="btn btn-success">
-                                        <span class="glyphicon glyphicon-ok"></span>
-                                    </a>
-                                {% elif srpfleetrequest.srp_status == "Pending" %}
-                                    <a href="{% url 'auth_srp_request_approve' srpfleetrequest.id %}" class="btn btn-success">
+                                {% if srpfleetrequest.srp_status in "RejectedPending" %}
+                                    <a href="{% url 'auth_srp_request_approve' srpfleetrequest.id %}" class="btn btn-success" title="Approve">
                                         <span class="glyphicon glyphicon-ok"></span>
                                     </a>
                                 {% elif srpfleetrequest.srp_status == "" %}
-                                    <a href="{% url 'auth_srp_request_approve' srpfleetrequest.id %}" class="btn btn-success">
+                                    <a href="{% url 'auth_srp_request_approve' srpfleetrequest.id %}" class="btn btn-success" title="Approve">
                                         <span class="glyphicon glyphicon-ok"></span>
                                     </a>
                                 {% endif %}
-                                {% if srpfleetrequest.srp_status == "Approved" %}
-                                    <a href="{% url 'auth_srp_request_reject' srpfleetrequest.id %}" class="btn btn-warning">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </a>
-                                {% elif srpfleetrequest.srp_status == "Pending" %}
-                                    <a href="{% url 'auth_srp_request_reject' srpfleetrequest.id %}" class="btn btn-warning">
+                                {% if srpfleetrequest.srp_status in "ApprovedPending" %}
+                                    <a href="{% url 'auth_srp_request_reject' srpfleetrequest.id %}" class="btn btn-warning" title="Reject">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
                                 {% elif srpfleetrequest.srp_status == "" %}
-                                    <a href="{% url 'auth_srp_request_reject' srpfleetrequest.id %}" class="btn btn-warning">
+                                    <a href="{% url 'auth_srp_request_reject' srpfleetrequest.id %}" class="btn btn-warning" title="Reject">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
                                 {% endif %}
-                                <a href="{% url 'auth_srp_request_remove' srpfleetrequest.id %}" class="btn btn-danger">
+                                <a href="{% url 'auth_srp_request_remove' srpfleetrequest.id %}" class="btn btn-danger" title="Remove">
                                         <span class="glyphicon glyphicon-trash"></span>
                                 </a>
 

@@ -40,6 +40,7 @@
                     <th class="text-center">{% trans "Fleet SRP Code" %}</th>
                     <th class="text-center">{% trans "Fleet ISK Cost" %}</th>
                     <th class="text-center">{% trans "SRP Status" %}</th>
+                    <th class="text-center">{%  trans "Pending Requests" %}</th>
                     <th class="text-center">{% trans "Actions" %}</th>
                 </tr>
                 {% for srpfleet in srpfleets %}
@@ -56,27 +57,21 @@
                                 {{ srpfleet.fleet_commander.character_name }}
                             </div>
                         </td>
-                        <th class="text-center"><a href="{{ srpfleet.fleet_srp_aar_link }}"
-                                                   target="_blank">{{ srpfleet.fleet_srp_aar_link }}</a></th>
-                        <th class="text-center">
+                        <td class="text-center">
+                            {%  if srpfleet.fleet_srp_aar_link %}
+                                <a href="{{ srpfleet.fleet_srp_aar_link }}" target="_blank" class="label label-primary">{% trans 'Link' %}</a>
+                            {%  endif %}
+                        </td>
+                        <td class="text-center">
                             {% if srpfleet.fleet_srp_code %}
-                            <div class="label label-warning">
-                                <a href="{% url 'auth_srp_request_view' srpfleet.fleet_srp_code %}"
-                                   >{{ srpfleet.fleet_srp_code }}</a>
-                            </div>
+                                <a class="label label-warning" href="{% url 'auth_srp_request_view' srpfleet.fleet_srp_code %}">{{ srpfleet.fleet_srp_code }}</a>
                             {% else %}
                                 <div class="label label-danger">
                                     {% trans "Disabled" %}
                                 </div>
                             {% endif %}
-                        </th>
-                        <td class="text-center">
-                            {% for key,value in price_pair.items %}
-                                {% if key == srpfleet.id %}
-                                    ISK: {{ value | intcomma }}
-                                {% endif %}
-                            {% endfor %}
                         </td>
+                        <td class="text-center">ISK: {{ srpfleet.total_cost | intcomma }}</td>
 
                         <td class="text-center">
                             {% if srpfleet.fleet_srp_status == "" %}
@@ -90,25 +85,28 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
+                            <div class="label label-warning">{{ srpfleet.pending_requests }}</div>
+                        </td>
+                        <td class="text-center">
 
-                            <a href="{% url 'auth_srp_fleet_view' srpfleet.id %}" class="btn btn-primary">
+                            <a href="{% url 'auth_srp_fleet_view' srpfleet.id %}" class="btn btn-primary" title="View">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
                             {% if perms.auth.srp_management %}
-                                <a href="{% url 'auth_srp_fleet_edit_view' srpfleet.id %}" class="btn btn-info">
+                                <a href="{% url 'auth_srp_fleet_edit_view' srpfleet.id %}" class="btn btn-info" title="Edit">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
 
-                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" class="btn btn-danger">
+                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" class="btn btn-danger" title="Remove">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </a>
                                 {% if srpfleet.fleet_srp_code %}
-                                    <a href="{% url 'auth_srp_fleet_disable' srpfleet.id %}" class="btn btn-warning">
+                                    <a href="{% url 'auth_srp_fleet_disable' srpfleet.id %}" class="btn btn-warning" title="Disable">
                                         <span class="glyphicon glyphicon-remove-sign"></span>
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'auth_srp_fleet_enable' srpfleet.id %}" class="btn btn-success">
+                                    <a href="{% url 'auth_srp_fleet_enable' srpfleet.id %}" class="btn btn-success" title="Enable">
                                         <span class="glyphicon glyphicon-ok-sign"></span>
                                     </a>
                                 {% endif %}

@@ -36,20 +36,9 @@ def random_string(string_length=10):
 @members_and_blues()
 def srp_management(request):
     logger.debug("srp_management called by user %s" % request.user)
-    totalcost = 0
-    runningcost = 0
-    price_pair = {}
-    for fleet_main in SrpFleetMain.objects.filter(fleet_srp_status="").iterator():
-        for fleet_data in SrpUserRequest.objects.filter(srp_fleet_main=fleet_main).iterator():
-            totalcost = totalcost + fleet_data.srp_total_amount
-            runningcost = runningcost + fleet_data.srp_total_amount
-        price_pair[fleet_main.id] = runningcost
-        logger.debug("Determined SRP fleet %s costs %s" % (fleet_main.id, runningcost))
-        runningcost = 0
-    logger.debug("Determined total outstanding SRP cost %s" % totalcost)
-
-    context = {"srpfleets": SrpFleetMain.objects.filter(fleet_srp_status=""), "totalcost": totalcost,
-               "price_pair": price_pair}
+    fleets = SrpFleetMain.objects.filter(fleet_srp_status="")
+    totalcost = sum([int(fleet.total_cost) for fleet in fleets])
+    context = {"srpfleets": fleets, "totalcost": totalcost}
     return render(request, 'registered/srpmanagement.html', context=context)
 
 
@@ -57,19 +46,9 @@ def srp_management(request):
 @members_and_blues()
 def srp_management_all(request):
     logger.debug("srp_management_all called by user %s" % request.user)
-    totalcost = 0
-    runningcost = 0
-    price_pair = {}
-    for fleet_main in SrpFleetMain.objects.all().iterator():
-        for fleet_data in SrpUserRequest.objects.filter(srp_fleet_main=fleet_main).iterator():
-            totalcost = totalcost + fleet_data.srp_total_amount
-            runningcost = runningcost + fleet_data.srp_total_amount
-        price_pair[fleet_main.id] = runningcost
-        logger.debug("Determined SRP fleet %s costs %s" % (fleet_main.id, runningcost))
-        runningcost = 0
-    logger.debug("Determined all-time total SRP cost %s" % totalcost)
-
-    context = {"srpfleets": SrpFleetMain.objects.all(), "totalcost": totalcost, "price_pair": price_pair}
+    fleets = SrpFleetMain.objects.all()
+    totalcost = sum([int(fleet.total_cost) for fleet in fleets])
+    context = {"srpfleets": SrpFleetMain.objects.all(), "totalcost": totalcost}
     return render(request, 'registered/srpmanagement.html', context=context)
 
 
@@ -79,14 +58,9 @@ def srp_fleet_view(request, fleet_id):
     logger.debug("srp_fleet_view called by user %s for fleet id %s" % (request.user, fleet_id))
     if SrpFleetMain.objects.filter(id=fleet_id).exists():
         fleet_main = SrpFleetMain.objects.get(id=fleet_id)
-        totalcost = 0
-        for fleet_data in SrpUserRequest.objects.filter(srp_fleet_main=fleet_main).filter(srp_status="Approved"):
-            totalcost = totalcost + fleet_data.srp_total_amount
-        logger.debug("Determiend fleet id %s total cost %s" % (fleet_id, totalcost))
-
         context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
-                   "srpfleetrequests": SrpUserRequest.objects.filter(srp_fleet_main=fleet_main),
-                   "totalcost": totalcost}
+                   "srpfleetrequests": fleet_main.srpuserrequest_set.all(),
+                   "totalcost": fleet_main.total_cost}
 
         return render(request, 'registered/srpfleetdata.html', context=context)
     else:
@@ -237,14 +211,12 @@ def srp_request_view(request, fleet_srp):
             character = EveManager.get_character_by_id(authinfo.main_char_id)
             srp_fleet_main = SrpFleetMain.objects.get(fleet_srp_code=fleet_srp)
             post_time = timezone.now()
-            srp_status = "Pending"
 
             srp_request = SrpUserRequest()
             srp_request.killboard_link = form.cleaned_data['killboard_link']
             srp_request.additional_info = form.cleaned_data['additional_info']
             srp_request.character = character
             srp_request.srp_fleet_main = srp_fleet_main
-            srp_request.srp_status = srp_status
 
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
