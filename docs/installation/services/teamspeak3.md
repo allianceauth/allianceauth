@@ -69,6 +69,50 @@ Now we need to make groups. AllianceAuth handles groups in teamspeak differently
 
 Navigate back to the AllianceAuth admin interface (yourdomain.com/admin) and under `Services`, select `Auth / TS Groups`. In the top-right corner click `Add`.
 
-The dropdown box provides all auth groups. Select one and assign TeamSpeak groups from the panels below. If these panels are empty, wait a minute for the database update to run.
+The dropdown box provides all auth groups. Select one and assign TeamSpeak groups from the panels below. If these panels are empty, wait a minute for the database update to run, or see the [troubleshooting section](#ts-group-models-not-populating-on-admin-site) below.
 
-## Setup Complete
+# Troubleshooting
+
+## New users unable to join the server
+### `Insufficient client permissions (failed on Invalid permission: 0x26)`
+
+Using the advanced permissions editor, ensure the `Guest` group has the permission `Use Privilege Keys to gain permissions` (under `Virtual Server` expand the `Administration` section)
+
+To enable advanced permissions, on your client go to the `Tools` menu, `Application`, and under the `Misc` section, tick `Advanced permission system`
+
+## TS group models not populating on admin site
+The method which populates these runs every 30 minutes. To populate manually, start a celery shell:
+
+    python manage.py celery shell
+
+And execute the update:
+
+    run_ts3_group_update()
+
+Ensure that command does not return an error.
+
+## Auth unable to sync groups
+### `2564 access to default group is forbidden`
+
+This usually occurs because auth is trying to remove a user from the `Guest` group (group ID 8). The guest group is only assigned to a user when they have no other groups, unless you have changed the default teamspeak server config.
+
+Teamspeak servers v3.0.13 and up are especially susceptible to this. Ensure the Channel Admin Group is not set to `Guest (8)`. Check by right clicking on the server name, `Edit virtual server`, and in the middle of the panel select the `Misc` tab.
+
+### `TypeError: string indices must be integers, not str`
+
+This error generally means teamspeak returned an error message that went unhandled. The full traceback is required for proper debugging, which the logs do not record. Please check the superuser notifications for this record and get in touch with a developer.
+
+## Auth unable to sync groups and add users
+### `3331 flood ban`
+
+This most commonly happens when your teamspeak server is externally hosted. You need to add the auth server IP to the teamspeak serverquery whitelist. This varies by provider.
+
+If you have SSH access to the server hosting it, you need to locate the teamspeak server folder and add the auth server IP on a new line in  `server_query_whitelist.txt`
+
+### `520 invalid loginname or password`
+
+The serverquery account login specified in settings.py is incorrect. Please verify `TEAMSPEAK3_SERVERQUERY_USER` and `TEAMSPEAK3_SERVERQUERY_PASSWORD`. The [installation section](#update-settings) describes where to get them.
+
+### `2568 insufficient client permissions`
+
+This usually occurs if you've created a separate serverquery user to use with auth. It has not been assigned sufficient permissions to complete all the tasks required of it. The full list of required permissions is not known, so assign liberally.
