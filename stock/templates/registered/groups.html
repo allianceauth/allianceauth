@@ -51,11 +51,7 @@
             <div class="alert alert-warning text-center">No groups available.</div>
             {% endif %}
         {% else %}
-            {% if IS_CORP %}
-                <div class="alert alert-danger" role="alert">{% trans "You are not in the corporation." %}</div>
-            {% else %}
-                <div class="alert alert-danger" role="alert">{% trans "You are not in the alliance." %}</div>
-            {% endif %}
+            <div class="alert alert-danger" role="alert">{% trans "You are not a member." %}</div>
         {% endif %}
     </div>
 
