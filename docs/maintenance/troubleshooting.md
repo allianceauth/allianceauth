@@ -3,11 +3,11 @@
 ## Something broken? Stuck on an issue? Can't get it set up?
 
 Start here:
- - check the [issues](https://github.com/R4stl1n/allianceauth/issues?utf8=%E2%9C%93&q=is%3Aissue) - especially closed ones
+ - check the [issues](https://github.com/allianceauth/allianceauth/issues?utf8=%E2%9C%93&q=is%3Aissue) - especially closed ones
  - check the [forums](https://forums.eveonline.com/default.aspx?g=posts&t=383030)
 
 No answer?
- - open an [issue](https://github.com/R4stl1n/allianceauth/issues)
+ - open an [issue](https://github.com/allianceauth/allianceauth/issues)
  - harass us on [gitter](https://gitter.im/R4stl1n/allianceauth)
  - post to the [forums](https://forums.eveonline.com/default.aspx?g=posts&t=383030)
 

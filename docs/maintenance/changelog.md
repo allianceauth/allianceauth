@@ -1,12 +1,12 @@
 # Changelog
 
 ## From now on all changelogs will be included as release notes.
-https://github.com/R4stl1n/allianceauth/releases
+https://github.com/allianceauth/allianceauth/releases
 
 ### 547
 Oct 16
 
-Golly this is a big one. Upgrading takes a bit of work. [For full instructions click here.](https://github.com/R4stl1n/allianceauth/pull/547#issue-183247630)
+Golly this is a big one. Upgrading takes a bit of work. [For full instructions click here.](https://github.com/allianceauth/allianceauth/pull/547#issue-183247630)
 
  - Update django version to 1.10
  - Remove member/blue permissions
@@ -100,7 +100,7 @@ Mar 23 2016
 ### 314
 Mar 22 2016
  - Revamp of the Human Resources Application and Management System
-   - see the [wiki page](https://github.com/R4stl1n/allianceauth/wiki/HRApplications) for how to use the new system
+   - see the [docs](../features/hrapplications.md) for how to use the new system
    - a completely untested conversion script exists. If you want to view your old models, contact Adarnof to try it out
  - Moved Error Handling for the API Keys to the API Calls to better handle API server outages
  - Removed the infamous database update task

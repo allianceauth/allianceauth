@@ -51,7 +51,7 @@ Ensure you are in the allianceserver home directory by issuing `cd`
 
 Now we clone the source code:
 
-    git clone https://github.com/R4stl1n/allianceauth.git
+    git clone https://github.com/allianceauth/allianceauth.git
 
 Enter the folder by issuing `cd allianceauth`
 
