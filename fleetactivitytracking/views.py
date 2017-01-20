@@ -13,7 +13,6 @@ from eveonline.models import EveCorporationInfo
 from eveonline.managers import EveManager
 from fleetactivitytracking.forms import FatlinkForm
 from fleetactivitytracking.models import Fatlink, Fat
-from bravado.exception import HTTPError
 
 from esi.decorators import token_required
 
@@ -222,8 +221,7 @@ def click_fatlink_view(request, token, hash, fatname):
                             'station_name']
                 else:
                     location['station_name'] = "No Station"
-                ship['ship_type_name'] = c.Universe.get_universe_types_type_id(type_id=ship['ship_type_id']).result()[
-                    'type_name']
+                ship['ship_type_name'] = EveManager.get_itemtype(ship['ship_type_id']).name
 
                 fat = Fat()
                 fat.system = location['solar_system_name']
@@ -249,8 +247,6 @@ def click_fatlink_view(request, token, hash, fatname):
             messages.error(request, 'FAT link has expired.')
     except (ObjectDoesNotExist, KeyError):
         messages.error(request, 'Invalid FAT link.')
-    except HTTPError as e:
-        messages.error(request, str(e))
     return redirect('auth_fatlink_view')
 
 

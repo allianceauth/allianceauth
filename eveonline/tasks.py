@@ -12,7 +12,6 @@ from services.managers.eve_api_manager import EveApiManager
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.models import EveAllianceInfo
-from eveonline.providers import eve_adapter_factory
 from authentication.tasks import set_state
 import logging
 import evelink

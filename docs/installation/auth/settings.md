@@ -310,6 +310,8 @@ The default data source to get character information. Default is `esi`
 The default data source to get corporation information. Default is `esi`
 ### EVEONLINE_ALLIANCE_PROVIDER
 The default data source to get alliance information. Default is `esi`
+### EVEONLINE_ITEMTYPE_PROVIDER
+The default data source to get item type information. Default is `esi`
 ## Alliance Market
 ### MARKET_URL
 The web address to access the Evernus Alliance Market application.

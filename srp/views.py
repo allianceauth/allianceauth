@@ -15,8 +15,6 @@ from services.managers.srp_manager import srpManager
 from notifications import notify
 from django.utils import timezone
 from authentication.decorators import members_and_blues
-from esi.clients import esi_client_factory
-from bravado.exception import HTTPError
 import uuid
 
 import logging
@@ -220,7 +218,7 @@ def srp_request_view(request, fleet_srp):
 
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
-                (srp_kill_data, ship_value) = srpManager.get_kill_data(srp_kill_link)
+                (ship_type_id, ship_value) = srpManager.get_kill_data(srp_kill_link)
             except ValueError:
                 logger.debug("User %s Submitted Invalid Killmail Link %s or server could not be reached" % (
                     request.user, srp_request.killboard_link))
@@ -228,12 +226,7 @@ def srp_request_view(request, fleet_srp):
                 messages.error(request,
                                "Your SRP request Killmail link is invalid. Please make sure you are using zKillboard.")
                 return redirect("auth_srp_management_view")
-            try:
-                c = esi_client_factory()
-                srp_ship_name = c.Universe.get_universe_types_type_id(type_id=srp_kill_data).result()['name']
-            except HTTPError as e:
-                messages.error(request, str(e))
-                return redirect('auth_dashboard')
+            srp_ship_name = EveManager.get_itemtype(ship_type_id).name
             srp_request.srp_ship_name = srp_ship_name
             kb_total_loss = ship_value
             srp_request.kb_total_loss = kb_total_loss
