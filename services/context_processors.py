@@ -9,7 +9,6 @@ def auth_settings(request):
         'MUMBLE_URL': settings.MUMBLE_URL,
         'FORUM_URL': settings.FORUM_URL,
         'TEAMSPEAK3_PUBLIC_URL': settings.TEAMSPEAK3_PUBLIC_URL,
-        'JACK_KNIFE_URL': settings.JACK_KNIFE_URL,
         'DISCORD_SERVER_ID': settings.DISCORD_GUILD_ID,
         'KILLBOARD_URL': settings.KILLBOARD_URL,
         'DISCOURSE_URL': settings.DISCOURSE_URL,
