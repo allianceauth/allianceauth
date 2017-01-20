@@ -14,7 +14,7 @@ IPBoard needs a database table. Log in to mysql and run:
 
 That’s all for SQL work. Control+D to close.
 
-Navigate to http://yourdomain.com/ipboard and proceed with the install. If it whines about permissions make sure to `chown` again. Point it at that database we just made, using the `allianceserver` MySQL user account from the full install.
+Navigate to http://example.com/ipboard and proceed with the install. If it whines about permissions make sure to `chown` again. Point it at that database we just made, using the `allianceserver` MySQL user account from the full install.
 
 Once you get everything installed we need to copy the api module folder
 
@@ -29,7 +29,7 @@ Enable the API by toggling the `XML-RPC Status` from `disabled` to `enabled` (re
 Copy the API key. Now edit your settings.py as follows:
 
  - IPBOARD_APIKEY is the key you just copied
- - IPBOARD_ENDPOINT is `http://yourdomain.com/ipboard/interface/board/index.php`
+ - IPBOARD_ENDPOINT is `http://example.com/ipboard/interface/board/index.php`
 
 Now enable IPBoard for Auth and/or Blue by editing the auth settings.
 

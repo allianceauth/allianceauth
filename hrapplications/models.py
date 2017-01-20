@@ -15,7 +15,7 @@ class ApplicationQuestion(models.Model):
     help_text = models.CharField(max_length=254, blank=True, null=True)
 
     def __str__(self):
-        return "Question: " + self.title.encode('utf-8')
+        return "Question: " + self.title
 
 
 @python_2_unicode_compatible

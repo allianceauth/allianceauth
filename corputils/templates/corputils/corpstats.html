@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load bootstrap_pagination %}
+{% load eveonline_extras %}
 {% block member_data %}
             {% if corpstats %}
                 <div class="row">
@@ -71,7 +72,7 @@
                                                 <td class="text-center">{{ member.character_name }}</td>
                                                 {% if corpstats.show_apis %}
                                                     {% if member.api %}
-                                                        <td class="text-center"><a href="{{ JACK_KNIFE_URL }}?usid={{ member.api.api_id }}&apik={{ member.api.api_key }}" target="_blank" class="label label-primary">{{ member.api.api_id }}</td>
+                                                        <td class="text-center">{{ member.api|api_link:'label label-primary' }}</td>
                                                     {% else %}
                                                         <td></td>
                                                     {% endif %}

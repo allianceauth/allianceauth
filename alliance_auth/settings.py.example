@@ -211,7 +211,7 @@ CACHES = {
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
-DOMAIN = os.environ.get('AA_DOMAIN', 'https://yourdomain.com')
+DOMAIN = os.environ.get('AA_DOMAIN', 'https://example.com')
 EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
@@ -236,7 +236,7 @@ SITE_NAME = os.environ.get('AA_SITE_NAME', 'Alliance Auth')
 ###################
 # Get client ID and client secret from registering an app at
 # https://developers.eveonline.com/
-# Callback URL should be https://mydomain.com/sso/callback
+# Callback URL should be https://example.com/sso/callback
 ###################
 ESI_SSO_CLIENT_ID = os.environ.get('AA_ESI_SSO_CLIENT_ID', '')
 ESI_SSO_CLIENT_SECRET = os.environ.get('AA_ESI_SSO_CLIENT_SECRET', '')
@@ -371,7 +371,7 @@ EVEONLINE_ITEMTYPE_PROVIDER = os.environ.get('AA_EVEONLINE_ITEMTYPE_PROVIDER', '
 #####################
 # Alliance Market
 #####################
-MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://yourdomain.com/market')
+MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://example.com/market')
 MARKET_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_market',
@@ -384,10 +384,16 @@ MARKET_DB = {
 #####################
 # HR Configuration
 #####################
-# JACK_KNIFE_URL - Url for the audit page of API Jack knife
-#                  Should seriously replace with your own.
+# API_KEY_AUDIT_URL - URL for viewing API keys.
+# Other URLs are supported. Use string formatting notation {} with parameter names api_id, vcode, pk
+# Example URL formats are shown below:
+#           Old Jacknife: 'https://example.com/jacknife/eveapi/audit.php?usid={api_id}&apik={vcode}'
+#           New Jacknife: 'https://example.com/jacknife/?usid={api_id}&apik={vcode}'
+#           SeAT: 'https://seat.example.com/api-key/detail/{api_id}'
+#           Django Admin: '/admin/eveonline/eveapikeypair/{pk}/change'
+# Leave blank for the verification code to be shown in a popup on click.
 #####################
-JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/eveapi/audit.php')
+API_KEY_AUDIT_URL = os.environ.get('AA_API_KEY_AUDIT_URL', '')
 
 #####################
 # Forum Configuration
@@ -396,14 +402,14 @@ JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://ridetheclown.com/ev
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'yourdomain.com/interface/board/index.php')
+IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'example.com/interface/board/index.php')
 IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
 IPBOARD_APIMODULE = 'aa'
 
 ########################
 # XenForo Configuration
 ########################
-XENFORO_ENDPOINT = os.environ.get('AA_XENFORO_ENDPOINT', 'yourdomain.com/api.php')
+XENFORO_ENDPOINT = os.environ.get('AA_XENFORO_ENDPOINT', 'example.com/api.php')
 XENFORO_DEFAULT_GROUP = os.environ.get('AA_XENFORO_DEFAULT_GROUP', 0)
 XENFORO_APIKEY   = os.environ.get('AA_XENFORO_APIKEY', 'yourapikey')
 #####################
@@ -420,10 +426,10 @@ XENFORO_APIKEY   = os.environ.get('AA_XENFORO_APIKEY', 'yourapikey')
 # BROADCAST_USER - Broadcast user JID
 # BROADCAST_USER_PASSWORD - Broadcast user password
 ######################
-JABBER_URL = os.environ.get('AA_JABBER_URL', "yourdomain.com")
+JABBER_URL = os.environ.get('AA_JABBER_URL', "example.com")
 JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
-JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "yourdomain.com")
-OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://yourdomain.com:9090")
+JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "example.com")
+OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://example.com:9090")
 OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
 BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
 BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
@@ -435,7 +441,7 @@ BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast"
 # MUMBLE_URL - Mumble server url
 # MUMBLE_SERVER_ID - Mumble server id
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "yourdomain.com")
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "example.com")
 MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 
 ######################################
@@ -466,7 +472,7 @@ TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'
 TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
 TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
 TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
-TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'yourdomain.com')
+TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'example.com')
 
 ######################################
 # Discord Configuration
@@ -484,7 +490,7 @@ DISCORD_BOT_TOKEN = os.environ.get('AA_DISCORD_BOT_TOKEN', '')
 DISCORD_INVITE_CODE = os.environ.get('AA_DISCORD_INVITE_CODE', '')
 DISCORD_APP_ID = os.environ.get('AA_DISCORD_APP_ID', '')
 DISCORD_APP_SECRET = os.environ.get('AA_DISCORD_APP_SECRET', '')
-DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://mydomain.com/discord_callback')
+DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://example.com/discord_callback')
 DISCORD_SYNC_NAMES = 'True' == os.environ.get('AA_DISCORD_SYNC_NAMES', 'False')
 
 ######################################
@@ -506,7 +512,7 @@ DISCOURSE_SSO_SECRET = os.environ.get('AA_DISCOURSE_SSO_SECRET', '')
 # IPS4_URL - base url of the IPS4 install (no trailing slash)
 # IPS4_API_KEY - API key provided by IPS4
 #####################################
-IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://yourdomain.com/ips4')
+IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://example.com/ips4')
 IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
 IPS4_DB = {
     'ENGINE': 'django.db.backends.mysql',

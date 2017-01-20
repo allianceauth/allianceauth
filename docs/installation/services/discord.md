@@ -29,7 +29,7 @@ This returns a code that looks like `https://discord.gg/0fmA8MyXV6qt7XAZ`. The p
 
 Navigate to the [Discord Developers site.](https://discordapp.com/developers/applications/me) Press the plus sign to create a new application.
 
-Give it a name and description relating to your auth site. Add a redirect to `https://mydomain.com/discord_callback`, substituting your domain. Press Create Application.
+Give it a name and description relating to your auth site. Add a redirect to `https://example.com/discord_callback`, substituting your domain. Press Create Application.
 
 Update settings.py, inputting this redirect address as `DISCORD_CALLBACK_URL`
 

@@ -32,14 +32,14 @@ Add the database user information:
 
 Change ownership of the directory: `sudo chown -R www-data:www-data ../eve-jacknife`
 
-Eve Jacknife can be served two ways: on its own subdomain (`jacknife.mydomain.com`) or as an alias (`mydomain.com/jacknife`)
+Eve Jacknife can be served two ways: on its own subdomain (`jacknife.example.com`) or as an alias (`example.com/jacknife`)
 
 ### Subdomain
 As its own subdomain, create a new apache config: `sudo nano /etc/apache2/sites-available/jacknife.conf` and enter the following:
 
     <VirtualHost *:80>
             DocumentRoot "/var/www/eve-jacknife"
-            ServerName jacknife.mydomain.com
+            ServerName jacknife.example.com
             <Directory "/var/www/eve-jacknife">
                     Require all granted
                     AllowOverride all
@@ -68,4 +68,4 @@ Enter your database password and press Check. If all the boxes come back green p
 
 ## Update Auth Settings
 
-Edit your aut settings file (`nano ~/allianceauth/alliance_auth/settings.py`) and replace `JACK_KNIFE_URL` with either `jacknife.mydomain.com/` or `mydomain.com/jacknife/` depending on your apache choice.
+Edit your aut settings file (`nano ~/allianceauth/alliance_auth/settings.py`) and replace `JACK_KNIFE_URL` with either `jacknife.example.com/` or `example.com/jacknife/` depending on your apache choice.

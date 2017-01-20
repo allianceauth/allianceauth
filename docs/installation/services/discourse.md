@@ -71,7 +71,7 @@ Discourse must run on its own subdomain - it can't handle routing behind an alia
 And enter the following, changing the port if you used a different number:
 
     <VirtualHost *:80>
-        ServerName discourse.mydomain.com
+        ServerName discourse.example.com
         ProxyPass / http://0.0.0.0:7890/
         ProxyPassReverse / http://0.0.0.0:7890/
     </VirtualHost>
@@ -94,22 +94,22 @@ Follow prompts, being sure to answer `y` when asked to allow admin privileges.
 
 ### Create API key
 
-Navigate to `discourse.mydomain.com` and log on. Top right press the 3 lines and select `Admin`. Go to API tab and press `Generate Master API Key`.
+Navigate to `discourse.example.com` and log on. Top right press the 3 lines and select `Admin`. Go to API tab and press `Generate Master API Key`.
 
 Now go to the allianceauth folder and edit settings:
 
     nano /home/allianceserver/allianceauth/alliance_auth/settings.py
 
 Scroll down to the Discourse section and set the following:
- - `DISCOURSE_URL`: `discourse.mydomain.com`
+ - `DISCOURSE_URL`: `discourse.example.com`
  - `DISCOURSE_API_USERNAME`: the username of the admin account you generated the API key with
  - `DISCOURSE_API_KEY`: the key you just generated
 
 ### Configure SSO
 
-Navigate to `discourse.mydomain.com` and log in. Back to the admin site, scroll down to find SSO settings and set the following:
+Navigate to `discourse.example.com` and log in. Back to the admin site, scroll down to find SSO settings and set the following:
  - `enable_sso`: True
- - `sso_url`: `http://mydomain.com/discourse_sso`
+ - `sso_url`: `http://example.com/discourse_sso`
  - `sso_secret`: some secure key
 
 Save, now change settings.py and add the following:

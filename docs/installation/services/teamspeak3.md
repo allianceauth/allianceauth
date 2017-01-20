@@ -67,7 +67,7 @@ Click the URL provided to automatically connect to our server. It will prompt yo
 
 Now we need to make groups. AllianceAuth handles groups in teamspeak differently: instead of creating groups it creates an association between groups in TeamSpeak and groups in AllianceAuth. Go ahead and make the groups you want to associate with auth groups, keeping in mind multiple TeamSpeak groups can be associated with a single auth group.
 
-Navigate back to the AllianceAuth admin interface (yourdomain.com/admin) and under `Services`, select `Auth / TS Groups`. In the top-right corner click `Add`.
+Navigate back to the AllianceAuth admin interface (example.com/admin) and under `Services`, select `Auth / TS Groups`. In the top-right corner click `Add`.
 
 The dropdown box provides all auth groups. Select one and assign TeamSpeak groups from the panels below. If these panels are empty, wait a minute for the database update to run, or see the [troubleshooting section](#ts-group-models-not-populating-on-admin-site) below.
 

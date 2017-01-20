@@ -29,7 +29,7 @@ The web server needs read/write permission to this folder
     sudo chown -R www-data:www-data /var/www/forums
 
 ### Web Install
-Navigate to http://yourdomain.com/forums where you will be presented with an installer.
+Navigate to http://example.com/forums where you will be presented with an installer.
 
 Click on the `Install` tab.
 

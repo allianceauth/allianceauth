@@ -44,7 +44,7 @@ Now restart the server to see the changes reflected.
 
     sudo service mumble-server restart
 
-That’s it! Your server is ready to be connected to at yourdomain.com:64738
+That’s it! Your server is ready to be connected to at example.com:64738
 
 ## Configuring the Authenticator
 

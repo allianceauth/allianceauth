@@ -24,7 +24,7 @@ The logging and caching folders need to be created and have permission set. If u
 
 ## .htaccess Configuration
 
-In your `pathfinder` directory there are two `.htaccess` files. The default installation instructions want you to choose one for rewriting purposes, and these force you to www.pathfinder.mydomain.com. Personally I don't like that.
+In your `pathfinder` directory there are two `.htaccess` files. The default installation instructions want you to choose one for rewriting purposes, and these force you to www.pathfinder.example.com. Personally I don't like that.
 
 So we'll frankenstein our own. We'll use the HTTP one as a base: 
 
@@ -61,14 +61,14 @@ The default configuration should be fine in most cases. Edit all values with cau
 environment.ini
  - `SERVER` Should be changed to `PRODUCTION`
  - `BASE`  is the full filesystem path to the application root on your server. In our case, `/var/www/pathfinder/`
- - `URL`  Is the URL to your app (without a trailing slash). In our case, `http://pathfinder.mydomain.com`
+ - `URL`  Is the URL to your app (without a trailing slash). In our case, `http://pathfinder.example.com`
  - `DEBUG` sets the level of debugging (1,2 or 3) (check  /logs  for a more detail backtrace information) 
  - `DB_*` sets your DB connection information 
  - `SMTP_*`  are used to send out emails, you will need an SMTP server login to make this work. (not required)
  - `SSO_CCP_*` follow the [official docs](https://github.com/exodus4d/pathfinder/wiki/CREST)
 
 ## Database Setup
-This is done through the browser. Go to `pathfinder.yourdomain.com/setup` and see the [official docs](https://github.com/exodus4d/pathfinder/wiki/Database) for instructions.
+This is done through the browser. Go to `pathfinder.example.com/setup` and see the [official docs](https://github.com/exodus4d/pathfinder/wiki/Database) for instructions.
 
 ## Cron Jobs 
 Again the [official docs](https://github.com/exodus4d/pathfinder/wiki/Cronjob) do a good job here.
