@@ -453,10 +453,10 @@ class EveAdapter(EveProvider):
         return self.itemtype_provider.get_itemtype(type_id)
 
 
-CHARACTER_PROVIDER = getattr(settings, 'EVEONLINE_CHARACTER_PROVIDER', 'esi')
-CORP_PROVIDER = getattr(settings, 'EVEONLINE_CORP_PROVIDER', 'esi')
-ALLIANCE_PROVIDER = getattr(settings, 'EVEONLINE_ALLIANCE_PROVIDER', 'esi')
-ITEMTYPE_PROVIDER = getattr(settings, 'EVEONLINE_ITEMTYPE_PROVIDER', 'esi')
+CHARACTER_PROVIDER = getattr(settings, 'EVEONLINE_CHARACTER_PROVIDER', '') or 'esi'
+CORP_PROVIDER = getattr(settings, 'EVEONLINE_CORP_PROVIDER', '') or 'esi'
+ALLIANCE_PROVIDER = getattr(settings, 'EVEONLINE_ALLIANCE_PROVIDER', '') or 'esi'
+ITEMTYPE_PROVIDER = getattr(settings, 'EVEONLINE_ITEMTYPE_PROVIDER', '') or 'esi'
 
 
 def eve_adapter_factory(character_source=CHARACTER_PROVIDER, corp_source=CORP_PROVIDER,
