@@ -323,7 +323,7 @@ class EveApiManager:
             if int(e.code) == 222:
                 raise EveApiManager.ApiInvalidError(api_id)
             raise e
-        except (requests.exceptions.RequestExeception, HTTPError, URLError) as e:
+        except (requests.exceptions.RequestException, HTTPError, URLError) as e:
             raise EveApiManager.ApiServerUnreachableError(e)
         auth = AuthServicesInfo.objects.get(user=user)
         states = [auth.state]
