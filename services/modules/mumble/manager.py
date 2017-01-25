@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import random
 import string
-import hashlib
+from passlib.hash import bcrypt_sha256
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 class MumbleManager:
     def __init__(self):
         pass
+
+    HASH_FN = 'bcrypt-sha256'
 
     @staticmethod
     def __santatize_username(username):
@@ -33,24 +35,24 @@ class MumbleManager:
     def __generate_username_blue(username, corp_ticker):
         return "[BLUE][" + corp_ticker + "]" + username
 
-    @staticmethod
-    def _gen_pwhash(password):
-        return hashlib.sha1(password.encode('utf-8')).hexdigest()
+    @classmethod
+    def _gen_pwhash(cls, password):
+        return bcrypt_sha256.encrypt(password.encode('utf-8'))
 
-    @staticmethod
-    def create_user(user, corp_ticker, username, blue=False):
+    @classmethod
+    def create_user(cls, user, corp_ticker, username, blue=False):
         logger.debug("Creating%s mumble user with username %s and ticker %s" % (' blue' if blue else '',
                                                                                 username, corp_ticker))
-        username_clean = MumbleManager.__santatize_username(
-            MumbleManager.__generate_username_blue(username, corp_ticker) if blue else
-            MumbleManager.__generate_username(username, corp_ticker))
-        password = MumbleManager.__generate_random_pass()
-        pwhash = MumbleManager._gen_pwhash(password)
+        username_clean = cls.__santatize_username(
+            cls.__generate_username_blue(username, corp_ticker) if blue else
+            cls.__generate_username(username, corp_ticker))
+        password = cls.__generate_random_pass()
+        pwhash = cls._gen_pwhash(password)
         logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (
             username_clean, pwhash[0:5]))
         if not MumbleUser.objects.filter(username=username_clean).exists():
             logger.info("Creating mumble user %s" % username_clean)
-            MumbleUser.objects.create(user=user, username=username_clean, pwhash=pwhash)
+            MumbleUser.objects.create(user=user, username=username_clean, pwhash=pwhash, hashfn=cls.HASH_FN)
             return username_clean, password
         else:
             logger.warn("Mumble user %s already exists.")
@@ -66,16 +68,17 @@ class MumbleManager:
         logger.error("Unable to delete user %s from mumble: MumbleUser model not found" % user)
         return False
 
-    @staticmethod
-    def update_user_password(user, password=None):
+    @classmethod
+    def update_user_password(cls, user, password=None):
         logger.debug("Updating mumble user %s password." % user)
         if not password:
-            password = MumbleManager.__generate_random_pass()
-        pwhash = MumbleManager._gen_pwhash(password)
+            password = cls.__generate_random_pass()
+        pwhash = cls._gen_pwhash(password)
         logger.debug("Proceeding with mumble user %s password update - pwhash starts with %s" % (user, pwhash[0:5]))
         try:
             model = MumbleUser.objects.get(user=user)
             model.pwhash = pwhash
+            model.hashfn = cls.HASH_FN
             model.save()
             return password
         except ObjectDoesNotExist:

@@ -19,13 +19,7 @@ from .auth_hooks import MumbleService
 from .models import MumbleUser
 from .tasks import MumbleTasks
 
-import hashlib
-
 MODULE_PATH = 'services.modules.mumble'
-
-
-def gen_pwhash(password):
-    return hashlib.sha1(password).hexdigest()
 
 
 class MumbleHooksTestCase(TestCase):
@@ -198,4 +192,5 @@ class MumbleManagerTestCase(TestCase):
     def test_gen_pwhash(self):
         pwhash = self.manager._gen_pwhash('test')
 
-        self.assertEqual(pwhash, 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3')
+        self.assertEqual(pwhash[:15], '$bcrypt-sha256$')
+        self.assertEqual(len(pwhash), 75)
