@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<tr>
+    <th class="text-center">{% trans "Service" %}</th>
+    <th class="text-center">{% trans "Unique ID" %}</th>
+    <th class="text-center">PermissionKey</th>
+    <th class="text-center">{% trans "Action" %}</th>
+</tr>
+<tr>
+    <td class="text-center">Teamspeak 3</td>
+    <td class="text-center">{{ authinfo.teamspeak3_uid }}</td>
+    <td class="text-center">{{ authinfo.teamspeak3_perm_key }}</td>
+    <td class="text-center">
+        {% ifequal authinfo.teamspeak3_uid "" %}
+            <a href="{% url 'auth_activate_teamspeak3' %}" class="btn btn-warning">
+                <span class="glyphicon glyphicon-ok"></span>
+            </a>
+        {% else %}
+            <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}&nickname={{ authinfo.teamspeak3_uid }}"
+            title="{% trans "Quick Link" %}" class="btn btn-info">
+                <span class="glyphicon glyphicon-link"></span>
+            </a>
+            <a href="{% url 'auth_verify_teamspeak3' %}" class="btn btn-success" title="Verify">
+                <span class="glyphicon glyphicon-log-in"></span>
+            </a>
+            <a href="{% url 'auth_reset_teamspeak3_perm' %}" class="btn btn-primary">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            <a href="{% url 'auth_deactivate_teamspeak3' %}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>
+        {% endifequal %}
+    </td>
+</tr>

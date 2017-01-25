@@ -15,12 +15,22 @@ import os
 import djcelery
 
 from django.contrib import messages
+from celery.schedules import crontab
 
 djcelery.setup_loader()
 
 # Celery configuration
 BROKER_URL = 'redis://localhost:6379/0'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERYBEAT_SCHEDULE = {
+    """
+    Uncomment this if you are using the Teamspeak3 service
+    'run_ts3_group_update': {
+        'task': 'services.modules.teamspeak3.tasks.Teamspeak3Tasks.run_ts3_group_update',
+        'schedule': crontab(minute='*/30'),
+    },
+    """
+}
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -64,6 +74,19 @@ INSTALLED_APPS = [
     'esi',
     'geelweb.django.navhelper',
     'bootstrap_pagination',
+
+    # Services
+    'services.modules.mumble',
+    'services.modules.discord',
+    'services.modules.discourse',
+    'services.modules.ipboard',
+    'services.modules.ips4',
+    'services.modules.market',
+    'services.modules.openfire',
+    'services.modules.smf',
+    'services.modules.phpbb3',
+    'services.modules.xenforo',
+    'services.modules.teamspeak3',
 ]
 
 MIDDLEWARE = [

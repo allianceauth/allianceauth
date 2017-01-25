@@ -3,6 +3,7 @@ from eveonline.models import EveCharacter
 from eveonline.models import EveApiKeyPair
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCorporationInfo
+from authentication.models import AuthServicesInfo
 from eveonline.providers import eve_adapter_factory, EveXmlProvider
 from services.managers.eve_api_manager import EveApiManager
 import logging
@@ -240,6 +241,16 @@ class EveManager(object):
             return EveCharacter.objects.get(character_id=char_id)
 
         return None
+
+    @staticmethod
+    def get_main_character(user):
+        """
+        Get a characters main
+        :param user: django.contrib.auth.models.User
+        :return: EveCharacter
+        """
+        authserviceinfo = AuthServicesInfo.objects.get(user=user)
+        return EveManager.get_character_by_id(authserviceinfo.main_char_id)
 
     @staticmethod
     def get_characters_by_api_id(api_id):

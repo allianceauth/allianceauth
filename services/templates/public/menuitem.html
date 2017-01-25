@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load navactive %}
+
+<li>
+    <a class="{% navactive request item.url_name %}" href="{% url item.url_name %}">
+        <i class="{{ item.classes }}"></i> {% trans item.text %}
+    </a>
+</li>

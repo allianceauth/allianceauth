@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.template.defaulttags import register
-from services.managers.fleetup_manager import FleetUpManager
+from fleetup.managers import FleetUpManager
 from authentication.decorators import members_and_blues
 
 import logging

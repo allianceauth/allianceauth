@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load navactive %}
+{% load menu_items %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,7 +88,7 @@
                 {% else %}
                     <li><a href="{% url 'auth_login_user' %}">{% trans "Login" %}</a></li>
                 {% endif %}
-                
+
             </ul>
             </div>
             
@@ -119,7 +120,7 @@
                                 <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
                             </a>
                         </li>
-
+                        {% menu_main %}
 
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Aux Navigation" %}</h5>
@@ -194,7 +195,7 @@
                                 </a>
                             </li>
                         {% endif %}
-
+                        {% menu_aux %}
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Util" %}</h5>
                         </li>
@@ -211,14 +212,7 @@
                                 </a>
                             </li>
                         {% endif %}
-
-                        {% if perms.auth.jabber_broadcast %}
-                            <li>
-                                <a class="{% navactive request 'auth_jabber_broadcast_view' %}" href="{% url 'auth_jabber_broadcast_view' %}">
-                                    <i class="fa fa-lock fa-fw fa-bullhorn grayiconecolor"></i>{% trans " Jabber Broadcast" %}
-                                </a>
-                            </li>
-                        {% endif %}
+                        {% menu_util %}
                     </ul>
 
                 </div>

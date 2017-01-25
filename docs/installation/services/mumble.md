@@ -11,6 +11,10 @@ The mumble server package can be retrieved from a repository we need to add, mum
 Now two packages need to be installed:
 
     sudo apt-get install python-software-properties mumble-server
+    
+You will also need to install the python dependencies for the authenticator script:
+    
+    pip install -r thirdparty/Mumble/requirements.txt
 
 ## Configuring Mumble
 Mumble ships with a configuration file that needs customization. By default it’s located at /etc/mumble-server.ini. Open it with your favourite text editor:

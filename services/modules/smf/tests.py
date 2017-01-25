@@ -1,0 +1,212 @@
+from __future__ import unicode_literals
+
+try:
+    # Py3
+    from unittest import mock
+except ImportError:
+    # Py2
+    import mock
+
+from django.test import TestCase, RequestFactory
+from django.conf import settings
+from django import urls
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+
+from alliance_auth.tests.auth_utils import AuthUtils
+
+from .auth_hooks import SmfService
+from .models import SmfUser
+from .tasks import SmfTasks
+
+MODULE_PATH = 'services.modules.smf'
+
+
+class SmfHooksTestCase(TestCase):
+    def setUp(self):
+        self.member = 'member_user'
+        member = AuthUtils.create_member(self.member)
+        SmfUser.objects.create(user=member, username=self.member)
+        self.blue = 'blue_user'
+        blue = AuthUtils.create_blue(self.blue)
+        SmfUser.objects.create(user=blue, username=self.blue)
+        self.none_user = 'none_user'
+        none_user = AuthUtils.create_user(self.none_user)
+        self.service = SmfService
+
+    def test_has_account(self):
+        member = User.objects.get(username=self.member)
+        blue = User.objects.get(username=self.blue)
+        none_user = User.objects.get(username=self.none_user)
+        self.assertTrue(SmfTasks.has_account(member))
+        self.assertTrue(SmfTasks.has_account(blue))
+        self.assertFalse(SmfTasks.has_account(none_user))
+
+    def test_service_enabled(self):
+        service = self.service()
+        member = User.objects.get(username=self.member)
+        blue = User.objects.get(username=self.blue)
+        none_user = User.objects.get(username=self.none_user)
+        self.assertTrue(service.service_enabled_members())
+        self.assertTrue(service.service_enabled_blues())
+
+        self.assertEqual(service.service_active_for_user(member), settings.ENABLE_AUTH_SMF)
+        self.assertEqual(service.service_active_for_user(blue), settings.ENABLE_BLUE_SMF)
+        self.assertFalse(service.service_active_for_user(none_user))
+
+    @mock.patch(MODULE_PATH + '.tasks.SmfManager')
+    def test_update_all_groups(self, manager):
+        service = self.service()
+        service.update_all_groups()
+        # Check member and blue user have groups updated
+        self.assertTrue(manager.update_groups.called)
+        self.assertEqual(manager.update_groups.call_count, 2)
+
+    def test_update_groups(self):
+        # Check member has Member group updated
+        with mock.patch(MODULE_PATH + '.tasks.SmfManager') as manager:
+            service = self.service()
+            member = User.objects.get(username=self.member)
+            service.update_groups(member)
+            self.assertTrue(manager.update_groups.called)
+            args, kwargs = manager.update_groups.call_args
+            user_id, groups = args
+            self.assertIn(settings.DEFAULT_AUTH_GROUP, groups)
+            self.assertEqual(user_id, member.smf.username)
+
+        # Check none user does not have groups updated
+        with mock.patch(MODULE_PATH + '.tasks.SmfManager') as manager:
+            service = self.service()
+            none_user = User.objects.get(username=self.none_user)
+            service.update_groups(none_user)
+            self.assertFalse(manager.update_groups.called)
+
+    @mock.patch(MODULE_PATH + '.tasks.SmfManager')
+    def test_validate_user(self, manager):
+        service = self.service()
+        # Test member is not deleted
+        member = User.objects.get(username=self.member)
+        service.validate_user(member)
+        self.assertTrue(member.smf)
+
+        # Test none user is deleted
+        none_user = User.objects.get(username=self.none_user)
+        SmfUser.objects.create(user=none_user, username='abc123')
+        service.validate_user(none_user)
+        self.assertTrue(manager.disable_user.called)
+        with self.assertRaises(ObjectDoesNotExist):
+            none_smf = User.objects.get(username=self.none_user).smf
+
+    @mock.patch(MODULE_PATH + '.tasks.SmfManager')
+    def test_delete_user(self, manager):
+        member = User.objects.get(username=self.member)
+
+        service = self.service()
+        result = service.delete_user(member)
+
+        self.assertTrue(result)
+        self.assertTrue(manager.disable_user.called)
+        with self.assertRaises(ObjectDoesNotExist):
+            smf_user = User.objects.get(username=self.member).smf
+
+    def test_render_services_ctrl(self):
+        service = self.service()
+        member = User.objects.get(username=self.member)
+        request = RequestFactory().get('/en/services/')
+        request.user = member
+
+        response = service.render_services_ctrl(request)
+        self.assertTemplateUsed(service.service_ctrl_template)
+        self.assertIn(urls.reverse('auth_deactivate_smf'), response)
+        self.assertIn(urls.reverse('auth_reset_smf_password'), response)
+        self.assertIn(urls.reverse('auth_set_smf_password'), response)
+
+        # Test register becomes available
+        member.smf.delete()
+        member = User.objects.get(username=self.member)
+        request.user = member
+        response = service.render_services_ctrl(request)
+        self.assertIn(urls.reverse('auth_activate_smf'), response)
+
+
+class SmfViewsTestCase(TestCase):
+    def setUp(self):
+        self.member = AuthUtils.create_member('auth_member')
+        self.member.set_password('password')
+        self.member.email = 'auth_member@example.com'
+        self.member.save()
+        AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
+
+    def login(self):
+        self.client.login(username=self.member.username, password='password')
+
+    @mock.patch(MODULE_PATH + '.tasks.SmfManager')
+    @mock.patch(MODULE_PATH + '.views.SmfManager')
+    def test_activate(self, manager, tasks_manager):
+        self.login()
+        expected_username = 'auth_member'
+        manager.add_user.return_value = (expected_username, 'abc123')
+
+        response = self.client.get(urls.reverse('auth_activate_smf'))
+
+        self.assertTrue(manager.add_user.called)
+        self.assertTrue(tasks_manager.update_groups.called)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('registered/service_credentials.html')
+        self.assertContains(response, expected_username)
+        smf_user = SmfUser.objects.get(user=self.member)
+        self.assertEqual(smf_user.username, expected_username)
+
+    @mock.patch(MODULE_PATH + '.tasks.SmfManager')
+    def test_deactivate(self, manager):
+        self.login()
+        SmfUser.objects.create(user=self.member, username='some member')
+
+        response = self.client.get(urls.reverse('auth_deactivate_smf'))
+
+        self.assertTrue(manager.disable_user.called)
+        self.assertRedirects(response, expected_url=urls.reverse('auth_services'), target_status_code=200)
+        with self.assertRaises(ObjectDoesNotExist):
+            smf_user = User.objects.get(pk=self.member.pk).smf
+
+    @mock.patch(MODULE_PATH + '.views.SmfManager')
+    def test_set_password(self, manager):
+        self.login()
+        SmfUser.objects.create(user=self.member, username='some member')
+
+        response = self.client.post(urls.reverse('auth_set_smf_password'), data={'password': '1234asdf'})
+
+        self.assertTrue(manager.update_user_password.called)
+        args, kwargs = manager.update_user_password.call_args
+        self.assertEqual(kwargs['password'], '1234asdf')
+        self.assertRedirects(response, expected_url=urls.reverse('auth_services'), target_status_code=200)
+
+    @mock.patch(MODULE_PATH + '.views.SmfManager')
+    def test_reset_password(self, manager):
+        self.login()
+        SmfUser.objects.create(user=self.member, username='some member')
+
+        manager.update_user_password.return_value = 'hunter2'
+
+        response = self.client.get(urls.reverse('auth_reset_smf_password'))
+
+        self.assertTemplateUsed(response, 'registered/service_credentials.html')
+        self.assertContains(response, 'some member')
+        self.assertContains(response, 'hunter2')
+
+
+class SmfManagerTestCase(TestCase):
+    def setUp(self):
+        from .manager import SmfManager
+        self.manager = SmfManager
+
+    def test_generate_random_password(self):
+        password = self.manager.generate_random_pass()
+
+        self.assertEqual(len(password), 16)
+        self.assertIsInstance(password, type(''))
+
+    def test_gen_hash(self):
+        pwhash = self.manager.gen_hash('username', 'test')
+
+        self.assertEqual(pwhash, 'b6d21d37de84db76746b1c45696a00f9ce4f86fd')

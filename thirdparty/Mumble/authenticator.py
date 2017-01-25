@@ -521,7 +521,7 @@ def do_main_program():
                 return (FALL_THROUGH, None, None)
 
             try:
-                sql = 'SELECT id, pwhash, groups FROM %sservices_mumbleuser WHERE username = %%s' % cfg.database.prefix
+                sql = 'SELECT id, pwhash, groups FROM %smumble_mumbleuser WHERE username = %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [name])
             except threadDbException:
                 return (FALL_THROUGH, None, None)
@@ -571,7 +571,7 @@ def do_main_program():
                 return FALL_THROUGH
 
             try:
-                sql = 'SELECT id FROM %sservices_mumbleuser WHERE username = %%s' % cfg.database.prefix
+                sql = 'SELECT id FROM %smumble_mumbleuser WHERE username = %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [name])
             except threadDbException:
                 return FALL_THROUGH
@@ -600,7 +600,7 @@ def do_main_program():
 
             # Fetch the user from the database
             try:
-                sql = 'SELECT username FROM %sservices_mumbleuser WHERE id = %%s' % cfg.database.prefix
+                sql = 'SELECT username FROM %smumble_mumbleuser WHERE id = %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [bbid])
             except threadDbException:
                 return FALL_THROUGH
@@ -666,7 +666,7 @@ def do_main_program():
                 filter = '%'
 
             try:
-                sql = 'SELECT id, username FROM %sservices_mumbleuser WHERE username LIKE %%s' % cfg.database.prefix
+                sql = 'SELECT id, username FROM %smumble_mumbleuser WHERE username LIKE %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [filter])
             except threadDbException:
                 return {}

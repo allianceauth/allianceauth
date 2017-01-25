@@ -1,0 +1,73 @@
+from __future__ import unicode_literals
+
+from alliance_auth.celeryapp import app
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from notifications import notify
+
+from .manager import Phpbb3Manager
+from .models import Phpbb3User
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class Phpbb3Tasks:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def delete_user(cls, user, notify_user=False):
+        if cls.has_account(user):
+            logger.debug("User %s has forum account %s. Deleting." % (user, user.phpbb3.username))
+            if Phpbb3Manager.disable_user(user.phpbb3.username):
+                user.phpbb3.delete()
+                if notify_user:
+                    notify(user, 'Forum Account Disabled', level='danger')
+                return True
+        return False
+
+    @staticmethod
+    def has_account(user):
+        try:
+            return user.phpbb3.username != ''
+        except ObjectDoesNotExist:
+            return False
+
+    @staticmethod
+    @app.task(bind=True)
+    def update_groups(self, pk):
+        user = User.objects.get(pk=pk)
+        logger.debug("Updating phpbb3 groups for user %s" % user)
+        if Phpbb3Tasks.has_account(user):
+            groups = []
+            for group in user.groups.all():
+                groups.append(str(group.name))
+            if len(groups) == 0:
+                groups.append('empty')
+            logger.debug("Updating user %s phpbb3 groups to %s" % (user, groups))
+            try:
+                Phpbb3Manager.update_groups(user.phpbb3.username, groups)
+            except:
+                logger.exception("Phpbb group sync failed for %s, retrying in 10 mins" % user)
+                raise self.retry(countdown=60 * 10)
+            logger.debug("Updated user %s phpbb3 groups." % user)
+        else:
+            logger.debug("User does not have a Phpbb3 account")
+
+    @staticmethod
+    @app.task
+    def update_all_groups():
+        logger.debug("Updating ALL phpbb3 groups")
+        for user in Phpbb3User.objects.exclude(username__exact=''):
+            Phpbb3Tasks.update_groups.delay(user.user_id)
+
+    @staticmethod
+    def disable():
+        if settings.ENABLE_AUTH_FORUM:
+            logger.warn("ENABLE_AUTH_FORUM still True, after disabling users will still be able to create forum accounts")
+        if settings.ENABLE_BLUE_FORUM:
+            logger.warn("ENABLE_BLUE_FORUM still True, after disabling blues will still be able to create forum accounts")
+        Phpbb3User.objects.all().delete()

@@ -1,0 +1,31 @@
+[run]
+branch = True
+source =
+    alliance_auth
+    authentication
+    corputils
+    eveonline
+    fleetactivitytracking
+    fleetup
+    groupmanagement
+    hrapplications
+    notifications
+    optimer
+    services
+    srp
+    timerboard
+
+omit =
+    */migrations/*
+    */example/*
+
+[report]
+exclude_lines =
+    if self.debug:
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    def __repr__
+    raise AssertionError
+
+ignore_errors = True
