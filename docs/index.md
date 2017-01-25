@@ -11,43 +11,11 @@ For other distros, adapt the procedure and find distro-specific alternatives for
 
 # Using
 
-See the [Quick Start Guide](installation/auth/quickstart.md)
+See the [Quick Start Guide](installation/auth/quickstart.md) and learn about individual [features.](features/index.md)
 
 # Troubleshooting
 
 Read the [list of common problems.](maintenance/troubleshooting.md)
-
-# Upgrading
-
-As AllianceAuth is developed, new features are added while old bugs are repaired. It’s good practice to keep your instance of AllianceAuth up to date.
-
-Some updates require specific instructions. Refer to their entry in the [changelog](maintenance/changelog.md)
-
-In general, the update process has 4 steps:
- - download the latest code
- - generate new models in the database
- - update current models in the database
- - rebuild web cache
-
-To perform each of these steps, you’ll need to be working from the console in the AllianceAuth directory. Usually `cd ~/allianceauth`
-
-Start by pulling the code changes:
-
-    git pull
-
-Modify settings.py according to the changelog.
-
-For an automated upgrade, run the script:
-
-    bash update.sh
-
-For a manual upgrade, execute the commands in this order:
-
-    sudo pip install -r requirements.txt
-
-    python manage.py migrate
-
-    python manage.py collectstatic
 
 
 ```eval_rst
