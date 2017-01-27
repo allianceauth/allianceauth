@@ -1,5 +1,7 @@
 # Alliance Market
 
+Add `services.modules.market` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 Alliance Market needs a database. Create one in mysql. Default name is `alliance_market`:
 
     mysql -u root -p

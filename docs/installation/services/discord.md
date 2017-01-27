@@ -3,6 +3,9 @@
 Discord is a web-based instant messaging client with voice. Kind of like teamspeak meets slack meets skype. It also has a standalone app for phones and desktop.
 
 ## Setup
+
+Add `services.modules.discord` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ### Creating a Server
 *If you already have a Discord server, skip the creation step, but be sure to retrieve the server ID and enter it in settings.py*
 

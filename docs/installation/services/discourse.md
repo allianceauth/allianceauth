@@ -1,4 +1,7 @@
 # Discourse
+
+Add `services.modules.discourse` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Install Docker
 
     wget -qO- https://get.docker.io/ | sh

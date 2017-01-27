@@ -1,5 +1,7 @@
 # XenForo
 
+Add `services.modules.xenforo` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 In this chapter we will explore how to setup AllianceAuth to work with [XenForo](https://xenforo.com/). At this point we will assume that you already have XenForo installed with a valid license (please keep in mind that XenForo is not free nor open-source, therefore you need to purchase a license first). If you come across any problems related with the installation of XenForo please contact their support service.
 
 

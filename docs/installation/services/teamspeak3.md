@@ -1,5 +1,7 @@
 # Teamspeak 3
 
+Add `services.modules.teamspeak3` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 Teamspeak3 is the most popular VOIP program for gamers.
 

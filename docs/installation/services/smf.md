@@ -1,5 +1,7 @@
 # SMF
 
+Add `services.modules.smf` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 SMF is a free php-based forum. It’s the one of the forums for AllianceAuth.
 

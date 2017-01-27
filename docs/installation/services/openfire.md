@@ -1,5 +1,7 @@
 # Openfire
 
+Add `services.modules.openfire` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 Openfire is a java-based xmpp server (jabber).
 

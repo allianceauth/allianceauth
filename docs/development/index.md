@@ -4,4 +4,6 @@
 .. toctree::
 
     documentation
+    integrating-services
+    menu-hooks
 ```

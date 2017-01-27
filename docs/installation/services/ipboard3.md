@@ -1,5 +1,7 @@
 # IPBoard3
 
+Add `services.modules.ipboard` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 You’re on your own for the initial install of IPBoard. It’s pretty much just download, unzip, and move to `/var/www/ipboard/`. Make sure to
 
     sudo chown -R www-data:www-data /var/www/ipboard
