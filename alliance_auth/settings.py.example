@@ -464,7 +464,7 @@ BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast"
 # MUMBLE_URL - Mumble server url
 # MUMBLE_SERVER_ID - Mumble server id
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "example.com")
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "https://example.com")
 MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 
 ######################################
@@ -513,7 +513,7 @@ DISCORD_BOT_TOKEN = os.environ.get('AA_DISCORD_BOT_TOKEN', '')
 DISCORD_INVITE_CODE = os.environ.get('AA_DISCORD_INVITE_CODE', '')
 DISCORD_APP_ID = os.environ.get('AA_DISCORD_APP_ID', '')
 DISCORD_APP_SECRET = os.environ.get('AA_DISCORD_APP_SECRET', '')
-DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://example.com/discord_callback')
+DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://example.com/discord/callback')
 DISCORD_SYNC_NAMES = 'True' == os.environ.get('AA_DISCORD_SYNC_NAMES', 'False')
 
 ######################################
@@ -550,7 +550,7 @@ IPS4_DB = {
 ######################################
 # SMF Configuration
 ######################################
-SMF_URL = os.environ.get('AA_SMF_URL', '')
+SMF_URL = os.environ.get('AA_SMF_URL', 'https://example.com')
 SMF_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_smf',
