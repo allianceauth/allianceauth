@@ -22,6 +22,10 @@ def optional_dependencies():
 
     dependencies = []
 
+    # Skip adding module dependencies if the settings specifies that services have been migrated
+    if hasattr(settings, 'SERVICES_MIGRATED') and settings.SERVICES_MIGRATED:
+        return dependencies
+
     if 'services.modules.xenforo' in installed_apps:
         dependencies.append(('xenforo', '0001_initial'))
     if 'services.modules.discord' in installed_apps:
@@ -48,9 +52,53 @@ def optional_dependencies():
     return dependencies
 
 
+class DatalossException(Exception):
+    def __init__(self, field, app):
+        message = "This migration would cause a loss of data for the %s field, ensure the %s app is installed and" \
+                  " run the migration again" % (field, app)
+        super(Exception, self).__init__(message)
+
+
+def check_for_dataloss(authservicesinfo):
+    """
+    Check if any of the authservicesinfo contain a field which contains data
+    that would be lost because the target module for migration is not installed.
+    If a record is found with no matching target installed an exception is raised.
+    :param authservicesinfo: AuthServicesInfo records to check
+    """
+    installed_apps = settings.INSTALLED_APPS
+
+    for authinfo in authservicesinfo:
+        if authinfo.xenforo_username and 'services.modules.xenforo' not in installed_apps:
+            raise DatalossException('xenforo_username', 'services.modules.xenforo')
+        if authinfo.discord_uid and 'services.modules.discord' not in installed_apps:
+            raise DatalossException('discord_uid', 'services.modules.discord')
+        if authinfo.discourse_enabled and 'services.modules.discourse' not in installed_apps:
+            raise DatalossException('discourse_enabled', 'services.modules.discourse')
+        if authinfo.ipboard_username and 'services.modules.ipboard' not in installed_apps:
+            raise DatalossException('ipboard_username', 'services.modules.ipboard')
+        if authinfo.ips4_id and 'services.modules.ips4' not in installed_apps:
+            raise DatalossException('ips4_id', 'services.modules.ips4')
+        if authinfo.market_username and 'services.modules.market' not in installed_apps:
+            raise DatalossException('market_username', 'services.modules.market')
+        if authinfo.jabber_username and 'services.modules.openfire' not in installed_apps:
+            raise DatalossException('jabber_username', 'services.modules.openfire')
+        if authinfo.smf_username and 'services.modules.smf' not in installed_apps:
+            raise DatalossException('smf_username', 'services.modules.smf')
+        if authinfo.teamspeak3_uid and 'services.modules.teamspeak3' not in installed_apps:
+            raise DatalossException('teamspeak3_uid', 'services.modules.teamspeak3')
+        if authinfo.mumble_username and 'services.modules.mumble' not in installed_apps:
+            raise DatalossException('mumble_username', 'services.modules.mumble')
+        if authinfo.forum_username and 'services.modules.phpbb3' not in installed_apps:
+            raise DatalossException('forum_username', 'services.modules.phpbb3')
+
+
 def forward(apps, schema_editor):
     installed_apps = settings.INSTALLED_APPS
     AuthServicesInfo = apps.get_model("authentication", "AuthServicesInfo")
+
+    # Check if any records would result in dataloss
+    check_for_dataloss(AuthServicesInfo.objects.all())
 
     XenforoUser = apps.get_model('xenforo', 'XenforoUser') if 'services.modules.xenforo' in installed_apps else None
     DiscordUser = apps.get_model('discord', 'DiscordUser') if 'services.modules.discord' in installed_apps else None
