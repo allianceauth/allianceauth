@@ -147,6 +147,7 @@ class MumbleViewsTestCase(TestCase):
         self.assertEqual(mumble_user.username, expected_username)
         self.assertTrue(mumble_user.pwhash)
         self.assertEqual(self.member.mumble.username, expected_username)
+        self.assertEqual('Member', mumble_user.groups)
 
     def test_deactivate(self):
         self.login()

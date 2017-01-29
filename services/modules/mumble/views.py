@@ -41,7 +41,7 @@ def activate_mumble(request):
 
     if result:
         logger.debug("Updated authserviceinfo for user %s with mumble credentials. Updating groups." % request.user)
-        MumbleTasks.update_groups.apply(request.user.pk)  # Run synchronously to prevent timing issues
+        MumbleTasks.update_groups.apply(args=(request.user.pk,))  # Run synchronously to prevent timing issues
         logger.info("Successfully activated mumble for user %s" % request.user)
         messages.success(request, 'Activated Mumble account.')
         credentials = {
