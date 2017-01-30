@@ -12,5 +12,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^market/', include(module_urls))
+    url(r'^evernus-market/', include(module_urls))
 ]
