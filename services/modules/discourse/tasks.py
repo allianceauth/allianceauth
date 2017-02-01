@@ -43,7 +43,7 @@ class DiscourseTasks:
             return False
 
     @staticmethod
-    @app.task(bind=True)
+    @app.task(bind=True, name='discourse.update_groups')
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discourse groups for user %s" % user)
@@ -55,7 +55,7 @@ class DiscourseTasks:
         logger.debug("Updated user %s discourse groups." % user)
 
     @staticmethod
-    @app.task
+    @app.task(name='discourse.update_all_groups')
     def update_all_groups():
         logger.debug("Updating ALL discourse groups")
         for discourse_user in DiscourseUser.objects.filter(enabled=True):

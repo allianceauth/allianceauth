@@ -36,7 +36,7 @@ class IpboardTasks:
             return False
 
     @staticmethod
-    @app.task(bind=True)
+    @app.task(bind=True, name='ipboard.update_groups')
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating user %s ipboard groups." % user)
@@ -54,14 +54,13 @@ class IpboardTasks:
         logger.debug("Updated user %s ipboard groups." % user)
 
     @staticmethod
-    @app.task
+    @app.task(name='ipboard.update_all_groups')
     def update_all_groups():
         logger.debug("Updating ALL ipboard groups")
         for ipboard_user in IpboardUser.objects.exclude(username__exact=''):
             IpboardTasks.update_groups.delay(ipboard_user.user.pk)
 
     @staticmethod
-    @app.task
     def disable():
         if settings.ENABLE_AUTH_IPBOARD:
             logger.warn(

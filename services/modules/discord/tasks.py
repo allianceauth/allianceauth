@@ -60,7 +60,7 @@ class DiscordTasks:
             return True
 
     @staticmethod
-    @app.task(bind=True)
+    @app.task(bind=True, name='discord.update_groups')
     def update_groups(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)
@@ -86,14 +86,14 @@ class DiscordTasks:
             logger.debug("User does not have a discord account, skipping")
 
     @staticmethod
-    @app.task
+    @app.task(name='discord.update_all_groups')
     def update_all_groups():
         logger.debug("Updating ALL discord groups")
         for discord_user in DiscordUser.objects.exclude(uid__exact=''):
             DiscordTasks.update_groups.delay(discord_user.user.pk)
 
     @staticmethod
-    @app.task(bind=True)
+    @app.task(bind=True, name='discord.update_nickname')
     def update_nickname(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord nickname for user %s" % user)
@@ -114,7 +114,7 @@ class DiscordTasks:
             logger.debug("User %s does not have a discord account" % user)
 
     @staticmethod
-    @app.task
+    @app.task(name='discord.update_all_nicknames')
     def update_all_nicknames():
         logger.debug("Updating ALL discord nicknames")
         for discord_user in DiscordUser.objects.exclude(uid__exact=''):

@@ -65,7 +65,7 @@ class Teamspeak3Tasks:
         logger.info("Teamspeak3 disabled")
 
     @staticmethod
-    @app.task(bind=True)
+    @app.task(bind=True, name="teamspeak3.update_groups")
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating user %s teamspeak3 groups" % user)
@@ -89,7 +89,7 @@ class Teamspeak3Tasks:
             logger.debug("User does not have a teamspeak3 account")
 
     @staticmethod
-    @app.task
+    @app.task(name="teamspeak3.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL teamspeak3 groups")
         for user in Teamspeak3User.objects.exclude(uid__exact=''):
