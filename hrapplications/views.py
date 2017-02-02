@@ -231,14 +231,15 @@ def hr_application_search(request):
                         applications.add(application)
                     if searchstring in application.main_character.corporation_name.lower():
                         applications.add(application)
-                    if searchstring in application.main_character.alliance_name.lower():
+                    if application.main_character.alliance_name \
+                            and searchstring in application.main_character.alliance_name.lower():
                         applications.add(application)
                 for character in application.characters:
                     if searchstring in character.character_name.lower():
                         applications.add(application)
                     if searchstring in character.corporation_name.lower():
                         applications.add(application)
-                    if searchstring in character.alliance_name.lower():
+                    if character.alliance_name and searchstring in character.alliance_name.lower():
                         applications.add(application)
                 if searchstring in application.user.username.lower():
                     applications.add(application)
