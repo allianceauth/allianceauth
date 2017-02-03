@@ -138,7 +138,10 @@
                     {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
-                <td class="text-center" nowrap><div id="countdownCorp{{ timer.id }}"></div></td>
+                <td class="text-center" nowrap>
+                    <div id="localtime{{ timer.id }}"></div>
+                    <div id="countdown{{ timer.id }}"></div>
+                </td>
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
@@ -269,7 +272,10 @@
                 {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
-                <td class="text-center" nowrap><div id="countdown{{ timer.id }}"></div></td>
+                <td class="text-center" nowrap>
+                    <div id="localtime{{ timer.id }}"></div>
+                    <div id="countdown{{ timer.id }}"></div>
+                </td>
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
@@ -401,7 +407,10 @@
                 {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
-                <td class="text-center" nowrap><div id="countdown{{ timer.id }}"></div></td>
+                <td class="text-center" nowrap>
+                    <div id="localtime{{ timer.id }}"></div>
+                    <div id="countdown{{ timer.id }}"></div>
+                </td>
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
@@ -421,63 +430,104 @@
         {% endif %}
     </div>
 
+    {% include 'bundles/moment-js.html' with locale=True %}
+    <script type="text/javascript">
+        var locale = "{{ LANGUAGE_CODE }}";
 
-<script src="/static/js/dateformat.js"></script>
-<script src="/static/js/countdown.js"></script>
-<script>
-var locale = "{{ LANGUAGE_CODE }}";
-var options = { weekday: 'short' };
-var options2 = { hour: 'numeric', minute: 'numeric' };
+        var timers = [
+            {% for timer in timers %}
+                {
+                    'id': {{ timer.id }},
+                    'targetDate': moment("{{ timer.eve_time | date:"c" }}"),
+                    'expired': false
+                },
+            {% endfor %}
+            {% for timer in corp_timers %}
+                {
+                    'id': {{ timer.id }},
+                    'targetDate': moment("{{ timer.eve_time | date:"c" }}"),
+                    'expired': false
+                },
+            {% endfor %}
+        ];
 
-var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in timers %}
-var clock{{ timer.id }} = document.getElementById("countdown{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
+        moment.locale(locale);
 
-setInterval(function(){
-clockClosest.innerHTML = ((targetDate.toLocaleString(locale, options)) + " @ " + (targetDate.toLocaleString(locale, options2)));
-if (targetDate > Date.now()){ 
-clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+        // Set initial values
+        setAllLocalTimes();
+        timedUpdate();
 
-{% for timer in timers %}setInterval(
-function(){
-clock{{ timer.id }}.innerHTML = ((targetDate{{ timer.id }}.toLocaleString(locale, options)) + " @ " + (targetDate{{ timer.id }}.toLocaleString(locale, options2)));
-if (targetDate{{ timer.id }} > Date.now()){ 
-    clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+        // Start timed updates
+        setInterval(timedUpdate, 1000);
 
-setInterval(function(){updateClock()}, 1000);
+        function timedUpdate() {
+            updateClock();
+            updateAllTimers();
+        }
 
-function updateClock() {
-  var options = { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: "numeric", minute: "numeric", second: "numeric" };
-  var clock = new Date()
-  document.getElementById("current-time").innerHTML = "<b>" + clock.toLocaleString(locale, options) + "</b>";
-}
+        function updateAllTimers () {
+            var l = timers.length;
+            for (var i=0; i < l; ++i) {
+                if (timers[i].expired) continue;
+                updateTimer(timers[i]);
+            }
+        }
 
-</script>
-<script>
-var locale = "{{ LANGUAGE_CODE }}";
-var options = { weekday: 'short' };
-var options2 = { hour: 'numeric', minute: 'numeric' };
+        /**
+         * Update a timer
+         * @param timer Timer information
+         * @param timer.targetDate Date of the timer
+         * @param timer.id Id number of the timer
+         * @param timer.expired
+         */
+        function updateTimer(timer) {
+            if (timer.targetDate.isAfter(Date.now())) {
+                duration = moment.duration(timer.targetDate - moment(), 'milliseconds');
+                document.getElementById("countdown" + timer.id).innerHTML = getDurationString(duration);
+            } else {
+                timer.expired = true;
+                document.getElementById("countdown" + timer.id).innerHTML = "";
+            }
+        }
 
-var clockClosestCorp = document.getElementById("countdownclosestCorp"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for timer in corp_timers %}
-var clockCorp{{ timer.id }} = document.getElementById("countdownCorp{{ timer.id }}"), targetDate{{ timer.id }} = new Date(Date.UTC({{ timer.eve_time | date:"Y, m-1, d, H, i" }}));{% endfor %}
+        /**
+        * Get a duration string like countdown.js
+        * e.g. "1y 2d 3h 4m 5s"
+        * @param duration moment.duration
+        */
+        function getDurationString(duration) {
+            var out = "";
+            if (duration.years()) {
+                out += duration.years() + 'y ';
+            }
+            if (duration.days()) {
+                out += duration.days() + 'd ';
+            }
+            return out + duration.hours() + "h " + duration.minutes() + "m " + duration.seconds() + "s";
+        }
 
-setInterval(
-function(){
-clockClosestCorp.innerHTML = ((targetDate.toLocaleString(locale, options)) + " @ " + (targetDate.toLocaleString(locale, options2)));
-if (targetDate > Date.now()){ 
-clockClosestCorp.innerHTML = clockClosestCorp.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
+        /**
+         * Set all local time fields
+         */
+        function setAllLocalTimes() {
+            var l = timers.length;
+            for (var i=0; i < l; ++i) {
+                setLocalTime(timers[i]);
+            }
+        }
 
-{% for timer in corp_timers %}setInterval(function(){
-clockCorp{{ timer.id }}.innerHTML = ((targetDate{{ timer.id }}.toLocaleString(locale, options)) + " @ " + (targetDate{{ timer.id }}.toLocaleString(locale, options2)));
+        /**
+         * Set the local time info for the timer
+         * @param timer Timer information
+         * @param timer.targetDate Date of the timer
+         * @param timer.id Id number of the timer
+         */
+        function setLocalTime(timer) {
+            document.getElementById("localtime" + timer.id).innerHTML = timer.targetDate.format("ddd @ LT");
+        }
 
-if (targetDate{{ timer.id }} > Date.now()){ clockCorp{{ timer.id }}.innerHTML = clockCorp{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
-
-setInterval(function(){updateClock()}, 1000);
-
-function updateClock() {
-  var options = { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: "numeric", minute: "numeric", second: "numeric" };
-  var clock = new Date()
-  document.getElementById("current-time").innerHTML = "<b>" + clock.toLocaleString(locale, options) + "</b>";
-}
-
-</script>
+        function updateClock() {
+            document.getElementById("current-time").innerHTML = "<b>" + moment().format('LLLL') + "</b>";
+        }
+    </script>
 {% endblock content %}

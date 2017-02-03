@@ -1,0 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+{% if locale and LANGUAGE_CODE != 'en' %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/locale/{{ LANGUAGE_CODE }}.js"></script>
+{% endif %}
