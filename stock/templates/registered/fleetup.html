@@ -59,7 +59,10 @@
                                     <td class="col-md-6">{{ start.end|date:"l d M H:i" }} <span class="label label-success">{% trans "Eve Time" %}</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="col-md-6"><div id="countdown{{ start.operation_id }}"></div></td>
+                                    <td class="col-md-6">
+                                        <span id="localtime{{ start.operation_id }}"></span>&nbsp;<span class='label label-success'>Local time</span><br>
+                                        <div id="countdown{{ start.operation_id }}"></div>
+                                    </td>
                                     
                                     <td class="col-md-6"></td>
                                 </tr>
@@ -197,22 +200,81 @@
 
 </div>
 </div>
-<script src="/static/js/dateformat.js"></script>
-<script src="/static/js/countdown.js"></script>
-<script>
-var clockClosest = document.getElementById("countdownclosest"), targetDate = new Date(Date.UTC({{ closest_timer.eve_time | date:"Y, m-1, d, H, i" }}));{% for subject, start in operations_list %}
-var clock{{ start.operation_id }} = document.getElementById("countdown{{ start.operation_id }}"), targetDate{{ start.operation_id }} = new Date(Date.UTC({{ start.start | date:"Y, m-1, d, H, i" }}));{% endfor %}
+{% include 'bundles/moment-js.html' with locale=True %}
+<script src="{% static 'js/timers.js' %}"></script>
+<script type="text/javascript">
+    // Data
+    var timers = [
+    {% for start, op in operations_list %}
+        {
+            'id': {{ op.operation_id }},
+            'start': moment("{{ op.start | date:"c" }}"),
+            'end': moment("{{ op.end | date:"c" }}"),
+            'expired': false
+        },
+    {% endfor %}
+    ]
+</script>
+<script type="text/javascript">
 
-setInterval(function(){clockClosest.innerHTML = targetDate.format('D @ h:ia'); if (targetDate > Date.now()){ clockClosest.innerHTML = clockClosest.innerHTML + "<BR>" + countdown(targetDate).toString();}}, 1000);
-{% for subject, start in operations_list %}setInterval(function(){clock{{ start.operation_id }}.innerHTML = targetDate{{ start.operation_id }}.format('l d M H:i'); if (targetDate{{ start.operation_id }} > Date.now()){ clock{{ start.operation_id }}.innerHTML = clock{{ start.operation_id }}.innerHTML + " <span class='label label-success'>Local time</span></br><h2>" + countdown(targetDate{{ start.operation_id }}).toString() + "</h2>";}}, 1000);{% endfor %}
-{% for timer in corp_timers %}setInterval(function(){clock{{ timer.id }}.innerHTML = targetDate{{ timer.id }}.format('D @ h:ia'); if (targetDate{{ timer.id }} > Date.now()){ clock{{ timer.id }}.innerHTML = clock{{ timer.id }}.innerHTML + "<BR>" + countdown(targetDate{{ timer.id }}).toString();}}, 1000);{% endfor %}
+    timedUpdate();
+    setAllLocalTimes();
 
-setInterval(function(){updateClock()}, 1000);
+    // Start timed updates
+    setInterval(timedUpdate, 1000);
 
-function updateClock() {
-  var clock = new Date();
-  document.getElementById("current-time").innerHTML = "<b>" + clock.toUTCString() + "</b>";
-}
+    function timedUpdate() {
+        updateClock();
+        updateAllTimers();
+    }
 
+    function updateAllTimers () {
+        var l = timers.length;
+        for (var i=0; i < l; ++i) {
+            if (timers[i].expired) continue;
+            updateTimer(timers[i]);
+        }
+    }
+
+    /**
+     * Update a timer
+     * @param timer Timer information
+     * @param timer.start Date of the timer
+     * @param timer.id Id number of the timer
+     * @param timer.expired
+     */
+    function updateTimer(timer) {
+        if (timer.start.isAfter(Date.now())) {
+            var duration = moment.duration(timer.start - moment(), 'milliseconds');
+            document.getElementById("countdown" + timer.id).innerHTML = getDurationString(duration);
+        } else {
+            timer.expired = true;
+            document.getElementById("countdown" + timer.id).innerHTML = "";
+        }
+    }
+
+    /**
+     * Set all local time fields
+     */
+    function setAllLocalTimes() {
+        var l = timers.length;
+        for (var i=0; i < l; ++i) {
+            setLocalTime(timers[i]);
+        }
+    }
+
+    /**
+     * Set the local time info for the timer
+     * @param timer Timer information
+     * @param timer.start Date of the timer
+     * @param timer.id Id number of the timer
+     */
+    function setLocalTime(timer) {
+        document.getElementById("localtime" + timer.id).innerHTML = timer.start.format("ddd @ LT");
+    }
+
+    function updateClock() {
+        document.getElementById("current-time").innerHTML = "<b>" + moment.utc().format('ddd, ll HH:mm:ss z') + "</b>";
+    }
 </script>
 {% endblock content %}
