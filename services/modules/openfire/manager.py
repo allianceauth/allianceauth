@@ -37,9 +37,30 @@ class OpenfireManager:
         return completed_username
 
     @staticmethod
-    def __santatize_username(username):
-        sanatized = username.replace(" ", "_")
-        return sanatized.lower()
+    def __sanitize_username(username):
+        # https://xmpp.org/extensions/xep-0106.html#escaping
+        replace = [
+            ("\\", "\\5c"),  # Escape backslashes first to double escape existing escape sequences
+            ("\"", "\\22"),
+            ("&", "\\26"),
+            ("'", "\\27"),
+            ("/", "\\2f"),
+            (":", "\\3a"),
+            ("<", "\\3c"),
+            (">", "\\3e"),
+            ("@", "\\40"),
+            ("\u007F", ""),
+            ("\uFFFE", ""),
+            ("\uFFFF", ""),
+            (" ", "\\20"),
+        ]
+
+        sanitized = username.strip(' ')
+
+        for find, rep in replace:
+            sanitized = sanitized.replace(find, rep)
+
+        return sanitized
 
     @staticmethod
     def __generate_random_pass():
@@ -54,17 +75,17 @@ class OpenfireManager:
     def add_user(username):
         logger.debug("Adding username %s to openfire." % username)
         try:
-            sanatized_username = OpenfireManager.__santatize_username(username)
+            sanitized_username = OpenfireManager.__sanitize_username(username)
             password = OpenfireManager.__generate_random_pass()
             api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
-            api.add_user(sanatized_username, password)
+            api.add_user(sanitized_username, password)
             logger.info("Added openfire user %s" % username)
         except exception.UserAlreadyExistsException:
             # User exist
             logger.error("Attempting to add a user %s to openfire which already exists on server." % username)
             return "", ""
 
-        return sanatized_username, password
+        return sanitized_username, password
 
     @staticmethod
     def delete_user(username):
