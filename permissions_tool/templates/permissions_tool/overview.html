@@ -1,0 +1,79 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Permissions Overview" %}{% endblock page_title %}
+
+{% block content %}
+    <div>
+        <h1 class="page-header">{% trans "Permissions Overview" %}</h1>
+        {% if request.GET.all != 'yes' %}
+            <span class="pull-right">
+                {% blocktrans %}Showing only applied permissions{% endblocktrans %}
+                <a href="{% url 'permissions_overview' %}?all=yes" class="btn btn-primary">{% trans "Show All" %}</a>
+            </span>
+        {% else %}
+            <span class="pull-right">
+                {% blocktrans %}Showing all permissions{% endblocktrans %}
+                <a href="{% url 'permissions_overview' %}?all=no" class="btn btn-primary">{% trans "Show Applied" %}</a>
+            </span>
+        {% endif %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        {% trans "App" %}
+                    </th>
+                    <th>
+                        {% trans "Model" %}
+                    </th>
+                    <th>
+                        {% trans "Code Name" %}
+                    </th>
+                    <th>
+                        {% trans "Name" %}
+                    </th>
+                    <th class="col-md-1">
+                        {% trans "Users" %}
+                    </th>
+                    <th class="col-md-1">
+                        {% trans "Groups" %}
+                    </th>
+                    <th class="col-md-1">
+                        {% trans "Groups Users" %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for perm in permissions %}
+                <tr>
+                    <td>
+                        {{ perm.permission.content_type.app_label }}
+                    </td>
+                    <td>
+                        {{ perm.permission.content_type.model }}
+                    </td>
+                    <td>
+                        <a href="{% url "permissions_audit" app_label=perm.permission.content_type.app_label model=perm.permission.content_type.model codename=perm.permission.codename %}">
+                            {{ perm.permission.codename }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ perm.permission.name }}
+                    </td>
+                    <td class="{% if perm.users > 0 %}info {% endif %}text-right">
+                        {{ perm.users }}
+                    </td>
+                    <td class="{% if perm.groups > 0 %}info {% endif %}text-right">
+                        {{ perm.groups }}
+                    </td>
+                    <td class="{% if perm.group_users > 0 %}info {% endif %}text-right">
+                        {{ perm.group_users }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

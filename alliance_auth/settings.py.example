@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'fleetactivitytracking',
     'notifications',
     'esi',
+    'permissions_tool',
     'geelweb.django.navhelper',
     'bootstrap_pagination',
 

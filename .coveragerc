@@ -11,6 +11,7 @@ source =
     hrapplications
     notifications
     optimer
+    permissions_tool
     services
     srp
     timerboard

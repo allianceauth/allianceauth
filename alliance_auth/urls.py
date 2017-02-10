@@ -17,6 +17,7 @@ import notifications.views
 import hrapplications.views
 import corputils.urls
 import esi.urls
+import permissions_tool.urls
 from alliance_auth import NAME
 
 admin.site.site_header = NAME
@@ -211,6 +212,8 @@ urlpatterns += i18n_patterns(
     url(r'^fat/link/$', fleetactivitytracking.views.fatlink_view, name='auth_click_fatlink_view'),
     url(r'^fat/link/(?P<hash>[a-zA-Z0-9]+)/(?P<fatname>[a-z0-9_-]+)/$',
         fleetactivitytracking.views.click_fatlink_view),
+
+    url(r'^permissions/', include(permissions_tool.urls))
 )
 
 # Append hooked service urls

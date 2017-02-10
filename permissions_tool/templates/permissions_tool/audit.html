@@ -1,0 +1,39 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block page_title %}{{ permission.permission.codename }} - {% trans "Permissions Audit" %}{% endblock page_title %}
+
+{% block content %}
+    <div>
+        <h1 class="page-header">{% trans "Permissions Audit" %}: {{ permission.permission.codename }}</h1>
+        <a href="{% url 'permissions_overview' %}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i> {% trans "Back" %}
+        </a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="col-md-3">
+                        {% trans "Group" %}
+                    </th>
+                    <th class="col-md-3">
+                        {% trans "User" %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in permission.users %}
+                <tr>
+                    {% include 'permissions_tool/audit_row.html' with group="Permission Granted Directly (No Group)" %}
+                </tr>
+            {% endfor %}
+            {% for group in permission.groups %}
+                {% for user in group.user_set.all %}
+                    {% include 'permissions_tool/audit_row.html' %}
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'fleetactivitytracking',
     'notifications',
     'esi',
+    'permissions_tool',
     'geelweb.django.navhelper',
     'bootstrap_pagination',
     'services.modules.mumble',
@@ -141,7 +142,7 @@ SUPERUSER_STATE_BYPASS = 'True' == os.environ.get('AA_SUPERUSER_STATE_BYPASS', '
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = os.environ.get('AA_LANGUAGE_CODE', 'en-us')
+LANGUAGE_CODE = os.environ.get('AA_LANGUAGE_CODE', 'en')
 
 TIME_ZONE = os.environ.get('AA_TIME_ZONE', 'UTC')
 
