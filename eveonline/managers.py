@@ -166,6 +166,14 @@ class EveManager(object):
             logger.debug("No api keypairs found for user %s" % user)
 
     @staticmethod
+    def get_all_api_key_pairs():
+        if EveApiKeyPair.objects.exists():
+            logger.debug("Returning all api keypairs.")
+            return EveApiKeyPair.objects.all()
+        else:
+            logger.debug("No api keypairs found.")
+
+    @staticmethod
     def check_if_api_key_pair_exist(api_id):
         if EveApiKeyPair.objects.filter(api_id=api_id).exists():
             logger.debug("Determined api id %s exists." % api_id)

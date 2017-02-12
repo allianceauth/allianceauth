@@ -79,3 +79,15 @@ class AuthUtils:
             user=user
         )
         AuthServicesInfo.objects.update_or_create(user=user, defaults={'main_char_id': character_id})
+
+    @classmethod
+    def add_permissions_to_groups(cls, perms, groups, disconnect_signals=True):
+        if disconnect_signals:
+            cls.disconnect_signals()
+
+        for group in groups:
+            for perm in perms:
+                group.permissions.add(perm)
+
+        if disconnect_signals:
+            cls.connect_signals()
