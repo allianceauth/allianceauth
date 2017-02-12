@@ -36,7 +36,7 @@
                 <td class="text-center">{{ fat.fatlink.name }}</td>
                 <td class="text-center">{{ fat.character.character_name }}</td>
                 {%  if fat.station != "No Station" %}
-                <td class="text-center">Docked in {{ fat.system }}</td>
+                <td class="text-center">{% blocktrans %}Docked in {{ fat.system }}{% endblocktrans %}</td>
                 {% else %}
                 <td class="text-center">{{ fat.system }}</td>
                 {% endif %}
@@ -46,7 +46,7 @@
             {% endfor %}
         </table>
         {% else %}
-        <div class="alert alert-warning text-center">No fleet activity on record.</div>
+        <div class="alert alert-warning text-center">{% trans "No fleet activity on record." %}</div>
         {% endif %}
 
         {% if perms.auth.fleetactivitytracking%}
@@ -95,7 +95,7 @@
 
         </table>
         {% else %}
-        <div class="alert alert-warning text-center">No created fatlinks on record.</div>
+        <div class="alert alert-warning text-center">{% trans "No created fatlinks on record." %}</div>
         {% endif %}
         {% endif %}
     </div>

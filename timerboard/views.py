@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from authentication.decorators import members_and_blues
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from authentication.states import MEMBER_STATE, BLUE_STATE
 from authentication.models import AuthServicesInfo
@@ -91,7 +92,7 @@ def add_timer_view(request):
             timer.user = request.user
             timer.save()
             logger.info("Created new timer in %s at %s by user %s" % (timer.system, timer.eve_time, request.user))
-            messages.success(request, 'Added new timer in %s at %s.' % (timer.system, timer.eve_time))
+            messages.success(request, _('Added new timer in %(system)s at %(time)s.') % {"system": timer.system, "time": timer.eve_time})
             return redirect("/timers/")
     else:
         logger.debug("Returning new TimerForm")
@@ -110,11 +111,11 @@ def remove_timer(request, timer_id):
         timer = Timer.objects.get(id=timer_id)
         timer.delete()
         logger.debug("Deleting timer id %s by user %s" % (timer_id, request.user))
-        messages.success(request, 'Deleted timer in %s at %s.' % (timer.system, timer.eve_time))
+        messages.success(request, _('Deleted timer in %(system)s at %(time)s.') % (timer.system, timer.eve_time))
     else:
         logger.error(
             "Unable to delete timer id %s for user %s - timer matching id not found." % (timer_id, request.user))
-        messages.error(request, 'Unable to locate timer with ID %s.' % timer_id)
+        messages.error(request, _('Unable to locate timer with ID %(timerid)s.') % {"timerid": timer_id})
     return redirect("auth_timer_view")
 
 
@@ -150,7 +151,7 @@ def edit_timer(request, timer_id):
             timer.eve_character = character
             timer.eve_corp = corporation
             logger.info("User %s updating timer id %s " % (request.user, timer_id))
-            messages.success(request, 'Saved changes to the timer.')
+            messages.success(request, _('Saved changes to the timer.'))
             timer.save()
         return redirect("auth_timer_view")
     else:

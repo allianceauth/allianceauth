@@ -14,8 +14,8 @@
                         <li class="active"><a data-toggle="tab" href="#unread">{% trans "Unread" %} <b>({{unread|length}})</b></a></li>
                         <li><a data-toggle="tab" href="#read">{% trans "Read" %} <b>({{read|length}})</b></a></li>
                         <div class="text-right">
-                            <a href="{% url 'auth_mark_all_notifications_read' %}" class="btn btn-primary">Mark All Read</a>
-                            <a href="{% url 'auth_delete_all_read_notifications' %}" class="btn btn-danger">Delete All Read</a>
+                            <a href="{% url 'auth_mark_all_notifications_read' %}" class="btn btn-primary">{% trans "Mark All Read" %}</a>
+                            <a href="{% url 'auth_delete_all_read_notifications' %}" class="btn btn-danger">{% trans "Delete All Read" %}</a>
                         </div>
                     </ul>
                     <div class="tab-content">
@@ -45,7 +45,7 @@
                                          {% endfor %}
                                      </table>
                                      {% else %}
-                                     <div class="alert alert-warning text-center">No unread notifications.</div>
+                                     <div class="alert alert-warning text-center">{% trans "No unread notifications." %}</div>
                                      {% endif %}
                                  </div>
                              </div>
@@ -76,7 +76,7 @@
                                         {% endfor %}
                                     </table>
                                     {% else %}
-                                    <div class="alert alert-warning text-center">No read notifications.</div>
+                                    <div class="alert alert-warning text-center">{% trans "No read notifications." %}</div>
                                     {% endif %}
                                 </div>
                             </div>

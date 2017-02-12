@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -53,7 +54,7 @@ def add_optimer_view(request):
             op.eve_character = character
             op.save()
             logger.info("User %s created op timer with name %s" % (request.user, op.operation_name))
-            messages.success(request, 'Created operation timer for %s.' % op.operation_name)
+            messages.success(request, _('Created operation timer for %(opname)s.') % {"opname": op.operation_name})
             return redirect("/optimer/")
     else:
         logger.debug("Returning new opForm")
@@ -72,7 +73,7 @@ def remove_optimer(request, optimer_id):
         op = optimer.objects.get(id=optimer_id)
         op.delete()
         logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
-        messages.success(request, 'Removed operation timer for %s.' % op.operation_name)
+        messages.success(request, _('Removed operation timer for %(opname)s.') % {"opname": op.operation_name})
     else:
         logger.error("Unable to delete optimer id %s for user %s - operation matching id not found." % (
             optimer_id, request.user))
@@ -101,7 +102,7 @@ def edit_optimer(request, optimer_id):
             op.eve_character = character
             logger.info("User %s updating optimer id %s " % (request.user, optimer_id))
             op.save()
-            messages.success(request, 'Saved changes to operation timer for %s.' % op.operation_name)
+            messages.success(request, _('Saved changes to operation timer for %(opname)s.') % {"opname": op.operation_name})
             return redirect("auth_optimer_view")
     else:
         data = {

@@ -35,14 +35,14 @@
                                         {% endif %}
                                     </div>
                                 {% else %}
-                                    <div class="alert alert-danger" role="alert">Missing main character model.</div>
+                                    <div class="alert alert-danger" role="alert">{% trans "Missing main character model." %}</div>
                                 {% endif %}
                                 <div class="clearfix"></div>
                                 <div class="col-sm-6">
-                                    <a href="{% url 'auth_add_api_key' %}" class="btn btn-block btn-success" label="Add API Key">Add API Key</a>
+                                    <a href="{% url 'auth_add_api_key' %}" class="btn btn-block btn-success" label="Add API Key">{% trans "Add API Key" %}</a>
                                 </div>
                                 <div class="col-sm-6">
-                                    <a href="{% url 'auth_characters' %}" class="btn btn-block btn-info" label="Change Main Character">Change Main</a>
+                                    <a href="{% url 'auth_characters' %}" class="btn btn-block btn-info" label="Change Main Character">{% trans "Change Main" %}</a>
                                 </div>
                             </div>
                         </div>

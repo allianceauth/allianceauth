@@ -1,13 +1,14 @@
 {% extends 'public/base.html' %}
 {% load staticfiles %}
-{% block title %}Verify API Ownership{% endblock %}
-{% block page_title%}Verify API Ownership{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Verify API Ownership" %}{% endblock %}
+{% block page_title%}{% trans "Verify API Ownership" %}{% endblock %}
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">Verify API Ownership</div>
+        <h1 class="page-header text-center">{% trans "Verify API Ownership" %}</div>
         <div class="col-xs-4 col-xs-offset-4">
             <div class="panel panel-default>
-                <div class="panel-header">Please authenticate as a character on API {{ api.api_id }} to prove ownership.</div>
+                <div class="panel-header">{% blocktrans %}Please authenticate as a character on API {{ api.api_id }} to prove ownership.{% endblocktrans %}</div>
                 <div class="panel-body">
                     <div class="text-center">
                         <a href="{% url 'auth_api_sso' api.api_id %}">

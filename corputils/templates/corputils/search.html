@@ -5,7 +5,7 @@
 {% block member_data %}
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
-            <div class="panel-title pull-left">Search Results</div>
+            <div class="panel-title pull-left">{% trans "Search Results" %}</div>
         </div>
         <div class="panel-body">
             <div class="text-center">
@@ -14,13 +14,13 @@
             <table class="table table-hover">
                 <tr>
                     <th class="text-center"></th>
-                    <th class="text-center">Character</th>
-                    <th class="text-center">Corporation</th>
-                    <th class="text-center">API</th>
-                    <th class="text-center">zKillboard</th>
-                    <th class="text-center">Main Character</th>
-                    <th class="text-center">Main Corporation</th>
-                    <th class="text-center">Main Alliance</th>
+                    <th class="text-center">{% trans "Character" %}</th>
+                    <th class="text-center">{% trans "Corporation" %}</th>
+                    <th class="text-center">{% trans "API" %}</th>
+                    <th class="text-center">{% trans "zKillboard" %}</th>
+                    <th class="text-center">{% trans "Main Character" %}</th>
+                    <th class="text-center">{% trans "Main Corporation" %}</th>
+                    <th class="text-center">{% trans "Main Alliance" %}</th>
                 </tr>
                 {% for result in results %}
                     <tr {% if not result.1.registered %}class="danger"{% endif %}>

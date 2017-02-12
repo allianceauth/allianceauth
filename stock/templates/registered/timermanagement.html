@@ -290,7 +290,7 @@
             {% endfor %}
         </table>
         {% else %}
-        <div class="alert alert-warning text-center">No upcoming timers.</div>
+        <div class="alert alert-warning text-center">{% trans "No upcoming timers." %}</div>
         {% endif %}
         <h4><b>{% trans "Past Timers" %}</b></h4>
         {% if past_timers %}
@@ -426,7 +426,7 @@
             {% endfor %}
         </table>
         {% else %}
-        <div class="alert alert-warning text-center">No past timers.</div>
+        <div class="alert alert-warning text-center">{% trans "No past timers." %}</div>
         {% endif %}
     </div>
 

@@ -65,7 +65,7 @@
                 {% endif %}
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                        <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'auth_logout_user' %}">{% trans "Logout" %}</a></li>
                 {% else %}
@@ -162,7 +162,7 @@
 
                             <li>
                                 <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_view_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
-                                    <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i> Fleet Activity Tracking
+                                    <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i>{% trans " Fleet Activity Tracking" %}
                                 </a>
                             </li>
 

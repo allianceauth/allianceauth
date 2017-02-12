@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -233,7 +234,7 @@ def click_fatlink_view(request, token, hash, fatname):
                 try:
                     fat.full_clean()
                     fat.save()
-                    messages.success(request, 'Fleet participation registered.')
+                    messages.success(request, _('Fleet participation registered.'))
                 except ValidationError as e:
                     err_messages = []
                     for errorname, message in e.message_dict.items():
@@ -244,9 +245,9 @@ def click_fatlink_view(request, token, hash, fatname):
                            'character_name': token.character_name}
                 return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
         else:
-            messages.error(request, 'FAT link has expired.')
+            messages.error(request, _('FAT link has expired.'))
     except (ObjectDoesNotExist, KeyError):
-        messages.error(request, 'Invalid FAT link.')
+        messages.error(request, _('Invalid FAT link.'))
     return redirect('auth_fatlink_view')
 
 

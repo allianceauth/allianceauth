@@ -21,7 +21,7 @@ class SrpFleetUserRequestForm(forms.Form):
     def clean_killboard_link(self):
         data = self.cleaned_data['killboard_link']
         if "zkillboard.com" not in data:
-            raise forms.ValidationError("Invalid Link. Please use zKillboard.com")
+            raise forms.ValidationError(_("Invalid Link. Please use zKillboard.com"))
         return data
 
 

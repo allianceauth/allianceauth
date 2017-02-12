@@ -14,6 +14,7 @@ from groupmanagement.models import GroupRequest
 from authentication.models import AuthServicesInfo
 from authentication.managers import UserState
 from eveonline.managers import EveManager
+from django.utils.translation import ugettext_lazy as _
 
 import logging
 
@@ -119,12 +120,12 @@ def group_membership_remove(request, group_id, user_id):
             # Remove group from user
             user.groups.remove(group)
             logger.info("User %s removed user %s from group %s" % (request.user, user, group))
-            messages.success(request, "Removed user %s from group %s" % (user, group))
+            messages.success(request, _("Removed user %(user)s from group %(group)s.") % {"user": user, "group": group})
         except ObjectDoesNotExist:
-            messages.warning(request, "User does not exist in that group")
+            messages.warning(request, _("User does not exist in that group"))
 
     except ObjectDoesNotExist:
-        messages.warning(request, "Group does not exist")
+        messages.warning(request, _("Group does not exist"))
 
     return redirect('auth_group_membership_list', group_id)
 
@@ -149,15 +150,14 @@ def group_accept_request(request, group_request_id):
         notify(group_request.user, "Group Application Accepted", level="success",
                message="Your application to %s has been accepted." % group_request.group)
         messages.success(request,
-                         'Accepted application from %s to %s.' % (group_request.main_char, group_request.group))
+                         _('Accepted application from %(mainchar)s to %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
 
     except PermissionDenied as p:
         logger.warning("User %s attempted to accept group join request %s but permission was denied" %
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, 'An unhandled error occurred while processing the application from %s to %s.' % (
-            group_request.main_char, group_request.group))
+        messages.error(request, _('An unhandled error occurred while processing the application from %(mainchar)s to %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
         logger.exception("Unhandled exception occurred while user %s attempting to accept grouprequest id %s." % (
             request.user, group_request_id))
         pass
@@ -182,15 +182,14 @@ def group_reject_request(request, group_request_id):
             notify(group_request.user, "Group Application Rejected", level="danger",
                    message="Your application to %s has been rejected." % group_request.group)
             messages.success(request,
-                             'Rejected application from %s to %s.' % (group_request.main_char, group_request.group))
+                             _('Rejected application from %(mainchar)s to %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
 
     except PermissionDenied as p:
         logger.warning("User %s attempted to reject group join request %s but permission was denied" %
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, 'An unhandled error occured while processing the application from %s to %s.' % (
-            group_request.main_char, group_request.group))
+        messages.error(request, _('An unhandled error occurred while processing the application from %(mainchar)s to %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
         logger.exception("Unhandled exception occured while user %s attempting to reject group request id %s" % (
             request.user, group_request_id))
         pass
@@ -218,14 +217,14 @@ def group_leave_accept_request(request, group_request_id):
         notify(group_request.user, "Group Leave Request Accepted", level="success",
                message="Your request to leave %s has been accepted." % group_request.group)
         messages.success(request,
-                         'Accepted application from %s to leave %s.' % (group_request.main_char, group_request.group))
+                         _('Accepted application from %(mainchar)s to leave %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
     except PermissionDenied as p:
         logger.warning("User %s attempted to accept group leave request %s but permission was denied" %
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, 'An unhandled error occured while processing the application from %s to leave %s.' % (
-            group_request.main_char, group_request.group))
+        messages.error(request, _('An unhandled error occured while processing the application from %(mainchar)s to leave %(group)s.') % {
+            "mainchar": group_request.main_char, "group": group_request.group})
         logger.exception("Unhandled exception occured while user %s attempting to accept group leave request id %s" % (
             request.user, group_request_id))
         pass
@@ -250,15 +249,15 @@ def group_leave_reject_request(request, group_request_id):
                 request.user, group_request.user, group_request.group.name))
             notify(group_request.user, "Group Leave Request Rejected", level="danger",
                    message="Your request to leave %s has been rejected." % group_request.group)
-            messages.success(request, 'Rejected application from %s to leave %s.' % (
-                group_request.main_char, group_request.group))
+            messages.success(request, _('Rejected application from %(mainchar)s to leave %(group)s.') % {
+                "mainchar": group_request.main_char, "group": group_request.group})
     except PermissionDenied as p:
         logger.warning("User %s attempted to reject group leave request %s but permission was denied" %
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, 'An unhandled error occured while processing the application from %s to leave %s.' % (
-            group_request.main_char, group_request.group))
+        messages.error(request, _('An unhandled error occured while processing the application from %(mainchar)s to leave %(group)s.') % {
+            "mainchar": group_request.main_char, "group": group_request.group})
         logger.exception("Unhandled exception occured while user %s attempting to reject group leave request id %s" % (
             request.user, group_request_id))
         pass
@@ -296,7 +295,7 @@ def group_request_add(request, group_id):
     if not GroupManager.joinable_group(group):
         logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
                        (request.user, group_id))
-        messages.warning(request, "You cannot join that group")
+        messages.warning(request, _("You cannot join that group"))
         return redirect('auth_groups')
     if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
         # Does not have the required permission, trying to join a non-public group
@@ -317,7 +316,7 @@ def group_request_add(request, group_id):
     grouprequest.leave_request = False
     grouprequest.save()
     logger.info("Created group request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
-    messages.success(request, 'Applied to group %s.' % group)
+    messages.success(request, _('Applied to group %(group)s.') % {"group": group})
     return redirect("auth_groups")
 
 
@@ -328,12 +327,12 @@ def group_request_leave(request, group_id):
     if not GroupManager.joinable_group(group):
         logger.warning("User %s attempted to leave group id %s but it is not a joinable group" %
                        (request.user, group_id))
-        messages.warning(request, "You cannot leave that group")
+        messages.warning(request, _("You cannot leave that group"))
         return redirect('auth_groups')
     if group not in request.user.groups.all():
         logger.debug("User %s attempted to leave group id %s but they are not a member" %
                      (request.user, group_id))
-        messages.warning(request, "You are not a member of that group")
+        messages.warning(request, _("You are not a member of that group"))
         return redirect('auth_groups')
     if group.authgroup.open:
         logger.info("%s leaving %s as is an open group" % (request.user, group))
@@ -348,5 +347,5 @@ def group_request_leave(request, group_id):
     grouprequest.leave_request = True
     grouprequest.save()
     logger.info("Created group leave request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
-    messages.success(request, 'Applied to leave group %s.' % group)
+    messages.success(request, _('Applied to leave group %(group)s.') % {"group": group})
     return redirect("auth_groups")

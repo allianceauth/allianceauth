@@ -40,7 +40,7 @@
                     <th class="text-center">{% trans "Fleet SRP Code" %}</th>
                     <th class="text-center">{% trans "Fleet ISK Cost" %}</th>
                     <th class="text-center">{% trans "SRP Status" %}</th>
-                    <th class="text-center">{%  trans "Pending Requests" %}</th>
+                    <th class="text-center">{% trans "Pending Requests" %}</th>
                     <th class="text-center">{% trans "Actions" %}</th>
                 </tr>
                 {% for srpfleet in srpfleets %}
@@ -117,7 +117,7 @@
                 {% endfor %}
             </table>
             {% else %}
-            <div class="alert alert-warning text-center">No SRP fleets created.</div>
+            <div class="alert alert-warning text-center">{% trans "No SRP fleets created." %}</div>
             {% endif %}
         </div>
     </div>

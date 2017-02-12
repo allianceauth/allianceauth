@@ -38,10 +38,10 @@
                         <div class="panel panel-default">
                             <div class="panel-heading clearfix">
                                 <div class="panel-title pull-left">
-                                    <h4>Members</h4>
+                                    <h4>{% trans "Members" %}</h4>
                                 </div>
                                 <div class="panel-title pull-right">
-                                    Last update: {{ corpstats.last_updated|naturaltime }}
+                                    {% trans "Last update:" %} {{ corpstats.last_updated|naturaltime }}
                                     {% if corpstats.can_update %}
                                         <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
                                             <span class="glyphicon glyphicon-refresh"></span>
@@ -57,14 +57,14 @@
                                     <table class="table table-hover">
                                         <tr>
                                             <th></th>
-                                            <th class="text-center">Character</th>
+                                            <th class="text-center">{% trans "Character" %}</th>
                                             {% if corpstats.show_apis %}
                                                 <th class="text-center">API</th>
                                             {% endif %}
-                                            <th class="text-center">zKillboard</th>
-                                            <th class="text-center">Main Character</th>
-                                            <th class="text-center">Main Corporation</th>
-                                            <th class="text-center">Main Alliance</th>
+                                            <th class="text-center">{% trans "zKillboard" %}</th>
+                                            <th class="text-center">{% trans "Main Character" %}</th>
+                                            <th class="text-center">{% trans "Main Corporation" %}</th>
+                                            <th class="text-center">{% trans "Main Alliance" %}</th>
                                         </tr>
                                         {% for member in members %}
                                             <tr {% if not member.registered %}class="danger"{% endif %}>

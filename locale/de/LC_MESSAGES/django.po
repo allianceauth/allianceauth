@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-16 18:15+0000\n"
+"POT-Creation-Date: 2017-02-03 17:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,899 +15,1176 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: alliance_auth/settings.py:83
+#: alliance_auth/settings.py:104 alliance_auth/tests/test_settings.py:92
 msgid "English"
 msgstr "Englisch"
 
-#: alliance_auth/settings.py:84
+#: alliance_auth/settings.py:105 alliance_auth/tests/test_settings.py:93
 msgid "German"
 msgstr "Deutsch"
 
-#: alliance_auth/urls.py:19
+#: alliance_auth/urls.py:39
 msgid "^$"
 msgstr ""
 
-#: alliance_auth/urls.py:155
+#: alliance_auth/urls.py:82
 msgid "^login_user/"
 msgstr ""
 
-#: alliance_auth/urls.py:156
+#: alliance_auth/urls.py:83
 msgid "^register_user/"
 msgstr ""
 
-#: alliance_auth/urls.py:158
+#: alliance_auth/urls.py:85
 msgid "^user/password/$"
 msgstr ""
 
-#: alliance_auth/urls.py:159
+#: alliance_auth/urls.py:86
 msgid "^user/password/done/$"
 msgstr ""
 
-#: alliance_auth/urls.py:161
+#: alliance_auth/urls.py:88
 msgid "^user/password/reset/$"
 msgstr ""
 
-#: alliance_auth/urls.py:163
+#: alliance_auth/urls.py:90
 msgid "^user/password/password/reset/done/$"
 msgstr ""
 
-#: alliance_auth/urls.py:165
+#: alliance_auth/urls.py:92
 msgid "^user/password/reset/complete/$"
 msgstr ""
 
-#: alliance_auth/urls.py:167
+#: alliance_auth/urls.py:94
 msgid ""
 "^user/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\\-]+)/(?P<token>.+)/$"
 msgstr ""
 
-#: alliance_auth/urls.py:171
+#: alliance_auth/urls.py:98
 msgid "^dashboard/$"
 msgstr ""
 
-#: alliance_auth/urls.py:172
+#: alliance_auth/urls.py:99
 msgid "^help/$"
 msgstr ""
 
-#: alliance_auth/urls.py:175
+#: alliance_auth/urls.py:102
 msgid "^add_api_key/"
 msgstr ""
 
-#: alliance_auth/urls.py:176
-msgid "^api_key_management/"
-msgstr ""
-
-#: alliance_auth/urls.py:178
+#: alliance_auth/urls.py:103
 msgid "^refresh_api_pair/([0-9]+)/$"
 msgstr ""
 
-#: alliance_auth/urls.py:179
+#: alliance_auth/urls.py:104
 msgid "^delete_api_pair/(\\w+)/$"
 msgstr ""
 
-#: alliance_auth/urls.py:180
+#: alliance_auth/urls.py:105
 msgid "^characters/"
 msgstr ""
 
-#: alliance_auth/urls.py:183
+#: alliance_auth/urls.py:108
+msgid "^corpstats/"
+msgstr ""
+
+#: alliance_auth/urls.py:111
 msgid "^groups/"
 msgstr ""
 
-#: alliance_auth/urls.py:184
+#: alliance_auth/urls.py:112
 msgid "^group/management/"
 msgstr ""
 
-#: alliance_auth/urls.py:186
+#: alliance_auth/urls.py:114
+msgid "^group/membership/$"
+msgstr ""
+
+#: alliance_auth/urls.py:116
+msgid "^group/membership/(\\w+)/$"
+msgstr ""
+
+#: alliance_auth/urls.py:118
+msgid "^group/membership/(\\w+)/remove/(\\w+)/$"
+msgstr ""
+
+#: alliance_auth/urls.py:120
 msgid "^group/request_add/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:188
+#: alliance_auth/urls.py:122
 msgid "^group/request/accept/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:190
+#: alliance_auth/urls.py:124
 msgid "^group/request/reject/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:193
+#: alliance_auth/urls.py:127
 msgid "^group/request_leave/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:195
+#: alliance_auth/urls.py:129
 msgid "group/leave_request/accept/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:197
+#: alliance_auth/urls.py:131
 msgid "^group/leave_request/reject/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:201
+#: alliance_auth/urls.py:135
 msgid "^hr_application_management/"
 msgstr ""
 
-#: alliance_auth/urls.py:203
+#: alliance_auth/urls.py:137
 msgid "^hr_application_create/$"
 msgstr ""
 
-#: alliance_auth/urls.py:205
+#: alliance_auth/urls.py:139
 msgid "^hr_application_create/(\\d+)"
 msgstr ""
 
-#: alliance_auth/urls.py:207
+#: alliance_auth/urls.py:141
 msgid "^hr_application_remove/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:209
+#: alliance_auth/urls.py:143
 msgid "hr_application_view/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:211
+#: alliance_auth/urls.py:145
 msgid "hr_application_personal_view/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:213
+#: alliance_auth/urls.py:147
 msgid "hr_application_personal_removal/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:216
+#: alliance_auth/urls.py:150
 msgid "hr_application_approve/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:218
+#: alliance_auth/urls.py:152
 msgid "hr_application_reject/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:220
+#: alliance_auth/urls.py:154
 msgid "hr_application_search/"
 msgstr ""
 
-#: alliance_auth/urls.py:222
+#: alliance_auth/urls.py:156
 msgid "hr_mark_in_progress/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:226
+#: alliance_auth/urls.py:160
 msgid "^optimer/$"
 msgstr ""
 
-#: alliance_auth/urls.py:227
+#: alliance_auth/urls.py:161
 msgid "^add_optimer/$"
 msgstr ""
 
-#: alliance_auth/urls.py:228
+#: alliance_auth/urls.py:162
 msgid "^remove_optimer/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:229
+#: alliance_auth/urls.py:163
 msgid "^edit_optimer/(\\w+)$"
 msgstr ""
 
-#: alliance_auth/urls.py:232
+#: alliance_auth/urls.py:166
 msgid "^services/$"
 msgstr ""
 
-#: alliance_auth/urls.py:233
-msgid "^services/jabber_broadcast/$"
-msgstr ""
-
-#: alliance_auth/urls.py:240
-msgid "^corputils/$"
-msgstr ""
-
-#: alliance_auth/urls.py:241
-msgid "^corputils/(?P<corpid>[0-9]+)/$"
-msgstr ""
-
-#: alliance_auth/urls.py:242
-msgid "^corputils/search/$"
-msgstr ""
-
-#: alliance_auth/urls.py:243
-msgid "^corputils/search/(?P<corpid>[0-9]+)/$"
-msgstr ""
-
-#: alliance_auth/urls.py:246
+#: alliance_auth/urls.py:169
 msgid "^timers/$"
 msgstr ""
 
-#: alliance_auth/urls.py:247
+#: alliance_auth/urls.py:170
 msgid "^add_timer/$"
 msgstr ""
 
-#: alliance_auth/urls.py:248
+#: alliance_auth/urls.py:171
 msgid "^remove_timer/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:249
+#: alliance_auth/urls.py:172
 msgid "^edit_timer/(\\w+)$"
 msgstr ""
 
-#: alliance_auth/urls.py:252
-msgid "^sigtracker/$"
-msgstr ""
-
-#: alliance_auth/urls.py:253
-msgid "^add_signature/$"
-msgstr ""
-
-#: alliance_auth/urls.py:254
-msgid "^remove_signature/(\\w+)"
-msgstr ""
-
-#: alliance_auth/urls.py:255
-msgid "^edit_signature/(\\w+)$"
-msgstr ""
-
-#: alliance_auth/urls.py:258
+#: alliance_auth/urls.py:175
 msgid "^srp/$"
 msgstr ""
 
-#: alliance_auth/urls.py:259
+#: alliance_auth/urls.py:176
 msgid "^srp_all/$"
 msgstr ""
 
-#: alliance_auth/urls.py:260
+#: alliance_auth/urls.py:177
 msgid "^srp_fleet_view/(\\w+)$"
 msgstr ""
 
-#: alliance_auth/urls.py:261
+#: alliance_auth/urls.py:178
 msgid "^srp_fleet_add_view/$"
 msgstr ""
 
-#: alliance_auth/urls.py:262
+#: alliance_auth/urls.py:179
 msgid "^srp_fleet_edit/(\\w+)$"
 msgstr ""
 
-#: alliance_auth/urls.py:263
+#: alliance_auth/urls.py:180
 msgid "^srp_request/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:264
+#: alliance_auth/urls.py:181
 msgid "srp_request_amount_update/(\\w+)"
 msgstr ""
 
-#: alliance_auth/urls.py:268
+#: alliance_auth/urls.py:185
 msgid "^tool/fleet_formatter_tool/$"
 msgstr ""
 
-#: alliance_auth/urls.py:272
+#: alliance_auth/urls.py:189
 msgid "^notifications/$"
 msgstr ""
 
-#: alliance_auth/urls.py:273
+#: alliance_auth/urls.py:190
 msgid "^notifications/(\\w+)/$"
 msgstr ""
 
-#: alliance_auth/urls.py:276
-msgid "^set_jabber_password/$"
-msgstr ""
-
-#: alliance_auth/urls.py:279
-msgid "^fits/$"
-msgstr ""
-
-#: authentication/forms.py:6
-#: customization/templates/registered/services.html:17
-#: customization/templates/registered/services.html:342
-#: registration/forms.py:11
-#: stock/templates/registered/hrapplicationmanagement.html:25
-#: stock/templates/registered/hrapplicationmanagement.html:79
-#: stock/templates/registered/hrapplicationmanagement.html:120
+#: authentication/forms.py:9 authentication/forms.py:14
+#: stock/templates/registered/hrapplicationmanagement.html:26
+#: stock/templates/registered/hrapplicationmanagement.html:80
+#: stock/templates/registered/hrapplicationmanagement.html:124
 #: stock/templates/registered/hrapplicationsearchview.html:26
-#: stock/templates/registered/services.html:25
-#: stock/templates/registered/services.html:379
+#: stock/templates/registered/services.html:16
 msgid "Username"
 msgstr "Benutzername"
 
-#: authentication/forms.py:7
-#: customization/templates/registered/services.html:18
-#: customization/templates/registered/services.html:343
-#: registration/forms.py:12 services/forms.py:26 services/forms.py:30
-#: stock/templates/registered/services.html:26
-#: stock/templates/registered/services.html:380
+#: authentication/forms.py:10 authentication/forms.py:15 services/forms.py:25
 msgid "Password"
 msgstr "Passwort"
 
-#: corputils/forms.py:9
+#: authentication/forms.py:16
+msgid "Password Again"
+msgstr "Passwort wdh."
+
+#: authentication/forms.py:17
+msgid "Email"
+msgstr "E-Mail"
+
+#: authentication/forms.py:18
+msgid "Email Again"
+msgstr "E-Mail wdh."
+
+#: authentication/views.py:38 authentication/views.py:110
+msgid "Your account has been disabled."
+msgstr "Dein Account wurde deaktiviert."
+
+#: authentication/views.py:41
+msgid "Username/password invalid."
+msgstr "Benutzername/Passwort ungültig."
+
+#: authentication/views.py:72
+msgid "Add an API key to set up your account."
+msgstr "Füge einen API Key hinzu um deinen Account einzurichten."
+
+#: authentication/views.py:113
+msgid ""
+"Authenticated character has no owning account. Please log in with username "
+"and password."
+msgstr ""
+"Authentifizierter Charakter hat keinen zugehörigen Account. Bitte melde dich mit Benutzername und Passwort an."
+
+#: authentication/views.py:115
+msgid ""
+"No account exists with the authenticated character. Please create an account "
+"first."
+msgstr ""
+"Es existiert kein Account für den authentifizierten Character. Bitte erstelle einen Account."
+
+#: corputils/templates/corputils/base.html:3
+#: corputils/templates/corputils/base.html:4
+#: corputils/templates/corputils/base.html:7
+msgid "Corporation Member Data"
+msgstr "Corporation Mitgliedsdaten"
+
+#: corputils/templates/corputils/base.html:13
+msgid "Corporations"
+msgstr "Corporations"
+
+#: corputils/templates/corputils/base.html:24
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: corputils/templates/corputils/base.html:30
 msgid "Search characters..."
 msgstr "Suche Charaktere..."
 
-#: customization/templates/registered/dashboard.html:4
-#: customization/templates/registered/dashboard.html:14
-#: stock/templates/registered/dashboard.html:4
-#: stock/templates/registered/dashboard.html:9
-msgid "Dashboard"
-msgstr "Dashboard"
+#: corputils/templates/corputils/corpstats.html:28
+msgid "API Index:"
+msgstr "API Index:"
 
-#: customization/templates/registered/dashboard.html:24
-#: stock/templates/registered/corputils.html:107
-#: stock/templates/registered/corputilssearchview.html:40
-#: stock/templates/registered/dashboard.html:19
-msgid "Main character"
+#: corputils/templates/corputils/corpstats.html:41
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:25
+#: stock/templates/registered/groupmembers.html:13
+msgid "Members"
+msgstr "Mitgliederzahl:"
+
+#: corputils/templates/corputils/corpstats.html:44
+msgid "Last update:"
+msgstr "Letzes Update:"
+
+#: corputils/templates/corputils/corpstats.html:60
+#: corputils/templates/corputils/search.html:17
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:29
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:29
+#: stock/templates/registered/fleetupcharacters.html:46
+#: stock/templates/registered/groupmembers.html:19
+msgid "Character"
+msgstr "Charakter"
+
+#: corputils/templates/corputils/corpstats.html:64
+#: corputils/templates/corputils/search.html:20
+msgid "zKillboard"
+msgstr "zKillboard"
+
+#: corputils/templates/corputils/corpstats.html:65
+#: corputils/templates/corputils/search.html:21
+#: stock/templates/registered/dashboard.html:14
+#: stock/templates/registered/hrapplicationmanagement.html:81
+#: stock/templates/registered/hrapplicationmanagement.html:125
+#: stock/templates/registered/hrapplicationsearchview.html:27
+#: stock/templates/registered/hrapplicationview.html:34
+msgid "Main Character"
 msgstr "Hauptcharakter"
 
-#: customization/templates/registered/dashboard.html:48
-#: stock/templates/registered/dashboard.html:43
-msgid "Groups"
-msgstr "Gruppen"
+#: corputils/templates/corputils/corpstats.html:66
+#: corputils/templates/corputils/search.html:22
+msgid "Main Corporation"
+msgstr "Haupt Corporation"
 
-#: customization/templates/registered/dashboard.html:69
-#: stock/templates/registered/dashboard.html:64
-msgid "Not a part of the corporation."
-msgstr "Nicht Mitglied der Corporation"
+#: corputils/templates/corputils/corpstats.html:67
+#: corputils/templates/corputils/search.html:23
+msgid "Main Alliance"
+msgstr "Haupt Allianz"
 
-#: customization/templates/registered/dashboard.html:71
-#: stock/templates/registered/dashboard.html:66
-msgid "Not a part of the alliance."
-msgstr "Nicht Mitglied der Allianz"
+#: corputils/templates/corputils/corpstats.html:80
+#: corputils/templates/corputils/search.html:35
+msgid "Killboard"
+msgstr "Killboard"
 
-#: customization/templates/registered/fleetfits.html:8
-#: stock/templates/registered/fleetfits.html:8
-msgid "Alliance Fleet Doctrines"
-msgstr "Allianzflottendoktrinen"
+#: corputils/templates/corputils/search.html:8
+msgid "Search Results"
+msgstr "Suchergebnisse"
 
-#: customization/templates/registered/operationmanagement.html:8
-#: stock/templates/registered/operationmanagement.html:8
-msgid "Fleet Operation Management"
-msgstr "Flotten Operations Management"
+#: corputils/templates/corputils/search.html:18
+#: stock/templates/registered/fleetupcharacters.html:47
+#: stock/templates/registered/hrapplicationmanagement.html:27
+#: stock/templates/registered/hrapplicationmanagement.html:82
+#: stock/templates/registered/hrapplicationmanagement.html:126
+#: stock/templates/registered/hrapplicationsearchview.html:28
+msgid "Corporation"
+msgstr "Corporation"
 
-#: customization/templates/registered/operationmanagement.html:13
-#: stock/templates/registered/operationmanagement.html:13
-msgid "Fleet Operation Timers"
-msgstr "Flotten Operations Zeiten"
+#: corputils/templates/corputils/search.html:19
+msgid "API"
+msgstr "API"
 
-#: customization/templates/registered/operationmanagement.html:17
-#: stock/templates/registered/addoperation.html:9
-#: stock/templates/registered/operationmanagement.html:17
-msgid "Create Operation"
-msgstr "Operation erstellen"
+#: corputils/views.py:54
+msgid ""
+"Unrecognized corporation. Please ensure it is a member of the alliance or a "
+"blue."
+msgstr ""
+"Unbekannte Corporation. Bitte stelle sicher sie ist ein Mitglied der Allianz oder "
+"blau."
 
-#: customization/templates/registered/operationmanagement.html:24
-#: stock/templates/registered/fleetup.html:116
-#: stock/templates/registered/operationmanagement.html:24
-#: stock/templates/registered/timermanagement.html:24
-msgid "Current Eve Time:"
-msgstr "Momentane Eve Zeit"
+#: corputils/views.py:56
+msgid "Selected corp already has a statistics module."
+msgstr "Ausgewählte Corp hat bereits ein statistik modul."
 
-#: customization/templates/registered/operationmanagement.html:30
-#: optimer/form.py:14 stock/templates/registered/operationmanagement.html:30
-msgid "Operation Name"
-msgstr "Operationsname"
+#: corputils/views.py:58
+msgid "Failed to gather corporation statistics with selected token."
+msgstr "Fehler beim Sammeln von Corpstatistiken mit ausgewählten Token."
 
-#: customization/templates/registered/operationmanagement.html:31
-#: optimer/form.py:9 stock/templates/registered/fleetup.html:73
-#: stock/templates/registered/fleetupdoctrinesview.html:50
-#: stock/templates/registered/operationmanagement.html:31
-msgid "Doctrine"
-msgstr "Doktrin"
+#: eveonline/views.py:53
+msgid "Added API key %(apiid)s to your account."
+msgstr "API key %(apiid)s zum Account hinzugefügt."
 
-#: customization/templates/registered/operationmanagement.html:32
-#: stock/templates/registered/operationmanagement.html:32
-msgid "Form Up System"
-msgstr "Form Up System"
+#: eveonline/views.py:77
+msgid "API %(apiid)s already claimed by user %(user)s"
+msgstr "API %(apiid)s wird bereits von %(user)s genutzt"
 
-#: customization/templates/registered/operationmanagement.html:33
-#: stock/templates/registered/operationmanagement.html:33
-msgid "Form Up Location"
-msgstr "Form Up Location"
+#: eveonline/views.py:81
+msgid "API %(apiid)s has already been verified"
+msgstr "API %(apiid)s wurde bereits verifiziert"
 
-#: customization/templates/registered/operationmanagement.html:34
-#: optimer/form.py:12 stock/templates/registered/operationmanagement.html:34
-msgid "Start Time"
-msgstr "Startzeit"
+#: eveonline/views.py:90
+msgid "Confirmed ownership of API %(apiid)s"
+msgstr "Besitz von API %(apiid)s bestätigt"
 
-#: customization/templates/registered/operationmanagement.html:35
-#: stock/templates/registered/operationmanagement.html:35
-#: stock/templates/registered/timermanagement.html:35
-#: stock/templates/registered/timermanagement.html:137
-#: stock/templates/registered/timermanagement.html:239
-msgid "Local Time"
-msgstr "Ortszeit"
+#: eveonline/views.py:96
+msgid ""
+"%(character)s not found on API %(apiid)s. Please SSO as a character on the API."
+msgstr ""
+"%(character)s wurde nicht in API %(apiid)s gefunden. Bitte SSO als ein Charakter des API Keys."
 
-#: customization/templates/registered/operationmanagement.html:36
-#: optimer/form.py:13
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:44
-#: stock/templates/registered/fatlinkview.html:73
-#: stock/templates/registered/operationmanagement.html:36
-msgid "Duration"
-msgstr "Dauer"
+#: eveonline/views.py:131
+msgid "Deleted API key %(apiid)s"
+msgstr "API Key %(apiid)s wurde entfernt"
 
-#: customization/templates/registered/operationmanagement.html:37
-#: stock/templates/registered/operationmanagement.html:37
-msgid "FC"
-msgstr "FC"
+#: eveonline/views.py:154
+msgid "Changed main character ID to %(charid)s"
+msgstr "Hauptcharakter ID zu %(charid)s geändert"
 
-#: customization/templates/registered/operationmanagement.html:38
-#: stock/templates/registered/operationmanagement.html:38
-#: stock/templates/registered/timermanagement.html:30
-#: stock/templates/registered/timermanagement.html:132
-#: stock/templates/registered/timermanagement.html:234 timerboard/form.py:12
-msgid "Details"
-msgstr "Details"
+#: eveonline/views.py:157
+msgid ""
+"Failed to change main character - selected character is not owned by your "
+"account."
+msgstr ""
+"Hauptcharakter änderung fehlgeschlagen - ausgewählter Charakter gehört "
+"nicht zu deinem Account."
 
-#: customization/templates/registered/operationmanagement.html:39
-#: stock/templates/registered/operationmanagement.html:39
-#: stock/templates/registered/signaturemanagement.html:31
-#: stock/templates/registered/srpfleetdata.html:45
-msgid "Post Time"
-msgstr "Veröffentlichungs Zeit"
+#: eveonline/views.py:168
+msgid "Refreshed API key %(apiid)s"
+msgstr "API key %(apiid)s erneuert"
 
-#: customization/templates/registered/operationmanagement.html:41
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:41
-#: stock/templates/registered/fatlinkview.html:70
-#: stock/templates/registered/operationmanagement.html:41
-#: stock/templates/registered/signaturemanagement.html:33
-#: stock/templates/registered/timermanagement.html:36
-#: stock/templates/registered/timermanagement.html:138
-#: stock/templates/registered/timermanagement.html:240
-msgid "Creator"
-msgstr "Ersteller"
+#: eveonline/views.py:171
+msgid "You are not authorized to refresh that API key."
+msgstr "Es ist dir nicht erlaubt den API key zu erneuern."
 
-#: customization/templates/registered/operationmanagement.html:42
-#: customization/templates/registered/services.html:20
-#: customization/templates/registered/services.html:304
-#: customization/templates/registered/services.html:345
-#: customization/templates/registered/services.html:627
-#: stock/templates/registered/apikeymanagment.html:29
-#: stock/templates/registered/groupmanagement.html:20
-#: stock/templates/registered/groupmanagement.html:50
-#: stock/templates/registered/groups.html:19
-#: stock/templates/registered/operationmanagement.html:42
-#: stock/templates/registered/services.html:28
-#: stock/templates/registered/services.html:341
-#: stock/templates/registered/services.html:382
-#: stock/templates/registered/services.html:693
-#: stock/templates/registered/signaturemanagement.html:34
-#: stock/templates/registered/timermanagement.html:38
-#: stock/templates/registered/timermanagement.html:140
-#: stock/templates/registered/timermanagement.html:242
-msgid "Action"
-msgstr "Aktion"
+#: eveonline/views.py:174
+msgid "Unable to locate API key %(apiid)s"
+msgstr "API key %(apiid)s ist nicht auffindbar"
 
-#: customization/templates/registered/services.html:7
-#: stock/templates/registered/services.html:7
-msgid "Services Management"
-msgstr "Dienst Verwaltung"
-
-#: customization/templates/registered/services.html:12
-#: stock/templates/registered/services.html:12
-msgid "Available Services"
-msgstr "Verfügbare Dienste"
-
-#: customization/templates/registered/services.html:16
-#: customization/templates/registered/services.html:300
-#: customization/templates/registered/services.html:341
-#: customization/templates/registered/services.html:623
-#: stock/templates/registered/services.html:24
-#: stock/templates/registered/services.html:337
-#: stock/templates/registered/services.html:378
-#: stock/templates/registered/services.html:689
-msgid "Service"
-msgstr "Dienst"
-
-#: customization/templates/registered/services.html:19
-#: customization/templates/registered/services.html:344
-#: stock/templates/registered/services.html:27
-#: stock/templates/registered/services.html:381
-msgid "Domain"
-msgstr "Domain"
-
-#: customization/templates/registered/services.html:301
-#: customization/templates/registered/services.html:624
-#: stock/templates/registered/services.html:338
-#: stock/templates/registered/services.html:690
-msgid "Unique ID"
-msgstr "Einzigartige ID"
-
-#: customization/templates/registered/services.html:303
-#: customization/templates/registered/services.html:626
-#: stock/templates/registered/services.html:340
-#: stock/templates/registered/services.html:692
-msgid "Quick Link"
-msgstr "Schnell Link"
-
-#: customization/templates/registered/services.html:663
-#: stock/templates/registered/groups.html:57
-#: stock/templates/registered/services.html:729
-msgid "You are not in the corporation."
-msgstr "Du bist nicht in dieser Corporation."
-
-#: customization/templates/registered/services.html:665
-#: stock/templates/registered/groups.html:59
-#: stock/templates/registered/services.html:731
-msgid "You are not in the alliance."
-msgstr "Du bist kein Mitglied der Allianz."
-
-#: customization/templates/registered/teamspeakjoin.html:8
-#: stock/templates/registered/teamspeakjoin.html:8
-msgid "Verify Teamspeak"
-msgstr "Teamspeak bestätigen"
-
-#: customization/templates/registered/teamspeakjoin.html:13
-#: stock/templates/registered/teamspeakjoin.html:13
-msgid "Verify Teamspeak Identity"
-msgstr "Teamspeak-Identität bestätigen"
-
-#: customization/templates/registered/teamspeakjoin.html:16
-#: stock/templates/registered/teamspeakjoin.html:16
-msgid "Join Server"
-msgstr "Server beitreten"
-
-#: customization/templates/registered/teamspeakjoin.html:22
-#: stock/templates/registered/teamspeakjoin.html:22
-msgid "Continue"
-msgstr "Fortsetzen"
-
-#: fleetactivitytracking/forms.py:15
+#: fleetactivitytracking/forms.py:17
 msgid "Name of fat-link"
 msgstr "Name des fat-links:"
 
-#: fleetactivitytracking/forms.py:16
+#: fleetactivitytracking/forms.py:18
 msgid "Duration of fat-link"
 msgstr "Dauer des fat-link"
 
-#: fleetactivitytracking/forms.py:17
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:42
-#: stock/templates/registered/fatlinkview.html:71
+#: fleetactivitytracking/forms.py:20
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:39
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:76
 msgid "Fleet"
 msgstr "Flotte"
 
-#: groupmanagement/views.py:163 groupmanagement/views.py:183
-#: stock/templates/registered/hrapplicationmanagement.html:36
-#: stock/templates/registered/hrapplicationmanagement.html:70
-#: stock/templates/registered/hrapplicationmanagement.html:96
-#: stock/templates/registered/hrapplicationmanagement.html:137
-#: stock/templates/registered/hrapplicationsearchview.html:40
-#: stock/templates/registered/hrapplicationview.html:21
-#: stock/templates/registered/srpfleetdata.html:78
-#: stock/templates/registered/srpmanagement.html:83
-msgid "Pending"
-msgstr "Ausstehend"
+#: fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:4
+msgid "Fleet Participation"
+msgstr "Flotten Teilnahme"
 
-#: hrapplications/forms.py:5
-#: stock/templates/registered/hrapplicationview.html:92
-msgid "Comment"
-msgstr "Kommentar"
+#: fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:6
+msgid "Character not found!"
+msgstr "Charakter nicht gefunden!"
 
-#: hrapplications/forms.py:8
-msgid "Search String"
-msgstr "Suchbegriff"
+#: fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:17
+msgid "Character not registered!"
+msgstr "Charakter nicht registriert!"
 
-#: optimer/form.py:10 sigtracker/form.py:12
-#: stock/templates/registered/fatlinkmodify.html:25
-#: stock/templates/registered/fatlinkview.html:29
-#: stock/templates/registered/signaturemanagement.html:24
-#: stock/templates/registered/timermanagement.html:32
-#: stock/templates/registered/timermanagement.html:134
-#: stock/templates/registered/timermanagement.html:236 timerboard/form.py:13
+#: fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:18
+msgid "This character is not part of any registered API-key. You must go to"
+msgstr "Dieser Charakter ist nicht Teil eines registrierten API-Keys. Gehe zur"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:18
+msgid ""
+"API key management</a> and add an API with the character on before being "
+"able to click fleet attendance links."
+msgstr "API key verwaltung</a> und füge eine API für diesen Charakter hinzu bevor du fat links klickst."
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:8
+msgid "Create Fatlink"
+msgstr "Erstelle Fatlink"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:14
+#: stock/templates/registered/addoperation.html:15
+#: stock/templates/registered/addoperation.html:24
+msgid "Create Fleet Operation"
+msgstr "Flotten-Operation erstellen"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:18
+msgid "Bad request!"
+msgstr "Fehlerhafte Anfrage!"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:29
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:66
+msgid "Create fatlink"
+msgstr "Erstelle fatlink"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:7
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:7
+msgid "Fatlink view"
+msgstr "Fatlink sehen"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:11
+msgid "Edit fatlink"
+msgstr "Editiere fatlink"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:15
+msgid "Delete fat"
+msgstr "Lösche fat"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:21
+msgid "Registered characters"
+msgstr "Registrierte Charaktere"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:28
+#: stock/templates/registered/groupmembers.html:18
+#: stock/templates/registered/hrapplicationview.html:33
+msgid "User"
+msgstr "Benutzername"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:30
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:30
+#: optimer/form.py:8 stock/templates/registered/timermanagement.html:31
+#: stock/templates/registered/timermanagement.html:163
+#: stock/templates/registered/timermanagement.html:295 timerboard/form.py:18
 msgid "System"
 msgstr "System"
 
-#: optimer/form.py:11 stock/templates/registered/fleetup.html:72
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:31
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:22
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:31
+msgid "Ship"
+msgstr "Schiff"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:32
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:40
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:32
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:77
+#: stock/templates/registered/fleetup.html:57
+#: stock/templates/registered/fleetup.html:59
+#: stock/templates/registered/timermanagement.html:33
+#: stock/templates/registered/timermanagement.html:165
+#: stock/templates/registered/timermanagement.html:297
+msgid "Eve Time"
+msgstr "Eve Zeit"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:40
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:39
+#, python-format
+msgid "Docked in %(fat.system)s"
+msgstr "Docked in %(fat.system)s"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:7
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:7
+msgid "Personal fatlink statistics"
+msgstr "Persönliche fatlink Statistic"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:11
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:11
+#, python-format
+msgid "Participation data statistics for %(month)s, %(year)s"
+msgstr "Teilnahme Statistic für %(month)s, %(year)s"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:14
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:13
+msgid "Previous month"
+msgstr "Vorheriger Monat"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:15
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:15
+msgid "Next month"
+msgstr "Nächster Monat"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:19
+#, python-format
+msgid "%(user)s has collected %(n_fats)s links this month."
+msgstr "%(user)s hat diesen Monat %(n_fats)s gesammelt."
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:23
+msgid "Times used"
+msgstr "male genutzt"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:33
+#, python-format
+msgid "%(user)s has created %(n_created_fats)s links this month."
+msgstr "%(user)s hat diesen Monat %(n_created_fats)s links erstellt."
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:37
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:74
+#: stock/templates/registered/dashboard.html:88
+#: stock/templates/registered/fleetupdoctrine.html:49
+#: stock/templates/registered/fleetupdoctrinesview.html:49
+#: stock/templates/registered/fleetupfittingsview.html:40
+#: stock/templates/registered/groupmembership.html:18
+#: stock/templates/registered/groups.html:17
+#: stock/templates/registered/hrapplicationview.html:47
+msgid "Name"
+msgstr "Name"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:38
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:75
+#: stock/templates/registered/operationmanagement.html:40
+#: stock/templates/registered/timermanagement.html:35
+#: stock/templates/registered/timermanagement.html:167
+#: stock/templates/registered/timermanagement.html:299
+msgid "Creator"
+msgstr "Ersteller"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:41
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:78
+#: optimer/form.py:11 stock/templates/registered/operationmanagement.html:35
+msgid "Duration"
+msgstr "Dauer"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:42
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:79
+msgid "Edit"
+msgstr "Editieren"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:11
+msgid "Participation data statistics for %(year)s"
+msgstr "Teilnahme Statistic für %(year)s"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:13
+msgid "Previous year"
+msgstr "Vorheriges Jahr"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:15
+msgid "Next year"
+msgstr "Nächstes Jahr"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:22
+msgid "Month"
+msgstr "Monat"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:23
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:26
+msgid "Fats"
+msgstr "Fats"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:7
+msgid "Fatlink statistics"
+msgstr "Fatlink Statistik"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
+msgid "Ticker"
+msgstr "Ticker: "
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:24
+#: stock/templates/registered/dashboard.html:89
+#: stock/templates/registered/groupmembers.html:20
+#: stock/templates/registered/hrapplicationview.html:48
+msgid "Corp"
+msgstr "Corp"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:27
+msgid "Average fats"
+msgstr "Durchschnittliche fats"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:11
+msgid "Participation data"
+msgstr "Teilnahme Daten"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:15
+msgid "Most recent clicked fatlinks"
+msgstr "Letzter geklickter fatlink"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:20
+msgid "Personal statistics"
+msgstr "Persönliche Statistik"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
+msgid "fatname"
+msgstr "fatname"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:49
+msgid "No fleet activity on record."
+msgstr "Keine Flotten aktivität bekannt."
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:56
+msgid "Most recent fatlinks"
+msgstr "Letzter fatlink"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:61
+msgid "View statistics"
+msgstr "Statistik"
+
+#: fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:98
+msgid "No created fatlinks on record."
+msgstr "Keine erstellten fatlinks bekannt."
+
+#: fleetactivitytracking/views.py:237
+msgid "Fleet participation registered."
+msgstr "Flotten Teilnahme registriert."
+
+#: fleetactivitytracking/views.py:248
+msgid "FAT link has expired."
+msgstr "FAT link ist abgelaufen."
+
+#: fleetactivitytracking/views.py:250
+msgid "Invalid FAT link."
+msgstr "Ungültiger FAT link."
+
+#: groupmanagement/views.py:122
+msgid "Removed user %(user)s from group %(group)s."
+msgstr "Benutzer %(user)s von Gruppe %(group)s entfernt."
+
+#: groupmanagement/views.py:124
+msgid "User does not exist in that group"
+msgstr "Benutzer existiert nicht in dieser Gruppe"
+
+#: groupmanagement/views.py:127
+msgid "Group does not exist"
+msgstr "Gruppe existiert nicht"
+
+#: groupmanagement/views.py:152
+msgid "Accepted application from %(mainchar)s to %(group)s."
+msgstr "Anfrage von %(mainchar)s zur Gruppe %(group)s beizutreten Akzeptiert."
+
+#: groupmanagement/views.py:159 groupmanagement/views.py:191
+msgid ""
+"An unhandled error occurred while processing the application from "
+"%(mainchar)s to %(group)s."
+msgstr ""
+"Bei der bearbeitung der Anfrage von %(mainchar)s zur Gruppe %(group)s "
+"beizutreten ist ein unbehandelter Fehler aufgetreten."
+
+#: groupmanagement/views.py:184
+msgid "Rejected application from %(mainchar)s to %(group)s."
+msgstr "Anfrage von %(mainchar)s zur Gruppe %(group)s beizutreten Abgelehnt."
+
+#: groupmanagement/views.py:219
+msgid "Accepted application from %(mainchar)s to leave %(group)s."
+msgstr "Anfrage von %(mainchar)s die Gruppe %(group)s zu verlassen Akzeptiert."
+
+#: groupmanagement/views.py:225 groupmanagement/views.py:258
+msgid ""
+"An unhandled error occured while processing the application from %(mainchar)s "
+"to leave %(group)s."
+msgstr ""
+"Bei der bearbeitung der Anfrage von %(mainchar)s die Gruppe %(group)s "
+"zu verlassen ist ein unbehandelter Fehler aufgetreten."
+
+#: groupmanagement/views.py:251
+msgid "Rejected application from %(mainchar)s to leave %(group)s."
+msgstr "Anfrage von %(mainchar)s die Gruppe %(group)s zu verlassen Abgelehnt."
+
+#: groupmanagement/views.py:290
+msgid "You cannot join that group"
+msgstr "Du kannst dieser Gruppe nicht beitreten"
+
+#: groupmanagement/views.py:298 groupmanagement/views.py:329
+#: stock/templates/registered/hrapplicationmanagement.html:37
+#: stock/templates/registered/hrapplicationmanagement.html:70
+#: stock/templates/registered/hrapplicationmanagement.html:97
+#: stock/templates/registered/hrapplicationmanagement.html:141
+#: stock/templates/registered/hrapplicationsearchview.html:40
+#: stock/templates/registered/hrapplicationview.html:22
+#: stock/templates/registered/srpfleetdata.html:75
+#: stock/templates/registered/srpmanagement.html:79
+msgid "Pending"
+msgstr "Ausstehend"
+
+#: groupmanagement/views.py:305
+msgid "Applied to group %(group)s."
+msgstr "Für die Gruppe %(group)s beworben."
+
+#: groupmanagement/views.py:316
+msgid "You cannot leave that group"
+msgstr "Du kannst diese Gruppe nicht verlassen"
+
+#: groupmanagement/views.py:321
+msgid "You are not a member of that group"
+msgstr "Du bist kein Mitglied dieser Gruppe"
+
+#: groupmanagement/views.py:336
+msgid "Applied to leave group %(group)s."
+msgstr "Anfrage die Gruppe %(group)s zu verlassen gesendet."
+
+#: hrapplications/forms.py:7
+#: stock/templates/registered/hrapplicationview.html:111
+msgid "Comment"
+msgstr "Kommentar"
+
+#: hrapplications/forms.py:11
+msgid "Search String"
+msgstr "Suchbegriff"
+
+#: notifications/views.py:37
+msgid "You are not authorized to view that notification."
+msgstr "Du bist nicht autorisiert diese Mitteilung zu sehen."
+
+#: notifications/views.py:49
+msgid "Deleted notification."
+msgstr "Mitteilung gelöscht."
+
+#: notifications/views.py:53
+msgid "Failed to locate notification."
+msgstr "Mitteilung konnte nicht gefunden werden."
+
+#: notifications/views.py:61
+msgid "Marked all notifications as read."
+msgstr "Alle Mitteilungen als gelesen Markieren."
+
+#: notifications/views.py:69
+msgid "Deleted all read notifications."
+msgstr "Alle gelesenen Mitteilungen gelöscht."
+
+#: optimer/form.py:7 stock/templates/registered/fleetup.html:73
+#: stock/templates/registered/fleetupdoctrinesview.html:50
+#: stock/templates/registered/operationmanagement.html:30
+msgid "Doctrine"
+msgstr "Doktrin"
+
+#: optimer/form.py:9 stock/templates/registered/fleetup.html:72
 #: stock/templates/registered/fleetup.html:158
 msgid "Location"
 msgstr "Ort"
 
-#: optimer/form.py:15 stock/templates/registered/srpmanagement.html:37
+#: optimer/form.py:10 stock/templates/registered/operationmanagement.html:33
+msgid "Start Time"
+msgstr "Startzeit"
+
+#: optimer/form.py:12 stock/templates/registered/operationmanagement.html:29
+msgid "Operation Name"
+msgstr "Operationsname"
+
+#: optimer/form.py:13 stock/templates/registered/srpmanagement.html:38
 msgid "Fleet Commander"
 msgstr "Flottenkommandeur"
 
-#: optimer/form.py:16
+#: optimer/form.py:14
 msgid "Extra Details"
 msgstr "Zusätzliche Details"
 
-#: registration/forms.py:13
-msgid "Password Again"
-msgstr "Passwort wdh."
+#: optimer/views.py:57
+msgid "Created operation timer for %(opname)s."
+msgstr "Operation timer für %(opname)s erstellt."
 
-#: registration/forms.py:14
-msgid "Email"
-msgstr "E-Mail"
+#: optimer/views.py:76
+msgid "Removed operation timer for %(opname)s."
+msgstr "Operation timer für %(opname)s entfernt."
 
-#: registration/forms.py:15
-msgid "Email Again"
-msgstr "E-Mail wdh."
+#: optimer/views.py:105
+msgid "Saved changes to operation timer for %(opname)s."
+msgstr "Änderungen for operation timer %(opname)s gespeichert."
 
-#: services/forms.py:6
-msgid "Group"
-msgstr "Gruppen"
-
-#: services/forms.py:7
-msgid "Message"
-msgstr "Nachricht"
-
-#: services/forms.py:11
+#: services/forms.py:8
 msgid "Name of Fleet:"
 msgstr "SRP Flotte erstellen:"
 
-#: services/forms.py:12
+#: services/forms.py:9
 msgid "Fleet Commander:"
 msgstr "Flottenkommandeur:"
 
-#: services/forms.py:13
+#: services/forms.py:10
 msgid "Fleet Comms:"
 msgstr "Flotten Comms:"
 
-#: services/forms.py:14
+#: services/forms.py:11
 msgid "Fleet Type:"
 msgstr "Flottenzeit:"
 
-#: services/forms.py:15
+#: services/forms.py:12
 msgid "Ship Priorities:"
 msgstr "Schiffs priorität:"
 
-#: services/forms.py:16
+#: services/forms.py:13
 msgid "Formup Location:"
 msgstr "Formup Location:"
 
-#: services/forms.py:17
+#: services/forms.py:14
 msgid "Formup Time:"
 msgstr "Formup Zeit:"
 
-#: services/forms.py:18
+#: services/forms.py:15
 msgid "Expected Duration:"
 msgstr "Erwartete Dauer:"
 
-#: services/forms.py:19
+#: services/forms.py:16
 msgid "Purpose:"
 msgstr "Grund:"
 
-#: services/forms.py:20
+#: services/forms.py:17
 msgid "Reimbursable?*"
 msgstr "Erstattungsfähig?"
 
-#: services/forms.py:20 services/forms.py:21
+#: services/forms.py:17 services/forms.py:19
 msgid "Yes"
 msgstr "Ja"
 
-#: services/forms.py:20 services/forms.py:21
+#: services/forms.py:17 services/forms.py:19
 msgid "No"
 msgstr "Nein"
 
-#: services/forms.py:21
+#: services/forms.py:19
 msgid "Important?*"
 msgstr "Wichtig?"
 
-#: services/forms.py:22
+#: services/forms.py:21
 msgid "Comments"
 msgstr "Kommentar"
 
-#: services/forms.py:25
-msgid "Email Address"
-msgstr "Email Adresse"
-
-#: services/forms.py:27
-msgid "Update Avatar"
-msgstr "Signatur aktualisieren"
-
-#: services/forms.py:34
+#: services/forms.py:30
 msgid "Password must be at least 8 characters long."
 msgstr "Passwort muss mindestens 8 Zeichen lang sein"
 
-#: services/forms.py:43
+#: services/modules/discord/templates/registered/discord_service_ctrl.html:23
+msgid "Link Discord Server"
+msgstr "Verbinde zu Discord Server"
+
+#: services/modules/openfire/forms.py:8
+msgid "Group"
+msgstr "Gruppen"
+
+#: services/modules/openfire/forms.py:9
+msgid "Message"
+msgstr "Nachricht"
+
+#: services/modules/openfire/urls.py:16
+msgid "^set_password/$"
+msgstr ""
+
+#: services/modules/openfire/urls.py:25
+msgid "^services/jabber_broadcast/$"
+msgstr ""
+
+#: services/modules/teamspeak3/forms.py:15
 #, python-format
 msgid "Unable to locate user %s on server"
 msgstr "Unfähig den Benutzer %s auf dem Server zu finden"
 
-#: sigtracker/form.py:7
-msgid "More Than 50%"
-msgstr "Mehr als 50%"
+#: services/modules/teamspeak3/templates/registered/teamspeak3_service_ctrl.html:4
+#: stock/templates/registered/services.html:15
+msgid "Service"
+msgstr "Dienst"
 
-#: sigtracker/form.py:7
-msgid "Less Than 50%"
-msgstr "Weniger als 50%"
+#: services/modules/teamspeak3/templates/registered/teamspeak3_service_ctrl.html:5
+msgid "Unique ID"
+msgstr "Einzigartige ID"
 
-#: sigtracker/form.py:7
-msgid "Less Than 10%"
-msgstr "Weniger als 10%"
+#: services/modules/teamspeak3/templates/registered/teamspeak3_service_ctrl.html:7
+#: stock/templates/registered/groupmanagement.html:26
+#: stock/templates/registered/groupmanagement.html:57
+#: stock/templates/registered/groupmembers.html:22
+#: stock/templates/registered/groupmembership.html:22
+#: stock/templates/registered/groups.html:19
+#: stock/templates/registered/notification_list.html:30
+#: stock/templates/registered/notification_list.html:61
+#: stock/templates/registered/operationmanagement.html:41
+#: stock/templates/registered/services.html:18
+#: stock/templates/registered/timermanagement.html:37
+#: stock/templates/registered/timermanagement.html:169
+#: stock/templates/registered/timermanagement.html:301
+msgid "Action"
+msgstr "Aktion"
 
-#: sigtracker/form.py:8
-msgid "More Than 24 Hours"
-msgstr "Mehr als 24 Stunden"
+#: services/modules/teamspeak3/templates/registered/teamspeak3_service_ctrl.html:20
+msgid "Quick Link"
+msgstr "Schnell Link"
 
-#: sigtracker/form.py:8
-msgid "Less Than 24 Hours"
-msgstr "Weniger als 24 Stunden"
+#: services/views.py:59
+msgid "There's a problem with your main character. Please select a new one."
+msgstr "Es gibt ein Problem mit deinem Hauptcharakter. Bitte wähle einen neuen aus"
 
-#: sigtracker/form.py:8
-msgid "Less Than 4 Hours"
-msgstr "Weniger als 4 Stunden"
-
-#: sigtracker/form.py:9
-msgid "Only Smallest"
-msgstr "Nur kleinste"
-
-#: sigtracker/form.py:9
-msgid "Up to Medium"
-msgstr "bis mittel"
-
-#: sigtracker/form.py:9
-msgid "Larger"
-msgstr "Größere"
-
-#: sigtracker/form.py:9
-msgid "Very Large"
-msgstr "Sehr Große"
-
-#: sigtracker/form.py:13
-#: stock/templates/registered/signaturemanagement.html:23
-msgid "ID"
-msgstr "ID"
-
-#: sigtracker/form.py:14
-#: stock/templates/registered/signaturemanagement.html:27
-msgid "Lifetime Status"
-msgstr "Lebenszeit Status"
-
-#: sigtracker/form.py:15
-#: stock/templates/registered/signaturemanagement.html:28
-msgid "Mass Status"
-msgstr "Masse Status"
-
-#: sigtracker/form.py:16
-#: stock/templates/registered/signaturemanagement.html:29
-msgid "Ship Size"
-msgstr "Schiffsgröße"
-
-#: sigtracker/form.py:17
-msgid "End Destination"
-msgstr "Ziel"
-
-#: sigtracker/form.py:18
-#: stock/templates/registered/signaturemanagement.html:26
-msgid "Goes Through"
-msgstr "Geht durch"
-
-#: sigtracker/form.py:19
-#: stock/templates/registered/signaturemanagement.html:30
-msgid "Notes"
-msgstr "Notizen"
-
-#: srp/form.py:6 stock/templates/registered/srpmanagement.html:34
+#: srp/form.py:7 stock/templates/registered/srpmanagement.html:35
 msgid "Fleet Name"
 msgstr "Flottenname"
 
-#: srp/form.py:7 stock/templates/registered/srpmanagement.html:35
+#: srp/form.py:8 stock/templates/registered/srpmanagement.html:36
 msgid "Fleet Time"
 msgstr "Flottenzeit"
 
-#: srp/form.py:8 stock/templates/registered/srpmanagement.html:36
+#: srp/form.py:9 stock/templates/registered/srpmanagement.html:37
 msgid "Fleet Doctrine"
 msgstr "Flottendoktrin"
 
-#: srp/form.py:12 stock/templates/registered/srpfleetdata.html:41
+#: srp/form.py:13 stock/templates/registered/srpfleetdata.html:42
 msgid "Additional Info"
 msgstr "Zusätzliche Info"
 
-#: srp/form.py:14
+#: srp/form.py:15
 msgid "zKillboard Link"
 msgstr "zKillboard Link"
 
-#: srp/form.py:28
+#: srp/form.py:24
+msgid "Invalid Link. Please use zKillboard.com"
+msgstr "Ungültiger Link. Bitte benutze zKillboard.com"
+
+#: srp/form.py:29
 msgid "Total SRP Amount"
 msgstr "Aktualisiere SRP Menge"
 
-#: srp/form.py:32
+#: srp/form.py:33
 msgid "After Action Report Link"
 msgstr "Abschlussbericht Link"
 
-#: stock/templates/public/base.html:82
+#: srp/views.py:97
+msgid "Created SRP fleet %(fleetname)s."
+msgstr "SRP Flotte %(fleetname)s erstellt."
+
+#: srp/views.py:116
+msgid "Removed SRP fleet %(fleetname)s."
+msgstr "SRP Flotte %(fleetname)s entfernt."
+
+#: srp/views.py:120 srp/views.py:137 srp/views.py:154 srp/views.py:171
+#: srp/views.py:189 srp/views.py:393
+msgid "Unable to locate SRP fleet with ID %(fleetid)s"
+msgstr "Unfähig SRP Flotte mit der ID %(fleetid)s zu finden"
+
+#: srp/views.py:133
+msgid "Disabled SRP fleet %(fleetname)s."
+msgstr "SRP link für %(fleetname)s deaktiviert."
+
+#: srp/views.py:150
+msgid "Enabled SRP fleet %(fleetname)s."
+msgstr "SRP link für %(fleetname)s aktiviert."
+
+#: srp/views.py:167
+msgid "Marked SRP fleet %(fleetname)s as completed."
+msgstr "SRP Flotte %(fleetname)s als vollständig markiert."
+
+#: srp/views.py:184
+#, python-brace-format
+msgid "Marked SRP fleet %(fleetname)s as incomplete."
+msgstr "SRP Flotte %(fleetname)s als unvollständig markiert."
+
+#: srp/views.py:228
+msgid ""
+"Your SRP request Killmail link is invalid. Please make sure you are using "
+"zKillboard."
+msgstr ""
+"Der Killmail link deiner SRP anfrage ist ungültig. Bitte stelle sicher, "
+"dass du zKillboard benutzt."
+
+#: srp/views.py:239
+msgid "Submitted SRP request for your %(ship)s."
+msgstr "SRP anfrage für %(ship)s gesendet."
+
+#: srp/views.py:261
+msgid "Deleted SRP request from %(character)s for their %(ship)s."
+msgstr "SPR anfrage von %(character)s für %(ship)s entfernt."
+
+#: srp/views.py:266 srp/views.py:299 srp/views.py:331 srp/views.py:345
+msgid "Unable to locate SRP request with ID %(requestid)s"
+msgstr "Unfähig SRP anfrage mit der ID %(requestid)s zu finden."
+
+#: srp/views.py:287
+msgid "Approved SRP request from %(character)s for their %(ship)s."
+msgstr "SRP anfrage von %(character)s für %(ship)s genehmigt."
+
+#: srp/views.py:318
+msgid "Rejected SRP request from %(character)s for their %(ship)s."
+msgstr "SRP anfrage von %(character)s für %(ship)s abgelehnt."
+
+#: srp/views.py:357
+msgid "Updated SRP amount."
+msgstr "Aktualisiere SRP Menge"
+
+#: srp/views.py:382
+msgid "Saved changes to SRP fleet %(fleetname)s"
+msgstr "Änderungen der SRP flotte %(fleetname)s gespeichert"
+
+#: stock/templates/public/base.html:85
+msgid "Admin"
+msgstr "Admin"
+
+#: stock/templates/public/base.html:87
 msgid "Logout"
 msgstr "Ausloggen"
 
-#: stock/templates/public/base.html:84
-#: stock/templates/registration/password_reset_complete.html:54
+#: stock/templates/public/base.html:89 stock/templates/public/login.html:14
+#: stock/templates/registration/password_reset_complete.html:49
 msgid "Login"
 msgstr "Einloggen"
 
-#: stock/templates/public/base.html:95
+#: stock/templates/public/base.html:101
 msgid "Main Navigation"
 msgstr "Haupmenü"
 
-#: stock/templates/public/base.html:101
+#: stock/templates/public/base.html:106
 msgid " Dashboard"
 msgstr " Dashboard"
 
-#: stock/templates/public/base.html:107
-msgid " Api Keys"
-msgstr " API Keys"
-
 #: stock/templates/public/base.html:113
-msgid " Characters"
-msgstr " Charaktere"
-
-#: stock/templates/public/base.html:120
 msgid " Groups"
 msgstr " Gruppen"
 
-#: stock/templates/public/base.html:127
+#: stock/templates/public/base.html:120
 msgid " Help"
 msgstr " Hilfe"
 
-#: stock/templates/public/base.html:132
+#: stock/templates/public/base.html:126
 msgid "Aux Navigation"
 msgstr "Zusatz Navigation"
 
-#: stock/templates/public/base.html:138
+#: stock/templates/public/base.html:131
 msgid " Services"
 msgstr " Dienste"
 
-#: stock/templates/public/base.html:147
+#: stock/templates/public/base.html:140
 msgid " Applications"
 msgstr " Bewerbungen"
 
-#: stock/templates/public/base.html:155
+#: stock/templates/public/base.html:148
 msgid " Corporation Stats"
 msgstr " Korporationsstatistiken"
 
-#: stock/templates/public/base.html:163
+#: stock/templates/public/base.html:156
 msgid " Group Management"
 msgstr " Gruppenverwaltung"
 
-#: stock/templates/public/base.html:171
-msgid " Fleet Doctrines"
-msgstr " Flottendoktrinen"
-
-#: stock/templates/public/base.html:186
-msgid " Wormhole Tracker"
-msgstr " Wurmloch Tracker"
-
-#: stock/templates/public/base.html:193
+#: stock/templates/public/base.html:174
 msgid " Fleet Operations"
 msgstr " Flottenoperationen"
 
-#: stock/templates/public/base.html:200
+#: stock/templates/public/base.html:181
 msgid " Structure Timers"
 msgstr " Strukturen Timer"
 
-#: stock/templates/public/base.html:213
+#: stock/templates/public/base.html:188
+msgid " Fleet Activity Tracking"
+msgstr " Flottenaktivitäts-Tracking"
+
+#: stock/templates/public/base.html:194
 msgid " Ship Replacement"
 msgstr " Schiff’s erstattung"
 
-#: stock/templates/public/base.html:220
+#: stock/templates/public/base.html:200
 msgid "Util"
 msgstr "Werkzeuge"
 
-#: stock/templates/public/base.html:225
+#: stock/templates/public/base.html:204
 #: stock/templates/registration/password_change_done.html:10
 #: stock/templates/registration/password_change_form.html:9
 #: stock/templates/registration/password_change_form.html:18
-#: stock/templates/registration/password_reset_confirm.html:53
+#: stock/templates/registration/password_reset_confirm.html:49
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: stock/templates/public/base.html:233
+#: stock/templates/public/base.html:211
 msgid " Fleet Broadcast Formatter"
 msgstr "Flottenübertragungen Formatierer "
 
-#: stock/templates/public/base.html:241
-msgid " Jabber Broadcast"
-msgstr " Jabberübertragungen"
-
-#: stock/templates/public/login.html:55
-msgid "Username/Password Invalid"
-msgstr "Benutzername/Passwort ungültig"
-
-#: stock/templates/public/login.html:58
-#: stock/templates/public/register.html:62
-msgid "Register"
-msgstr "Registrieren"
-
-#: stock/templates/public/login.html:63
+#: stock/templates/public/login.html:57
 msgid "Please sign in"
 msgstr "Bitte einloggen"
 
-#: stock/templates/public/login.html:66
+#: stock/templates/public/login.html:62
 msgid "Sign in"
 msgstr "Einloggen"
 
-#: stock/templates/public/login.html:71
+#: stock/templates/public/login.html:68
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: stock/templates/public/register.html:56
+#: stock/templates/public/login.html:71
+#: stock/templates/public/register.html:57
+msgid "Register"
+msgstr "Registrieren"
+
+#: stock/templates/public/register.html:13
+msgid "Registration"
+msgstr "Registration"
+
+#: stock/templates/public/register.html:51
 msgid "Username Already Registered"
 msgstr "Name ist bereit in Benutzung"
 
-#: stock/templates/public/register.html:60
+#: stock/templates/public/register.html:55
 msgid "Register Account"
 msgstr "Registriere Account"
 
@@ -927,19 +1204,6 @@ msgstr ""
 msgid "Member API keys need to be account-wide."
 msgstr "Mitglieder API Key muss für den ganzen Account sein."
 
-#: stock/templates/registered/addapikey.html:27
-#, python-format
-msgid ""
-"<a target=\"_blank\"\n"
-"                           href=\"https://community.eveonline.com/support/"
-"api-key/CreatePredefined?accessMask=%(MEMBER_API_MASK)s\">Create\n"
-"                            a full API key</a>"
-msgstr ""
-"<a target=\"_blank\"\n"
-"                           href=\"https://community.eveonline.com/support/"
-"api-key/CreatePredefined?accessMask=%(MEMBER_API_MASK)s\">Einen\n"
-"                            vollständigen API Key erstellen</a>"
-
 #: stock/templates/registered/addapikey.html:32
 #, python-format
 msgid ""
@@ -950,43 +1214,29 @@ msgstr "Blaue API Key erfordern Zugriffsmaske %(BLUE_API_MASK)s oder höher"
 msgid "BLUE API keys need to be account-wide."
 msgstr "BLAUE API Keys müssen Account-weit sein."
 
-#: stock/templates/registered/addapikey.html:40
-#, python-format
-msgid ""
-"<a target=\"_blank\"\n"
-"                           href=\"https://community.eveonline.com/support/"
-"api-key/CreatePredefined?accessMask=%(BLUE_API_MASK)s\">Create\n"
-"                            a blue key</a>"
-msgstr ""
-"<a target=\"_blank\"\n"
-"                           href=\"https://community.eveonline.com/support/"
-"api-key/CreatePredefined?accessMask=%(BLUE_API_MASK)s\">Einen blauen Key "
-"erstellen</a>"
-
 #: stock/templates/registered/addapikey.html:49
-#: stock/templates/registered/apikeymanagment.html:21
 msgid "Add Key"
 msgstr "Key hinzufügen"
 
-#: stock/templates/registered/addoperation.html:15
-#: stock/templates/registered/addoperation.html:24
-#: stock/templates/registered/fatlinkformatter.html:13
-msgid "Create Fleet Operation"
-msgstr "Flotten-Operation erstellen"
+#: stock/templates/registered/addoperation.html:7
+msgid "Alliance Auth - Fleet Operation Create"
+msgstr "Allianz Auth - Flotten Operation Erstellen"
 
-#: stock/templates/registered/addsignature.html:8
-#: stock/templates/registered/addsignature.html:14
-#: stock/templates/registered/addsignature.html:23
-#: stock/templates/registered/signaturemanagement.html:16
-msgid "Create Signature"
-msgstr "Signatur erstellen"
+#: stock/templates/registered/addoperation.html:9
+#: stock/templates/registered/operationmanagement.html:16
+msgid "Create Operation"
+msgstr "Operation erstellen"
+
+#: stock/templates/registered/addtimer.html:7
+msgid "Alliance Auth - Structure Timer Create"
+msgstr "Allianz Auth - Struktur Timer Erstellen"
 
 #: stock/templates/registered/addtimer.html:9
 msgid "Timer Create"
 msgstr "Timer erstellen"
 
 #: stock/templates/registered/addtimer.html:15
-#: stock/templates/registered/timermanagement.html:17
+#: stock/templates/registered/timermanagement.html:16
 msgid "Create Structure Timer"
 msgstr "Struktur-Timer erstellen"
 
@@ -994,31 +1244,28 @@ msgstr "Struktur-Timer erstellen"
 msgid "Create Timer"
 msgstr "Timer erstellen"
 
-#: stock/templates/registered/apikeymanagment.html:8
-#: stock/templates/registered/apikeymanagment.html:18
-msgid "API Key Management"
-msgstr "API Key Verwaltung"
+#: stock/templates/registered/apisso.html:3
+#: stock/templates/registered/apisso.html:4
+#: stock/templates/registered/apisso.html:7
+msgid "Verify API Ownership"
+msgstr "Bestätige API Besitz"
 
-#: stock/templates/registered/apikeymanagment.html:16
-msgid "No api keys found"
-msgstr "Keine API Key gefunden"
-
-#: stock/templates/registered/apikeymanagment.html:27
-msgid "API ID"
-msgstr "API ID"
-
-#: stock/templates/registered/apikeymanagment.html:28
-msgid "API Key"
-msgstr "API Key"
+#: stock/templates/registered/apisso.html:10
+#, python-format
+msgid ""
+"Please authenticate as a character on API %(api.api_id)s to prove ownership."
+msgstr ""
+"Bitte authentifiziere als ein Charakter der API %(api.api_id)s um Besitz zu bestätigen"
 
 #: stock/templates/registered/characters.html:7
 #: stock/templates/registered/characters.html:12
 #: stock/templates/registered/fleetup.html:28
 #: stock/templates/registered/fleetupcharacters.html:29
 #: stock/templates/registered/fleetupdoctrine.html:28
+#: stock/templates/registered/fleetupdoctrinesview.html:28
 #: stock/templates/registered/fleetupfitting.html:28
 #: stock/templates/registered/fleetupfittingsview.html:28
-#: stock/templates/registered/hrapplicationview.html:42
+#: stock/templates/registered/hrapplicationview.html:43
 msgid "Characters"
 msgstr "Charaktere"
 
@@ -1027,371 +1274,67 @@ msgid "No primary character set"
 msgstr "Keinen primären Charakter festgelegt"
 
 #: stock/templates/registered/characters.html:35
-msgid ""
-"<button type=\"button\" class=\"btn btn-default btn-xs\">\n"
-"                                                            Refresh Primary\n"
-"                                                        </button>"
-msgstr ""
-"<button type=\"button\" class=\"btn btn-default btn-xs\">\n"
-"                                                            Hauptcharakter "
-"aktualisieren\n"
-"                                                        </button>"
+msgid "Refresh Primary"
+msgstr "Aktualisiere Hauptcharakter"
 
-#: stock/templates/registered/characters.html:39
-msgid ""
-"<button type=\"button\" class=\"btn btn-primary btn-xs\">Make\n"
-"                                                            Primary\n"
-"                                                        </button>"
-msgstr ""
-"<button type=\"button\" class=\"btn btn-primary btn-xs\">Hauptcharakter\n"
-"                                                            setzten\n"
-"                                                        </button>"
+#: stock/templates/registered/characters.html:37
+msgid "Make Primary"
+msgstr "Mache zum Hauptcharakter"
 
-#: stock/templates/registered/characters.html:57
+#: stock/templates/registered/characters.html:52
 msgid "Alliance: "
 msgstr "Allianz: "
 
-#: stock/templates/registered/characters.html:59
+#: stock/templates/registered/characters.html:54
 msgid "Corporation: "
 msgstr "Corporation: "
 
-#: stock/templates/registered/characters.html:61
+#: stock/templates/registered/characters.html:56
 msgid "Corporation Ticker: "
 msgstr "Corporation Ticker: "
 
-#: stock/templates/registered/corputils.html:7
-#: stock/templates/registered/corputilssearchview.html:8
-msgid "Corporation Member Tracking"
-msgstr "Corporation Mitglieder Tracking"
-
-#: stock/templates/registered/corputils.html:12
-msgid "Corporation Member Data"
-msgstr "Corporation Mitgliedsdaten"
-
-#: stock/templates/registered/corputils.html:18
-#: stock/templates/registered/fleetupcharacters.html:47
-#: stock/templates/registered/hrapplicationmanagement.html:26
-#: stock/templates/registered/hrapplicationmanagement.html:81
-#: stock/templates/registered/hrapplicationmanagement.html:122
-#: stock/templates/registered/hrapplicationsearchview.html:28
-msgid "Corporation"
-msgstr "Corporation"
-
-#: stock/templates/registered/corputils.html:26
-msgid "Ticker:"
-msgstr "Ticker: "
-
-#: stock/templates/registered/corputils.html:28
-msgid "Member count:"
-msgstr "Mitgliederzahl:"
-
-#: stock/templates/registered/corputils.html:30
-msgid "Player count:"
-msgstr "Spieleranzahl:"
-
-#: stock/templates/registered/corputils.html:32
-msgid "Unregistered characters:"
-msgstr "Nicht registrierte Charaktere:"
-
-#: stock/templates/registered/corputils.html:35
-msgid "API Index:"
-msgstr "API Index:"
-
-#: stock/templates/registered/corputils.html:51
-msgid "Alliance corporations"
-msgstr "Allianz Corporations"
-
-#: stock/templates/registered/corputils.html:80
-#: stock/templates/registered/corputils.html:112
-#: stock/templates/registered/corputils.html:115
-#: stock/templates/registered/corputils.html:148
-#: stock/templates/registered/corputils.html:194
-#: stock/templates/registered/corputils.html:205
-#: stock/templates/registered/corputilssearchview.html:42
-#: stock/templates/registered/corputilssearchview.html:45
-#: stock/templates/registered/corputilssearchview.html:63
-msgid "Killboard"
-msgstr "Killboard"
-
-#: stock/templates/registered/corputils.html:89
-#: stock/templates/registered/corputilssearchview.html:29
-#: stock/templates/registered/hrapplicationmanagement.html:177
-#: stock/templates/registered/hrapplicationsearchview.html:77
-msgid "Search"
-msgstr "Suche"
-
-#: stock/templates/registered/corputils.html:96
-msgid "Registered Main Characters"
-msgstr "Registrierte Haupt Charaktere"
-
-#: stock/templates/registered/corputils.html:97
-msgid "Characters without API"
-msgstr "Charaktere ohne API"
-
-#: stock/templates/registered/corputils.html:108
-msgid "Main corporation"
-msgstr "Haupt Corporation"
-
-#: stock/templates/registered/corputils.html:109
-msgid "Character list"
-msgstr "Charakterliste"
-
-#: stock/templates/registered/corputils.html:110
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:25
-#: stock/templates/registered/fatlinkstatisticsview.html:29
-msgid "Fats"
-msgstr ""
-
-#: stock/templates/registered/corputils.html:113
-#: stock/templates/registered/corputilssearchview.html:43
-msgid "Fleet statistics"
-msgstr " Flottenstatistic"
-
-#: stock/templates/registered/corputils.html:117
-#: stock/templates/registered/corputils.html:164
-#: stock/templates/registered/corputilssearchview.html:47
-#: stock/templates/registered/corputilssearchview.html:83
-msgid "API JackKnife"
-msgstr "API JackKnife"
-
-#: stock/templates/registered/corputils.html:177
-#, python-format
-msgid ""
-"Seems there are no characters in %(corp.corporation_name)s tied to a "
-"registered API!"
-msgstr ""
-"Scheint, als wären keine Charaktere zu %(corp.corporation_name)s  verbunden"
-
-#: stock/templates/registered/corputils.html:187
-#, python-format
-msgid ""
-"There are atleast %(n_unacounted)s characters not accounted for in EveWho."
-msgstr ""
-"Es sind mindestens %(n_unacounted)s  Charaktere nicht in EveWho bekannt."
-
-#: stock/templates/registered/corputils.html:193
-#: stock/templates/registered/corputilssearchview.html:39
-#: stock/templates/registered/fatlinkmodify.html:24
-#: stock/templates/registered/fatlinkview.html:28
-#: stock/templates/registered/fleetupcharacters.html:46
-msgid "Character"
-msgstr "Charakter"
-
-#: stock/templates/registered/corputils.html:214
-#, python-format
-msgid ""
-"Good job! Every character in %(corp.corporation_name)s seem to be tied to an "
-"API!"
-msgstr ""
-"Gut gemacht! Alle Charaktere in %(corp.corporation_name)s scheinen mit einer "
-"APIverknüft zu sein!"
-
-#: stock/templates/registered/corputils.html:223
-msgid "No corporation model found. Contact your admin."
-msgstr "Kein Corporation Model gefunden. Kontaktiere deinen Admin."
-
-#: stock/templates/registered/corputilssearchview.html:14
-msgid "Member Search Results"
-msgstr "Mitgliedersuche Ergebnisse"
-
-#: stock/templates/registered/corputilssearchview.html:59
-msgid "No API registered!"
-msgstr "Keine API registriert!"
-
-#: stock/templates/registered/discord.html:8
-#: stock/templates/registered/jabberbroadcast.html:8
-#: stock/templates/registered/jabberbroadcast.html:13
-msgid "Jabber Broadcast"
-msgstr "Jabber Übertragung"
-
-#: stock/templates/registered/discord.html:13
-msgid "Discord Connection"
-msgstr "Discordverbindung"
-
-#: stock/templates/registered/discord.html:19
-msgid "Account Linked"
-msgstr "Account verbunden"
-
-#: stock/templates/registered/discord.html:21
-msgid ""
-"Enter your Discord account credentials below. These are not stored: they are "
-"needed to determine your user ID and make you join the server."
-msgstr ""
-"Gib Deine Discord Accountdaten unten an. Diese werden nicht gespeichert: sie "
-"werden benötigt, um deine Nutzer ID zu ermitteln und dich mit dem Server zu "
-"verbinden."
-
-#: stock/templates/registered/discord.html:22
-msgid "If you do not have a Discord account, please create one <a href="
-msgstr "Wenn du noch keinen Discord Account hast, erstelle einen <a href="
-
-#: stock/templates/registered/discord.html:28
-msgid "Connect"
-msgstr "Verbinden"
-
-#: stock/templates/registered/fatlinkformatter.html:7
-msgid "Create Fatlink"
-msgstr "Erstelle Fatlink"
-
-#: stock/templates/registered/fatlinkformatter.html:17
-msgid "Bad request!"
-msgstr "Fehlerhafte Anfrage!"
-
-#: stock/templates/registered/fatlinkformatter.html:28
-#: stock/templates/registered/fatlinkview.html:62
-msgid "Create fatlink"
-msgstr "Erstelle fatlink"
-
-#: stock/templates/registered/fatlinkmodify.html:7
-#: stock/templates/registered/fatlinkview.html:7
-msgid "Fatlink view"
-msgstr "Fatlink sehen"
-
-#: stock/templates/registered/fatlinkmodify.html:11
-#, python-format
-msgid "Edit fatlink \"%(fatlink.name)s\""
-msgstr "Editiere fatlink \"%(fatlink.name)s\""
-
-#: stock/templates/registered/fatlinkmodify.html:15
-msgid "Delete fat"
-msgstr "Lösche fat"
-
-#: stock/templates/registered/fatlinkmodify.html:20
-msgid "Registered characters"
-msgstr "Registrierte Charaktere"
-
-#: stock/templates/registered/fatlinkmodify.html:23
-#: stock/templates/registered/hrapplicationview.html:32
-msgid "User"
-msgstr "Benutzername"
-
-#: stock/templates/registered/fatlinkmodify.html:26
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:26
-#: stock/templates/registered/fatlinkview.html:30
-msgid "Ship"
-msgstr "Schiff"
-
-#: stock/templates/registered/fatlinkmodify.html:27
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:43
-#: stock/templates/registered/fatlinkview.html:31
-#: stock/templates/registered/fatlinkview.html:72
-#: stock/templates/registered/fleetup.html:57
-#: stock/templates/registered/fleetup.html:59
-#: stock/templates/registered/timermanagement.html:34
-#: stock/templates/registered/timermanagement.html:136
-#: stock/templates/registered/timermanagement.html:238
-msgid "Eve Time"
-msgstr "Eve Zeit"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:7
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:6
-msgid "Personal fatlink statistics"
-msgstr "Persönliche fatlink Statistic"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:11
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:10
-msgid "Participation data statistics for"
-msgstr "Teilnamestatistik für"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:15
-#: stock/templates/registered/fatlinkstatisticsview.html:14
-msgid "Previous month"
-msgstr "Vorheriger Monat"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:18
-#: stock/templates/registered/fatlinkstatisticsview.html:18
-msgid "Next month"
-msgstr "Nächster Monat"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:23
-#, python-format
-msgid "%(user)s has collected %(n_fats)s links this month."
-msgstr "%(user)s hat diesen Monat %(n_fats)s gesammelt."
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:27
-msgid "Times used"
-msgstr "male genutzt"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:37
-#, python-format
-msgid "%(user)s has created %(n_created_fats)s links this month."
-msgstr "%(user)s hat diesen Monat %(n_created_fats)s links erstellt."
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:40
-#: stock/templates/registered/fatlinkview.html:69
-#: stock/templates/registered/fleetupdoctrine.html:49
-#: stock/templates/registered/fleetupdoctrinesview.html:49
-#: stock/templates/registered/fleetupfittingsview.html:40
-#: stock/templates/registered/hrapplicationview.html:46
-msgid "Name"
-msgstr "Name"
-
-#: stock/templates/registered/fatlinkpersonalmonthlystatisticsview.html:45
-#: stock/templates/registered/fatlinkview.html:74
-msgid "Edit"
-msgstr "Editieren"
-
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:13
-msgid "Previous year"
-msgstr "Vorheriges Jahr"
-
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:17
-msgid "Next year"
-msgstr "Nächstes Jahr"
-
-#: stock/templates/registered/fatlinkpersonalstatisticsview.html:24
-msgid "Month"
-msgstr "Monat"
-
-#: stock/templates/registered/fatlinkstatisticsview.html:7
-msgid "Fatlink statistics"
-msgstr "Fatlink Statistik"
-
-#: stock/templates/registered/fatlinkstatisticsview.html:11
-#, python-format
-msgid "Participation data statistics for %(month)s, %(year)s"
-msgstr "Teilnahme Statistic für %(month)s, %(year)s"
-
-#: stock/templates/registered/fatlinkstatisticsview.html:26
-msgid "Ticker"
-msgstr "Ticker: "
-
-#: stock/templates/registered/fatlinkstatisticsview.html:27
-#: stock/templates/registered/hrapplicationview.html:47
-msgid "Corp"
-msgstr "Corp"
-
-#: stock/templates/registered/fatlinkstatisticsview.html:28
-msgid "Members"
-msgstr "Mitgliederzahl:"
-
-#: stock/templates/registered/fatlinkstatisticsview.html:30
-msgid "Average fats"
-msgstr "Durchschnittliche fats"
-
-#: stock/templates/registered/fatlinkview.html:11
-msgid "Participation data"
-msgstr "Teilnahme Daten"
-
-#: stock/templates/registered/fatlinkview.html:15
-msgid "Most recent clicked fatlinks"
-msgstr "Letzter geklickter fatlink"
-
-#: stock/templates/registered/fatlinkview.html:20
-msgid "Personal statistics"
-msgstr "Persönliche Statistik"
-
-#: stock/templates/registered/fatlinkview.html:27
-msgid "fatname"
-msgstr ""
-
-#: stock/templates/registered/fatlinkview.html:52
-msgid "Most recent fatlinks"
-msgstr "Letzter fatlink"
-
-#: stock/templates/registered/fatlinkview.html:57
-msgid "View statistics"
-msgstr "Statistik"
+#: stock/templates/registered/dashboard.html:5
+#: stock/templates/registered/dashboard.html:9
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: stock/templates/registered/dashboard.html:38
+msgid "Missing main character model."
+msgstr "Hauptcharakter model fehlt"
+
+#: stock/templates/registered/dashboard.html:42
+msgid "Add API Key"
+msgstr "API Key hinzufügen"
+
+#: stock/templates/registered/dashboard.html:45
+msgid "Change Main"
+msgstr "Hauptcharakter ändern"
+
+#: stock/templates/registered/dashboard.html:52
+msgid "Groups"
+msgstr "Gruppen"
+
+#: stock/templates/registered/dashboard.html:71
+msgid "API Key requires EVE SSO verification"
+msgstr "API Key benötigt EVE SSO bestätigung"
+
+#: stock/templates/registered/dashboard.html:71
+msgid "API Key is valid"
+msgstr "API Key ist gültig"
+
+#: stock/templates/registered/dashboard.html:72
+msgid "API ID"
+msgstr "API ID"
+
+#: stock/templates/registered/dashboard.html:90
+#: stock/templates/registered/groupmembers.html:21
+#: stock/templates/registered/hrapplicationview.html:49
+msgid "Alliance"
+msgstr "Allianz"
+
+#: stock/templates/registered/dashboard.html:116
+msgid "No API keys found"
+msgstr "Keine API Keys gefunden"
 
 #: stock/templates/registered/fleetformattertool.html:8
 msgid "Fleet Formatter Tool"
@@ -1411,6 +1354,7 @@ msgstr "Formatieren"
 #: stock/templates/registered/fleetupdoctrinesview.html:15
 #: stock/templates/registered/fleetupfitting.html:15
 #: stock/templates/registered/fleetupfittingsview.html:15
+#: stock/templates/registered/groupmanagementmenu.html:9
 msgid "Toggle navigation"
 msgstr "Toggle Navigation"
 
@@ -1418,7 +1362,7 @@ msgstr "Toggle Navigation"
 #: stock/templates/registered/fleetupfitting.html:20
 #: stock/templates/registered/fleetupfittingsview.html:20
 msgid "Fleet-Up"
-msgstr ""
+msgstr "Fleet-Up"
 
 #: stock/templates/registered/fleetup.html:24
 #: stock/templates/registered/fleetupcharacters.html:25
@@ -1459,7 +1403,7 @@ msgstr "Timer"
 
 #: stock/templates/registered/fleetup.html:53
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: stock/templates/registered/fleetup.html:54
 msgid "End"
@@ -1471,11 +1415,11 @@ msgstr "Organisator"
 
 #: stock/templates/registered/fleetup.html:75
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: stock/templates/registered/fleetup.html:90
 msgid "TBA"
-msgstr ""
+msgstr "TBA"
 
 #: stock/templates/registered/fleetup.html:98
 msgid "No link"
@@ -1487,16 +1431,23 @@ msgstr "Extrener link"
 
 #: stock/templates/registered/fleetup.html:110
 msgid "There seems to be no Operations in the near future, go make ISK!"
-msgstr "Es scheint keine Operation in naher Zukunft zu geben, geht und verdient ISK!"
+msgstr ""
+"Es scheint keine Operation in naher Zukunft zu geben, geht und verdient ISK!"
+
+#: stock/templates/registered/fleetup.html:116
+#: stock/templates/registered/operationmanagement.html:22
+#: stock/templates/registered/timermanagement.html:22
+msgid "Current Eve Time:"
+msgstr "Momentane Eve Zeit"
 
 #: stock/templates/registered/fleetup.html:156
 msgid "Type"
 msgstr "Typ"
 
 #: stock/templates/registered/fleetup.html:157
-#: stock/templates/registered/timermanagement.html:33
-#: stock/templates/registered/timermanagement.html:135
-#: stock/templates/registered/timermanagement.html:237
+#: stock/templates/registered/timermanagement.html:32
+#: stock/templates/registered/timermanagement.html:164
+#: stock/templates/registered/timermanagement.html:296
 msgid "Structure"
 msgstr "Struktur"
 
@@ -1517,7 +1468,8 @@ msgid ""
 "There seems to be no Timers in the near future, this does not mean there "
 "isn't any!"
 msgstr ""
-"Es scheint keine Operation in naher Zukunft zu geben, die bedeutet nicht das es keine geben wird!"
+"Es scheint keine Operation in naher Zukunft zu geben, die bedeutet nicht das "
+"es keine geben wird!"
 
 #: stock/templates/registered/fleetupcharacters.html:38
 msgid "Characters registered on Fleet-Up.com"
@@ -1550,9 +1502,14 @@ msgstr "Kategorie"
 msgid "Last updated"
 msgstr "Letzes Update"
 
+#: stock/templates/registered/fleetupdoctrinesview.html:81
+#: stock/templates/registered/fleetupfittingsview.html:74
+msgid "There seems to be no Doctrines in here at the moment!"
+msgstr "Es scheint kein Doctrin vorhanden zu sein!"
+
 #: stock/templates/registered/fleetupfitting.html:7
 msgid "FleetUp - Doctrine"
-msgstr ""
+msgstr "FleetUp - Doctrine"
 
 #: stock/templates/registered/fleetupfitting.html:41
 msgid "This fit is part of a doctrine"
@@ -1598,52 +1555,117 @@ msgstr ""
 msgid "Hull"
 msgstr "Hülle"
 
-#: stock/templates/registered/fleetupfittingsview.html:74
-msgid "There seems to be no Doctrines in here at the moment!"
-msgstr "Es scheint kein Doctrin vorhanden zu sein!"
-
 #: stock/templates/registered/groupmanagement.html:7
 msgid "Groups Management"
 msgstr "Gruppenmanagement"
 
-#: stock/templates/registered/groupmanagement.html:12
-msgid "Group Management"
-msgstr "Gruppenmanagement"
-
-#: stock/templates/registered/groupmanagement.html:13
-msgid "Group Add Request"
+#: stock/templates/registered/groupmanagement.html:14
+msgid "Group Add Requests"
 msgstr "Gruppenbeitrittsanfrage"
 
-#: stock/templates/registered/groupmanagement.html:17
-#: stock/templates/registered/groupmanagement.html:47
+#: stock/templates/registered/groupmanagement.html:15
+msgid "Group Leave Requests"
+msgstr "Gruppenaustrittsanfragen"
+
+#: stock/templates/registered/groupmanagement.html:23
+#: stock/templates/registered/groupmanagement.html:54
 msgid "RequestID"
 msgstr "RequestID"
 
-#: stock/templates/registered/groupmanagement.html:18
-#: stock/templates/registered/groupmanagement.html:48
+#: stock/templates/registered/groupmanagement.html:24
+#: stock/templates/registered/groupmanagement.html:55
 msgid "CharacterName"
 msgstr "Charaktername"
 
-#: stock/templates/registered/groupmanagement.html:19
-#: stock/templates/registered/groupmanagement.html:49
-#: stock/templates/registered/groups.html:17
+#: stock/templates/registered/groupmanagement.html:25
+#: stock/templates/registered/groupmanagement.html:56
 msgid "GroupName"
 msgstr "Gruppenname"
 
-#: stock/templates/registered/groupmanagement.html:31
-#: stock/templates/registered/groupmanagement.html:61
+#: stock/templates/registered/groupmanagement.html:35
+#: stock/templates/registered/groupmanagement.html:66
 msgid "Accept"
 msgstr "Akzeptieren"
 
-#: stock/templates/registered/groupmanagement.html:37
-#: stock/templates/registered/groupmanagement.html:67
-#: stock/templates/registered/hrapplicationview.html:82
+#: stock/templates/registered/groupmanagement.html:38
+#: stock/templates/registered/groupmanagement.html:69
+#: stock/templates/registered/hrapplicationview.html:98
 msgid "Reject"
 msgstr "Ablehnen"
 
-#: stock/templates/registered/groupmanagement.html:44
-msgid "Group Leave Request"
-msgstr "Gruppenaustrittsanfrage"
+#: stock/templates/registered/groupmanagement.html:45
+msgid "No group add requests."
+msgstr "Keine Gruppenbeitrittsanfragen."
+
+#: stock/templates/registered/groupmanagement.html:76
+msgid "No group leave requests."
+msgstr "Keine Gruppenaustrittsanfragen"
+
+#: stock/templates/registered/groupmanagementmenu.html:14
+msgid "Group Management"
+msgstr "Gruppenmanagement"
+
+#: stock/templates/registered/groupmanagementmenu.html:19
+msgid "Group Requests"
+msgstr "Gruppen anfragen"
+
+#: stock/templates/registered/groupmanagementmenu.html:22
+msgid "Group Membership"
+msgstr "Gruppenmitgliedschaft"
+
+#: stock/templates/registered/groupmembers.html:7
+msgid "Group Members"
+msgstr "Gruppenmitglieder"
+
+#: stock/templates/registered/groupmembers.html:32
+msgid "Remove from group"
+msgstr "Entferne von Gruppe"
+
+#: stock/templates/registered/groupmembers.html:40
+msgid "No group members to list."
+msgstr "Keine Gruppenmitglieder aufzulisten"
+
+#: stock/templates/registered/groupmembership.html:7
+msgid "Groups Membership"
+msgstr "Gruppenmitgliedschaft"
+
+#: stock/templates/registered/groupmembership.html:19
+#: stock/templates/registered/groups.html:18
+msgid "Description"
+msgstr "Beschreibung"
+
+#: stock/templates/registered/groupmembership.html:20
+#: stock/templates/registered/hrapplicationmanagement.html:28
+#: stock/templates/registered/hrapplicationmanagement.html:83
+#: stock/templates/registered/hrapplicationmanagement.html:127
+#: stock/templates/registered/hrapplicationsearchview.html:29
+#: stock/templates/registered/srpfleetdata.html:47
+msgid "Status"
+msgstr "Status"
+
+#: stock/templates/registered/groupmembership.html:21
+msgid "Member Count"
+msgstr "Mitgliederzahl:"
+
+#: stock/templates/registered/groupmembership.html:30
+msgid "Hidden"
+msgstr "Versteckt"
+
+#: stock/templates/registered/groupmembership.html:32
+msgid "Open"
+msgstr "Öffnen"
+
+#: stock/templates/registered/groupmembership.html:34
+msgid "Requestable"
+msgstr "Anfragbar"
+
+#: stock/templates/registered/groupmembership.html:42
+msgid "View Members"
+msgstr "Mitglieder ansehen"
+
+#: stock/templates/registered/groupmembership.html:50
+msgid "No groups to list."
+msgstr "Keine Gruppen aufzulisten."
 
 #: stock/templates/registered/groups.html:7
 msgid "Available"
@@ -1653,21 +1675,21 @@ msgstr "Verfügbar"
 msgid "Available Groups"
 msgstr "Verfügbare Gruppen"
 
-#: stock/templates/registered/groups.html:16
-msgid "GroupID"
-msgstr "Gruppen ID"
-
-#: stock/templates/registered/groups.html:18
-msgid "GroupDesc"
-msgstr "Gruppen Beschreibung"
-
-#: stock/templates/registered/groups.html:32
+#: stock/templates/registered/groups.html:30
 msgid "Leave"
 msgstr "Verlassen"
 
-#: stock/templates/registered/groups.html:43
+#: stock/templates/registered/groups.html:39
 msgid "Request"
 msgstr "Anfrage"
+
+#: stock/templates/registered/groups.html:51
+msgid "No groups available."
+msgstr "Keine Gruppen verfügbar"
+
+#: stock/templates/registered/groups.html:54
+msgid "You are not a member."
+msgstr "Du bist kein Mitglied."
 
 #: stock/templates/registered/hrapplicationcorpchoice.html:6
 #: stock/templates/registered/hrapplicationcorpchoice.html:9
@@ -1701,43 +1723,33 @@ msgstr "Persönliche Bewerbungen"
 
 #: stock/templates/registered/hrapplicationmanagement.html:17
 #: stock/templates/registered/hrapplicationmanagement.html:19
-#: stock/templates/registered/hrcreateapplication.html:8
-#: stock/templates/registered/hrcreateapplication.html:13
 msgid "Create Application"
 msgstr "Erstelle Bewerbung"
 
-#: stock/templates/registered/hrapplicationmanagement.html:27
-#: stock/templates/registered/hrapplicationmanagement.html:82
-#: stock/templates/registered/hrapplicationmanagement.html:123
-#: stock/templates/registered/hrapplicationsearchview.html:29
-#: stock/templates/registered/srpfleetdata.html:46
-msgid "Status"
-msgstr "Status"
-
-#: stock/templates/registered/hrapplicationmanagement.html:28
-#: stock/templates/registered/hrapplicationmanagement.html:83
-#: stock/templates/registered/hrapplicationmanagement.html:124
+#: stock/templates/registered/hrapplicationmanagement.html:29
+#: stock/templates/registered/hrapplicationmanagement.html:84
+#: stock/templates/registered/hrapplicationmanagement.html:128
 #: stock/templates/registered/hrapplicationsearchview.html:30
-#: stock/templates/registered/hrapplicationview.html:75
-#: stock/templates/registered/srpfleetdata.html:48
-#: stock/templates/registered/srpmanagement.html:42
+#: stock/templates/registered/hrapplicationview.html:89
+#: stock/templates/registered/srpfleetdata.html:49
+#: stock/templates/registered/srpmanagement.html:44
 msgid "Actions"
 msgstr "Aktionen"
 
-#: stock/templates/registered/hrapplicationmanagement.html:38
-#: stock/templates/registered/hrapplicationmanagement.html:99
-#: stock/templates/registered/hrapplicationmanagement.html:140
+#: stock/templates/registered/hrapplicationmanagement.html:39
+#: stock/templates/registered/hrapplicationmanagement.html:100
+#: stock/templates/registered/hrapplicationmanagement.html:144
 #: stock/templates/registered/hrapplicationsearchview.html:42
-#: stock/templates/registered/hrapplicationview.html:17
-#: stock/templates/registered/srpfleetdata.html:70
+#: stock/templates/registered/hrapplicationview.html:18
+#: stock/templates/registered/srpfleetdata.html:67
 msgid "Approved"
 msgstr "Akzeptiert"
 
-#: stock/templates/registered/hrapplicationmanagement.html:40
-#: stock/templates/registered/hrapplicationmanagement.html:101
-#: stock/templates/registered/hrapplicationmanagement.html:142
+#: stock/templates/registered/hrapplicationmanagement.html:41
+#: stock/templates/registered/hrapplicationmanagement.html:102
+#: stock/templates/registered/hrapplicationmanagement.html:146
 #: stock/templates/registered/hrapplicationsearchview.html:44
-#: stock/templates/registered/srpfleetdata.html:74
+#: stock/templates/registered/srpfleetdata.html:71
 msgid "Rejected"
 msgstr "Abgelehnt"
 
@@ -1754,32 +1766,40 @@ msgstr "Suche Bewerbung"
 msgid "Reviewed"
 msgstr "Angesehen"
 
-#: stock/templates/registered/hrapplicationmanagement.html:78
-#: stock/templates/registered/hrapplicationmanagement.html:119
+#: stock/templates/registered/hrapplicationmanagement.html:79
+#: stock/templates/registered/hrapplicationmanagement.html:123
 msgid "Date"
 msgstr "Datum"
 
-#: stock/templates/registered/hrapplicationmanagement.html:80
-#: stock/templates/registered/hrapplicationmanagement.html:121
-#: stock/templates/registered/hrapplicationsearchview.html:27
-#: stock/templates/registered/hrapplicationview.html:33
-msgid "Main Character"
-msgstr "Hauptcharakter"
-
-#: stock/templates/registered/hrapplicationmanagement.html:94
-#: stock/templates/registered/hrapplicationview.html:24
+#: stock/templates/registered/hrapplicationmanagement.html:95
+#: stock/templates/registered/hrapplicationmanagement.html:139
+#: stock/templates/registered/hrapplicationview.html:25
 msgid "Reviewer:"
 msgstr "Rezensent:"
 
-#: stock/templates/registered/hrapplicationmanagement.html:168
-#: stock/templates/registered/hrapplicationview.html:138
+#: stock/templates/registered/hrapplicationmanagement.html:114
+msgid "No pending applications."
+msgstr "Keine ausstahenden Bewerbungen."
+
+#: stock/templates/registered/hrapplicationmanagement.html:158
+msgid "No reviewed applications."
+msgstr "Keine angesehenen Bewerbungen"
+
+#: stock/templates/registered/hrapplicationmanagement.html:174
+#: stock/templates/registered/hrapplicationsearchview.html:67
+#: stock/templates/registered/hrapplicationview.html:153
 msgid "Close"
 msgstr "Geschlossen"
 
-#: stock/templates/registered/hrapplicationmanagement.html:169
-#: stock/templates/registered/hrapplicationsearchview.html:69
+#: stock/templates/registered/hrapplicationmanagement.html:175
+#: stock/templates/registered/hrapplicationsearchview.html:68
 msgid "Application Search"
 msgstr "Bewerbungssuche"
+
+#: stock/templates/registered/hrapplicationmanagement.html:183
+#: stock/templates/registered/hrapplicationsearchview.html:76
+msgid "Search"
+msgstr "Suche"
 
 #: stock/templates/registered/hrapplicationsearchview.html:14
 msgid "Application Search Results"
@@ -1790,50 +1810,49 @@ msgid "Application ID"
 msgstr "Bewerbungs ID"
 
 #: stock/templates/registered/hrapplicationview.html:7
-#: stock/templates/registered/hrapplicationview.html:12
+#: stock/templates/registered/hrapplicationview.html:8
+#: stock/templates/registered/hrapplicationview.html:13
 msgid "View Application"
 msgstr "Bewerbung ansehen"
 
-#: stock/templates/registered/hrapplicationview.html:19
+#: stock/templates/registered/hrapplicationview.html:20
 msgid "Denied"
 msgstr "Abgelehnt"
 
-#: stock/templates/registered/hrapplicationview.html:29
+#: stock/templates/registered/hrapplicationview.html:30
 msgid "Applicant"
 msgstr "Bewerber"
 
-#: stock/templates/registered/hrapplicationview.html:48
-msgid "Alliance"
-msgstr "Allianz"
+#: stock/templates/registered/hrapplicationview.html:78
+msgid "API Keys"
+msgstr "API Keys"
 
-#: stock/templates/registered/hrapplicationview.html:79
+#: stock/templates/registered/hrapplicationview.html:94
 msgid "Approve"
 msgstr "Bestätigen"
 
-#: stock/templates/registered/hrapplicationview.html:85
+#: stock/templates/registered/hrapplicationview.html:102
 msgid "Delete"
 msgstr "Löschen"
 
-#: stock/templates/registered/hrapplicationview.html:88
+#: stock/templates/registered/hrapplicationview.html:106
 msgid "Mark in Progress"
 msgstr "Wird bearbeitet"
 
-#: stock/templates/registered/hrapplicationview.html:96
-msgid "API"
-msgstr "API"
+#: stock/templates/registered/hrapplicationview.html:122
+#, python-format
+msgid "Comments - %(comments|length)s"
+msgstr "Kommentare - %(comments|length)s"
 
-#: stock/templates/registered/hrapplicationview.html:140
-#: stock/templates/registered/hrapplicationview.html:147
+#: stock/templates/registered/hrapplicationview.html:155
+#: stock/templates/registered/hrapplicationview.html:162
 msgid "Add Comment"
 msgstr "Kommentar hinzufügen"
 
-#: stock/templates/registered/hrcreateapplication.html:19
-msgid "Application Submitted"
-msgstr "Bewerbung eingereicht"
-
-#: stock/templates/registered/hrcreateapplication.html:25
-msgid "Submit Application"
-msgstr "Bewerbung einreichen"
+#: stock/templates/registered/jabberbroadcast.html:8
+#: stock/templates/registered/jabberbroadcast.html:13
+msgid "Jabber Broadcast"
+msgstr "Jabber Übertragung"
 
 #: stock/templates/registered/jabberbroadcast.html:19
 msgid "Broadcast Sent!!"
@@ -1856,28 +1875,81 @@ msgstr "Ungelesen"
 msgid "Read"
 msgstr "Lesen"
 
-#: stock/templates/registered/notification_list.html:23
-#: stock/templates/registered/notification_list.html:54
+#: stock/templates/registered/notification_list.html:17
+msgid "Mark All Read"
+msgstr "Alle als gelesen markieren"
+
+#: stock/templates/registered/notification_list.html:18
+msgid "Delete All Read"
+msgstr "Alle gelesenen löschen"
+
+#: stock/templates/registered/notification_list.html:28
+#: stock/templates/registered/notification_list.html:59
 msgid "Timestamp"
 msgstr "Zeitstempel"
 
-#: stock/templates/registered/notification_list.html:24
-#: stock/templates/registered/notification_list.html:55
+#: stock/templates/registered/notification_list.html:29
+#: stock/templates/registered/notification_list.html:60
 msgid "Title"
 msgstr "Titel"
 
-#: stock/templates/registered/notification_list.html:25
-#: stock/templates/registered/notification_list.html:56
-msgid "View"
-msgstr "Ansicht"
+#: stock/templates/registered/notification_list.html:48
+msgid "No unread notifications."
+msgstr "Keine ungelesenen Nachrichten"
+
+#: stock/templates/registered/notification_list.html:79
+msgid "No read notifications."
+msgstr "Keine gelesenen Nachrichten"
 
 #: stock/templates/registered/notification_view.html:6
-#: stock/templates/registered/notification_view.html:11
+#: stock/templates/registered/notification_view.html:12
 msgid "View Notification"
 msgstr "Benachrichtigung ansehen"
 
+#: stock/templates/registered/operationmanagement.html:8
+msgid "Fleet Operation Management"
+msgstr "Flotten Operations Management"
+
+#: stock/templates/registered/operationmanagement.html:13
+msgid "Fleet Operation Timers"
+msgstr "Flotten Operations Zeiten"
+
+#: stock/templates/registered/operationmanagement.html:31
+msgid "Form Up System"
+msgstr "Form Up System"
+
+#: stock/templates/registered/operationmanagement.html:32
+msgid "Form Up Location"
+msgstr "Form Up Location"
+
+#: stock/templates/registered/operationmanagement.html:34
+#: stock/templates/registered/timermanagement.html:34
+#: stock/templates/registered/timermanagement.html:166
+#: stock/templates/registered/timermanagement.html:298
+msgid "Local Time"
+msgstr "Ortszeit"
+
+#: stock/templates/registered/operationmanagement.html:36
+msgid "FC"
+msgstr "FC"
+
+#: stock/templates/registered/operationmanagement.html:37
+#: stock/templates/registered/timermanagement.html:29
+#: stock/templates/registered/timermanagement.html:161
+#: stock/templates/registered/timermanagement.html:293 timerboard/form.py:17
+msgid "Details"
+msgstr "Details"
+
+#: stock/templates/registered/operationmanagement.html:38
+#: stock/templates/registered/srpfleetdata.html:46
+msgid "Post Time"
+msgstr "Veröffentlichungs Zeit"
+
+#: stock/templates/registered/operationmanagement.html:75
+msgid "No fleet operations found."
+msgstr "Keine Flottenoperationen gefunden"
+
 #: stock/templates/registered/optimerupdate.html:9
-#: stock/templates/registered/signatureupdate.html:8
 #: stock/templates/registered/srpfleetupdate.html:8
 #: stock/templates/registered/srpfleetupdate.html:15
 #: stock/templates/registered/srpfleetupdate.html:27
@@ -1894,6 +1966,22 @@ msgstr "Aktualisiere Flotten Operationen"
 msgid "Fleet Operation Does Not Exist"
 msgstr "Flotten Operation existiert nicht"
 
+#: stock/templates/registered/service_credentials.html:5
+msgid "Credentials"
+msgstr "Credentials"
+
+#: stock/templates/registered/service_credentials.html:8
+#, python-format
+msgid "%(service)s Credentials"
+msgstr "%(service)s Credentials"
+
+#: stock/templates/registered/service_credentials.html:19
+#: stock/templates/registered/srpfleetadd.html:32
+#: stock/templates/registered/srpfleetrequest.html:34
+#: stock/templates/registered/teamspeakjoin.html:22
+msgid "Continue"
+msgstr "Fortsetzen"
+
 #: stock/templates/registered/service_password.html:8
 msgid "Service Password Change"
 msgstr "Passwort ändern"
@@ -1903,40 +1991,27 @@ msgstr "Passwort ändern"
 msgid "Set %(service)s Password"
 msgstr "Setze %(service)s Passwort"
 
-#: stock/templates/registered/service_password.html:26
+#: stock/templates/registered/service_password.html:17
 msgid "Passwords are stored as plain text. Don't re-use another password."
 msgstr ""
 "Passwörter werden als Klartext gespeichert. Bitte keine Passwörter "
 "wiederverwenden."
 
-#: stock/templates/registered/service_password.html:32
+#: stock/templates/registered/service_password.html:23
 msgid "Set Password"
 msgstr "Setze Passwort"
 
-#: stock/templates/registered/services.html:16
-msgid "Link Discord"
-msgstr ""
+#: stock/templates/registered/services.html:7
+msgid "Services Management"
+msgstr "Dienst Verwaltung"
 
-#: stock/templates/registered/signaturemanagement.html:7
-msgid "Wormhole Signature Management"
-msgstr "Wurmloch Signatur Verwaltung"
+#: stock/templates/registered/services.html:12
+msgid "Available Services"
+msgstr "Verfügbare Dienste"
 
-#: stock/templates/registered/signaturemanagement.html:12
-msgid "Wormhole Signatures"
-msgstr "Wurmloch Signatur"
-
-#: stock/templates/registered/signaturemanagement.html:25
-msgid "Destination"
-msgstr "Ziel"
-
-#: stock/templates/registered/signatureupdate.html:15
-#: stock/templates/registered/signatureupdate.html:27
-msgid "Update Signature"
-msgstr "Signatur aktualisieren"
-
-#: stock/templates/registered/signatureupdate.html:21
-msgid "Signature Does Not Exist"
-msgstr "Die Signatur existiert nicht"
+#: stock/templates/registered/services.html:17
+msgid "Domain"
+msgstr "Domain"
 
 #: stock/templates/registered/srpfleetadd.html:8
 msgid "SRP Fleet Create"
@@ -1948,19 +2023,8 @@ msgid "Create SRP Fleet"
 msgstr "SRP Flotte erstellen"
 
 #: stock/templates/registered/srpfleetadd.html:28
-msgid "Fleet Created Successfully!"
-msgstr "Flotte erfolgreich erstellt!"
-
-#: stock/templates/registered/srpfleetadd.html:29
-#, python-format
-msgid ""
-"Give this <a\n"
-"                                href=\"/srp_request/%(completed_srp_code)s"
-"\">Link</a> to the line members"
-msgstr ""
-"Gebe diesen <a\n"
-"                                href=\"/srp_request/%(completed_srp_code)s"
-"\">Link</a> den Teilnehmern"
+msgid "Give this link to the line members"
+msgstr "Gebe diesen link den leine membern"
 
 #: stock/templates/registered/srpfleetdata.html:15
 msgid "SRP Fleet Data"
@@ -1983,25 +2047,29 @@ msgstr "Verluste insgesamt:"
 msgid "Total ISK Cost:"
 msgstr "ISK-Kosten insgesamt:"
 
-#: stock/templates/registered/srpfleetdata.html:39
+#: stock/templates/registered/srpfleetdata.html:40
 msgid "Pilot Name"
 msgstr "Name des Piloten"
 
-#: stock/templates/registered/srpfleetdata.html:40
+#: stock/templates/registered/srpfleetdata.html:41
 msgid "Killboard Link"
 msgstr "Killboard Link"
 
-#: stock/templates/registered/srpfleetdata.html:42
-msgid "Ship Type"
-msgstr "Schiffstypen"
-
 #: stock/templates/registered/srpfleetdata.html:43
+msgid "Ship Type"
+msgstr "Schiffstyp"
+
+#: stock/templates/registered/srpfleetdata.html:44
 msgid "Killboard Loss Amt"
 msgstr "Summe Killboard Verluste"
 
-#: stock/templates/registered/srpfleetdata.html:44
+#: stock/templates/registered/srpfleetdata.html:45
 msgid "SRP ISK Cost"
 msgstr "SRP ISK-Kosten"
+
+#: stock/templates/registered/srpfleetdata.html:113
+msgid "No SRP requests for this fleet."
+msgstr "Keine SRP anfragen für diese Flotte."
 
 #: stock/templates/registered/srpfleetrequest.html:8
 msgid "SRP Request"
@@ -2013,7 +2081,6 @@ msgid "Create SRP Request"
 msgstr "Erstelle SRP-Anfrage"
 
 #: stock/templates/registered/srpfleetrequest.html:21
-#: stock/templates/registered/srpfleetrequestamount.html:21
 msgid "SRP Code Does Not Exist"
 msgstr "SRP-Code existiert nicht"
 
@@ -2026,7 +2093,7 @@ msgstr "SRP-Anfrage erfolgreich eingereicht"
 msgid "Update SRP Amount"
 msgstr "Aktualisiere SRP Menge"
 
-#: stock/templates/registered/srpfleetrequestamount.html:27
+#: stock/templates/registered/srpfleetrequestamount.html:24
 msgid "Update SRP Request Amount"
 msgstr "Aktualisiere SPR Anfragen Menge"
 
@@ -2050,30 +2117,55 @@ msgstr "Zeige alles"
 msgid "Add SRP Fleet"
 msgstr "Füge SRP Flotte hinzu"
 
-#: stock/templates/registered/srpmanagement.html:38
+#: stock/templates/registered/srpmanagement.html:39
 msgid "Fleet AAR"
 msgstr "Flotten AAR"
 
-#: stock/templates/registered/srpmanagement.html:39
+#: stock/templates/registered/srpmanagement.html:40
 msgid "Fleet SRP Code"
 msgstr "Flotten SRP Code"
 
-#: stock/templates/registered/srpmanagement.html:40
+#: stock/templates/registered/srpmanagement.html:41
 msgid "Fleet ISK Cost"
 msgstr "Flotten ISK Kosten"
 
-#: stock/templates/registered/srpmanagement.html:41
+#: stock/templates/registered/srpmanagement.html:42
 msgid "SRP Status"
 msgstr "SRP Status"
 
-#: stock/templates/registered/srpmanagement.html:68
+#: stock/templates/registered/srpmanagement.html:43
+
+msgid "Pending Requests"
+msgstr "Ausstehende Anfragen"
+
+#: stock/templates/registered/srpmanagement.html:62
+msgid "Link"
+msgstr "Link"
+
+#: stock/templates/registered/srpmanagement.html:70
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: stock/templates/registered/srpmanagement.html:87
+#: stock/templates/registered/srpmanagement.html:83
 #: stock/templates/registration/password_change_done.html:16
 msgid "Completed"
 msgstr "Fertig"
+
+#: stock/templates/registered/srpmanagement.html:120
+msgid "No SRP fleets created."
+msgstr "Keine SRP-Flotte erstellt."
+
+#: stock/templates/registered/teamspeakjoin.html:8
+msgid "Verify Teamspeak"
+msgstr "Teamspeak bestätigen"
+
+#: stock/templates/registered/teamspeakjoin.html:13
+msgid "Verify Teamspeak Identity"
+msgstr "Teamspeak-Identität bestätigen"
+
+#: stock/templates/registered/teamspeakjoin.html:16
+msgid "Join Server"
+msgstr "Server beitreten"
 
 #: stock/templates/registered/timermanagement.html:8
 msgid "Structure Timer Management"
@@ -2083,41 +2175,49 @@ msgstr "Struktur-Timer Verwaltung"
 msgid "Structure Timers"
 msgstr "Struktur-Timer"
 
-#: stock/templates/registered/timermanagement.html:27
-msgid "Next Timer"
-msgstr "Nächster Timer"
-
-#: stock/templates/registered/timermanagement.html:31
-#: stock/templates/registered/timermanagement.html:133
-#: stock/templates/registered/timermanagement.html:235 timerboard/form.py:16
-msgid "Objective"
-msgstr "Ziel"
-
-#: stock/templates/registered/timermanagement.html:51
-#: stock/templates/registered/timermanagement.html:153
-#: stock/templates/registered/timermanagement.html:256 timerboard/form.py:10
-msgid "Hostile"
-msgstr "Feindlich"
-
-#: stock/templates/registered/timermanagement.html:56
-#: stock/templates/registered/timermanagement.html:158
-#: stock/templates/registered/timermanagement.html:261 timerboard/form.py:10
-msgid "Friendly"
-msgstr "Freundlich"
-
-#: stock/templates/registered/timermanagement.html:61
-#: stock/templates/registered/timermanagement.html:163
-#: stock/templates/registered/timermanagement.html:266 timerboard/form.py:10
-msgid "Neutral"
-msgstr "Neutral"
-
-#: stock/templates/registered/timermanagement.html:129
+#: stock/templates/registered/timermanagement.html:26
 msgid "Corp Timers"
 msgstr "Corp Timer"
 
-#: stock/templates/registered/timermanagement.html:231
-msgid "Future Timers"
-msgstr "Zukünftige Timer"
+#: stock/templates/registered/timermanagement.html:30
+#: stock/templates/registered/timermanagement.html:162
+#: stock/templates/registered/timermanagement.html:294 timerboard/form.py:21
+msgid "Objective"
+msgstr "Ziel"
+
+#: stock/templates/registered/timermanagement.html:50
+#: stock/templates/registered/timermanagement.html:182
+#: stock/templates/registered/timermanagement.html:314 timerboard/form.py:15
+msgid "Hostile"
+msgstr "Feindlich"
+
+#: stock/templates/registered/timermanagement.html:55
+#: stock/templates/registered/timermanagement.html:187
+#: stock/templates/registered/timermanagement.html:319 timerboard/form.py:15
+msgid "Friendly"
+msgstr "Freundlich"
+
+#: stock/templates/registered/timermanagement.html:60
+#: stock/templates/registered/timermanagement.html:192
+#: stock/templates/registered/timermanagement.html:324 timerboard/form.py:15
+msgid "Neutral"
+msgstr "Neutral"
+
+#: stock/templates/registered/timermanagement.html:157
+msgid "Next Timers"
+msgstr "Nächste Timer"
+
+#: stock/templates/registered/timermanagement.html:287
+msgid "No upcoming timers."
+msgstr "Keine kommenden timer."
+
+#: stock/templates/registered/timermanagement.html:289
+msgid "Past Timers"
+msgstr "Vergangene Timer"
+
+#: stock/templates/registered/timermanagement.html:420
+msgid "No past timers."
+msgstr "Keine vergangenen Timer."
 
 #: stock/templates/registered/timerupdate.html:15
 #: stock/templates/registered/timerupdate.html:27
@@ -2133,19 +2233,19 @@ msgstr "Struktur Timer existiert nicht"
 msgid "Password Change"
 msgstr "Passwort ändern"
 
-#: stock/templates/registration/password_reset_complete.html:49
+#: stock/templates/registration/password_reset_complete.html:45
 msgid "Password reset complete"
 msgstr "Passwort wurde zurückgesetzt"
 
-#: stock/templates/registration/password_reset_complete.html:51
+#: stock/templates/registration/password_reset_complete.html:47
 msgid "Your password has been set."
 msgstr "Passwort wurde gesetzt"
 
-#: stock/templates/registration/password_reset_confirm.html:58
+#: stock/templates/registration/password_reset_confirm.html:54
 msgid "Password reset unsuccessful"
 msgstr "Passwort Zurücksetzen Fehlgeschlagen"
 
-#: stock/templates/registration/password_reset_confirm.html:60
+#: stock/templates/registration/password_reset_confirm.html:56
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
@@ -2198,49 +2298,62 @@ msgstr "Vielen dank, dass du unsere Seite nutzt!"
 msgid "Your IT Team"
 msgstr "Euer IT Team"
 
-#: stock/templates/registration/password_reset_form.html:51
+#: stock/templates/registration/password_reset_form.html:46
 msgid "Password Reset"
 msgstr "Passwort zurücksetzen"
 
-#: stock/templates/registration/password_reset_form.html:53
+#: stock/templates/registration/password_reset_form.html:48
 msgid "Forgotten your password? Enter your email below."
 msgstr "Hast du dein Passwort vergessen? Gib unten deine Email-Adresse ein."
 
-#: stock/templates/registration/password_reset_form.html:56
+#: stock/templates/registration/password_reset_form.html:51
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
-#: timerboard/form.py:9
+#: timerboard/form.py:14
 msgid "Other"
 msgstr "anderes"
 
-#: timerboard/form.py:14
+#: timerboard/form.py:19
 msgid "Planet/Moon"
 msgstr "Planet/Mond"
 
-#: timerboard/form.py:15
+#: timerboard/form.py:20
 msgid "Structure Type"
 msgstr "Struktur-Timer"
 
-#: timerboard/form.py:17
+#: timerboard/form.py:22
 msgid "Days Remaining"
 msgstr "Tage Verbleibend"
 
-#: timerboard/form.py:18
+#: timerboard/form.py:23
 msgid "Hours Remaining"
 msgstr "Stunden Verbleibend"
 
-#: timerboard/form.py:19
+#: timerboard/form.py:25
 msgid "Minutes Remaining"
 msgstr "Minuten Verbleibend"
 
-#: timerboard/form.py:20
+#: timerboard/form.py:27
 msgid "Important"
 msgstr "Wichtig"
 
-#: timerboard/form.py:21
+#: timerboard/form.py:28
 msgid "Corp-Restricted"
 msgstr "Corp-beschränkt"
 
+#: timerboard/views.py:95
+msgid "Added new timer in %(system)s at %(time)s."
+msgstr "Neuen Timer hinzugefügt in %(system)s um %(time)s."
 
+#: timerboard/views.py:114
+msgid "Deleted timer in %(system)s at %(time)s."
+msgstr "Timer in %(system)s um %(time)s entfernt."
 
+#: timerboard/views.py:118
+msgid "Unable to locate timer with ID %(timerid)s."
+msgstr "Unfähig den Timer mit der ID %(timerid)s zu finden. "
+
+#: timerboard/views.py:154
+msgid "Saved changes to the timer."
+msgstr "Änderungen am Timer gespeichert"

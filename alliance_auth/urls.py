@@ -36,9 +36,6 @@ urlpatterns = [
     url(r'^sso/', include(esi.urls, namespace='esi')),
     url(r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
 
-    # Corputils
-    url(r'^corpstats/', include(corputils.urls, namespace='corputils')),
-
     # Index
     url(_(r'^$'), authentication.views.index_view, name='auth_index'),
 
@@ -107,6 +104,9 @@ urlpatterns += i18n_patterns(
     url(_(r'^refresh_api_pair/([0-9]+)/$'), eveonline.views.user_refresh_api, name='auth_user_refresh_api'),
     url(_(r'^delete_api_pair/(\w+)/$'), eveonline.views.api_key_removal, name='auth_api_key_removal'),
     url(_(r'^characters/'), eveonline.views.characters_view, name='auth_characters'),
+    
+    # Corputils
+    url(_(r'^corpstats/'), include(corputils.urls, namespace='corputils')),
 
     # Group management
     url(_(r'^groups/'), groupmanagement.views.groups_view, name='auth_groups'),

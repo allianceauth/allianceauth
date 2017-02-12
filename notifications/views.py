@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Notification
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ def notification_view(request, notif_id):
     else:
         logger.warn(
             "User %s not authorized to view notif_id %s belonging to user %s" % (request.user, notif_id, notif.user))
-        messages.error(request, 'You are not authorized to view that notification.')
+        messages.error(request, _('You are not authorized to view that notification.'))
         return redirect('auth_notification_list')
 
 
@@ -45,11 +46,11 @@ def remove_notification(request, notif_id):
         if Notification.objects.filter(id=notif_id).exists():
             notif.delete()
             logger.info("Deleting notif id %s by user %s" % (notif_id, request.user))
-            messages.success(request, 'Deleted notification.')
+            messages.success(request, _('Deleted notification.'))
     else:
         logger.error(
             "Unable to delete notif id %s for user %s - notif matching id not found." % (notif_id, request.user))
-        messages.error(request, 'Failed to locate notification.')
+        messages.error(request, _('Failed to locate notification.'))
     return redirect('auth_notification_list')
 
 
@@ -57,7 +58,7 @@ def remove_notification(request, notif_id):
 def mark_all_read(request):
     logger.debug('mark all notifications read called by user %s' % request.user)
     Notification.objects.filter(user=request.user).update(viewed=True)
-    messages.success(request, 'Marked all notifications as read.')
+    messages.success(request, _('Marked all notifications as read.'))
     return redirect('auth_notification_list')
 
 
@@ -65,5 +66,5 @@ def mark_all_read(request):
 def delete_all_read(request):
     logger.debug('delete all read notifications called by user %s' % request.user)
     Notification.objects.filter(user=request.user).filter(viewed=True).delete()
-    messages.success(request, 'Deleted all read notifications.')
+    messages.success(request, _('Deleted all read notifications.'))
     return redirect('auth_notification_list')

@@ -10,7 +10,7 @@
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Corporations<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Corporations" %}<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 {% for corpstat in available %}
                                     <li>
@@ -21,13 +21,13 @@
                         </li>
                         {% if perms.corputils.add_corpstats %}
                             <li>
-                                <a href="{% url 'corputils:add' %}">Add</a>
+                                <a href="{% url 'corputils:add' %}">{% trans "Add" %}</a>
                             </li>
                         {% endif %}
                     </ul>
                     <form class="navbar-form navbar-right" role="search" action="{% url 'corputils:search' %}" method="GET">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="search_string" placeholder="{% if search_string %}{{ search_string }}{% else %}Search characters...{% endif %}">
+                            <input type="text" class="form-control" name="search_string" placeholder="{% if search_string %}{{ search_string }}{% else %}{% trans "Search characters..." %}{% endif %}">
                         </div>
                     </form>
                 </div>
