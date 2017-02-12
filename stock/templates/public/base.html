@@ -106,15 +106,11 @@
                                 <i class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}
                             </a>
                         </li>
-
-                        {% if STATE == MEMBER_STATE or user.is_superuser %}
-                            <li>
-                                <a class="{% navactive request 'auth_groups' %}" href="{% url 'auth_groups' %}">
-                                    <i class="fa fa-cogs fa-fw fa-sitemap grayiconecolor"></i>{% trans " Groups" %}
-                                </a>
-                            </li>
-                        {% endif %}
-
+                        <li>
+                            <a class="{% navactive request 'auth_groups' %}" href="{% url 'auth_groups' %}">
+                                <i class="fa fa-cogs fa-fw fa-sitemap grayiconecolor"></i>{% trans " Groups" %}
+                            </a>
+                        </li>
                         <li>
                             <a class="{% navactive request 'auth_help' %}" href="{% url 'auth_help' %}">
                                 <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}

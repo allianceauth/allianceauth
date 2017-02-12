@@ -32,6 +32,10 @@ class AuthGroup(models.Model):
     Internal - not requestable by users, at all. Covers Corp_, Alliance_, Members etc groups.
     Groups are internal by default
 
+    Public - Other options are respected, but any user will be able to become and remain a member, even if they
+    have no API etc entered. Auth will not manage these groups automatically so user removal is up to
+    group managers/leaders.
+
     Not Internal and:
         Hidden - users cannot view, can request if they have the direct link.
         Not Hidden - Users can view and request the group
@@ -49,6 +53,11 @@ class AuthGroup(models.Model):
     open = models.BooleanField(default=False,
                                help_text="Group is open and users will be automatically added upon request. <br>"
                                          "If the group is not open users will need their request manually approved.")
+    public = models.BooleanField(default=False,
+                                 help_text="Group is public. Any registered user is able to join this group, with "
+                                           "visibility based on the other options set for this group.<br> Auth will "
+                                           "not remove users from this group automatically when they are no longer "
+                                           "authenticated.")
     # Group leaders have management access to this group
     group_leaders = models.ManyToManyField(User, related_name='leads_groups', blank=True,
                                            help_text="Group leaders can process group requests for this group "
@@ -59,6 +68,11 @@ class AuthGroup(models.Model):
 
     def __str__(self):
         return self.group.name
+
+    class Meta:
+        permissions = (
+            ("request_groups", u"Can request non-public groups"),
+        )
 
 
 @receiver(post_save, sender=Group)

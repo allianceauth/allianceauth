@@ -47,27 +47,27 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.update_groups.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('services.signals.disable_member')
-    def test_pre_delete_user(self, disable_member):
+    @mock.patch('services.signals.disable_user')
+    def test_pre_delete_user(self, disable_user):
         """
         Test that disable_member is called when a user is deleted
         """
         self.none_user.delete()
 
-        self.assertTrue(disable_member.called)
-        args, kwargs = disable_member.call_args
+        self.assertTrue(disable_user.called)
+        args, kwargs = disable_user.call_args
         self.assertEqual(self.none_user, args[0])
 
-    @mock.patch('services.signals.disable_member')
-    def test_pre_save_user_inactivation(self, disable_member):
+    @mock.patch('services.signals.disable_user')
+    def test_pre_save_user_inactivation(self, disable_user):
         """
         Test a user set inactive has disable_member called
         """
         self.member.is_active = False
         self.member.save()  # Signal Trigger
 
-        self.assertTrue(disable_member.called)
-        args, kwargs = disable_member.call_args
+        self.assertTrue(disable_user.called)
+        args, kwargs = disable_user.call_args
         self.assertEqual(self.member, args[0])
 
     @mock.patch('services.signals.set_state')

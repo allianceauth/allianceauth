@@ -10,48 +10,44 @@
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Available Groups" %}</h1>
-        {% if STATE == MEMBER_STATE or user.is_superuser %}
-            {% if groups %}
-            <table class="table">
-                <tr>
-                    <th class="text-center">{% trans "Name" %}</th>
-                    <th class="text-center">{% trans "Description" %}</th>
-                    <th class="text-center">{% trans "Action" %}</th>
-                </tr>
+        {% if groups %}
+        <table class="table">
+            <tr>
+                <th class="text-center">{% trans "Name" %}</th>
+                <th class="text-center">{% trans "Description" %}</th>
+                <th class="text-center">{% trans "Action" %}</th>
+            </tr>
 
-                {% for g in groups %}
-                    <tr>
-                        <td class="text-center">{{ g.group.name }}</td>
-                        <td class="text-center">{{ g.group.authgroup.description }}</td>
-                        <td class="text-center">
-                            {% if g.group in user.groups.all %}
-                                {% if not g.request %}
-                                    <a href="{% url 'auth_group_request_leave' g.group.id %}" class="btn btn-danger">
-                                        {% trans "Leave" %}
-                                    </a>
-                                {% else %}
-                                    <button type="button" class="btn btn-primary" disabled>
-                                        {{ g.request.status }}
-                                    </button>
-                                {% endif %}
-                            {% elif not g.request %}
-                                <a href="{% url 'auth_group_request_add' g.group.id %}" class="btn btn-success">
-                                    {% trans "Request" %}
+            {% for g in groups %}
+                <tr>
+                    <td class="text-center">{{ g.group.name }}</td>
+                    <td class="text-center">{{ g.group.authgroup.description }}</td>
+                    <td class="text-center">
+                        {% if g.group in user.groups.all %}
+                            {% if not g.request %}
+                                <a href="{% url 'auth_group_request_leave' g.group.id %}" class="btn btn-danger">
+                                    {% trans "Leave" %}
                                 </a>
                             {% else %}
                                 <button type="button" class="btn btn-primary" disabled>
                                     {{ g.request.status }}
                                 </button>
                             {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <div class="alert alert-warning text-center">No groups available.</div>
-            {% endif %}
+                        {% elif not g.request %}
+                            <a href="{% url 'auth_group_request_add' g.group.id %}" class="btn btn-success">
+                                {% trans "Request" %}
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-primary" disabled>
+                                {{ g.request.status }}
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
         {% else %}
-            <div class="alert alert-danger" role="alert">{% trans "You are not a member." %}</div>
+        <div class="alert alert-warning text-center">No groups available.</div>
         {% endif %}
     </div>
 

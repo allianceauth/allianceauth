@@ -12,6 +12,7 @@ from django.http import Http404
 from groupmanagement.managers import GroupManager
 from groupmanagement.models import GroupRequest
 from authentication.models import AuthServicesInfo
+from authentication.managers import UserState
 from eveonline.managers import EveManager
 
 import logging
@@ -270,7 +271,14 @@ def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
     groups = []
 
-    for group in GroupManager.get_joinable_groups():
+    group_query = GroupManager.get_joinable_groups()
+
+    if not request.user.has_perm('groupmanagement.request_groups'):
+        # Filter down to public groups only for non-members
+        group_query = group_query.filter(authgroup__public=True)
+        logger.debug("Not a member, only public groups will be available")
+
+    for group in group_query:
         # Exclude hidden
         if not group.authgroup.hidden:
             group_request = GroupRequest.objects.filter(user=request.user).filter(group=group)
@@ -287,6 +295,12 @@ def group_request_add(request, group_id):
     group = Group.objects.get(id=group_id)
     if not GroupManager.joinable_group(group):
         logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
+                       (request.user, group_id))
+        messages.warning(request, "You cannot join that group")
+        return redirect('auth_groups')
+    if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
+        # Does not have the required permission, trying to join a non-public group
+        logger.warning("User %s attempted to join group id %s but it is not a public group" %
                        (request.user, group_id))
         messages.warning(request, "You cannot join that group")
         return redirect('auth_groups')

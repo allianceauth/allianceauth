@@ -20,7 +20,28 @@ def generate_alliance_group_name(alliancename):
 
 
 def disable_member(user):
+    """
+    Disable a member who is transitioning to a NONE state.
+    :param user: django.contrib.auth.models.User to disable
+    :return:
+    """
     logger.debug("Disabling member %s" % user)
+    if user.user_permissions.all().exists():
+        logger.info("Clearning user %s permission to deactivate user." % user)
+        user.user_permissions.clear()
+    if user.groups.all().exists():
+        logger.info("Clearing all non-public user %s groups to disable member." % user)
+        user.groups.remove(*user.groups.filter(authgroup__public=False))
+    validate_services(user, None)
+
+
+def disable_user(user):
+    """
+    Disable a user who is being set inactive or deleted
+    :param user: django.contrib.auth.models.User to disable
+    :return:
+    """
+    logger.debug("Disabling user %s" % user)
     if user.user_permissions.all().exists():
         logger.info("Clearning user %s permission to deactivate user." % user)
         user.user_permissions.clear()
