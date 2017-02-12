@@ -1,0 +1,20 @@
+.grayiconecolor {
+    color: #505050;
+}
+#lang_select {
+    margin-right: 25px;
+}
+
+#f_lang_select {
+    margin-right: 5px;
+}
+.navbar-brand {
+    height: 58px;
+    padding: 19px 19px;
+}
+.auth-navbar-top {
+    margin-bottom: 0;
+}
+.auth-sidebar {
+    margin-top: 1px;
+}

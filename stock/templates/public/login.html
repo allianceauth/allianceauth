@@ -13,10 +13,8 @@
     <meta name="author" content="">
     <title>{{ SITE_NAME }} - Login</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Custom Fonts -->
-    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    {% include 'bundles/bootstrap-css.html' %}
+    {% include 'bundles/fontawesome.html' %}
     <style>
         body {
             background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
@@ -98,5 +96,6 @@
         </div>
     </div>
 </div>
+{% include 'bundles/bootstrap-js.html' %}
 </body>
 </html>
