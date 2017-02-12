@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import socket
+import telnetlib
 import logging
 
 
@@ -23,37 +23,35 @@ ts3_escape = {'/': r"\/",
               "\t": r'\t',
               "\v": r'\v'}
 
+
 class TS3Proto:
     bytesin = 0
     bytesout = 0
 
-    _connected = False
+    EOL = b'\n\r'
 
     def __init__(self):
         self._log = logging.getLogger('%s.%s' % (__name__, self.__class__.__name__))
-        pass
+        self._conn = None
+        self._connected = False
 
     def connect(self, ip, port):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            s.connect((ip, port))
+            self._conn = telnetlib.Telnet(host=ip, port=port)
+            self._connected = True
         except:
             # raise ConnectionError(ip, port)
             raise
-        else:
-            self._sock = s
-            self._sockfile = s.makefile('r', 0)
 
-        data = self._sockfile.readline()
+        data = self._conn.read_until(self.EOL)
         if data.strip() == "TS3":
-            self._sockfile.readline()
+            self._conn.read_very_eager()  # Clear buffer
             self._connected = True
             return True
 
     def disconnect(self):
         self.send_command("quit")
-        self._sock.close()
-        self._sock = None
+        self._conn.close()
         self._connected = False
         self._log.info('Disconnected')
 
@@ -63,13 +61,22 @@ class TS3Proto:
 
         data = []
 
+        max_loop = 10000
         while True:
-            resp = self._sockfile.readline()
-            resp = self.parse_command(resp)
-            if 'command' not in resp:
-                data.append(resp)
-            else:
+            resp = self._conn.read_until(self.EOL)
+            resp = self.parse_command(resp.decode('utf-8'))
+            if 'command' in resp:
                 break
+            else:
+                data.append(resp)
+            max_loop -= 1
+            # Prevent infinite loops
+            if max_loop <= 0:
+                self._log.error("Maximum loop counter reached, aborting to prevent infinite loop.")
+                break
+
+        # Clear read buffer of any stray bytes
+        self._conn.read_very_eager()
 
         if resp['command'] == 'error':
             if resp['keys']['id'] == '0':
@@ -97,7 +104,7 @@ class TS3Proto:
 
         cstr = [command]
 
-        # Add the keys and values, escape as needed        
+        # Add the keys and values, escape as needed
         if keys:
             for key in keys:
                 if isinstance(keys[key], list):
@@ -137,7 +144,7 @@ class TS3Proto:
             v = key.strip().split('=')
             if len(v) > 1:
                 # Key
-                if len > 2:
+                if len(v) > 2:
                     # Fix the stupidities in TS3 escaping
                     v = [v[0], '='.join(v[1:])]
                 key, value = v
@@ -187,11 +194,11 @@ class TS3Proto:
     def send(self, payload):
         if self._connected:
             self._log.debug('Sent: %s' % payload)
-            self._sockfile.write(payload)
+            self._conn.write(payload.encode('utf-8'))
 
 
 class TS3Server(TS3Proto):
-    def __init__(self, ip, port, id=0, sock=None):
+    def __init__(self, ip, port, id=0):
         """
         Abstraction class for TS3 Servers
         @param ip: IP Address
@@ -201,13 +208,7 @@ class TS3Server(TS3Proto):
         """
         TS3Proto.__init__(self)
 
-        if not sock:
-            if self.connect(ip, port) and id > 0:
-                self.use(id)
-        else:
-            self._sock = sock
-            self._sockfile = sock.makefile('r', 0)
-            self._connected = True
+        self.connect(ip, port)
 
     def login(self, username, password):
         """
