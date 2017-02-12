@@ -353,11 +353,15 @@ ALLIANCE_IDS = []
 # CORP_API_VCODE - Set this to the api vcode for the corp API key
 # BLUE_STANDING - The lowest standings value to consider blue
 # STANDING_LEVEL - The level of standings to query. Accepted values are 'corp' and 'alliance'.
+# BLUE_CORP_IDS - A list of corps to remain blue regardless of in-game standings
+# BLUE_ALLIANCE_IDS - A list of alliances to remain blue regardless of in-game standings
 ########################
 CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
 CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 STANDING_LEVEL = os.environ.get('AA_STANDING_LEVEL', 'corp')
+BLUE_CORP_IDS = []
+BLUE_ALLIANCE_IDS = []
 
 ########################
 # API Configuration
@@ -710,7 +714,10 @@ if ENABLE_AUTH_IPS4 or ENABLE_BLUE_IPS4:
 # Ensure corp/alliance IDs are expected types
 STR_CORP_IDS = [str(id) for id in CORP_IDS]
 STR_ALLIANCE_IDS = [str(id) for id in ALLIANCE_IDS]
+STR_BLUE_CORP_IDS = [str(id) for id in BLUE_CORP_IDS]
+STR_BLUE_ALLIANCE_IDS = [str(id) for id in BLUE_ALLIANCE_IDS]
 
+# Conditionally add periodic tasks for services if installed
 if 'services.modules.teamspeak3' in INSTALLED_APPS:
     CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
         'task': 'services.modules.teamspeak3.tasks.Teamspeak3Tasks.run_ts3_group_update',
