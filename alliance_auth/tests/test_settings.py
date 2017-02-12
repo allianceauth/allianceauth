@@ -248,62 +248,6 @@ BLUE_CORP_GROUPS = 'True' == os.environ.get('AA_BLUE_CORP_GROUPS', 'False')
 BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'False')
 
 #########################
-# Alliance Service Setup
-#########################
-# ENABLE_AUTH_FORUM - Enable forum support in the auth for auth'd members
-# ENABLE_AUTH_JABBER - Enable jabber support in the auth for auth'd members
-# ENABLE_AUTH_MUMBLE - Enable mumble support in the auth for auth'd members
-# ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
-# ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
-# ENABLE_AUTH_DISCOURSE - Enable Discourse support in the auth for auth'd members
-# ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
-# ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
-# ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
-# ENABLE_AUTH_PATHFINDER = Enable Alliance Pathfinder suppor in auth for auth'd members
-# ENABLE_AUTH_XENFORO = Enable XenForo forums support in the auth for auth'd members
-#########################
-ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'True')
-ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'True')
-ENABLE_AUTH_MUMBLE = 'True' == os.environ.get('AA_ENABLE_AUTH_MUMBLE', 'True')
-ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'True')
-ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'True')
-ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'True')
-ENABLE_AUTH_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCOURSE', 'True')
-ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'True')
-ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'True')
-ENABLE_AUTH_MARKET = 'True' == os.environ.get('AA_ENABLE_AUTH_MARKET', 'True')
-ENABLE_AUTH_XENFORO = 'True' == os.environ.get('AA_ENABLE_AUTH_XENFORO', 'True')
-
-#####################
-# Blue service Setup
-#####################
-# BLUE_STANDING - The default lowest standings setting to consider blue
-# ENABLE_BLUE_FORUM - Enable forum support in the auth for blues
-# ENABLE_BLUE_JABBER - Enable jabber support in the auth for blues
-# ENABLE_BLUE_MUMBLE - Enable mumble support in the auth for blues
-# ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
-# ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
-# ENABLE_BLUE_DISCOURSE - Enable Discord support in the auth for blues
-# ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
-# ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
-# ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
-# ENABLE_BLUE_PATHFINDER = Enable Pathfinder support in the auth for blues
-# ENABLE_BLUE_XENFORO = Enable XenForo forum support in the auth for blue 
-#####################
-BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
-ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'True')
-ENABLE_BLUE_JABBER = 'True' == os.environ.get('AA_ENABLE_BLUE_JABBER', 'True')
-ENABLE_BLUE_MUMBLE = 'True' == os.environ.get('AA_ENABLE_BLUE_MUMBLE', 'True')
-ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'True')
-ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'True')
-ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'True')
-ENABLE_BLUE_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCOURSE', 'True')
-ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'True')
-ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'True')
-ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'True')
-ENABLE_BLUE_XENFORO = 'True' == os.environ.get('AA_ENABLE_BLUE_XENFORO', 'True')
-
-#########################
 # Corp Configuration
 #########################
 # If running in alliance mode, the following should be for the executor corp#

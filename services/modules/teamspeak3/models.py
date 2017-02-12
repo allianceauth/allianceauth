@@ -15,6 +15,11 @@ class Teamspeak3User(models.Model):
     def __str__(self):
         return self.uid
 
+    class Meta:
+        permissions = (
+            ("access_teamspeak3", u"Can access the Teamspeak3 service"),
+        )
+
 
 @python_2_unicode_compatible
 class TSgroup(models.Model):

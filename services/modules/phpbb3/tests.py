@@ -10,7 +10,7 @@ except ImportError:
 from django.test import TestCase, RequestFactory
 from django.conf import settings
 from django import urls
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
 
 from alliance_auth.tests.auth_utils import AuthUtils
@@ -20,6 +20,13 @@ from .models import Phpbb3User
 from .tasks import Phpbb3Tasks
 
 MODULE_PATH = 'services.modules.phpbb3'
+
+
+def add_permissions():
+    permission = Permission.objects.get(codename='access_phpbb3')
+    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
+    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
+    AuthUtils.add_permissions_to_groups([permission], [members, blues])
 
 
 class Phpbb3HooksTestCase(TestCase):
@@ -33,6 +40,7 @@ class Phpbb3HooksTestCase(TestCase):
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = Phpbb3Service
+        add_permissions()
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
@@ -47,11 +55,9 @@ class Phpbb3HooksTestCase(TestCase):
         member = User.objects.get(username=self.member)
         blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
-        self.assertTrue(service.service_enabled_members())
-        self.assertTrue(service.service_enabled_blues())
 
-        self.assertEqual(service.service_active_for_user(member), settings.ENABLE_AUTH_FORUM)
-        self.assertEqual(service.service_active_for_user(blue), settings.ENABLE_BLUE_FORUM)
+        self.assertTrue(service.service_active_for_user(member))
+        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.Phpbb3Manager')
@@ -136,6 +142,7 @@ class Phpbb3ViewsTestCase(TestCase):
         self.member.email = 'auth_member@example.com'
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
+        add_permissions()
 
     def login(self):
         self.client.login(username=self.member.username, password='password')

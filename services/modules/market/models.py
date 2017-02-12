@@ -14,3 +14,8 @@ class MarketUser(models.Model):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        permissions = (
+            ("access_market", u"Can access the Evernus Market service"),
+        )

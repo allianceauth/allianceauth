@@ -42,18 +42,11 @@ class Teamspeak3Tasks:
     @staticmethod
     @app.task()
     def run_ts3_group_update():
-        if settings.ENABLE_AUTH_TEAMSPEAK3 or settings.ENABLE_BLUE_TEAMSPEAK3:
-            logger.debug("TS3 installed. Syncing local group objects.")
-            Teamspeak3Manager._sync_ts_group_db()
+        logger.debug("TS3 installed. Syncing local group objects.")
+        Teamspeak3Manager._sync_ts_group_db()
 
     @staticmethod
     def disable():
-        if settings.ENABLE_AUTH_TEAMSPEAK3:
-            logger.warn(
-                "ENABLE_AUTH_TEAMSPEAK3 still True, after disabling users will still be able to create teamspeak accounts")
-        if settings.ENABLE_BLUE_TEAMSPEAK3:
-            logger.warn(
-                "ENABLE_BLUE_TEAMSPEAK3 still True, after disabling blues will still be able to create teamspeak accounts")
         logger.info("Deleting all Teamspeak3Users")
         Teamspeak3User.objects.all().delete()
         logger.info("Deleting all UserTSgroup models")

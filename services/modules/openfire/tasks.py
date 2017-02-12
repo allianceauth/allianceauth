@@ -39,10 +39,6 @@ class OpenfireTasks:
 
     @staticmethod
     def disable_jabber():
-        if settings.ENABLE_AUTH_JABBER:
-            logger.warn("ENABLE_AUTH_JABBER still True, after disabling users will still be able to create jabber accounts")
-        if settings.ENABLE_BLUE_JABBER:
-            logger.warn("ENABLE_BLUE_JABBER still True, after disabling blues will still be able to create jabber accounts")
         logging.debug("Deleting all Openfire users")
         OpenfireUser.objects.all().delete()
 

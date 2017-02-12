@@ -38,12 +38,6 @@ class SmfTasks:
 
     @classmethod
     def disable(cls):
-        if settings.ENABLE_AUTH_SMF:
-            logger.warn(
-                "ENABLE_AUTH_SMF still True, after disabling users will still be able to link smf accounts")
-        if settings.ENABLE_BLUE_SMF:
-            logger.warn(
-                "ENABLE_BLUE_SMF still True, after disabling blues will still be able to link smf accounts")
         SmfUser.objects.all().delete()
 
     @staticmethod

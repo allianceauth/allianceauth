@@ -13,3 +13,8 @@ class XenforoUser(models.Model):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        permissions = (
+            ("access_xenforo", u"Can access the XenForo service"),
+        )

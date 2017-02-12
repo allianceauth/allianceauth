@@ -3,6 +3,7 @@
 ```eval_rst
 .. toctree::
 
+    permissions
     market
     discord
     discourse

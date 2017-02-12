@@ -20,6 +20,7 @@ class SmfService(ServicesHook):
         self.name = 'smf'
         self.urlpatterns = urlpatterns
         self.service_url = settings.SMF_URL
+        self.access_perm = 'smf.access_smf'
 
     @property
     def title(self):
@@ -43,11 +44,8 @@ class SmfService(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         SmfTasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_SMF or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_SMF or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         urls = self.Urls()

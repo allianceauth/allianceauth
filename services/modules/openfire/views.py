@@ -21,9 +21,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'openfire.access_openfire'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_jabber(request):
     logger.debug("activate_jabber called by user %s" % request.user)
     character = EveManager.get_main_character(request.user)
@@ -49,7 +51,7 @@ def activate_jabber(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_jabber(request):
     logger.debug("deactivate_jabber called by user %s" % request.user)
     if OpenfireTasks.has_account(request.user) and OpenfireTasks.delete_user(request.user):
@@ -62,7 +64,7 @@ def deactivate_jabber(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_jabber_password(request):
     logger.debug("reset_jabber_password called by user %s" % request.user)
     if OpenfireTasks.has_account(request.user):
@@ -133,7 +135,7 @@ def jabber_broadcast_view(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_jabber_password(request):
     logger.debug("set_jabber_password called by user %s" % request.user)
     if request.method == 'POST':

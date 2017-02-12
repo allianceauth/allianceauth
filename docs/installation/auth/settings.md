@@ -47,34 +47,6 @@ When changing these booleans, edit the setting within the brackets (eg `('AA_MEM
    - OAuth callback URL. Should be `https://mydomain.com/sso/callback`
 
 ## Services
-### Member Services
-After installing services, enable specific services for members by setting the following to `True`
-- [ENABLE_AUTH_FORUM](#enable-auth-forum)
-- [ENABLE_AUTH_JABBER](#enable-auth-jabber)
-- [ENABLE_AUTH_MUMBLE](#enable-auth-mumble)
-- [ENABLE_AUTH_IPBOARD](#enable-auth-ipboard)
-- [ENABLE_AUTH_TEAMSPEAK3](#enable-auth-teamspeak3)
-- [ENABLE_AUTH_DISCORD](#enable-auth-discord)
-- [ENABLE_AUTH_DISCOURSE](#enable-auth-discourse)
-- [ENABLE_AUTH_IPS4](#enable-auth-ips4)
-- [ENABLE_AUTH_SMF](#enable-auth-smf)
-- [ENABLE_AUTH_MARKET](#enable-auth-market)
-- [ENABLE_AUTH_XENFORO](#enable-auth-xenforo)
-
-### Blue Services
-After installing services, enable specific services for blues by setting the following to `True`
-- [ENABLE_BLUE_FORUM](#enable-blue-forum)
-- [ENABLE_BLUE_JABBER](#enable-blue-jabber)
-- [ENABLE_BLUE_MUMBLE](#enable-blue-mumble)
-- [ENABLE_BLUE_IPBOARD](#enable-blue-ipboard)
-- [ENABLE_BLUE_TEAMSPEAK3](#enable-blue-teamspeak3)
-- [ENABLE_BLUE_DISCORD](#enable-blue-discord)
-- [ENABLE_BLUE_DISCOURSE](#enable-blue-discourse)
-- [ENABLE_BLUE_IPS4](#enable-blue-ips4)
-- [ENABLE_BLUE_SMF](#enable-blue-smf)
-- [ENABLE_BLUE_MARKET](#enable-blue-market)
-- [ENABLE_BLUE_XENFORO](#enable-blue-xenforo)
-
 ### IPBoard
 If using IPBoard, the following need to be set in accordance with the [install instructions](../services/ipboard3.md)
  - [IPBOARD_ENDPOINT](#ipboard-endpoint)

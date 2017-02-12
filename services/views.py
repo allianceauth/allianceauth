@@ -46,7 +46,6 @@ def fleet_formatter_view(request):
 
 
 @login_required
-@members_and_blues()
 def services_view(request):
     logger.debug("services_view called by user %s" % request.user)
     auth = AuthServicesInfo.objects.get(user=request.user)

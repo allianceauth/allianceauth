@@ -13,3 +13,8 @@ class SmfUser(models.Model):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        permissions = (
+            ("access_smf", u"Can access the SMF service"),
+        )

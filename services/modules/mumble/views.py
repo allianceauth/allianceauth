@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from authentication.decorators import members_and_blues
 from eveonline.managers import EveManager
 from eveonline.models import EveAllianceInfo
 from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
@@ -19,9 +18,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'mumble.access_mumble'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_mumble(request):
     logger.debug("activate_mumble called by user %s" % request.user)
     authinfo = AuthServicesInfo.objects.get(user=request.user)
@@ -57,7 +58,7 @@ def activate_mumble(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_mumble(request):
     logger.debug("deactivate_mumble called by user %s" % request.user)
     # if we successfully remove the user or the user is already removed
@@ -71,7 +72,7 @@ def deactivate_mumble(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_mumble_password(request):
     logger.debug("reset_mumble_password called by user %s" % request.user)
     result = MumbleManager.update_user_password(request.user)
@@ -93,7 +94,7 @@ def reset_mumble_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_mumble_password(request):
     logger.debug("set_mumble_password called by user %s" % request.user)
     if request.method == 'POST':

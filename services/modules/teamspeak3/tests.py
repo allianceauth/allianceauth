@@ -10,7 +10,7 @@ except ImportError:
 from django.test import TestCase, RequestFactory
 from django.conf import settings
 from django import urls
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
 
@@ -22,6 +22,13 @@ from .tasks import Teamspeak3Tasks
 from .signals import m2m_changed_authts_group, post_save_authts, post_delete_authts
 
 MODULE_PATH = 'services.modules.teamspeak3'
+
+
+def add_permissions():
+    permission = Permission.objects.get(codename='access_teamspeak3')
+    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
+    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
+    AuthUtils.add_permissions_to_groups([permission], [members, blues])
 
 
 class Teamspeak3HooksTestCase(TestCase):
@@ -46,6 +53,7 @@ class Teamspeak3HooksTestCase(TestCase):
             m2m_blue_group.ts_group.add(ts_blue_group)
             m2m_blue_group.save()
             self.service = Teamspeak3Service
+            add_permissions()
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
@@ -60,11 +68,9 @@ class Teamspeak3HooksTestCase(TestCase):
         member = User.objects.get(username=self.member)
         blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
-        self.assertTrue(service.service_enabled_members())
-        self.assertTrue(service.service_enabled_blues())
 
-        self.assertEqual(service.service_active_for_user(member), settings.ENABLE_AUTH_TEAMSPEAK3)
-        self.assertEqual(service.service_active_for_user(blue), settings.ENABLE_BLUE_TEAMSPEAK3)
+        self.assertTrue(service.service_active_for_user(member))
+        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.Teamspeak3Manager')
@@ -164,6 +170,7 @@ class Teamspeak3ViewsTestCase(TestCase):
             m2m_blue = AuthTS.objects.create(auth_group=Group.objects.get(name='Blue'))
             m2m_blue.ts_group.add(ts_blue_group)
             m2m_blue.save()
+            add_permissions()
 
     def login(self, user=None, password=None):
         if user is None:

@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 import logging
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
 from eveonline.managers import EveManager
 from services.forms import ServicePasswordForm
 from .manager import XenForoManager
@@ -15,8 +14,11 @@ from .tasks import XenforoTasks
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'xenforo.access_xenforo'
+
+
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_xenforo_forum(request):
     logger.debug("activate_xenforo_forum called by user %s" % request.user)
     character = EveManager.get_main_character(request.user)
@@ -41,7 +43,7 @@ def activate_xenforo_forum(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_xenforo_forum(request):
     logger.debug("deactivate_xenforo_forum called by user %s" % request.user)
     if XenforoTasks.delete_user(request.user):
@@ -53,7 +55,7 @@ def deactivate_xenforo_forum(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_xenforo_password(request):
     logger.debug("reset_xenforo_password called by user %s" % request.user)
     if XenforoTasks.has_account(request.user):
@@ -74,7 +76,7 @@ def reset_xenforo_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_xenforo_password(request):
     logger.debug("set_xenforo_password called by user %s" % request.user)
     if request.method == 'POST':

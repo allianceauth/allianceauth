@@ -19,6 +19,7 @@ class DiscordService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.name = 'discord'
         self.service_ctrl_template = 'registered/discord_service_ctrl.html'
+        self.access_perm = 'discord.access_discord'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))
@@ -42,11 +43,8 @@ class DiscordService(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         DiscordTasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_DISCORD or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_DISCORD or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         return render_to_string(self.service_ctrl_template, {

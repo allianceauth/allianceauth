@@ -13,3 +13,8 @@ class MumbleUser(models.Model):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        permissions = (
+            ("access_mumble", u"Can access the Mumble service"),
+        )

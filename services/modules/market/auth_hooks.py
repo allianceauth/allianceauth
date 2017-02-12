@@ -20,6 +20,7 @@ class MarketService(ServicesHook):
         self.name = 'market'
         self.urlpatterns = urlpatterns
         self.service_url = settings.MARKET_URL
+        self.access_perm = 'market.access_market'
 
     @property
     def title(self):
@@ -31,14 +32,11 @@ class MarketService(ServicesHook):
 
     def validate_user(self, user):
         logger.debug('Validating user %s %s account' % (user, self.name))
-        if MarketTasks.has_account(user) and self.service_active_for_user(user):
+        if MarketTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user)
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_MARKET or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_MARKET or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         urls = self.Urls()

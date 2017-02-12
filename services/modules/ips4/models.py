@@ -15,3 +15,8 @@ class Ips4User(models.Model):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        permissions = (
+            ("access_ips4", u"Can access the IPS4 service"),
+        )

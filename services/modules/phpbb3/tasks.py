@@ -66,8 +66,4 @@ class Phpbb3Tasks:
 
     @staticmethod
     def disable():
-        if settings.ENABLE_AUTH_FORUM:
-            logger.warn("ENABLE_AUTH_FORUM still True, after disabling users will still be able to create forum accounts")
-        if settings.ENABLE_BLUE_FORUM:
-            logger.warn("ENABLE_BLUE_FORUM still True, after disabling blues will still be able to create forum accounts")
         Phpbb3User.objects.all().delete()

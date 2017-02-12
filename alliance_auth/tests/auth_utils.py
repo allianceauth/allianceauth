@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db.models.signals import m2m_changed, pre_save
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 
 from services.signals import m2m_changed_user_groups, pre_save_user
+from services.signals import m2m_changed_group_permissions, m2m_changed_user_permissions
 from authentication.signals import pre_save_auth_state
 
 from authentication.tasks import make_member, make_blue
@@ -55,12 +56,16 @@ class AuthUtils:
     @classmethod
     def disconnect_signals(cls):
         m2m_changed.disconnect(m2m_changed_user_groups, sender=User.groups.through)
+        m2m_changed.disconnect(m2m_changed_group_permissions, sender=Group.permissions.through)
+        m2m_changed.disconnect(m2m_changed_user_permissions, sender=User.user_permissions.through)
         pre_save.disconnect(pre_save_user, sender=User)
         pre_save.disconnect(pre_save_auth_state, sender=AuthServicesInfo)
 
     @classmethod
     def connect_signals(cls):
         m2m_changed.connect(m2m_changed_user_groups, sender=User.groups.through)
+        m2m_changed.connect(m2m_changed_group_permissions, sender=Group.permissions.through)
+        m2m_changed.connect(m2m_changed_user_permissions, sender=User.user_permissions.through)
         pre_save.connect(pre_save_user, sender=User)
         pre_save.connect(pre_save_auth_state, sender=AuthServicesInfo)
 

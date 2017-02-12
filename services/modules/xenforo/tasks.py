@@ -36,11 +36,5 @@ class XenforoTasks:
 
     @classmethod
     def disable(cls):
-        if settings.ENABLE_AUTH_XENFORO:
-            logger.warn(
-                "ENABLE_AUTH_XENFORO still True, after disabling users will still be able to link XenForo accounts")
-        if settings.ENABLE_BLUE_XENFORO:
-            logger.warn(
-                "ENABLE_BLUE_XENFORO still True, after disabling blues will still be able to link XenForo accounts")
         logger.debug("Deleting ALL XenForo users")
         XenforoUser.objects.all().delete()

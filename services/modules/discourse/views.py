@@ -31,20 +31,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+ACCESS_PERM = 'discourse.access_discourse'
+
+
 @login_required
 def discourse_sso(request):
 
     ## Check if user has access
 
     auth = AuthServicesInfo.objects.get(user=request.user)
-    if not request.user.is_superuser:
-        if not settings.ENABLE_AUTH_DISCOURSE and auth.state == MEMBER_STATE:
-            messages.error(request, 'Members are not authorized to access Discourse.')
-            return redirect('auth_dashboard')
-        elif not settings.ENABLE_BLUE_DISCOURSE and auth.state == BLUE_STATE:
-            messages.error(request, 'Blues are not authorized to access Discourse.')
-            return redirect('auth_dashboard')
-        elif auth.state == NONE_STATE:
+    if not request.user.has_perm(ACCESS_PERM):
             messages.error(request, 'You are not authorized to access Discourse.')
             return redirect('auth_dashboard')
 

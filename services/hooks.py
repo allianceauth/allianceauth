@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
+from alliance_auth.hooks import get_hooks
 from authentication.states import MEMBER_STATE, BLUE_STATE
 from authentication.models import AuthServicesInfo
 
@@ -18,6 +19,7 @@ class ServicesHook:
         self.name = 'Undefined'
         self.urlpatterns = []
         self.service_ctrl_template = 'registered/services_ctrl.html'
+        self.access_perm = None
 
     @property
     def title(self):
@@ -67,26 +69,8 @@ class ServicesHook:
         """
         pass
 
-    def service_enabled_members(self):
-        """
-        Return setting config for service enabled for members
-        :return: bool True if enabled
-        """
-        return False
-
-    def service_enabled_blues(self):
-        """
-        Return setting config for service enabled for Blues
-        :return: bool True if enabled
-        """
-        return False
-
     def service_active_for_user(self, user):
-        state = AuthServicesInfo.objects.get(user=user).state
-        return (
-            (state == MEMBER_STATE and self.service_enabled_members()) or
-            (state == BLUE_STATE and self.service_enabled_blues())
-        )
+        pass
 
     def show_service_ctrl(self, user, state):
         """
@@ -97,9 +81,7 @@ class ServicesHook:
         :param state: auth user state
         :return: bool True if the service should be shown
         """
-        return (self.service_enabled_members() and (
-            state == MEMBER_STATE or user.is_superuser)) or (
-                self.service_enabled_blues() and (state == BLUE_STATE or user.is_superuser))
+        return self.service_active_for_user(user) or user.is_superuser
 
     def render_services_ctrl(self, request):
         """
@@ -118,6 +100,11 @@ class ServicesHook:
             self.auth_set_password = ''
             self.auth_reset_password = ''
             self.auth_deactivate = ''
+
+    @staticmethod
+    def get_services():
+        for fn in get_hooks('services_hook'):
+            yield fn()
 
 
 class MenuItemHook:

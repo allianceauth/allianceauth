@@ -9,7 +9,7 @@ except ImportError:
 
 from django.test import TestCase, RequestFactory
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
 
 from alliance_auth.tests.auth_utils import AuthUtils
@@ -19,6 +19,13 @@ from .models import DiscourseUser
 from .tasks import DiscourseTasks
 
 MODULE_PATH = 'services.modules.discourse'
+
+
+def add_permissions():
+    permission = Permission.objects.get(codename='access_discourse')
+    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
+    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
+    AuthUtils.add_permissions_to_groups([permission], [members, blues])
 
 
 class DiscourseHooksTestCase(TestCase):
@@ -32,6 +39,7 @@ class DiscourseHooksTestCase(TestCase):
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = DiscourseService
+        add_permissions()
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
@@ -46,11 +54,9 @@ class DiscourseHooksTestCase(TestCase):
         member = User.objects.get(username=self.member)
         blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
-        self.assertTrue(service.service_enabled_members())
-        self.assertTrue(service.service_enabled_blues())
 
-        self.assertEqual(service.service_active_for_user(member), settings.ENABLE_AUTH_DISCOURSE)
-        self.assertEqual(service.service_active_for_user(blue), settings.ENABLE_BLUE_DISCOURSE)
+        self.assertTrue(service.service_active_for_user(member))
+        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.DiscourseManager')
@@ -124,6 +130,7 @@ class DiscourseViewsTestCase(TestCase):
         self.member.set_password('password')
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
+        add_permissions()
 
     @mock.patch(MODULE_PATH + '.tasks.DiscourseManager')
     def test_sso_member(self, manager):

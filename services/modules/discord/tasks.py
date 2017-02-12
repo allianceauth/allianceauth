@@ -122,10 +122,4 @@ class DiscordTasks:
 
     @classmethod
     def disable(cls):
-        if settings.ENABLE_AUTH_DISCORD:
-            logger.warn(
-                "ENABLE_AUTH_DISCORD still True, after disabling users will still be able to link Discord accounts")
-        if settings.ENABLE_BLUE_DISCORD:
-            logger.warn(
-                "ENABLE_BLUE_DISCORD still True, after disabling blues will still be able to link Discord accounts")
         DiscordUser.objects.all().delete()

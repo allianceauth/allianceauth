@@ -21,6 +21,7 @@ class DiscourseService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.name = 'discourse'
         self.service_ctrl_template = 'registered/discourse_service_ctrl.html'
+        self.access_perm = 'discourse.access_discourse'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))
@@ -40,11 +41,8 @@ class DiscourseService(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         DiscourseTasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_DISCOURSE or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_DISCOURSE or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         return render_to_string(self.service_ctrl_template, {

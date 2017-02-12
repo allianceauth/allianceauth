@@ -5,9 +5,9 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
 
-from authentication.decorators import members_and_blues
 from .manager import DiscordOAuthManager
 from .tasks import DiscordTasks
 from services.views import superuser_test
@@ -15,9 +15,11 @@ from services.views import superuser_test
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'discord.access_discord'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_discord(request):
     logger.debug("deactivate_discord called by user %s" % request.user)
     if DiscordTasks.delete_user(request.user):
@@ -30,7 +32,7 @@ def deactivate_discord(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_discord(request):
     logger.debug("reset_discord called by user %s" % request.user)
     if DiscordTasks.delete_user(request.user):
@@ -42,14 +44,14 @@ def reset_discord(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_discord(request):
     logger.debug("activate_discord called by user %s" % request.user)
     return redirect(DiscordOAuthManager.generate_oauth_redirect_url())
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def discord_callback(request):
     logger.debug("Received Discord callback for activation of user %s" % request.user)
     code = request.GET.get('code', None)

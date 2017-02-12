@@ -33,11 +33,5 @@ class Ips4Tasks:
 
     @staticmethod
     def disable():
-        if settings.ENABLE_AUTH_IPS4:
-            logger.warn(
-                "ENABLE_AUTH_IPS4 still True, after disabling users will still be able to create IPS4 accounts")
-        if settings.ENABLE_BLUE_IPS4:
-            logger.warn(
-                "ENABLE_BLUE_IPS4 still True, after disabling blues will still be able to create IPS4 accounts")
         logging.debug("Deleting all IPS4 users")
         Ips4User.objects.all().delete()

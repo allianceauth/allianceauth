@@ -23,7 +23,7 @@ def pre_save_auth_state(sender, instance, *args, **kwargs):
                 make_blue(instance)
             else:
                 disable_member(instance.user)
-            validate_services(instance.user, instance.state)
+            validate_services.apply(args=(instance.user,))
 
 
 @receiver(post_save, sender=User)

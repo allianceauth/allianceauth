@@ -16,16 +16,14 @@ class Ips4Service(ServicesHook):
         self.name = 'ips4'
         self.urlpatterns = urlpatterns
         self.service_url = settings.IPS4_URL
+        self.access_perm = 'ips4.access_ips4'
 
     @property
     def title(self):
         return 'IPS4'
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_IPS4 or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_IPS4 or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         """

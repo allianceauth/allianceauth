@@ -20,6 +20,7 @@ class IpboardService(ServicesHook):
         self.name = 'ipboard'
         self.service_url = settings.IPBOARD_ENDPOINT
         self.urlpatterns = urlpatterns
+        self.access_perm = 'ipboard.access_ipboard'
 
     @property
     def title(self):
@@ -43,11 +44,8 @@ class IpboardService(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         IpboardTasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_IPBOARD or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_IPBOARD or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         urls = self.Urls()

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+@python_2_unicode_compatible
 class DiscourseUser(models.Model):
     user = models.OneToOneField(User,
                                 primary_key=True,
@@ -13,3 +14,8 @@ class DiscourseUser(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    class Meta:
+        permissions = (
+            ("access_discourse", u"Can access the Discourse service"),
+        )

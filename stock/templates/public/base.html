@@ -104,13 +104,11 @@
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Aux Navigation" %}</h5>
                         </li>
-                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
-                            <li>
-                                <a class="{% navactive request 'auth_services' %}" href="{% url 'auth_services' %}">
-                                    <i class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}
-                                </a>
-                            </li>
-                        {% endif %}
+                        <li>
+                            <a class="{% navactive request 'auth_services' %}" href="{% url 'auth_services' %}">
+                                <i class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}
+                            </a>
+                        </li>
 
                         {% if not STATE == MEMBER_STATE or perms.auth.human_resources %}
                             <li>

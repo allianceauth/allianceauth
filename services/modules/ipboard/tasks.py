@@ -62,11 +62,5 @@ class IpboardTasks:
 
     @staticmethod
     def disable():
-        if settings.ENABLE_AUTH_IPBOARD:
-            logger.warn(
-                "ENABLE_AUTH_IPBOARD still True, after disabling users will still be able to create IPBoard accounts")
-        if settings.ENABLE_BLUE_IPBOARD:
-            logger.warn(
-                "ENABLE_BLUE_IPBOARD still True, after disabling blues will still be able to create IPBoard accounts")
         logger.debug("Deleting all Ipboard Users")
         IpboardUser.objects.all().delete()

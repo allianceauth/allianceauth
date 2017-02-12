@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
 from services.forms import ServicePasswordForm
 from eveonline.managers import EveManager
 
@@ -16,9 +15,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'ipboard.access_ipboard'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_ipboard_forum(request):
     logger.debug("activate_ipboard_forum called by user %s" % request.user)
     character = EveManager.get_main_character(request.user)
@@ -46,7 +47,7 @@ def activate_ipboard_forum(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_ipboard_forum(request):
     logger.debug("deactivate_ipboard_forum called by user %s" % request.user)
     # false we failed
@@ -60,7 +61,7 @@ def deactivate_ipboard_forum(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_ipboard_password(request):
     logger.debug("set_ipboard_password called by user %s" % request.user)
     error = None
@@ -90,7 +91,7 @@ def set_ipboard_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_ipboard_password(request):
     logger.debug("reset_ipboard_password called by user %s" % request.user)
     if IpboardTasks.has_account(request.user):

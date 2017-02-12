@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
 from services.forms import ServicePasswordForm
 from eveonline.managers import EveManager
 
@@ -16,9 +15,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'market.access_market'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_market(request):
     logger.debug("activate_market called by user %s" % request.user)
     character = EveManager.get_main_character(request.user)
@@ -44,7 +45,7 @@ def activate_market(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_market(request):
     logger.debug("deactivate_market called by user %s" % request.user)
     # false we failed
@@ -58,7 +59,7 @@ def deactivate_market(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_market_password(request):
     logger.debug("reset_market_password called by user %s" % request.user)
     if MarketTasks.has_account(request.user):
@@ -80,7 +81,7 @@ def reset_market_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_market_password(request):
     logger.debug("set_market_password called by user %s" % request.user)
     if request.method == 'POST':

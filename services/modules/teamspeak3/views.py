@@ -1,10 +1,9 @@
 import logging
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
 from authentication.states import BLUE_STATE
 from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
@@ -18,9 +17,11 @@ from .models import Teamspeak3User
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'teamspeak3.access_teamspeak3'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_teamspeak3(request):
     logger.debug("activate_teamspeak3 called by user %s" % request.user)
 
@@ -52,7 +53,7 @@ def activate_teamspeak3(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def verify_teamspeak3(request):
     logger.debug("verify_teamspeak3 called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
@@ -75,7 +76,7 @@ def verify_teamspeak3(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_teamspeak3(request):
     logger.debug("deactivate_teamspeak3 called by user %s" % request.user)
     if Teamspeak3Tasks.has_account(request.user) and Teamspeak3Tasks.delete_user(request.user):
@@ -87,7 +88,7 @@ def deactivate_teamspeak3(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_teamspeak3_perm(request):
     logger.debug("reset_teamspeak3_perm called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):

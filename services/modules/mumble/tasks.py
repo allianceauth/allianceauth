@@ -26,10 +26,6 @@ class MumbleTasks:
 
     @staticmethod
     def disable_mumble():
-        if settings.ENABLE_AUTH_MUMBLE:
-            logger.warn("ENABLE_AUTH_MUMBLE still True, after disabling users will still be able to create mumble accounts")
-        if settings.ENABLE_BLUE_MUMBLE:
-            logger.warn("ENABLE_BLUE_MUMBLE still True, after disabling blues will still be able to create mumble accounts")
         logger.info("Deleting all MumbleUser models")
         MumbleUser.objects.all().delete()
 

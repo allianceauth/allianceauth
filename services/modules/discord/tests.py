@@ -9,7 +9,7 @@ except ImportError:
 
 from django.test import TestCase, RequestFactory
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
 
 from alliance_auth.tests.auth_utils import AuthUtils
@@ -19,6 +19,13 @@ from .models import DiscordUser
 from .tasks import DiscordTasks
 
 MODULE_PATH = 'services.modules.discord'
+
+
+def add_permissions():
+    permission = Permission.objects.get(codename='access_discord')
+    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
+    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
+    AuthUtils.add_permissions_to_groups([permission], [members, blues])
 
 
 class DiscordHooksTestCase(TestCase):
@@ -32,6 +39,7 @@ class DiscordHooksTestCase(TestCase):
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = DiscordService
+        add_permissions()
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
@@ -46,8 +54,6 @@ class DiscordHooksTestCase(TestCase):
         member = User.objects.get(username=self.member)
         blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
-        self.assertTrue(service.service_enabled_members())
-        self.assertTrue(service.service_enabled_blues())
 
         self.assertTrue(service.service_active_for_user(member))
         self.assertTrue(service.service_active_for_user(blue))
@@ -147,6 +153,7 @@ class DiscordViewsTestCase(TestCase):
         self.member = AuthUtils.create_member('auth_member')
         self.member.set_password('password')
         self.member.save()
+        add_permissions()
 
     def login(self):
         self.client.login(username=self.member.username, password='password')

@@ -20,6 +20,7 @@ class OpenfireService(ServicesHook):
         self.name = 'openfire'
         self.urlpatterns = urlpatterns
         self.service_url = settings.JABBER_URL
+        self.access_perm = 'openfire.access_openfire'
 
     @property
     def title(self):
@@ -43,11 +44,8 @@ class OpenfireService(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         OpenfireTasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_JABBER or False  # TODO: Rename this setting
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_JABBER or False  # TODO: Rename this setting
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         """

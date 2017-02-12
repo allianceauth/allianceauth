@@ -20,6 +20,7 @@ class Teamspeak3Service(ServicesHook):
         self.name = 'teamspeak3'
         self.urlpatterns = urlpatterns
         self.service_ctrl_template = 'registered/teamspeak3_service_ctrl.html'
+        self.access_perm = 'teamspeak3.access_teamspeak3'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))
@@ -38,11 +39,8 @@ class Teamspeak3Service(ServicesHook):
         logger.debug('Update all %s groups called' % self.name)
         Teamspeak3Tasks.update_all_groups.delay()
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_TEAMSPEAK3 or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_TEAMSPEAK3 or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         authinfo = {'teamspeak3_uid': '',

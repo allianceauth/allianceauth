@@ -37,8 +37,4 @@ class MarketTasks:
 
     @staticmethod
     def disable():
-        if settings.ENABLE_AUTH_MARKET:
-            logger.warn("ENABLE_AUTH_MARKET still True, after disabling users will still be able to activate Market accounts")
-        if settings.ENABLE_BLUE_MARKET:
-            logger.warn("ENABLE_BLUE_MARKET still True, after disabling blues will still be able to activate Market accounts")
         MarketUser.objects.all().delete()

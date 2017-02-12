@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+@python_2_unicode_compatible
 class DiscordUser(models.Model):
     user = models.OneToOneField(User,
                                 primary_key=True,
@@ -13,3 +14,8 @@ class DiscordUser(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.user.username, self.uid)
+
+    class Meta:
+        permissions = (
+            ("access_discord", u"Can access the Discord service"),
+        )

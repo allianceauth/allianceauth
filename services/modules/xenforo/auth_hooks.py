@@ -19,6 +19,7 @@ class XenforoService(ServicesHook):
         ServicesHook.__init__(self)
         self.name = 'xenforo'
         self.urlpatterns = urlpatterns
+        self.access_perm = 'xenforo.access_xenforo'
 
     @property
     def title(self):
@@ -33,11 +34,8 @@ class XenforoService(ServicesHook):
         if XenforoTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user, notify_user=True)
 
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_XENFORO or False
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_XENFORO or False
+    def service_active_for_user(self, user):
+        return user.has_perm(self.access_perm)
 
     def render_services_ctrl(self, request):
         urls = self.Urls()

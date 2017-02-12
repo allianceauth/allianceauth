@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
 from authentication.decorators import members_and_blues
@@ -16,9 +16,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ACCESS_PERM = 'ips4.access_ips4'
+
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     character = EveManager.get_main_character(request.user)
@@ -44,7 +46,7 @@ def activate_ips4(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def reset_ips4_password(request):
     logger.debug("reset_ips4_password called by user %s" % request.user)
     if Ips4Tasks.has_account(request.user):
@@ -66,7 +68,7 @@ def reset_ips4_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def set_ips4_password(request):
     logger.debug("set_ips4_password called by user %s" % request.user)
     if request.method == 'POST':
@@ -94,7 +96,7 @@ def set_ips4_password(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required(ACCESS_PERM)
 def deactivate_ips4(request):
     logger.debug("deactivate_ips4 called by user %s" % request.user)
     if Ips4Tasks.delete_user(request.user):
