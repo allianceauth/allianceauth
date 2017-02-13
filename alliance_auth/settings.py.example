@@ -668,12 +668,12 @@ STR_BLUE_ALLIANCE_IDS = [str(id) for id in BLUE_ALLIANCE_IDS]
 # Conditionally add periodic tasks for services if installed
 if 'services.modules.teamspeak3' in INSTALLED_APPS:
     CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
-        'task': 'services.modules.teamspeak3.tasks.Teamspeak3Tasks.run_ts3_group_update',
+        'task': 'services.modules.teamspeak3.tasks.run_ts3_group_update',
         'schedule': crontab(minute='*/30'),
     }
 
 if 'services.modules.seat' in INSTALLED_APPS:
     CELERYBEAT_SCHEDULE['run_seat_api_sync'] = {
-        'task': 'services.modules.seat.tasks.SeatTasks.run_api_sync',
+        'task': 'services.modules.seat.tasks.run_api_sync',
         'schedule': crontab(minute='*/30'),
     }
