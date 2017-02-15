@@ -211,15 +211,14 @@ def click_fatlink_view(request, token, hash, fatname):
                 ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
                 location['solar_system_name'] = \
                     c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
-                        'solar_system_name']
+                        'name']
                 if location['structure_id']:
                     location['station_name'] = \
                         c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
                             'name']
                 elif location['station_id']:
                     location['station_name'] = \
-                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()[
-                            'station_name']
+                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
                 else:
                     location['station_name'] = "No Station"
                 ship['ship_type_name'] = EveManager.get_itemtype(ship['ship_type_id']).name
@@ -247,6 +246,7 @@ def click_fatlink_view(request, token, hash, fatname):
         else:
             messages.error(request, _('FAT link has expired.'))
     except (ObjectDoesNotExist, KeyError):
+        logger.exception("Failed to process FAT link.")
         messages.error(request, _('Invalid FAT link.'))
     return redirect('auth_fatlink_view')
 
