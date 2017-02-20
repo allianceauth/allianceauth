@@ -19,7 +19,7 @@ class srpManager:
 
     @staticmethod
     def get_kill_data(kill_id):
-        url = ("https://www.zkillboard.com/api/killID/%s" % kill_id)
+        url = ("https://www.zkillboard.com/api/killID/%s/" % kill_id)
         headers = {
             'User-Agent': "%s Alliance Auth" % settings.DOMAIN,
             'Content-Type': 'application/json',
