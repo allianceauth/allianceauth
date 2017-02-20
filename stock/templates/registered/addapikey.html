@@ -25,8 +25,7 @@
                     {% endif %}
                     <p class="text-center">
                         <a target="_blank"
-                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{MEMBER_API_MASK}}">{% trans "Create
-                            a full API key" %}</a>
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{MEMBER_API_MASK}}">{% trans "Create a full API key" %}</a>
                     </p>
                     <p class="text-center">
                         {% blocktrans %}Blue API keys require access mask {{BLUE_API_MASK}} or greater for services.{% endblocktrans %}
@@ -38,8 +37,7 @@
                     {% endif %}
                     <p class="text-center">
                         <a target="_blank"
-                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{BLUE_API_MASK}}">{% trans "Create
-                            a blue key" %}</a>
+                           href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask={{BLUE_API_MASK}}">{% trans "Create a blue key" %}</a>
                     </p>
 
                     <form class="form-signin" role="form" action="{% url 'auth_add_api_key' %}" method="POST">
