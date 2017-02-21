@@ -138,6 +138,7 @@ def hr_application_view(request, app_id):
                 comment.text = form.cleaned_data['comment']
                 comment.save()
                 logger.info("Saved comment by user %s to %s" % (request.user, app))
+                return redirect(hr_application_view, app_id)
         else:
             logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
     else:
