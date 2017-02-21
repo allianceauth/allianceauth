@@ -22,7 +22,7 @@ class FleetFormatterForm(forms.Form):
 
 
 class ServicePasswordForm(forms.Form):
-    password = forms.CharField(label=_("Password"), required=True)
+    password = forms.CharField(label=_("Password"), required=True, widget=forms.PasswordInput())
 
     def clean_password(self):
         password = self.cleaned_data['password']

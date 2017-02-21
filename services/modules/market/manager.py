@@ -38,7 +38,7 @@ class MarketManager:
 
     @staticmethod
     def _gen_pwhash(password):
-        return bcrypt.encrypt(password.encode('utf-8'), rounds=13)
+        return bcrypt.using(ident='2y').encrypt(password.encode('utf-8'), rounds=13)
 
     @staticmethod
     def _get_salt(pw_hash):
