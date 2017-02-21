@@ -41,7 +41,7 @@ class CorpStats(models.Model):
 
     def update(self):
         try:
-            c = self.token.get_esi_client()
+            c = self.token.get_esi_client(Character='v4', Corporation='v2')
             assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()[
                        'corporation_id'] == int(self.corp.corporation_id)
             members = c.Corporation.get_corporations_corporation_id_members(

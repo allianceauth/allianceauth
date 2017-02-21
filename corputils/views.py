@@ -42,12 +42,12 @@ def corpstats_add(request, token):
             corp_id = EveCharacter.objects.get(character_id=token.character_id).corporation_id
         else:
             corp_id = \
-                token.get_esi_client().Character.get_characters_character_id(character_id=token.character_id).result()[
+                token.get_esi_client(Character='v4').Character.get_characters_character_id(character_id=token.character_id).result()[
                     'corporation_id']
         corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         cs = CorpStats.objects.create(token=token, corp=corp)
         cs.update()
-        assert cs.pk  # ensure update was succesful
+        assert cs.pk  # ensure update was successful
         if CorpStats.objects.filter(pk=cs.pk).visible_to(request.user).exists():
             return redirect('corputils:view_corp', corp_id=corp.corporation_id)
     except EveCorporationInfo.DoesNotExist:

@@ -206,7 +206,7 @@ def click_fatlink_view(request, token, hash, fatname):
 
             if character:
                 # get data
-                c = token.get_esi_client()
+                c = token.get_esi_client(Location='v1', Universe='v2')
                 location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
                 ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
                 location['solar_system_name'] = \
