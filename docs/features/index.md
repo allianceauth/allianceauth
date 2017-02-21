@@ -7,5 +7,6 @@
 
     hrapplications
     corpstats
+    groups
     permissions_tool
 ```
