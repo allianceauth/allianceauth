@@ -353,7 +353,7 @@ MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://example.com/market')
 MARKET_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_market',
-    'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver'),
+    'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver-market'),
     'PASSWORD': os.environ.get('AA_DB_MARKET_PASSWORD', 'password'),
     'HOST': os.environ.get('AA_DB_MARKET_HOST', '127.0.0.1'),
     'PORT': os.environ.get('AA_DB_MARKET_PORT', '3306'),
@@ -428,7 +428,7 @@ MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 PHPBB3_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_forum',
-    'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceserver'),
+    'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceserver-phpbb3'),
     'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
     'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
     'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
@@ -495,7 +495,7 @@ IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
 IPS4_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_ips4',
-    'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver'),
+    'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver-ips4'),
     'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
     'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
     'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
@@ -517,7 +517,7 @@ SMF_URL = os.environ.get('AA_SMF_URL', 'https://example.com')
 SMF_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_smf',
-    'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver'),
+    'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver-smf'),
     'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
     'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
     'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
