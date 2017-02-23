@@ -4,5 +4,5 @@ from __future__ import absolute_import, unicode_literals
 # Django starts so that shared_task will use this app.
 from .celeryapp import app as celery_app  # noqa
 
-__version__ = '1.15-rc1'
+__version__ = '1.15.0'
 NAME = 'Alliance Auth v%s' % __version__
