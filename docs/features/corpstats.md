@@ -6,17 +6,17 @@ This module is used to check the registration status of corp members and to dete
 
 Upon initial install, nothing will be visible. For every corp, a model will have to be created before data can be viewed.
 
-![nothing is visible](http://i.imgur.com/va3DyT6.png)
+![nothing is visible](/_static/images/features/corpstats/blank_header.png)
 
 If you are a superuser, the add button will be immediate visible to you. If not, your user account requires the `add_corpstats` permission.
 
 Corp Stats requires an EVE SSO token to access data from the EVE Swagger Interface. Upon pressing the Add button, you will be prompted to authenticated. Please select the character who is in the corp you want data for.
 
-![authorize from the EVE site](http://i.imgur.com/OnyoOAZ.png)
+![authorize from the EVE site](/_static/images/features/corpstats/eve_sso_authorization.png)
 
 You will return to auth where you are asked to select a token with the green arrow button. If you want to use a different character, press the `LOG IN with EVE Online` button.
 
-![select an SSO token to create with](http://i.imgur.com/KdA0XH0.png)
+![select an SSO token to create with](/_static/images/features/corpstats/select_sso_token.png)
 
 If this works (and you have permission to view the Corp Stats you just created) you'll be returned to a view of the Corp Stats.
 If it fails an error message will be displayed.
@@ -25,7 +25,7 @@ If it fails an error message will be displayed.
 
 ### Navigation Bar
 
-![navigation bar](http://i.imgur.com/2l9gbml.png)
+![navigation bar](/_static/images/features/corpstats/navbar.png)
 
 This bar contains a dropdown menu of all available corps. If the user has the `add_corpstats` permission, a button to add a Corp Stats will be shown.
 
@@ -33,13 +33,13 @@ On the right of this bar is a search field. Press enter to search. It checks all
 
 ### API Index
 
-![API Index](http://i.imgur.com/P1U2WJ2.png)
+![API Index](/_static/images/features/corpstats/api_index.png)
 
 This is a visual indication of the number of registered characters.
 
 ### Last Update
 
-![last update and update button](http://i.imgur.com/yHbueGK.png)
+![last update and update button](/_static/images/features/corpstats/last_update.png)
 
 Corp Stats do not automatically update. They update once upon creation for initial data, and whenever someone presses the update button.
 
@@ -47,7 +47,7 @@ Only superusers and the creator of the Corp Stat can update it.
 
 ### Member List
 
-![member list](http://i.imgur.com/udEVoSh.png)
+![member list](/_static/images/features/corpstats/member_list.png)
 
 The list contains all characters in the corp. Red backgrounds means they are not registered in auth. If registered, and the user has the required permission to view APIs, a link to JackKnife will be present.
 A link to zKillboard is present for all characters.
@@ -55,11 +55,11 @@ If registered, the character will also have a main character, main corporation, 
 
 This view is paginated: use the navigation arrows to view more pages (sorted alphabetically by character name), or search for a specific character.
 
-![pagination buttons](http://i.imgur.com/otcPGsU.png)
+![pagination buttons](/_static/images/features/corpstats/pagination.png)
 
 ## Search View
 
-![search results](http://i.imgur.com/7wf0Q2C.png)
+![search results](/_static/images/features/corpstats/search_view.png)
 
 This view is essentially the same as the Corp Stats page, but not specific to a single corp.
 The search query is visible in the search box.
