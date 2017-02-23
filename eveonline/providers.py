@@ -264,7 +264,7 @@ class EveSwaggerProvider(EveProvider):
             )
             return model
         except HTTPNotFound:
-            raise ObjectNotFound(id, 'corporation')
+            raise ObjectNotFound(corp_id, 'corporation')
 
     def get_character(self, character_id):
         try:
