@@ -46,7 +46,10 @@ def corpstats_add(request, token):
                     'corporation_id']
         corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         cs = CorpStats.objects.create(token=token, corp=corp)
-        cs.update()
+        try:
+            cs.update()
+        except HTTPError as e:
+            messages.error(request, str(e))
         assert cs.pk  # ensure update was successful
         if CorpStats.objects.filter(pk=cs.pk).visible_to(request.user).exists():
             return redirect('corputils:view_corp', corp_id=corp.corporation_id)

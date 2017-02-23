@@ -52,6 +52,7 @@ class CorpStats(models.Model):
             # the swagger spec doesn't have a maxItems count
             # manual testing says we can do over 350, but let's not risk it
             member_id_chunks = [member_ids[i:i + 255] for i in range(0, len(member_ids), 255)]
+            c = self.token.get_esi_client(Character='v1') # ccplease bump versions of whole resources
             member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in
                                   member_id_chunks]
             member_list = {}
@@ -163,7 +164,10 @@ class CorpStats(models.Model):
 
     def get_member_objects(self, user):
         show_apis = self.show_apis(user)
-        return sorted([CorpStats.MemberObject(id, name, show_apis=show_apis) for id, name in self.members.items()], key=attrgetter('main_user', 'character_name'))
+        member_list = [CorpStats.MemberObject(id, name, show_apis=show_apis) for id, name in self.members.items()]
+        outlist = sorted([m for m in member_list if m.main_user], key=attrgetter('main_user', 'character_name'))
+        outlist = outlist + sorted([m for m in member_list if not m.main_user], key=attrgetter('character_name'))
+        return outlist
 
     def can_update(self, user):
         return user.is_superuser or user == self.token.user

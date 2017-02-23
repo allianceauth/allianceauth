@@ -25,7 +25,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <b>{% trans "API Index: " %}</b> {{ corpstats.total_users }} Main Characters
+                        <b>{% trans "API Index: " %}</b> {{ corpstats.total_users }} Main Character{{ corpstats.total_users|pluralize }}
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_members }}" aria-valuemin="0" aria-valuemax="{{ corpstats.total_members }}" style="width: {% widthratio corpstats.registered_members corpstats.total_members 100 %}%;">
                                 {{ corpstats.registered_members }}/{{ corpstats.total_members }}
