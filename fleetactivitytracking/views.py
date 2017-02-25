@@ -212,13 +212,14 @@ def click_fatlink_view(request, token, hash, fatname):
                 location['solar_system_name'] = \
                     c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
                         'name']
-                if location['structure_id']:
+                if location['station_id']:
+                    location['station_name'] = \
+                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
+                elif location['structure_id']:
+                    c = token.get_esi_client(Universe='v1')
                     location['station_name'] = \
                         c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
                             'name']
-                elif location['station_id']:
-                    location['station_name'] = \
-                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
                 else:
                     location['station_name'] = "No Station"
                 ship['ship_type_name'] = EveManager.get_itemtype(ship['ship_type_id']).name
