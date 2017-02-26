@@ -111,7 +111,8 @@ def remove_timer(request, timer_id):
         timer = Timer.objects.get(id=timer_id)
         timer.delete()
         logger.debug("Deleting timer id %s by user %s" % (timer_id, request.user))
-        messages.success(request, _('Deleted timer in %(system)s at %(time)s.') % (timer.system, timer.eve_time))
+        messages.success(request, _('Deleted timer in %(system)s at %(time)s.') % {'system': timer.system,
+                                                                                   'time': timer.eve_time})
     else:
         logger.error(
             "Unable to delete timer id %s for user %s - timer matching id not found." % (timer_id, request.user))
