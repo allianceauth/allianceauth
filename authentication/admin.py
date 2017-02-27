@@ -4,8 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-
-from authentication.models import AuthServicesInfo
+from django import forms
+from authentication.models import AuthServicesInfo, State, get_none_state
 from eveonline.models import EveCharacter
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
@@ -97,3 +97,31 @@ try:
     admin.site.unregister(User)
 finally:
     admin.site.register(User, UserAdmin)
+
+
+class StateForm(forms.ModelForm):
+    def _is_none_state(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance == get_none_state()
+
+    def __init__(self, *args, **kwargs):
+        super(StateForm, self).__init__(*args, **kwargs)
+        if _is_none_state():
+            self.fields['name'].widget.attrs['readonly'] = True
+
+    def clean_name(self):
+        if self._is_none_state():
+            return instance.name
+        return self.cleaned_data['name']
+
+
+@admin.register(State)
+class StateAdmin(admin.ModelAdmin):
+    form = StateForm
+
+    @staticmethod
+    def has_delete_permission(request, obj=None):
+        if obj == get_none_state():
+            return False
+
