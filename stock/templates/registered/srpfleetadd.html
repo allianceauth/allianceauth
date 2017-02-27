@@ -7,7 +7,8 @@
 
 {% block page_title %}{% trans "SRP Fleet Create" %}{% endblock page_title %}
 {% block extra_css %}
-    <link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet" type="text/css">{% endblock extra_css %}
+    {% include 'bundles/jquery-datetimepicker-css.html' %}
+{% endblock extra_css %}
 
 {% block content %}
 
@@ -39,6 +40,10 @@
     </div>
 
 {% endblock content %}
+
+{% block extra_javascript %}
+    {% include 'bundles/jquery-datetimepicker-js.html' %}
+{% endblock %}
 
 {% block extra_script %}
 

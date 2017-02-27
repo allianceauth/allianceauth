@@ -6,8 +6,6 @@
 {% block title %}Alliance Auth - SRP Request{% endblock %}
 
 {% block page_title %}{% trans "SRP Request" %}{% endblock page_title %}
-{% block extra_css %}
-    <link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet" type="text/css">{% endblock extra_css %}
 
 {% block content %}
 
@@ -42,12 +40,3 @@
     </div>
 
 {% endblock content %}
-
-{% block extra_script %}
-
-    $('#id_fleet_time').datetimepicker({
-    maskInput: true,
-    format: 'Y-m-d H:i',minDate:0
-    });
-
-{% endblock extra_script %}
