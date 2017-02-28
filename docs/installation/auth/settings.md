@@ -137,8 +137,8 @@ Fittings and operations can be imported from Fleet-Up. Define the following to d
  - [FLEETUP_API_ID](#fleetup-api-id)
  - [FLEETUP_GROUP_ID](#fleetup-group-id)
 
-### Captcha
-To help prevent bots from registering and brute forcing the login. Get the reCaptcha keys from (here)[https://www.google.com/recaptcha/intro/index.html]
+### CAPTCHA
+To help prevent bots from registering and brute forcing the login. Get the reCaptcha keys from [here](https://www.google.com/recaptcha/intro/index.html)
  - [CAPTCHA_ENABLED](#captcha_enabled)
  - [RECAPTCHA_PUBLIC_KEY](#recaptcha_public_key)
  - [RECAPTCHA_PRIVATE_KEY](#recaptcha_private_key)
