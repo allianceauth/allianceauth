@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'permissions_tool',
     'geelweb.django.navhelper',
     'bootstrap_pagination',
+    'captcha',
 
     # Services
     'services.modules.mumble',
@@ -220,6 +221,15 @@ CACHES = {
         }
     }
 }
+
+# Google Recaptcha
+
+CAPTCHA_ENABLED = False
+
+RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey'
+RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey'
+
+NOCAPTCHA = True
 
 #####################################################
 ##

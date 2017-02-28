@@ -136,6 +136,13 @@ Fittings and operations can be imported from Fleet-Up. Define the following to d
  - [FLEETUP_API_ID](#fleetup-api-id)
  - [FLEETUP_GROUP_ID](#fleetup-group-id)
 
+### Captcha
+To help prevent bots from registering and brute forcing the login. Get the reCaptcha keys from (here)[https://www.google.com/recaptcha/intro/index.html]
+ - [CAPTCHA_ENABLED](#captcha_enabled)
+ - [RECAPTCHA_PUBLIC_KEY](#recaptcha_public_key)
+ - [RECAPTCHA_PRIVATE_KEY](#recaptcha_private_key)
+ - [NOCAPTCHA](#nocaptcha)
+
 # Description of Settings
 ## Django
 ### SECRET_KEY
@@ -150,6 +157,14 @@ List of databases available. Contains the Django database, and may include servi
 Friendly name of the local language.
 ### TIME_ZONE
 Friendly name of the local timezone.
+### CAPTCHA_ENABLED
+Enable Google reCaptcha
+### RECAPTCHA_PUBLIC_KEY
+Google reCaptcha public key
+### RECAPTCHA_PRIVATE_KEY
+Google reCaptcha private key
+### NOCAPTCHA
+Enable New No Captcha reCaptcha
 ### STATIC_URL
 Absolute URL to serve static files from.
 ### STATIC_ROOT

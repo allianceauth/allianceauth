@@ -2,12 +2,17 @@ from __future__ import unicode_literals
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.conf import settings
 import re
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(label=_('Username'), max_length=32, required=True)
     password = forms.CharField(label=_('Password'), widget=forms.PasswordInput())
+
+    if getattr(settings, 'CAPTCHA_ENABLED', False):
+        from captcha.fields import ReCaptchaField
+        captcha = ReCaptchaField()
 
 
 class RegistrationForm(forms.Form):
@@ -16,6 +21,10 @@ class RegistrationForm(forms.Form):
     password_again = forms.CharField(label=_('Password Again'), widget=forms.PasswordInput(), required=True)
     email = forms.CharField(label=_('Email'), max_length=254, required=True)
     email_again = forms.CharField(label=_('Email Again'), max_length=254, required=True)
+
+    if getattr(settings, 'CAPTCHA_ENABLED', False):
+        from captcha.fields import ReCaptchaField
+        captcha = ReCaptchaField()
 
     def clean(self):
         if ' ' in self.cleaned_data['username']:
