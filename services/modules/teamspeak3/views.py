@@ -28,17 +28,17 @@ def activate_teamspeak3(request):
     authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_main_character(request.user)
     ticker = character.corporation_ticker
-
-    if authinfo.state == BLUE_STATE:
-        logger.debug("Adding TS3 user for blue user %s with main character %s" % (request.user, character))
-        # Blue members should have alliance ticker (if in alliance)
-        if EveAllianceInfo.objects.filter(alliance_id=character.alliance_id).exists():
-            alliance = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)[0]
-            ticker = alliance.alliance_ticker
-        result = Teamspeak3Manager.add_blue_user(character.character_name, ticker)
-    else:
-        logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.add_user(character.character_name, ticker)
+    with Teamspeak3Manager() as ts3man:
+        if authinfo.state == BLUE_STATE:
+            logger.debug("Adding TS3 user for blue user %s with main character %s" % (request.user, character))
+            # Blue members should have alliance ticker (if in alliance)
+            if EveAllianceInfo.objects.filter(alliance_id=character.alliance_id).exists():
+                alliance = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)[0]
+                ticker = alliance.alliance_ticker
+            result = ts3man.add_blue_user(character.character_name, ticker)
+        else:
+            logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
+            result = ts3man.add_user(character.character_name, ticker)
 
     # if its empty we failed
     if result[0] is not "":
@@ -82,8 +82,9 @@ def deactivate_teamspeak3(request):
     if Teamspeak3Tasks.has_account(request.user) and Teamspeak3Tasks.delete_user(request.user):
         logger.info("Successfully deactivated TS3 for user %s" % request.user)
         messages.success(request, 'Deactivated TeamSpeak3 account.')
-    logger.error("Unsuccessful attempt to deactivate TS3 for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
+    else:
+        logger.error("Unsuccessful attempt to deactivate TS3 for user %s" % request.user)
+        messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
     return redirect("auth_services")
 
 
@@ -96,18 +97,19 @@ def reset_teamspeak3_perm(request):
     authinfo = AuthServicesInfo.objects.get(user=request.user)
     character = EveManager.get_main_character(request.user)
     logger.debug("Deleting TS3 user for user %s" % request.user)
-    Teamspeak3Manager.delete_user(request.user.teamspeak3.uid)
+    with Teamspeak3Manager() as ts3man:
+        ts3man.delete_user(request.user.teamspeak3.uid)
 
-    if authinfo.state == BLUE_STATE:
-        logger.debug(
-            "Generating new permission key for blue user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.generate_new_blue_permissionkey(request.user.teamspeak3.uid,
-                                                                   character.character_name,
-                                                                   character.corporation_ticker)
-    else:
-        logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
-                                                              character.corporation_ticker)
+        if authinfo.state == BLUE_STATE:
+            logger.debug(
+                "Generating new permission key for blue user %s with main character %s" % (request.user, character))
+            result = ts3man.generate_new_blue_permissionkey(request.user.teamspeak3.uid,
+                                                            character.character_name,
+                                                            character.corporation_ticker)
+        else:
+            logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
+            result = ts3man.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
+                                                       character.corporation_ticker)
 
     # if blank we failed
     if result[0] != "":

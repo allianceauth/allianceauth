@@ -10,6 +10,7 @@ class TeamspeakJoinForm(forms.Form):
     username = forms.CharField(widget=forms.HiddenInput())
 
     def clean(self):
-        if Teamspeak3Manager._get_userid(self.cleaned_data['username']):
-            return self.cleaned_data
+        with Teamspeak3Manager() as ts3man:
+            if ts3man._get_userid(self.cleaned_data['username']):
+                return self.cleaned_data
         raise forms.ValidationError(_("Unable to locate user %s on server") % self.cleaned_data['username'])
