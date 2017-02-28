@@ -11,7 +11,6 @@ except ImportError:
 
 import sleekxmpp
 from django.conf import settings
-import threading
 from ofrestapi.users import Users as ofUsers
 from ofrestapi import exception
 
@@ -23,12 +22,6 @@ logger = logging.getLogger(__name__)
 class OpenfireManager:
     def __init__(self):
         pass
-
-    @staticmethod
-    def send_broadcast_threaded(group_name, broadcast_message):
-        logger.debug("Starting broadcast to %s with message %s" % (group_name, broadcast_message))
-        broadcast_thread = XmppThread(1, "XMPP Broadcast Thread", 1, group_name, broadcast_message)
-        broadcast_thread.start()
 
     @staticmethod
     def __add_address_to_username(username):
@@ -169,11 +162,19 @@ class OpenfireManager:
         xmpp = PingBot(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, to_address, broadcast_message)
         xmpp.register_plugin('xep_0030')  # Service Discovery
         xmpp.register_plugin('xep_0199')  # XMPP Ping
-        if xmpp.connect():
+        if xmpp.connect(reattempt=False):
             xmpp.process(block=True)
-            logger.info("Sent jabber ping to group %s" % group_name)
+            message = None
+            if xmpp.message_sent:
+                logger.debug("Sent jabber ping to group %s" % group_name)
+                return
+            else:
+                message = "Failed to send Openfire broadcast message."
+            logger.error(message)
+            raise PingBotException(message)
         else:
-            raise ValueError("Unable to connect to jabber server.")
+            logger.error("Unable to connect to jabber server")
+            raise PingBotException("Unable to connect to jabber server.")
 
 
 class PingBot(sleekxmpp.ClientXMPP):
@@ -184,10 +185,15 @@ class PingBot(sleekxmpp.ClientXMPP):
     def __init__(self, jid, password, recipient, message):
         sleekxmpp.ClientXMPP.__init__(self, jid, password)
 
+        self.reconnect_max_attempts = 5
+        self.auto_reconnect = False
         # The message we wish to send, and the JID that
         # will receive it.
         self.recipient = recipient
         self.msg = message
+
+        # Success checking
+        self.message_sent = False
 
         # The session_start event will be triggered when
         # the bot establishes its connection with the server
@@ -195,6 +201,12 @@ class PingBot(sleekxmpp.ClientXMPP):
         # listen for this event so that we we can initialize
         # our roster.
         self.add_event_handler("session_start", self.start)
+        if getattr(settings, 'BROADCAST_IGNORE_INVALID_CERT', False):
+            self.add_event_handler("ssl_invalid_cert", self.discard)
+
+    def discard(self, *args, **kwargs):
+        # Discard the event
+        return
 
     def start(self, event):
         self.send_presence()
@@ -203,20 +215,11 @@ class PingBot(sleekxmpp.ClientXMPP):
         self.send_message(mto=self.recipient,
                           mbody=self.msg,
                           mtype='chat')
-
+        self.message_sent = True
         # Using wait=True ensures that the send queue will be
         # emptied before ending the session.
         self.disconnect(wait=True)
 
 
-class XmppThread(threading.Thread):
-    def __init__(self, thread_id, name, counter, group, message, ):
-        threading.Thread.__init__(self)
-        self.threadID = thread_id
-        self.name = name
-        self.counter = counter
-        self.group = group
-        self.message = message
-
-    def run(self):
-        OpenfireManager.send_broadcast_message(self.group, self.message)
+class PingBotException(Exception):
+    pass

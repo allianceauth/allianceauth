@@ -68,6 +68,7 @@ If using Openfire, the following need to be set in accordance with the [install 
  - [BROADCAST_USER](#broadcast-user)
  - [BROADCAST_USER_PASSWORD](#broadcast-user-password)
  - [BROADCAST_SERVICE_NAME](#broadcast-service-name)
+ - [BROADCAST_IGNORE_INVALID_CERT](#broadcast-ignore-invalid-cert)
 
 ### Mumble
 If using Mumble, the following needs to be set to the address of the mumble server:

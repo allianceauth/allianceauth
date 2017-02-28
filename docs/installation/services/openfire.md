@@ -82,6 +82,8 @@ Navigate to the `Server` tab, `Server Manager` subtab, and select `System Proper
  - Name: `plugin.broadcast.allowedUsers`
    - Value: `broadcast@example.com`, replacing the domain name with yours
    - Do not encrypt this property value
+   
+If you have troubles getting broadcasts to work, you can try setting the optional (you will need to add it) `BROADCAST_IGNORE_INVALID_CERT` setting to `True`. This will allow invalid certificates to be used when connecting to the Openfire server to send a broadcast.
 
 ### Group Chat
 Channels are available which function like a chat room. Access can be controlled either by password or ACL (not unlike mumble).
