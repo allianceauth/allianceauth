@@ -68,4 +68,4 @@ Enter your database password and press Check. If all the boxes come back green p
 
 ## Update Auth Settings
 
-Edit your aut settings file (`nano ~/allianceauth/alliance_auth/settings.py`) and replace `API_KEY_AUDIT_URL` with either `jacknife.example.com/?usid={api_id}&apik={vcode}` or `example.com/jacknife/?usid={api_id}&apik={vcode}` depending on your apache choice.
+Edit your aut settings file (`nano ~/allianceauth/alliance_auth/settings.py`) and replace `API_KEY_AUDIT_URL` with either `http://jacknife.example.com/?usid={api_id}&apik={vcode}` or `http://example.com/jacknife/?usid={api_id}&apik={vcode}` depending on your apache choice.
