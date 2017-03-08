@@ -1,7 +1,7 @@
 <tr>
     <td class="text-center">{{ service_name }}</td>
     <td class="text-center">{{ username }}</td>
-    <td class="text-center"><a href="{{ service_url }}">{{ service_url }}</a></td>
+    <td class="text-center"><a href="mumble://{{ service_url }}">{{ service_url }}</a></td>
     <td class="text-center">
         {% ifequal username "" %}
             <a href="{% url urls.auth_activate %}" title="Activate" class="btn btn-warning">
@@ -17,7 +17,7 @@
             <a href="{% url urls.auth_deactivate %}" title="Deactivate" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
-            <a  href="{{ connect_url }}" class="btn btn-success" title="Connect">
+            <a  href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
                 <span class="glyphicon glyphicon-arrow-right"></span>
             </a>
         {% endifequal %}
