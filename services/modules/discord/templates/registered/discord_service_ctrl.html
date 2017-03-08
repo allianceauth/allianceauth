@@ -7,14 +7,14 @@
     <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
     <td class="text-center">
         {% if not discord_uid %}
-            <a href="{% url 'auth_activate_discord' %}" class="btn btn-warning">
+            <a href="{% url 'auth_activate_discord' %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
         {% else %}
-            <a href="{% url 'auth_reset_discord' %}" class="btn btn-primary">
+            <a href="{% url 'auth_reset_discord' %}" title="Reset" class="btn btn-primary">
                 <span class="glyphicon glyphicon-refresh"></span>
             </a>
-            <a href="{% url 'auth_deactivate_discord' %}" class="btn btn-danger">
+            <a href="{% url 'auth_deactivate_discord' %}" title="Deactivate" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
         {% endif %}

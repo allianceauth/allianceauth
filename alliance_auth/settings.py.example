@@ -426,11 +426,10 @@ BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast"
 ######################################
 # Mumble Configuration
 ######################################
-# MUMBLE_URL - Mumble server url
-# MUMBLE_SERVER_ID - Mumble server id
+# MUMBLE_URL - Mumble server host
+#               Do not include leading http:// or mumble://
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "https://example.com")
-MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
+MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "example.com")
 
 ######################################
 # PHPBB3 Configuration
