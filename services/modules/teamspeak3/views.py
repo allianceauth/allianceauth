@@ -66,7 +66,7 @@ def verify_teamspeak3(request):
             logger.debug("Validated user %s joined TS server" % request.user)
             return redirect("auth_services")
     else:
-        form = TeamspeakJoinForm({'username': request.user.teamspeak3.uid})
+        form = TeamspeakJoinForm(initial={'username': request.user.teamspeak3.uid})
     context = {
         'form': form,
         'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid,
