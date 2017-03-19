@@ -131,7 +131,7 @@ def api_key_removal(request, api_id):
     messages.success(request, _('Deleted API key %(apiid)s') % {"apiid": api_id})
     logger.info("Succesfully processed api delete request by user %s for api %s" % (request.user, api_id))
     if not EveCharacter.objects.filter(character_id=authinfo.main_char_id).exists():
-        authinfo.main_char_id = None
+        authinfo.main_char_id = ''
         authinfo.save()
         set_state(request.user)
     return redirect("auth_dashboard")
