@@ -24,7 +24,7 @@ def create_member_state(apps, schema_editor):
     try:
         # move group permissions to state
         g = Group.objects.get(name=member_state_name)
-        s.permissions.add(g.permissions.all())
+        [s.permissions.add(p.pk) for p in g.permissions.all()]
         g.delete()
     except Group.DoesNotExist:
         pass
@@ -32,8 +32,8 @@ def create_member_state(apps, schema_editor):
     # auto-populate member IDs
     CORP_IDS = getattr(settings, 'CORP_IDS', [])
     ALLIANCE_IDS = getattr(settings, 'ALLIANCE_IDS', [])
-    s.member_corporations.add(EveCorporationInfo.objects.filter(corporation_id__in=CORP_IDS))
-    s.member_alliances.add(EveAllianceInfo.objects.filter(alliance_id__in=ALLIANCE_IDS))
+    [s.member_corporations.add(c.pk) for c in EveCorporationInfo.objects.filter(corporation_id__in=CORP_IDS)]
+    [s.member_alliances.add(a.pk) for a in EveAllianceInfo.objects.filter(alliance_id__in=ALLIANCE_IDS)]
 
 
 def create_member_group(apps, schema_editor):
@@ -45,11 +45,11 @@ def create_member_group(apps, schema_editor):
     try:
         # move permissions back
         state = State.objects.get(name=member_state_name)
-        g.permissions.add(state.permissions.all())
+        [g.permissions.add(p.pk) for p in state.permissions.all()]
 
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
-            profile.user.groups.add(g)
+            profile.user.groups.add(g.pk)
     except State.DoesNotExist:
         pass
 
@@ -65,7 +65,7 @@ def create_blue_state(apps, schema_editor):
     try:
         # move group permissions to state
         g = Group.objects.get(name=blue_state_name)
-        s.permissions.add(g.permissions.all())
+        [s.permissions.add(p.pk) for p in g.permissions.all()]
         g.permissions.clear()
     except Group.DoesNotExist:
         pass
@@ -73,8 +73,8 @@ def create_blue_state(apps, schema_editor):
     # auto-populate blue member IDs
     BLUE_CORP_IDS = getattr(settings, 'BLUE_CORP_IDS', [])
     BLUE_ALLIANCE_IDS = getattr(settings, 'BLUE_ALLIANCE_IDS', [])
-    s.member_corporations.add(EveCorporationInfo.objects.filter(corporation_id__in=BLUE_CORP_IDS))
-    s.member_alliances.add(EveAllianceInfo.objects.filter(alliance_id__in=BLUE_ALLIANCE_IDS))
+    [s.member_corporations.add(c.pk) for c in EveCorporationInfo.objects.filter(corporation_id__in=BLUE_CORP_IDS)]
+    [s.member_alliances.add(a.pk) for a in EveAllianceInfo.objects.filter(alliance_id__in=BLUE_ALLIANCE_IDS)]
 
 
 def create_blue_group(apps, schema_editor):
@@ -86,11 +86,11 @@ def create_blue_group(apps, schema_editor):
     try:
         # move permissions back
         state = State.objects.get(name=blue_state_name)
-        g.permissions.add(state.permissions.all())
+        [g.permissions.add(p.pk) for p in state.permissions.all()]
 
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
-            profile.user.groups.add(g)
+            profile.user.groups.add(g.pk)
     except State.DoesNotExist:
         pass
 
@@ -131,9 +131,9 @@ def create_profiles(apps, schema_editor):
         # carry states and mains forward
         profile = UserProfile.objects.get_or_create(user=auth.user.pk)
         state = State.objects.get(name=auth.state if auth.state else 'Guest')
-        profile.state = state
+        profile.state = state.pk
         char = EveCharacter.objects.get(character_id=auth.main_char_id)
-        profile.main_character = char
+        profile.main_character = char.pk
         profile.save()
 
 

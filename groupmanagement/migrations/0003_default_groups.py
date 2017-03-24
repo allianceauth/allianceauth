@@ -5,20 +5,10 @@ from __future__ import unicode_literals
 from django.db import migrations
 from django.conf import settings
 
-def create_groups(apps, schema_editor):
-    Group = apps.get_model('auth', 'Group')
-    Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
-    Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
-
-def reverse(apps, schema_editor):
-    pass
-
 class Migration(migrations.Migration):
 
     dependencies = [
         ('groupmanagement', '0002_auto_20160906_2354'),
     ]
 
-    operations = [
-        migrations.RunPython(create_groups, reverse)
-    ]
+    operations = []

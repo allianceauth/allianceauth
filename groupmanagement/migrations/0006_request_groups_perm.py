@@ -12,23 +12,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def add_default_member_permission(apps, schema_editor):
-    for app_config in apps.get_app_configs():
-        app_config.models_module = True
-        create_permissions(app_config, apps=apps, verbosity=0)
-        app_config.models_module = None
-
-    Group = apps.get_model("auth", "Group")
-    Permission = apps.get_model("auth", "Permission")
-
-    try:
-        perm = Permission.objects.get(codename='request_groups', name='Can request non-public groups')
-        group = Group.objects.get(name=getattr(settings, str('DEFAULT_AUTH_GROUP'), 'Member'))
-        group.permissions.add(perm)
-    except ObjectDoesNotExist:
-        logger.warning('Failed to add default request_groups permission to Member group')
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -40,5 +23,4 @@ class Migration(migrations.Migration):
             name='authgroup',
             options={'permissions': (('request_groups', 'Can request non-public groups'),)},
         ),
-        migrations.RunPython(add_default_member_permission),
     ]
