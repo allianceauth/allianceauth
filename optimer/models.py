@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 @python_2_unicode_compatible
-class optimer(models.Model):
+class OpTimer(models.Model):
     class Meta:
         ordering = ['start']
 

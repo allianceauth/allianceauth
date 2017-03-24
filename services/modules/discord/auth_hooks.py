@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.conf import settings
 from django.template.loader import render_to_string
 
 from alliance_auth import hooks

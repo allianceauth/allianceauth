@@ -4,52 +4,6 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
-from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
-from django.conf import settings
-
-def determine_membership_by_character(char, apps):
-    if str(char.corporation_id) in settings.STR_CORP_IDS:
-        return MEMBER_STATE
-    elif str(char.alliance_id) in settings.STR_ALLIANCE_IDS:
-        return MEMBER_STATE
-    EveCorporationInfo = apps.get_model('eveonline', 'EveCorporationInfo')
-    if EveCorporationInfo.objects.filter(corporation_id=char.corporation_id).exists() is False:
-         return NONE_STATE
-    else:
-         corp = EveCorporationInfo.objects.get(corporation_id=char.corporation_id)
-         if corp.is_blue:
-             return BLUE_STATE
-         else:
-             return NONE_STATE
-
-def determine_membership_by_user(user, apps):
-    AuthServicesInfo = apps.get_model('authentication', 'AuthServicesInfo')
-    auth = AuthServicesInfo.objects.get(user=user)
-    if auth.main_char_id:
-        EveCharacter = apps.get_model('eveonline', 'EveCharacter')
-        if EveCharacter.objects.filter(character_id=auth.main_char_id).exists():
-            char = EveCharacter.objects.get(character_id=auth.main_char_id)
-            return determine_membership_by_character(char, apps)
-        else:
-            return NONE_STATE
-    else:
-        return NONE_STATE
-
-def set_state(user, apps):
-    if user.is_active:
-        state = determine_membership_by_user(user, apps)
-    else:
-        state = NONE_STATE
-    AuthServicesInfo = apps.get_model('authentication', 'AuthServicesInfo')
-    auth = AuthServicesInfo.objects.get(user=user)
-    if auth.state != state:
-       auth.state = state
-       auth.save()
-
-def set_initial_state(apps, schema_editor):
-    User = apps.get_model('auth', 'User')
-    for u in User.objects.all():
-        set_state(u, apps)
 
 class Migration(migrations.Migration):
 
@@ -60,5 +14,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(set_initial_state, migrations.RunPython.noop)
     ]

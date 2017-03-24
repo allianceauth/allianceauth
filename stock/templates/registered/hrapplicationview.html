@@ -1,4 +1,4 @@
-{% extends "public/base.html" %}
+{% extends "registered/base.html" %}
 {% load staticfiles %}
 {% load bootstrap %}
 {% load i18n %}
@@ -72,18 +72,6 @@
                 </div>
                 {% if buttons %}
                     {% if perms.auth.human_resources %}
-                        {% if perms.hrapplications.view_apis %}
-                            <div class="row">
-                                <div class="panel panel-info">
-                                    <div class="panel-heading">{% trans 'API Keys' %}</div>
-                                    <div class="panel-body">
-                                        {% for api in apis %}
-                                            {{ api|api_link:'btn btn-info' }}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
                         <div class="row">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">{% trans "Actions" %}</div>

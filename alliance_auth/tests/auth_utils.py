@@ -1,15 +1,11 @@
 from __future__ import unicode_literals
 
 from django.db.models.signals import m2m_changed, pre_save
-from django.contrib.auth.models import User, Group, Permission
-
+from django.contrib.auth.models import User, Group
 from services.signals import m2m_changed_user_groups, pre_save_user
 from services.signals import m2m_changed_group_permissions, m2m_changed_user_permissions
 from authentication.signals import pre_save_auth_state
-
-from authentication.tasks import make_member, make_blue
-from authentication.models import AuthServicesInfo
-from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
+from authentication.models import UserProfile
 
 from eveonline.models import EveCharacter
 
@@ -72,7 +68,7 @@ class AuthUtils:
     @classmethod
     def add_main_character(cls, user, name, character_id, corp_id='', corp_name='', corp_ticker='', alliance_id='',
                            alliance_name=''):
-        EveCharacter.objects.create(
+        char = EveCharacter.objects.create(
             character_id=character_id,
             character_name=name,
             corporation_id=corp_id,
@@ -83,7 +79,7 @@ class AuthUtils:
             api_id='1234',
             user=user
         )
-        AuthServicesInfo.objects.update_or_create(user=user, defaults={'main_char_id': character_id})
+        UserProfile.objects.update_or_create(user=user, defaults={'main_character': char})
 
     @classmethod
     def add_permissions_to_groups(cls, perms, groups, disconnect_signals=True):

@@ -35,7 +35,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'True' == os.environ.get('AA_DEBUG','True')
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -144,21 +144,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_auth',
-        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'allianceserver'),
-        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'password'),
-        'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('AA_DB_DEFAULT_PORT', '3306'),
+        'USER': 'allianceserver',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     },
 }
-
-# If you have run the authentication.0013_service_modules migration
-# you will need to set this to True in order to install service modules
-# which were involved in that migration after it has been run.
-# If you are on a fresh install with no existing database you can safely
-# set this to True
-# If you have not run the authentication.0013_service_modules migration
-# leave this set to False.
-SERVICES_MIGRATED = False
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -178,16 +169,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend', 'authentication.backends.ModelBackend']
 LOGIN_URL = 'auth_login_user'
-
-SUPERUSER_STATE_BYPASS = 'True' == os.environ.get('AA_SUPERUSER_STATE_BYPASS', 'True')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = os.environ.get('AA_LANGUAGE_CODE', 'en-us')
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = os.environ.get('AA_TIME_ZONE', 'UTC')
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -227,35 +217,27 @@ CACHES = {
 ##
 #####################################################
 
+####################
+# SITE_NAME - Name of the auth site.
+####################
+SITE_NAME = 'Alliance Auth'
+
 #################
 # EMAIL SETTINGS
 #################
-# DOMAIN - The alliance auth domain_url
+# DOMAIN - The Alliance Auth domain (or subdomain) address, starting with http://
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
 # EMAIL_HOST_USER - Email Username (for gmail, the entire address)
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
-DOMAIN = os.environ.get('AA_DOMAIN', 'https://example.com')
-EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
-EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('AA_EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
-
-####################
-# Front Page Links
-####################
-# KILLBOARD_URL - URL for your killboard. Blank to hide link
-# MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
-# FORUM_URL - URL for your forums. Blank to hide link
-# SITE_NAME - Name of the auth site.
-####################
-KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
-EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
-FORUM_URL = os.environ.get('AA_FORUM_URL', '')
-SITE_NAME = os.environ.get('AA_SITE_NAME', 'Alliance Auth')
+DOMAIN = 'https://example.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
 
 ###################
 # SSO Settings
@@ -264,174 +246,100 @@ SITE_NAME = os.environ.get('AA_SITE_NAME', 'Alliance Auth')
 # https://developers.eveonline.com/
 # Callback URL should be https://example.com/sso/callback
 ###################
-ESI_SSO_CLIENT_ID = os.environ.get('AA_ESI_SSO_CLIENT_ID', '')
-ESI_SSO_CLIENT_SECRET = os.environ.get('AA_ESI_SSO_CLIENT_SECRET', '')
-ESI_SSO_CALLBACK_URL = os.environ.get('AA_ESI_SSO_CALLBACK_URL', '')
+ESI_SSO_CLIENT_ID = ''
+ESI_SSO_CLIENT_SECRET = ''
+ESI_SSO_CALLBACK_URL = ''
 
-#########################
-# Default Group Settings
-#########################
-# DEFAULT_AUTH_GROUP - Default group members are put in
-# DEFAULT_BLUE_GROUP - Default group for blue members
-# MEMBER_CORP_GROUPS - Assign members to a group representing their main corp
-# BLUE_CORP_GROUPS - Assign blues to a group representing their main corp
-#########################
-DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
-DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
-MEMBER_CORP_GROUPS = 'True' == os.environ.get('AA_MEMBER_CORP_GROUPS', 'True')
-MEMBER_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_MEMBER_ALLIANCE_GROUPS', 'False')
-BLUE_CORP_GROUPS = 'True' == os.environ.get('AA_BLUE_CORP_GROUPS', 'False')
-BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'False')
-
-#########################
-# Tenant Configuration
-#########################
-# CORP_IDS - A list of corporation IDs to treat as members.
-# ALLIANCE_IDS - A list of alliance IDs to treat as members.
-# Any corps in a specified alliance will be treated as members, so do not include them in CORP_IDS
-#########################
-CORP_IDS = []
-ALLIANCE_IDS = []
-
-#########################
-# Standings Configuration
-#########################
-# Add a corp API key to add blue standings to grant access.
-# CORP_API_ID - Set this to the api id for the corp API key
-# CORP_API_VCODE - Set this to the api vcode for the corp API key
-# BLUE_STANDING - The lowest standings value to consider blue
-# STANDING_LEVEL - The level of standings to query. Accepted values are 'corp' and 'alliance'.
-# BLUE_CORP_IDS - A list of corps to remain blue regardless of in-game standings
-# BLUE_ALLIANCE_IDS - A list of alliances to remain blue regardless of in-game standings
-########################
-CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
-CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
-BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
-STANDING_LEVEL = os.environ.get('AA_STANDING_LEVEL', 'corp')
-BLUE_CORP_IDS = []
-BLUE_ALLIANCE_IDS = []
-
-########################
-# API Configuration
-########################
-# MEMBER_API_MASK - Numeric value of minimum API mask required for members
-# MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
-# BLUE_API_MASK - Numeric value of minimum API mask required for blues
-# BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
-# REJECT_OLD_APIS - Require each submitted API be newer than the latest submitted API
-# REJECT_OLD_APIS_MARGIN - Margin from latest submitted API ID within which a newly submitted API is still accepted
-# API_SSO_VALIDATION - Require users to prove ownership of newly entered API keys via SSO
-#                      Requires SSO to be configured.
-#######################
-MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
-MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
-BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
-BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
-REJECT_OLD_APIS = 'True' == os.environ.get('AA_REJECT_OLD_APIS', 'False')
-REJECT_OLD_APIS_MARGIN = os.environ.get('AA_REJECT_OLD_APIS_MARGIN', 50)
-API_SSO_VALIDATION = 'True' == os.environ.get('AA_API_SSO_VALIDATION', 'False')
-
-#######################
-# EVE Provider Settings
-#######################
-# EVEONLINE_CHARACTER_PROVIDER - Name of default data source for getting eve character data
-# EVEONLINE_CORP_PROVIDER - Name of default data source for getting eve corporation data
-# EVEONLINE_ALLIANCE_PROVIDER - Name of default data source for getting eve alliance data
-# EVEONLINE_ITEMTYPE_PROVIDER - Name of default data source for getting eve item type data
-#
-# Available sources are 'esi' and 'xml'. Leaving blank results in the default 'esi' being used.
-#######################
-EVEONLINE_CHARACTER_PROVIDER = os.environ.get('AA_EVEONLINE_CHARACTER_PROVIDER', '')
-EVEONLINE_CORP_PROVIDER = os.environ.get('AA_EVEONLINE_CORP_PROVIDER', '')
-EVEONLINE_ALLIANCE_PROVIDER = os.environ.get('AA_EVEONLINE_ALLIANCE_PROVIDER', '')
-EVEONLINE_ITEMTYPE_PROVIDER = os.environ.get('AA_EVEONLINE_ITEMTYPE_PROVIDER', '')
+#################
+# Login Settings
+#################
+# Both of these redirects accept values as per the django redirect shortcut
+# https://docs.djangoproject.com/en/1.10/topics/http/shortcuts/#redirect
+# - url names eg 'authentication:dashboard'
+# - relative urls eg '/dashboard'
+# - absolute urls eg 'http://example.com/dashboard'
+# LOGIN_REDIRECT_URL - default destination when logging in if no redirect specified
+# LOGOUT_REDIRECT_URL - destination after logging out
+# LOGIN_TOKEN_SCOPES - scopes required on new tokens when logging in. Cannot be blank.
+##################
+LOGIN_REDIRECT_URL = 'authentication:dashboard'
+LOGOUT_REDIRECT_URL = 'authentication:dashboard'
+LOGIN_TOKEN_SCOPES = ['esi-characters.read_opportunities.v1']
 
 #####################
 # Alliance Market
 #####################
-MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://example.com/market')
+MARKET_URL = 'http://example.com/market'
 MARKET_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_market',
-    'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver-market'),
-    'PASSWORD': os.environ.get('AA_DB_MARKET_PASSWORD', 'password'),
-    'HOST': os.environ.get('AA_DB_MARKET_HOST', '127.0.0.1'),
-    'PORT': os.environ.get('AA_DB_MARKET_PORT', '3306'),
+    'USER': 'allianceserver-market',
+    'PASSWORD': '',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
 }
 
 #####################
-# HR Configuration
-#####################
-# API_KEY_AUDIT_URL - URL for viewing API keys.
-# Other URLs are supported. Use string formatting notation {} with parameter names api_id, vcode, pk
-# Example URL formats are shown below:
-#           Old Jacknife: 'https://example.com/jacknife/eveapi/audit.php?usid={api_id}&apik={vcode}'
-#           New Jacknife: 'https://example.com/jacknife/?usid={api_id}&apik={vcode}'
-#           SeAT: 'https://seat.example.com/api-key/detail/{api_id}'
-#           Django Admin: '/admin/eveonline/eveapikeypair/{pk}/change'
-# Leave blank for the verification code to be shown in a popup on click.
-#####################
-API_KEY_AUDIT_URL = os.environ.get('AA_API_KEY_AUDIT_URL', '')
-
-#####################
-# Forum Configuration
+# IPBoard3 Configuration
 #####################
 # IPBOARD_ENDPOINT - Api endpoint if using ipboard
 # IPBOARD_APIKEY - Api key to interact with ipboard
 # IPBOARD_APIMODULE - Module for alliance auth *leave alone*
 #####################
-IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'example.com/interface/board/index.php')
-IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
+IPBOARD_ENDPOINT = 'example.com/interface/board/index.php'
+IPBOARD_APIKEY = ''
 IPBOARD_APIMODULE = 'aa'
 
 ########################
 # XenForo Configuration
 ########################
-XENFORO_ENDPOINT = os.environ.get('AA_XENFORO_ENDPOINT', 'example.com/api.php')
-XENFORO_DEFAULT_GROUP = os.environ.get('AA_XENFORO_DEFAULT_GROUP', 0)
-XENFORO_APIKEY   = os.environ.get('AA_XENFORO_APIKEY', 'yourapikey')
+XENFORO_ENDPOINT = 'example.com/api.php'
+XENFORO_DEFAULT_GROUP = 0
+XENFORO_APIKEY   = ''
 #####################
 
 ######################
 # Jabber Configuration
 ######################
-# JABBER_URL - Jabber address url
+# JABBER_URL - Jabber address url, no leading http://
 # JABBER_PORT - Jabber service portal
-# JABBER_SERVER - Jabber server url
+# JABBER_SERVER - Jabber server url (server name, eg 'example.com'), no leading http://
 # OPENFIRE_ADDRESS - Address of the openfire admin console including port
-#                    Please use http with 9090 or https with 9091
+#                    Please use http:// with 9090 or https:// with 9091
+#                    eg 'http://example.com:9090' or 'https://example.com:9091'
 # OPENFIRE_SECRET_KEY - Openfire REST API secret key
-# BROADCAST_USER - Broadcast user JID
+# BROADCAST_USER - Broadcast user username (before @ sign)
 # BROADCAST_USER_PASSWORD - Broadcast user password
+# BROADCAST_SERVICE_NAME - Name of the Openfire service to broadcast to, usually "broadcast"
 ######################
-JABBER_URL = os.environ.get('AA_JABBER_URL', "example.com")
-JABBER_PORT = int(os.environ.get('AA_JABBER_PORT', '5223'))
-JABBER_SERVER = os.environ.get('AA_JABBER_SERVER', "example.com")
-OPENFIRE_ADDRESS = os.environ.get('AA_OPENFIRE_ADDRESS', "http://example.com:9090")
-OPENFIRE_SECRET_KEY = os.environ.get('AA_OPENFIRE_SECRET_KEY', "somekey")
-BROADCAST_USER = os.environ.get('AA_BROADCAST_USER', "broadcast@") + JABBER_URL
-BROADCAST_USER_PASSWORD = os.environ.get('AA_BROADCAST_USER_PASSWORD', "somepassword")
-BROADCAST_SERVICE_NAME = os.environ.get('AA_BROADCAST_SERVICE_NAME', "broadcast")
+JABBER_URL = ''
+JABBER_PORT = 5223
+JABBER_SERVER = ''
+OPENFIRE_ADDRESS = ''
+OPENFIRE_SECRET_KEY = ''
+BROADCAST_USER = "broadcast" + "@" + JABBER_URL
+BROADCAST_USER_PASSWORD = ''
+BROADCAST_SERVICE_NAME = "broadcast"
 
 ######################################
 # Mumble Configuration
 ######################################
-# MUMBLE_URL - Mumble server url
-# MUMBLE_SERVER_ID - Mumble server id
+# MUMBLE_URL - Mumble server url, tolerates leading http://, mumble://, or none
+#              eg 'http://example.com', 'mumble://example.com', or 'example.com'
 ######################################
-MUMBLE_URL = os.environ.get('AA_MUMBLE_URL', "https://example.com")
-MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
+MUMBLE_URL = ''
 
 ######################################
 # PHPBB3 Configuration
 ######################################
+PHPBB3_URL = 'http://example.com/phpbb/'
 PHPBB3_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_forum',
-    'USER': os.environ.get('AA_DB_PHPBB3_USER', 'allianceserver-phpbb3'),
-    'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
-    'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
-    'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
+    'USER': 'allianceserver-phpbb3',
+    'PASSWORD': '',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
 }
 
 ######################################
@@ -445,82 +353,86 @@ PHPBB3_DB = {
 # TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
 # TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
 ######################################
-TEAMSPEAK3_SERVER_IP = os.environ.get('AA_TEAMSPEAK3_SERVER_IP', '127.0.0.1')
-TEAMSPEAK3_SERVER_PORT = int(os.environ.get('AA_TEAMSPEAK3_SERVER_PORT', '10011'))
-TEAMSPEAK3_SERVERQUERY_USER = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_USER', 'serveradmin')
-TEAMSPEAK3_SERVERQUERY_PASSWORD = os.environ.get('AA_TEAMSPEAK3_SERVERQUERY_PASSWORD', 'passwordhere')
-TEAMSPEAK3_VIRTUAL_SERVER = int(os.environ.get('AA_TEAMSPEAK3_VIRTUAL_SERVER', '1'))
-TEAMSPEAK3_PUBLIC_URL = os.environ.get('AA_TEAMSPEAK3_PUBLIC_URL', 'example.com')
+TEAMSPEAK3_SERVER_IP = '127.0.0.1'
+TEAMSPEAK3_SERVER_PORT = 10011
+TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
+TEAMSPEAK3_SERVERQUERY_PASSWORD = ''
+TEAMSPEAK3_VIRTUAL_SERVER = 1
+TEAMSPEAK3_PUBLIC_URL = ''
 
 ######################################
 # Discord Configuration
 ######################################
 # DISCORD_GUILD_ID - ID of the guild to manage
-# DISCORD_BOT_TOKEN - oauth token of the app bot user
-# DISCORD_INVITE_CODE - invite code to the server
-# DISCORD_APP_ID - oauth app client ID
-# DISCORD_APP_SECRET - oauth app secret
-# DISCORD_CALLBACK_URL - oauth callback url
-# DISCORD_SYNC_NAMES - enable to force discord nicknames to be set to eve char name (bot needs Manage Nicknames permission)
+# DISCORD_BOT_TOKEN - OAuth token of the app bot user
+# DISCORD_INVITE_CODE - Alphanumeric string invite code to the server
+#                       Do not include the leading http://discord.gg/
+# DISCORD_APP_ID - OAuth app client ID
+# DISCORD_APP_SECRET - OAuth app secret
+# DISCORD_CALLBACK_URL - OAuth callback url
+#                        Should be of the form 'http://example.com/discord/callback'
+# DISCORD_SYNC_NAMES - Force discord nicknames to be set to eve char name
 ######################################
-DISCORD_GUILD_ID = os.environ.get('AA_DISCORD_GUILD_ID', '')
-DISCORD_BOT_TOKEN = os.environ.get('AA_DISCORD_BOT_TOKEN', '')
-DISCORD_INVITE_CODE = os.environ.get('AA_DISCORD_INVITE_CODE', '')
-DISCORD_APP_ID = os.environ.get('AA_DISCORD_APP_ID', '')
-DISCORD_APP_SECRET = os.environ.get('AA_DISCORD_APP_SECRET', '')
-DISCORD_CALLBACK_URL = os.environ.get('AA_DISCORD_CALLBACK_URL', 'http://example.com/discord/callback')
-DISCORD_SYNC_NAMES = 'True' == os.environ.get('AA_DISCORD_SYNC_NAMES', 'False')
+DISCORD_GUILD_ID = ''
+DISCORD_BOT_TOKEN = ''
+DISCORD_INVITE_CODE = ''
+DISCORD_APP_ID = ''
+DISCORD_APP_SECRET = ''
+DISCORD_CALLBACK_URL = ''
+DISCORD_SYNC_NAMES = False
 
 ######################################
 # Discourse Configuration
 ######################################
-# DISCOURSE_URL - Web address of the forums (no trailing slash)
+# DISCOURSE_URL - Web address of the forums (no trailing slash). Include http://
 # DISCOURSE_API_USERNAME - API account username
 # DISCOURSE_API_KEY - API Key
 # DISCOURSE_SSO_SECRET - SSO secret key
 ######################################
-DISCOURSE_URL = os.environ.get('AA_DISCOURSE_URL', '')
-DISCOURSE_API_USERNAME = os.environ.get('AA_DISCOURSE_API_USERNAME', '')
-DISCOURSE_API_KEY = os.environ.get('AA_DISCOURSE_API_KEY', '')
-DISCOURSE_SSO_SECRET = os.environ.get('AA_DISCOURSE_SSO_SECRET', '')
+DISCOURSE_URL = ''
+DISCOURSE_API_USERNAME = ''
+DISCOURSE_API_KEY = ''
+DISCOURSE_SSO_SECRET = ''
 
 #####################################
 # IPS4 Configuration
 #####################################
-# IPS4_URL - base url of the IPS4 install (no trailing slash)
+# IPS4_URL - Base URL of the IPS4 install (no trailing slash). Include http://
 # IPS4_API_KEY - API key provided by IPS4
 #####################################
-IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://example.com/ips4')
-IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
+IPS4_URL = ''
+IPS4_API_KEY = ''
 IPS4_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_ips4',
-    'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver-ips4'),
-    'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
-    'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
-    'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
+    'USER': 'allianceserver-ips4',
+    'PASSWORD': '',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
 }
 
 #####################################
 # SEAT Configuration
 #####################################
-# SEAT_URL - base url of the seat install (no trailing slash)
+# SEAT_URL - Base URL of the seat install (no trailing slash). Include http://
 # SEAT_XTOKEN - API key X-Token provided by SeAT
 #####################################
-SEAT_URL = os.environ.get('AA_SEAT_URL', 'http://example.com/seat')
-SEAT_XTOKEN = os.environ.get('AA_SEAT_XTOKEN', '')
+SEAT_URL = ''
+SEAT_XTOKEN = ''
 
 ######################################
 # SMF Configuration
 ######################################
-SMF_URL = os.environ.get('AA_SMF_URL', 'https://example.com')
+# SMF_URL - Web address of the forums. Include leading http://
+######################################
+SMF_URL = ''
 SMF_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_smf',
-    'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver-smf'),
-    'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
-    'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
-    'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
+    'USER': 'allianceserver-smf',
+    'PASSWORD': '',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
 }
 
 ######################################
@@ -531,10 +443,10 @@ SMF_DB = {
 # FLEETUP_API_ID - The API id from http://fleet-up.com/Api/MyKeys
 # FLEETUP_GROUP_ID - The id of the group you want to pull data from, see http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships
 ######################################
-FLEETUP_APP_KEY = os.environ.get('AA_FLEETUP_APP_KEY', '')
-FLEETUP_USER_ID = os.environ.get('AA_FLEETUP_USER_ID', '')
-FLEETUP_API_ID = os.environ.get('AA_FLEETUP_API_ID', '')
-FLEETUP_GROUP_ID = os.environ.get('AA_FLEETUP_GROUP_ID', '')
+FLEETUP_APP_KEY = ''
+FLEETUP_USER_ID = ''
+FLEETUP_API_ID = ''
+FLEETUP_GROUP_ID = ''
 
 #####################################
 # Logging Configuration
@@ -659,11 +571,6 @@ if 'services.modules.market' in INSTALLED_APPS:
 if 'services.modules.ips4' in INSTALLED_APPS:
     DATABASES['ips4'] = IPS4_DB
 
-# Ensure corp/alliance IDs are expected types
-STR_CORP_IDS = [str(id) for id in CORP_IDS]
-STR_ALLIANCE_IDS = [str(id) for id in ALLIANCE_IDS]
-STR_BLUE_CORP_IDS = [str(id) for id in BLUE_CORP_IDS]
-STR_BLUE_ALLIANCE_IDS = [str(id) for id in BLUE_ALLIANCE_IDS]
 
 # Conditionally add periodic tasks for services if installed
 if 'services.modules.teamspeak3' in INSTALLED_APPS:

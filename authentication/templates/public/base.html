@@ -1,0 +1,49 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+
+        {% include 'bundles/bootstrap-css.html' %}
+        {% include 'bundles/fontawesome.html' %}
+        {% block extra_include %}
+        {% endblock %}
+
+        <style>
+            body {
+                background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+
+            .panel-transparent {
+                background: rgba(48, 48, 48, 0.7);
+                color: #ffffff;
+            }
+
+            .panel-body {
+
+            }
+
+            #lang_select {
+                width: 40%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            {% block extra_style %}
+            {% endblock %}
+        </style>
+    </head>
+    <body>
+        <div class="container" style="margin-top:150px">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

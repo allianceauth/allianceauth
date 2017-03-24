@@ -104,20 +104,19 @@
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Aux Navigation" %}</h5>
                         </li>
+
                         <li>
                             <a class="{% navactive request 'auth_services' %}" href="{% url 'auth_services' %}">
                                 <i class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}
                             </a>
                         </li>
 
-                        {% if not STATE == MEMBER_STATE or perms.auth.human_resources %}
-                            <li>
-                                <a class="{% navactive request 'auth_hrapplications_view auth_hrapplication_create_view auth_hrapplication_personal_view auth_hrapplication_search auth_hrapplication_view' %}"
-                                    href="{% url 'auth_hrapplications_view' %}">
-                                        <i class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}
-                                </a>
-                            </li>
-                        {% endif %}
+                        <li>
+                            <a class="{% navactive request 'auth_hrapplications_view auth_hrapplication_create_view auth_hrapplication_personal_view auth_hrapplication_search auth_hrapplication_view' %}"
+                               href="{% url 'auth_hrapplications_view' %}">
+                                <i class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}
+                            </a>
+                        </li>
 
                         {% if perms.corputils.view_corp_corpstats or perms.corputils.view_alliance_corpstats or perms.corputils.view_blue_corpstats %}
                             <li>
@@ -135,54 +134,47 @@
                             </li>
                         {% endif %}
 
-                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
+                        {% if perms.auth.view_fleetup %}
                             <li>
                                 <a class="{% navactive request 'auth_fleetup_view auth_fleetup_fittings auth_fleetup_fitting auth_fleetup_doctrines auth_fleetup_doctrine auth_fleetup_characters' %}" href="{% url 'auth_fleetup_view' %}">
                                     <i class="fa fa-clock-o fa-fw grayiconecolor"></i> Fleet-Up
                                 </a>
                             </li>
+			            {% endif %}
 
-			{% endif %}
-
-                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
-			    {% if perms.auth.optimer_view %}
+                        {% if perms.auth.optimer_view %}
                             <li>
                                 <a class="{% navactive request 'auth_optimer_view auth_add_optimer_view auth_edit_optimer' %}" href="{% url 'auth_optimer_view' %}">
                                     <i class="fa fa-exclamation  fa-fw grayiconecolor"></i>{% trans " Fleet Operations" %}
                                 </a>
                             </li>
-			    {% endif %}
-                            {% if perms.auth.timer_view %}
-                                <li>
-                                    <a class="{% navactive request 'auth_timer_view auth_add_timer_view auth_edit_timer' %}" href="{% url 'auth_timer_view' %}">
-                                        <i class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}
-                                    </a>
-                                </li>
-                            {% endif %}
+			            {% endif %}
 
+                        {% if perms.auth.timer_view %}
                             <li>
-                                <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_view_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
-                                    <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i>{% trans " Fleet Activity Tracking" %}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
-                                    <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
+                                <a class="{% navactive request 'auth_timer_view auth_add_timer_view auth_edit_timer' %}" href="{% url 'auth_timer_view' %}">
+                                    <i class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}
                                 </a>
                             </li>
                         {% endif %}
+
+                        <li>
+                            <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_view_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
+                                <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i>{% trans " Fleet Activity Tracking" %}
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
+                                <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
+                            </a>
+                        </li>
                         {% menu_aux %}
                         <li class="text-center divider-horizontal">
                             <h5>{% trans "Util" %}</h5>
                         </li>
-                        <li>
-                            <a class="{% navactive request 'password_change password_change_done' %}" href="{% url 'password_change' %}">
-                                <i class="fa fa-lock fa-fw grayiconecolor"></i>{% trans "Change Password" %}
-                            </a>
-                        </li>
 
-                        {% if STATE in MEMBER_BLUE_STATE or user.is_superuser %}
+                        {% if perms.auth.jabber_broadcast or perms.auth.jabber_broadcast_all or user.is_superuser %}
                             <li>
                                 <a class="{% navactive request 'auth_fleet_format_tool_view' %}" href="{% url 'auth_fleet_format_tool_view' %}">
                                     <i class="fa fa-space-shuttle fa-fw grayiconecolor"></i>{% trans " Fleet Broadcast Formatter" %}

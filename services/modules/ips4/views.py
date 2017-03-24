@@ -4,8 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
-from eveonline.managers import EveManager
 from services.forms import ServicePasswordForm
 
 from .manager import Ips4Manager
@@ -23,7 +21,7 @@ ACCESS_PERM = 'ips4.access_ips4'
 @permission_required(ACCESS_PERM)
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding IPS4 user for user %s with main character %s" % (request.user, character))
     result = Ips4Manager.add_user(character.character_name, request.user.email)
     # if empty we failed

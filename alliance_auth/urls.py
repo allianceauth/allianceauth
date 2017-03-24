@@ -3,9 +3,8 @@ from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
-import django.contrib.auth.views
+import authentication.urls
 import authentication.views
-import eveonline.views
 import services.views
 import groupmanagement.views
 import optimer.views
@@ -19,15 +18,18 @@ import corputils.urls
 import esi.urls
 import permissions_tool.urls
 from alliance_auth import NAME
+from alliance_auth.hooks import get_hooks
 
 admin.site.site_header = NAME
 
-from alliance_auth.hooks import get_hooks
 
 # Functional/Untranslated URL's
 urlpatterns = [
     # Locale
     url(r'^i18n/', include('django.conf.urls.i18n')),
+
+    # Authentication
+    url(r'', include(authentication.urls, namespace='authentication')),
 
     # Admin urls
     url(r'^admin/', include(admin.site.urls)),
@@ -35,17 +37,6 @@ urlpatterns = [
     # SSO
     url(r'^sso/', include(esi.urls, namespace='esi')),
     url(r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
-
-    # Index
-    url(_(r'^$'), authentication.views.index_view, name='auth_index'),
-
-    # Authentication
-    url(r'^logout_user/', authentication.views.logout_user, name='auth_logout_user'),
-
-    # Eve Online
-    url(r'^main_character_change/(\w+)/$', eveonline.views.main_character_change,
-        name='auth_main_character_change'),
-    url(r'^api_verify_owner/(\w+)/$', eveonline.views.api_sso_validate, name='auth_api_sso'),
 
     # SRP URLS
     url(r'^srp_fleet_remove/(\w+)$', srp.views.srp_fleet_remove, name='auth_srp_fleet_remove'),
@@ -79,32 +70,6 @@ urlpatterns += i18n_patterns(
     url(r'^fleetup/characters/$', fleetup.views.fleetup_characters, name='auth_fleetup_characters'),
     url(r'^fleetup/doctrines/(?P<doctrinenumber>[0-9]+)/$', fleetup.views.fleetup_doctrine, name='auth_fleetup_doctrine'),
 
-    # Authentication
-    url(_(r'^login_user/'), authentication.views.login_user, name='auth_login_user'),
-    url(_(r'^register_user/'), authentication.views.register_user_view, name='auth_register_user'),
-
-    url(_(r'^user/password/$'), django.contrib.auth.views.password_change, name='password_change'),
-    url(_(r'^user/password/done/$'), django.contrib.auth.views.password_change_done,
-        name='password_change_done'),
-    url(_(r'^user/password/reset/$'), django.contrib.auth.views.password_reset,
-        name='password_reset'),
-    url(_(r'^user/password/password/reset/done/$'), django.contrib.auth.views.password_reset_done,
-        name='password_reset_done'),
-    url(_(r'^user/password/reset/complete/$'), django.contrib.auth.views.password_reset_complete,
-        name='password_reset_complete'),
-    url(_(r'^user/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$'),
-        django.contrib.auth.views.password_reset_confirm, name='password_reset_confirm'),
-
-    # Portal Urls
-    url(_(r'^dashboard/$'), eveonline.views.dashboard_view, name='auth_dashboard'),
-    url(_(r'^help/$'), authentication.views.help_view, name='auth_help'),
-
-    # Eveonline Urls
-    url(_(r'^add_api_key/'), eveonline.views.add_api_key, name='auth_add_api_key'),
-    url(_(r'^refresh_api_pair/([0-9]+)/$'), eveonline.views.user_refresh_api, name='auth_user_refresh_api'),
-    url(_(r'^delete_api_pair/(\w+)/$'), eveonline.views.api_key_removal, name='auth_api_key_removal'),
-    url(_(r'^characters/'), eveonline.views.characters_view, name='auth_characters'),
-    
     # Corputils
     url(_(r'^corpstats/'), include(corputils.urls, namespace='corputils')),
 

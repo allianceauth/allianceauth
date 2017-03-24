@@ -1,75 +1,57 @@
 from __future__ import unicode_literals
-from django.contrib.auth.models import User
-from django.conf import settings
-from authentication.states import NONE_STATE, BLUE_STATE, MEMBER_STATE
-from authentication.models import AuthServicesInfo
-
+from django.db.models import Manager, QuerySet, Q
+from eveonline.managers import EveManager
+from eveonline.models import EveCharacter
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class AuthServicesInfoManager:
-    def __init__(self):
-        pass
+class CharacterOwnershipManager(Manager):
+    def create_by_token(self, token):
+        if not EveCharacter.objects.filter(character_id=token.character_id).exists():
+            EveManager.create_character(token.character_id)
+        return self.create(character=EveCharacter.objects.get(characte_id=token.character_id), user=token.user,
+                           owner_hash=token.character_owner_hash)
 
-    @staticmethod
-    def update_main_char_id(char_id, user):
-        if User.objects.filter(username=user.username).exists():
-            logger.debug("Updating user %s main character to id %s" % (user, char_id))
-            authserviceinfo = AuthServicesInfo.objects.get(user=user)
-            authserviceinfo.main_char_id = char_id
-            authserviceinfo.save(update_fields=['main_char_id'])
-            logger.info("Updated user %s main character to id %s" % (user, char_id))
+
+class StateQuerySet(QuerySet):
+    def available_to_character(self, character):
+        query = Q(member_characters__character_id=character.character_id)
+        query |= Q(member_corporations__corporation_id=character.corporation_id)
+        query |= Q(member_alliances__alliance_id=character.alliance_id)
+        query |= Q(public=True)
+        return self.filter(query)
+
+    def available_to_user(self, user):
+        if user.profile.main_character:
+            return self.available_to_character(user.profile.main_character)
         else:
-            logger.error("Failed to update user %s main character id to %s: user does not exist." % (user, char_id))
-
-    @staticmethod
-    def update_is_blue(is_blue, user):
-        if User.objects.filter(username=user.username).exists():
-            logger.debug("Updating user %s blue status: %s" % (user, is_blue))
-            authserviceinfo = AuthServicesInfo.objects.get(user=user)
-            authserviceinfo.is_blue = is_blue
-            authserviceinfo.save(update_fields=['is_blue'])
-            logger.info("Updated user %s blue status to %s in authservicesinfo model." % (user, is_blue))
+            return self.none()
 
 
-class UserState:
-    def __init__(self):
-        pass
+class StateManager(Manager):
+    def get_queryset(self):
+        return StateQuerySet(self.model, using=self._db)
 
-    MEMBER_STATE = MEMBER_STATE
-    BLUE_STATE = BLUE_STATE
-    NONE_STATE = NONE_STATE
+    def available_to_character(self, character):
+        return self.get_queryset().available_to_character(character)
 
-    @classmethod
-    def member_state(cls, user):
-        return cls.state_required(user, [cls.MEMBER_STATE])
+    def available_to_user(self, user):
+        return self.get_queryset().available_to_user(user)
 
-    @classmethod
-    def member_or_blue_state(cls, user):
-        return cls.state_required(user, [cls.MEMBER_STATE, cls.BLUE_STATE])
+    def get_for_character(self, character):
+        states = self.get_queryset().available_to_character(character).order_by('priority')
+        if states.exists():
+            return states[0]
+        else:
+            from authentication.models import get_guest_state
+            return get_guest_state()
 
-    @classmethod
-    def blue_state(cls, user):
-        return cls.state_required(user, [cls.BLUE_STATE])
-
-    @classmethod
-    def none_state(cls, user):
-        return cls.state_required(user, [cls.NONE_STATE])
-
-    @classmethod
-    def get_membership_state(cls, request):
-        if request.user.is_authenticated:
-            auth = AuthServicesInfo.objects.get(user=request.user)
-            return {'STATE': auth.state}
-        return {'STATE': cls.NONE_STATE}
-
-    @staticmethod
-    def state_required(user, states):
-        if user.is_superuser and settings.SUPERUSER_STATE_BYPASS:
-            return True
-        if user.is_authenticated:
-            auth = AuthServicesInfo.objects.get(user=user)
-            return auth.state in states
-        return False
+    def get_for_user(self, user):
+        states = self.get_queryset().available_to_user(user)
+        if states.exists():
+            return states[0]
+        else:
+            from authentication.models import get_guest_state
+            return get_guest_state()

@@ -34,11 +34,6 @@ class Teamspeak3Manager:
         return sanatized[:30]
 
     @staticmethod
-    def __generate_username_blue(username, corp_ticker):
-        sanatized = "[BLUE][" + corp_ticker + "]" + username
-        return sanatized[:30]
-
-    @staticmethod
     def _get_userid(uid):
         logger.debug("Looking for uid %s on TS3 server." % uid)
         server = Teamspeak3Manager.__get_created_server()
@@ -208,34 +203,6 @@ class Teamspeak3Manager:
             return username_clean, token
         except:
             logger.exception("Failed to add teamspeak user %s - received response: %s" % (username_clean, ret))
-            return "", ""
-
-    @staticmethod
-    def add_blue_user(username, corp_ticker):
-        username_clean = Teamspeak3Manager.__santatize_username(Teamspeak3Manager.__generate_username_blue(username,
-                                                                                                           corp_ticker))
-        server = Teamspeak3Manager.__get_created_server()
-        logger.debug("Adding user to TS3 server with cleaned username %s" % username_clean)
-        server_groups = Teamspeak3Manager._group_list()
-        if settings.DEFAULT_BLUE_GROUP not in server_groups:
-            Teamspeak3Manager._create_group(settings.DEFAULT_BLUE_GROUP)
-
-        blue_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_BLUE_GROUP)
-
-        try:
-            ret = server.send_command('tokenadd', {'tokentype': 0, 'tokenid1': blue_group_id, 'tokenid2': 0,
-                                                   'tokendescription': username_clean,
-                                                   'tokencustomset': "ident=sso_uid value=%s" % username_clean})
-        except TeamspeakError as e:
-            logger.error("Failed to add blue teamspeak user %s: %s" % (username, str(e)))
-            return "",""
-
-        try:
-            token = ret['keys']['token']
-            logger.info("Created permission token for blue user %s on TS3 server" % username_clean)
-            return username_clean, token
-        except:
-            logger.exception("Failed to add blue teamspeak user %s - received response: %s" % (username_clean, ret))
             return "", ""
 
     @staticmethod

@@ -3,13 +3,10 @@ from __future__ import unicode_literals
 import logging
 
 from alliance_auth.celeryapp import app
-from celery.schedules import crontab
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from notifications import notify
 
-from authentication.models import AuthServicesInfo
 from .util.ts3 import TeamspeakError
 from .manager import Teamspeak3Manager
 from .models import AuthTS, TSgroup, UserTSgroup, Teamspeak3User

@@ -4,12 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
-
-from authentication.decorators import members_and_blues
-from eveonline.managers import EveManager
-from eveonline.models import EveCharacter
 from services.forms import ServicePasswordForm
-
 from .manager import OpenfireManager
 from .tasks import OpenfireTasks
 from .forms import JabberBroadcastForm
@@ -28,7 +23,7 @@ ACCESS_PERM = 'openfire.access_openfire'
 @permission_required(ACCESS_PERM)
 def activate_jabber(request):
     logger.debug("activate_jabber called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding jabber user for user %s with main character %s" % (request.user, character))
     info = OpenfireManager.add_user(character.character_name)
     # If our username is blank means we already had a user
@@ -101,7 +96,7 @@ def jabber_broadcast_view(request):
         form.fields['group'].choices = allchoices
         logger.debug("Received POST request containing form, valid: %s" % form.is_valid())
         if form.is_valid():
-            main_char = EveManager.get_main_character(request.user)
+            main_char = request.user.profile.main_character
             logger.debug("Processing jabber broadcast for user %s with main character %s" % (request.user, main_char))
             if main_char is not None:
                 message_to_send = form.cleaned_data[

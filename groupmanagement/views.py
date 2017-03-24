@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
@@ -11,8 +11,6 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from groupmanagement.managers import GroupManager
 from groupmanagement.models import GroupRequest
-from authentication.models import AuthServicesInfo
-from authentication.managers import UserState
 from eveonline.managers import EveManager
 from django.utils.translation import ugettext_lazy as _
 
@@ -72,8 +70,8 @@ def group_membership(request):
 @user_passes_test(GroupManager.can_manage_groups)
 def group_membership_list(request, group_id):
     logger.debug("group_membership_list called by user %s for group id %s" % (request.user, group_id))
+    group = get_object_or_404(Group, id=group_id)
     try:
-        group = Group.objects.get(id=group_id)
 
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
@@ -88,11 +86,10 @@ def group_membership_list(request, group_id):
     members = list()
 
     for member in group.user_set.all().order_by('username'):
-        authinfo = AuthServicesInfo.objects.get(user=member)
 
         members.append({
             'user': member,
-            'main_char': EveManager.get_character_by_id(authinfo.main_char_id)
+            'main_char': member.profile.main_character
         })
 
     render_items = {'group': group, 'members': members}
@@ -105,9 +102,8 @@ def group_membership_list(request, group_id):
 def group_membership_remove(request, group_id, user_id):
     logger.debug("group_membership_remove called by user %s for group id %s on user id %s" %
                  (request.user, group_id, user_id))
+    group = get_object_or_404(Group, id=group_id)
     try:
-        group = Group.objects.get(id=group_id)
-
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
         if not GroupManager.joinable_group(group) or not GroupManager.can_manage_group(request.user, group):
@@ -134,8 +130,8 @@ def group_membership_remove(request, group_id, user_id):
 @user_passes_test(GroupManager.can_manage_groups)
 def group_accept_request(request, group_request_id):
     logger.debug("group_accept_request called by user %s for grouprequest id %s" % (request.user, group_request_id))
+    group_request = get_object_or_404(GroupRequest, id=group_request_id)
     try:
-        group_request = GroupRequest.objects.get(id=group_request_id)
         group, created = Group.objects.get_or_create(name=group_request.group.name)
 
         if not GroupManager.joinable_group(group_request.group) or \
@@ -169,9 +165,8 @@ def group_accept_request(request, group_request_id):
 @user_passes_test(GroupManager.can_manage_groups)
 def group_reject_request(request, group_request_id):
     logger.debug("group_reject_request called by user %s for group request id %s" % (request.user, group_request_id))
+    group_request = get_object_or_404(GroupRequest, id=group_request_id)
     try:
-        group_request = GroupRequest.objects.get(id=group_request_id)
-
         if not GroupManager.can_manage_group(request.user, group_request.group):
             raise PermissionDenied
 
@@ -202,9 +197,8 @@ def group_reject_request(request, group_request_id):
 def group_leave_accept_request(request, group_request_id):
     logger.debug(
         "group_leave_accept_request called by user %s for group request id %s" % (request.user, group_request_id))
+    group_request = get_object_or_404(GroupRequest, id=group_request_id)
     try:
-        group_request = GroupRequest.objects.get(id=group_request_id)
-
         if not GroupManager.can_manage_group(request.user, group_request.group):
             raise PermissionDenied
 
@@ -237,9 +231,8 @@ def group_leave_accept_request(request, group_request_id):
 def group_leave_reject_request(request, group_request_id):
     logger.debug(
         "group_leave_reject_request called by user %s for group request id %s" % (request.user, group_request_id))
+    group_request = get_object_or_404(GroupRequest, id=group_request_id)
     try:
-        group_request = GroupRequest.objects.get(id=group_request_id)
-
         if not GroupManager.can_manage_group(request.user, group_request.group):
             raise PermissionDenied
 
@@ -307,12 +300,11 @@ def group_request_add(request, group_id):
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
         return redirect("auth_groups")
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
-    grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)
+    grouprequest.main_char = request.user.profile.main_character
     grouprequest.leave_request = False
     grouprequest.save()
     logger.info("Created group request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
@@ -338,12 +330,11 @@ def group_request_leave(request, group_id):
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
         return redirect("auth_groups")
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
-    grouprequest.main_char = EveManager.get_character_by_id(auth_info.main_char_id)
+    grouprequest.main_char = request.user.profile.main_character
     grouprequest.leave_request = True
     grouprequest.save()
     logger.info("Created group leave request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))

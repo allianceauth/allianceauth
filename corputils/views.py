@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -133,7 +132,7 @@ def corpstats_search(request):
                        search_string.lower() in corpstats.members[member_id].lower()]
             for s in similar:
                 results.append(
-                    (corpstats, CorpStats.MemberObject(s[0], s[1], show_apis=corpstats.show_apis(request.user))))
+                    (corpstats, CorpStats.MemberObject(s[0], s[1])))
         page = request.GET.get('page', 1)
         results = sorted(results, key=lambda x: x[1].character_name)
         results_page = get_page(results, page)

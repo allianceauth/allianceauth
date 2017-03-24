@@ -19,7 +19,7 @@ class Phpbb3Service(ServicesHook):
         ServicesHook.__init__(self)
         self.name = 'phpbb3'
         self.urlpatterns = urlpatterns
-        self.service_url = settings.FORUM_URL  # TODO: This needs to be renamed at some point...
+        self.service_url = settings.PHPBB3_URL
         self.access_perm = 'phpbb3.access_phpbb3'
 
     @property

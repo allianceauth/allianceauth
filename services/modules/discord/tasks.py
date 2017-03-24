@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from eveonline.managers import EveManager
 from notifications import notify
 from services.modules.discord.manager import DiscordOAuthManager
 from services.tasks import only_one
@@ -60,6 +59,7 @@ class DiscordTasks:
             return True
 
     @staticmethod
+    @only_one
     @app.task(bind=True, name='discord.update_groups')
     def update_groups(task_self, pk):
         user = User.objects.get(pk=pk)
@@ -98,18 +98,21 @@ class DiscordTasks:
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord nickname for user %s" % user)
         if DiscordTasks.has_account(user):
-            character = EveManager.get_main_character(user)
-            logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
-            try:
-                DiscordOAuthManager.update_nickname(user.discord.uid, character.character_name)
-            except Exception as e:
-                if self:
-                    logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
-                    raise self.retry(countdown=60 * 10)
-                else:
-                    # Rethrow
-                    raise e
-            logger.debug("Updated user %s discord nickname." % user)
+            if user.profile.main_character:
+                character = user.profile.main_character
+                logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
+                try:
+                    DiscordOAuthManager.update_nickname(user.discord.uid, character.character_name)
+                except Exception as e:
+                    if self:
+                        logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
+                        raise self.retry(countdown=60 * 10)
+                    else:
+                        # Rethrow
+                        raise e
+                logger.debug("Updated user %s discord nickname." % user)
+            else:
+                logger.debug("User %s does not have a main character" % user)
         else:
             logger.debug("User %s does not have a discord account" % user)
 

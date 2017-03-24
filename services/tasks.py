@@ -48,3 +48,11 @@ def validate_services(self, user):
             svc.validate_user(user)
         except:
             logger.exception('Exception running validate_user for services module %s on user %s' % (svc, user))
+
+
+def disable_user(user):
+    logger.debug('Disabling all services for user %s' % user)
+    for svc in ServicesHook.get_services():
+        if svc.service_active_for_user(user):
+            svc.delete_user(user)
+

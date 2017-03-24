@@ -10,10 +10,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from services.hooks import ServicesHook
-from alliance_auth.hooks import get_hooks
-from authentication.tasks import disable_user
-from authentication.tasks import disable_member
-from authentication.tasks import set_state
+from services.tasks import disable_user
 
 logger = logging.getLogger(__name__)
 
@@ -109,8 +106,5 @@ def pre_save_user(sender, instance, *args, **kwargs):
         if old_instance.is_active and not instance.is_active:
             logger.info("Disabling services for inactivation of user %s" % instance)
             disable_user(instance)
-        elif instance.is_active and not old_instance.is_active:
-            logger.info("Assessing state of reactivated user %s" % instance)
-            set_state(instance)
     except User.DoesNotExist:
         pass

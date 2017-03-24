@@ -11,7 +11,6 @@ from hrapplications.models import ApplicationComment
 from hrapplications.forms import HRApplicationCommentForm
 from hrapplications.forms import HRApplicationSearchForm
 from eveonline.models import EveCharacter
-from authentication.models import AuthServicesInfo
 
 import logging
 
@@ -19,11 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_application_test(user):
-    auth = AuthServicesInfo.objects.get(user=user)
-    if auth.main_char_id:
-        return True
-    else:
-        return False
+    return bool(user.profile.main_character)
 
 
 @login_required
@@ -31,13 +26,7 @@ def hr_application_management_view(request):
     logger.debug("hr_application_management_view called by user %s" % request.user)
     corp_applications = []
     finished_corp_applications = []
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
-    main_char = None
-    if auth_info.main_char_id:
-        try:
-            main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        except EveCharacter.DoesNotExist:
-            pass
+    main_char = request.user.profile.main_character
     if request.user.is_superuser:
         corp_applications = Application.objects.filter(approved=None)
         finished_corp_applications = Application.objects.exclude(approved=None)
@@ -99,7 +88,6 @@ def hr_application_personal_view(request, app_id):
             'buttons': False,
             'comments': ApplicationComment.objects.filter(application=app),
             'comment_form': HRApplicationCommentForm(),
-            'apis': [],
         }
         return render(request, 'registered/hrapplicationview.html', context=context)
     else:
@@ -141,17 +129,14 @@ def hr_application_view(request, app_id):
                 return redirect(hr_application_view, app_id)
         else:
             logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
+            return redirect(hr_application_view, app_id)
     else:
         logger.debug("Returning blank HRApplication comment form.")
         form = HRApplicationCommentForm()
-    apis = []
-    if request.user.has_perm('hrapplications.view_apis'):
-        apis = app.apis
     context = {
         'app': app,
         'responses': ApplicationResponse.objects.filter(application=app),
         'buttons': True,
-        'apis': apis,
         'comments': ApplicationComment.objects.filter(application=app),
         'comment_form': form,
     }
@@ -219,11 +204,9 @@ def hr_application_search(request):
             if request.user.is_superuser:
                 app_list = Application.objects.all()
             else:
-                auth_info = AuthServicesInfo.objects.get(user=request.user)
                 try:
-                    character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-                    app_list = Application.objects.filter(form__corp__corporation_id=character.corporation_id)
-                except EveCharacter.DoesNotExist:
+                    app_list = Application.objects.filter(form__corp__corporation_id=request.user.profile.main_character.corporation_id)
+                except AttributeError:
                     logger.warn(
                         "User %s missing main character model: unable to filter applications to search" % request.user)
             for application in app_list:
@@ -267,14 +250,8 @@ def hr_application_mark_in_progress(request, app_id):
     app = get_object_or_404(Application, pk=app_id)
     if not app.reviewer:
         logger.info("User %s marking %s in progress" % (request.user, app))
-        auth_info = AuthServicesInfo.objects.get(user=request.user)
-        try:
-            character = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-        except EveCharacter.DoesNotExist:
-            logger.warn("User %s marking %s in review has no main character" % (request.user, app))
-            character = None
         app.reviewer = request.user
-        app.reviewer_character = character
+        app.reviewer_character = request.user.profile.main_character
         app.save()
         notify(app.user, "Application In Progress",
                message="Your application to %s is being reviewed by %s" % (app.form.corp, app.reviewer_str))

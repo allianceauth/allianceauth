@@ -22,7 +22,7 @@ ACCESS_PERM = 'ipboard.access_ipboard'
 @permission_required(ACCESS_PERM)
 def activate_ipboard_forum(request):
     logger.debug("activate_ipboard_forum called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding ipboard user for user %s with main character %s" % (request.user, character))
     result = IPBoardManager.add_user(character.character_name, request.user.email)
     if result[0] != "":

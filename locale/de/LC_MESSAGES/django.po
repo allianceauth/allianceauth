@@ -1078,76 +1078,76 @@ msgstr "Aktualisiere SRP Menge"
 msgid "Saved changes to SRP fleet %(fleetname)s"
 msgstr "Änderungen der SRP flotte %(fleetname)s gespeichert"
 
-#: stock/templates/public/base.html:85
+#: stock/templates/registered/base.html:85
 msgid "Admin"
 msgstr "Admin"
 
-#: stock/templates/public/base.html:87
+#: stock/templates/registered/base.html:87
 msgid "Logout"
 msgstr "Ausloggen"
 
-#: stock/templates/public/base.html:89 stock/templates/public/login.html:14
+#: stock/templates/registered/base.html:89 stock/templates/public/login.html:14
 #: stock/templates/registration/password_reset_complete.html:49
 msgid "Login"
 msgstr "Einloggen"
 
-#: stock/templates/public/base.html:101
+#: stock/templates/registered/base.html:101
 msgid "Main Navigation"
 msgstr "Haupmenü"
 
-#: stock/templates/public/base.html:106
+#: stock/templates/registered/base.html:106
 msgid " Dashboard"
 msgstr " Dashboard"
 
-#: stock/templates/public/base.html:113
+#: stock/templates/registered/base.html:113
 msgid " Groups"
 msgstr " Gruppen"
 
-#: stock/templates/public/base.html:120
+#: stock/templates/registered/base.html:120
 msgid " Help"
 msgstr " Hilfe"
 
-#: stock/templates/public/base.html:126
+#: stock/templates/registered/base.html:126
 msgid "Aux Navigation"
 msgstr "Zusatz Navigation"
 
-#: stock/templates/public/base.html:131
+#: stock/templates/registered/base.html:131
 msgid " Services"
 msgstr " Dienste"
 
-#: stock/templates/public/base.html:140
+#: stock/templates/registered/base.html:140
 msgid " Applications"
 msgstr " Bewerbungen"
 
-#: stock/templates/public/base.html:148
+#: stock/templates/registered/base.html:148
 msgid " Corporation Stats"
 msgstr " Korporationsstatistiken"
 
-#: stock/templates/public/base.html:156
+#: stock/templates/registered/base.html:156
 msgid " Group Management"
 msgstr " Gruppenverwaltung"
 
-#: stock/templates/public/base.html:174
+#: stock/templates/registered/base.html:174
 msgid " Fleet Operations"
 msgstr " Flottenoperationen"
 
-#: stock/templates/public/base.html:181
+#: stock/templates/registered/base.html:181
 msgid " Structure Timers"
 msgstr " Strukturen Timer"
 
-#: stock/templates/public/base.html:188
+#: stock/templates/registered/base.html:188
 msgid " Fleet Activity Tracking"
 msgstr " Flottenaktivitäts-Tracking"
 
-#: stock/templates/public/base.html:194
+#: stock/templates/registered/base.html:194
 msgid " Ship Replacement"
 msgstr " Schiff’s erstattung"
 
-#: stock/templates/public/base.html:200
+#: stock/templates/registered/base.html:200
 msgid "Util"
 msgstr "Werkzeuge"
 
-#: stock/templates/public/base.html:204
+#: stock/templates/registered/base.html:204
 #: stock/templates/registration/password_change_done.html:10
 #: stock/templates/registration/password_change_form.html:9
 #: stock/templates/registration/password_change_form.html:18
@@ -1155,7 +1155,7 @@ msgstr "Werkzeuge"
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: stock/templates/public/base.html:211
+#: stock/templates/registered/base.html:211
 msgid " Fleet Broadcast Formatter"
 msgstr "Flottenübertragungen Formatierer "
 

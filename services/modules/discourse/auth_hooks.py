@@ -46,7 +46,7 @@ class DiscourseService(ServicesHook):
 
     def render_services_ctrl(self, request):
         return render_to_string(self.service_ctrl_template, {
-            'char': EveManager.get_main_character(request.user)
+            'char': request.user.profile.main_character
         }, request=request)
 
 

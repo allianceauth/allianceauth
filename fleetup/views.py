@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.template.defaulttags import register
 from fleetup.managers import FleetUpManager
-from authentication.decorators import members_and_blues
 
 import logging
 
@@ -18,7 +17,7 @@ def get_item(dictionary, key):
 
 
 @login_required
-@members_and_blues()
+@permission_required('auth.view_fleetup')
 def fleetup_view(request):
     logger.debug("fleetup_view called by user %s" % request.user)
 
@@ -35,6 +34,7 @@ def fleetup_view(request):
 
 @login_required
 @permission_required('auth.human_resources')
+@permission_required('auth.view_fleetup')
 def fleetup_characters(request):
     logger.debug("fleetup_characters called by user %s" % request.user)
 
@@ -46,7 +46,7 @@ def fleetup_characters(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required('auth.view_fleetup')
 def fleetup_fittings(request):
     logger.debug("fleetup_fittings called by user %s" % request.user)
     fitting_list = FleetUpManager.get_fleetup_fittings()
@@ -55,7 +55,7 @@ def fleetup_fittings(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required('auth.view_fleetup')
 def fleetup_fitting(request, fittingnumber):
     logger.debug("fleetup_fitting called by user %s" % request.user)
     fitting_eft = FleetUpManager.get_fleetup_fitting_eft(fittingnumber)
@@ -69,7 +69,7 @@ def fleetup_fitting(request, fittingnumber):
 
 
 @login_required
-@members_and_blues()
+@permission_required('auth.view_fleetup')
 def fleetup_doctrines(request):
     logger.debug("fleetup_doctrines called by user %s" % request.user)
     doctrines_list = FleetUpManager.get_fleetup_doctrines()
@@ -78,7 +78,7 @@ def fleetup_doctrines(request):
 
 
 @login_required
-@members_and_blues()
+@permission_required('auth.view_fleetup')
 def fleetup_doctrine(request, doctrinenumber):
     logger.debug("fleetup_doctrine called by user %s" % request.user)
     doctrine = FleetUpManager.get_fleetup_doctrine(doctrinenumber)

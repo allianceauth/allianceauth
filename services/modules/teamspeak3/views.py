@@ -4,11 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.states import BLUE_STATE
-from authentication.models import AuthServicesInfo
-from eveonline.managers import EveManager
-from eveonline.models import EveAllianceInfo
-
 from services.modules.teamspeak3.manager import Teamspeak3Manager
 
 from .forms import TeamspeakJoinForm
@@ -25,20 +20,11 @@ ACCESS_PERM = 'teamspeak3.access_teamspeak3'
 def activate_teamspeak3(request):
     logger.debug("activate_teamspeak3 called by user %s" % request.user)
 
-    authinfo = AuthServicesInfo.objects.get(user=request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     ticker = character.corporation_ticker
 
-    if authinfo.state == BLUE_STATE:
-        logger.debug("Adding TS3 user for blue user %s with main character %s" % (request.user, character))
-        # Blue members should have alliance ticker (if in alliance)
-        if EveAllianceInfo.objects.filter(alliance_id=character.alliance_id).exists():
-            alliance = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)[0]
-            ticker = alliance.alliance_ticker
-        result = Teamspeak3Manager.add_blue_user(character.character_name, ticker)
-    else:
-        logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.add_user(character.character_name, ticker)
+    logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
+    result = Teamspeak3Manager.add_user(character.character_name, ticker)
 
     # if its empty we failed
     if result[0] is not "":
@@ -93,20 +79,12 @@ def reset_teamspeak3_perm(request):
     logger.debug("reset_teamspeak3_perm called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
         return redirect("auth_services")
-    authinfo = AuthServicesInfo.objects.get(user=request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Deleting TS3 user for user %s" % request.user)
     Teamspeak3Manager.delete_user(request.user.teamspeak3.uid)
 
-    if authinfo.state == BLUE_STATE:
-        logger.debug(
-            "Generating new permission key for blue user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.generate_new_blue_permissionkey(request.user.teamspeak3.uid,
-                                                                   character.character_name,
-                                                                   character.corporation_ticker)
-    else:
-        logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
-        result = Teamspeak3Manager.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
+    logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
+    result = Teamspeak3Manager.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
                                                               character.corporation_ticker)
 
     # if blank we failed

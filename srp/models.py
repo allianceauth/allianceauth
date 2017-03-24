@@ -26,6 +26,9 @@ class SrpFleetMain(models.Model):
     def pending_requests(self):
         return self.srpuserrequest_set.filter(srp_status='Pending').count()
 
+    class Meta:
+        permissions = (('access_srp', 'Can access SRP module'),)
+
 
 @python_2_unicode_compatible
 class SrpUserRequest(models.Model):

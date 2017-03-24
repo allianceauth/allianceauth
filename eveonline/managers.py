@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
 from eveonline.models import EveCharacter
-from eveonline.models import EveApiKeyPair
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCorporationInfo
-from authentication.models import AuthServicesInfo
-from eveonline.providers import eve_adapter_factory, EveXmlProvider
-from services.managers.eve_api_manager import EveApiManager
+from eveonline.providers import eve_adapter_factory
 import logging
 
 logger = logging.getLogger(__name__)
@@ -25,11 +22,11 @@ class EveManager(object):
         return cls.get_adapter().get_character(character_id)
 
     @staticmethod
-    def create_character(id, user, api_id):
-        return EveManager.create_character_obj(EveManager.get_character(id), user, api_id)
+    def create_character(id):
+        return EveManager.create_character_obj(EveManager.get_character(id))
 
     @staticmethod
-    def create_character_obj(character, user, api_id):
+    def create_character_obj(character,):
         return EveCharacter.objects.create(
             character_id=character.id,
             character_name=character.name,
@@ -38,8 +35,6 @@ class EveManager(object):
             corporation_ticker=character.corp.ticker,
             alliance_id=character.alliance.id,
             alliance_name=character.alliance.name,
-            user=user,
-            api_id=api_id,
         )
 
     @staticmethod
@@ -57,19 +52,6 @@ class EveManager(object):
         model.alliance_name = char.alliance.name
         model.save()
         return model
-
-    @staticmethod
-    def create_api_keypair(api_id, api_key, user_id):
-        logger.debug("Creating api keypair id %s for user_id %s" % (api_id, user_id))
-        if not EveApiKeyPair.objects.filter(api_id=api_id).exists():
-            api_pair = EveApiKeyPair()
-            api_pair.api_id = api_id
-            api_pair.api_key = api_key
-            api_pair.user = user_id
-            api_pair.save()
-            logger.info("Created api keypair id %s for user %s" % (api_id, user_id))
-        else:
-            logger.warn("Attempting to create existing api keypair with id %s" % api_id)
 
     @classmethod
     def get_alliance(cls, alliance_id):
@@ -158,82 +140,6 @@ class EveManager(object):
         return cls.get_adapter().get_itemtype(type_id)
 
     @staticmethod
-    def get_characters_from_api(api):
-        char_result = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
-        provider = EveXmlProvider(adapter=EveManager.get_adapter())
-        return [provider._build_character(result) for id, result in char_result.items()]
-
-    @staticmethod
-    def get_api_key_pairs(user):
-        if EveApiKeyPair.objects.filter(user=user).exists():
-            logger.debug("Returning api keypairs for user %s" % user)
-            return EveApiKeyPair.objects.filter(user=user)
-        else:
-            logger.debug("No api keypairs found for user %s" % user)
-
-    @staticmethod
-    def get_all_api_key_pairs():
-        if EveApiKeyPair.objects.exists():
-            logger.debug("Returning all api keypairs.")
-            return EveApiKeyPair.objects.all()
-        else:
-            logger.debug("No api keypairs found.")
-
-    @staticmethod
-    def check_if_api_key_pair_exist(api_id):
-        if EveApiKeyPair.objects.filter(api_id=api_id).exists():
-            logger.debug("Determined api id %s exists." % api_id)
-            return True
-        else:
-            logger.debug("Determined api id %s does not exist." % api_id)
-            return False
-
-    @staticmethod
-    def check_if_api_key_pair_is_new(api_id, fudge_factor):
-        if EveApiKeyPair.objects.count() == 0:
-            return True
-        latest_api_id = int(EveApiKeyPair.objects.order_by('-api_id')[0].api_id) - fudge_factor
-        if latest_api_id >= api_id:
-            logger.debug("api key (%d) is older than latest API key (%d). Rejecting" % (api_id, latest_api_id))
-            return False
-        else:
-            logger.debug("api key (%d) is new. Accepting" % api_id)
-            return True
-
-    @staticmethod
-    def delete_api_key_pair(api_id, user_id):
-        logger.debug("Deleting api id %s" % api_id)
-        if EveApiKeyPair.objects.filter(api_id=api_id).exists():
-            # Check that its owned by our user_id
-            apikeypair = EveApiKeyPair.objects.get(api_id=api_id)
-            if apikeypair.user.id == user_id:
-                logger.info("Deleted user %s api key id %s" % (user_id, api_id))
-                apikeypair.delete()
-            else:
-                logger.error(
-                    "Unable to delete api: user mismatch: key id %s owned by user id %s, not deleting user id %s" % (
-                        api_id, apikeypair.user.id, user_id))
-        else:
-            logger.warn("Unable to locate api id %s - cannot delete." % api_id)
-
-    @staticmethod
-    def delete_characters_by_api_id(api_id, user_id):
-        logger.debug("Deleting all characters associated with api id %s" % api_id)
-        if EveCharacter.objects.filter(api_id=api_id).exists():
-            # Check that its owned by our user_id
-            characters = EveCharacter.objects.filter(api_id=api_id)
-            logger.debug("Got user %s characters %s from api %s" % (user_id, characters, api_id))
-            for char in characters:
-                if char.user.id == user_id:
-                    logger.info("Deleting user %s character %s from api %s" % (user_id, char, api_id))
-                    char.delete()
-                else:
-                    logger.error(
-                        "Unable to delete character %s by api %s: user mismatch: character owned by user id %s, "
-                        "not deleting user id %s" % (
-                            char, api_id, char.user.id, user_id))
-
-    @staticmethod
     def check_if_character_exist(char_name):
         return EveCharacter.objects.filter(character_name=char_name).exists()
 
@@ -255,16 +161,6 @@ class EveManager(object):
             return EveCharacter.objects.get(character_id=char_id)
 
         return None
-
-    @staticmethod
-    def get_main_character(user):
-        """
-        Get a characters main
-        :param user: django.contrib.auth.models.User
-        :return: EveCharacter
-        """
-        authserviceinfo = AuthServicesInfo.objects.get(user=user)
-        return EveManager.get_character_by_id(authserviceinfo.main_char_id)
 
     @staticmethod
     def get_characters_by_api_id(api_id):

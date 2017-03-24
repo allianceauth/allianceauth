@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
-from eveonline.models import EveApiKeyPair
-from authentication.models import AuthServicesInfo
 
 
 @python_2_unicode_compatible
@@ -47,20 +45,11 @@ class Application(models.Model):
 
     @property
     def main_character(self):
-        try:
-            auth = AuthServicesInfo.objects.get(user=self.user)
-            char = EveCharacter.objects.get(character_id=auth.main_char_id)
-            return char
-        except:
-            return None
+        return self.user.profile.main_character
 
     @property
     def characters(self):
         return EveCharacter.objects.filter(user=self.user)
-
-    @property
-    def apis(self):
-        return EveApiKeyPair.objects.filter(user=self.user)
 
     @property
     def reviewer_str(self):

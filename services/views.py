@@ -6,8 +6,6 @@ from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 
 from alliance_auth.hooks import get_hooks
-from authentication.decorators import members_and_blues
-from authentication.models import AuthServicesInfo
 from eveonline.models import EveCharacter
 from services.forms import FleetFormatterForm
 
@@ -49,19 +47,12 @@ def fleet_formatter_view(request):
 @login_required
 def services_view(request):
     logger.debug("services_view called by user %s" % request.user)
-    auth = AuthServicesInfo.objects.get(user=request.user)
-    char = None
-    if auth.main_char_id:
-        try:
-            char = EveCharacter.objects.get(character_id=auth.main_char_id)
-        except EveCharacter.DoesNotExist:
-            messages.warning(request, _("There's a problem with your main character. Please select a new one."))
-
+    char = request.profile.main_character
     context = {'service_ctrls': []}
     for fn in get_hooks('services_hook'):
         # Render hooked services controls
         svc = fn()
-        if svc.show_service_ctrl(request.user, auth.state):
+        if svc.show_service_ctrl(request.user):
             context['service_ctrls'].append(svc.render_services_ctrl(request))
 
     return render(request, 'registered/services.html', context=context)

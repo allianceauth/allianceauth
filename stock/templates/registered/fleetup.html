@@ -1,4 +1,4 @@
-{% extends "public/base.html" %}
+{% extends "registered/base.html" %}
 {% load bootstrap %}
 {% load staticfiles %}
 {% load i18n %}
@@ -110,7 +110,7 @@
                     </div>
                 {% endfor %}
                 {% else %}
-            <h3>{% trans "There seems to be no Operations in the near future, go make ISK!" %}</h3>
+            <h3>{% trans "There seems to be no Operations in the near future." %}</h3>
             {% endif %}
             </div>
             <div class="col-lg-3">
@@ -192,7 +192,7 @@
                     </div>
                 </div>
                 {% else %}
-            <h3>{% trans "There seems to be no Timers in the near future, this does not mean there isn't any!" %}</h3>
+            <h3>{% trans "There seems to be no Timers in the near future." %}</h3>
             {% endif %}
             </div>
         </div>

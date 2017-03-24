@@ -4,10 +4,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from authentication.states import MEMBER_STATE, BLUE_STATE, NONE_STATE
-from eveonline.models import EveCharacter
-from eveonline.managers import EveManager
-from authentication.models import AuthServicesInfo
 
 from .manager import DiscourseManager
 from .tasks import DiscourseTasks
@@ -39,16 +35,15 @@ def discourse_sso(request):
 
     ## Check if user has access
 
-    auth = AuthServicesInfo.objects.get(user=request.user)
     if not request.user.has_perm(ACCESS_PERM):
             messages.error(request, 'You are not authorized to access Discourse.')
             return redirect('auth_dashboard')
 
-    if not auth.main_char_id:
+    if not request.user.profile.main_character:
         messages.error(request, "You must have a main character set to access Discourse.")
         return redirect('auth_characters')
 
-    main_char = EveManager.get_main_character(request.user)
+    main_char = request.user.profile.main_character
     if main_char is None:
         messages.error(request, "Your main character is missing a database model. Please select a new one.")
         return redirect('auth_characters')
@@ -60,8 +55,7 @@ def discourse_sso(request):
         messages.error(request, 'No SSO payload or signature. Please contact support if this problem persists.')
         return redirect('auth_dashboard')
 
-    ## Validate the payload
-
+    # Validate the payload
     try:
         payload = unquote(payload).encode('utf-8')
         decoded = base64.decodestring(payload).decode('utf-8')
@@ -92,24 +86,23 @@ def discourse_sso(request):
         'name': username,
     }
 
-    if auth.main_char_id:
-        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % auth.main_char_id
+    if main_char:
+        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % main_char.main_char_id
 
     return_payload = base64.encodestring(urlencode(params).encode('utf-8'))
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
     query_string = urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
-    ## Record activation and queue group sync
-
+    # Record activation and queue group sync
     if not DiscourseTasks.has_account(request.user):
         discourse_user = DiscourseUser()
         discourse_user.user = request.user
         discourse_user.enabled = True
         discourse_user.save()
-        DiscourseTasks.update_groups.apply_async(args=[request.user.pk], countdown=30) # wait 30s for new user creation on Discourse
+        # wait 30s for new user creation on Discourse before triggering group sync
+        DiscourseTasks.update_groups.apply_async(args=[request.user.pk], countdown=30)
 
-    ## Redirect back to Discourse
-
+    # Redirect back to Discourse
     url = '%s/session/sso_login' % settings.DISCOURSE_URL
     return redirect('%s?%s' % (url, query_string))
 

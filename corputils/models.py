@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from eveonline.models import EveCorporationInfo, EveCharacter, EveApiKeyPair
+from eveonline.models import EveCorporationInfo, EveCharacter
 from esi.models import Token
 from esi.errors import TokenError
 from notifications import notify
-from authentication.models import AuthServicesInfo
+from authentication.models import CharacterOwnership, UserProfile
 from bravado.exception import HTTPForbidden
 from corputils.managers import CorpStatsManager
 from operator import attrgetter
@@ -97,62 +97,32 @@ class CorpStats(models.Model):
     def member_names(self):
         return [name for id, name in self.members.items()]
 
-    def show_apis(self, user):
-        auth = AuthServicesInfo.objects.get(user=user)
-        if auth.main_char_id:
-            try:
-                char = EveCharacter.objects.get(character_id=auth.main_char_id)
-                if char.corporation_id == self.corp.corporation_id and user.has_perm('corputils.corp_apis'):
-                    return True
-                if self.corp.alliance and char.alliance_id == self.corp.alliance.alliance_id and user.has_perm(
-                        'corputils.alliance_apis'):
-                    return True
-                if user.has_perm('corputils.blue_apis') and self.corp.is_blue:
-                    return True
-            except EveCharacter.DoesNotExist:
-                pass
-        return user.is_superuser
-
-    def entered_apis(self):
-        return EveCharacter.objects.filter(character_id__in=self.member_ids).exclude(api_id__isnull=True).count()
-
     def member_count(self):
         return len(self.members)
 
-    def user_count(self, members):
+    @staticmethod
+    def user_count(members):
         mainchars = []
         for member in members:
             if hasattr(member.main, 'character_name'):
                 mainchars.append(member.main.character_name)
         return len(set(mainchars))
 
+    def registered_characters(self):
+        return len(CharacterOwnership.objects.filter(character__character_id__in=self.member_ids))
+
     @python_2_unicode_compatible
     class MemberObject(object):
-        def __init__(self, character_id, character_name, show_apis=False):
+        def __init__(self, character_id, character_name):
             self.character_id = character_id
             self.character_name = character_name
             try:
                 char = EveCharacter.objects.get(character_id=character_id)
-                auth = AuthServicesInfo.objects.get(user=char.user)
-                try:
-                    self.main = EveCharacter.objects.get(character_id=auth.main_char_id)
-                    self.main_user = self.main.character_name
-                except EveCharacter.DoesNotExist:
-                    self.main = None
-                    self.main_user = ''
-                api = EveApiKeyPair.objects.get(api_id=char.api_id)
+                self.main_user = char.character_ownership.user
+                self.main = self.main_user.profile.main_character
                 self.registered = True
-                if show_apis:
-                    self.api = api
-                else:
-                    self.api = None
-            except (EveCharacter.DoesNotExist, AuthServicesInfo.DoesNotExist):
+            except (EveCharacter.DoesNotExist, CharacterOwnership.DoesNotExist, UserProfile.DoesNotExist, AttributeError):
                 self.main = None
-                self.api = None
-                self.registered = False
-                self.main_user = ''
-            except EveApiKeyPair.DoesNotExist:
-                self.api = None
                 self.registered = False
                 self.main_user = ''
 
@@ -162,9 +132,8 @@ class CorpStats(models.Model):
         def portrait_url(self, size=32):
             return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
 
-    def get_member_objects(self, user):
-        show_apis = self.show_apis(user)
-        member_list = [CorpStats.MemberObject(id, name, show_apis=show_apis) for id, name in self.members.items()]
+    def get_member_objects(self):
+        member_list = [CorpStats.MemberObject(id, name) for id, name in self.members.items()]
         outlist = sorted([m for m in member_list if m.main_user], key=attrgetter('main_user', 'character_name'))
         outlist = outlist + sorted([m for m in member_list if not m.main_user], key=attrgetter('character_name'))
         return outlist
@@ -180,8 +149,7 @@ class CorpStats(models.Model):
             self.can_update = corpstats.can_update(user)
             self.total_members = len(self.members)
             self.total_users = corpstats.user_count(self.members)
-            self.registered_members = corpstats.entered_apis()
-            self.show_apis = corpstats.show_apis(user)
+            self.registered_members = corpstats.registered_characters()
             self.last_updated = corpstats.last_update
 
         def __str__(self):

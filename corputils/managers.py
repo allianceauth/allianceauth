@@ -1,6 +1,4 @@
 from django.db import models
-from authentication.models import AuthServicesInfo
-from eveonline.models import EveCharacter
 
 
 class CorpStatsQuerySet(models.QuerySet):
@@ -9,9 +7,9 @@ class CorpStatsQuerySet(models.QuerySet):
         if user.is_superuser:
             return self
 
-        auth = AuthServicesInfo.objects.get(user=user)
         try:
-            char = EveCharacter.objects.get(character_id=auth.main_char_id)
+            assert user.profile.main_character
+            char = user.profile.main_character
             # build all accepted queries
             queries = []
             if user.has_perm('corputils.view_corp_corpstats'):
@@ -30,7 +28,7 @@ class CorpStatsQuerySet(models.QuerySet):
             else:
                 # not allowed to see any
                 return self.none()
-        except EveCharacter.DoesNotExist:
+        except AssertionError:
             return self.none()        
 
 

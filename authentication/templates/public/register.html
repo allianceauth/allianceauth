@@ -1,0 +1,24 @@
+{% load staticfiles %}
+{% load bootstrap %}
+{% load i18n %}
+{% extends 'public/base.html' %}
+{% block title %}Registration{% endblock %}
+{% block extra_include %}
+    {% include 'bundles/bootstrap-css.html' %}
+    {% include 'bundles/fontawesome.html' %}
+    {% include 'bundles/bootstrap-js.html' %}
+{% endblock %}
+{% block content %}
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default panel-transparent">
+            <div class="panel-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|bootstrap }}
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Register" %}</button>
+                </form>
+            </div>
+        </div>
+        {% include 'public/lang_select.html' %}
+    </div>
+{% endblock %}

@@ -22,7 +22,7 @@ ACCESS_PERM = 'market.access_market'
 @permission_required(ACCESS_PERM)
 def activate_market(request):
     logger.debug("activate_market called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     if character is not None:
         logger.debug("Adding market user for user %s with main character %s" % (request.user, character))
         result = MarketManager.add_user(character.character_name, request.user.email, character.character_id,

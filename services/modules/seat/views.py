@@ -21,8 +21,7 @@ ACCESS_PERM = 'seat.access_seat'
 @permission_required(ACCESS_PERM)
 def activate_seat(request):
     logger.debug("activate_seat called by user %s" % request.user)
-    # Valid now we get the main characters
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Checking SeAT for inactive users with the same username")
     stat = SeatManager.check_user_status(character.character_name)
     if stat == {}:

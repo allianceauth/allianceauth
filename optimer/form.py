@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 
-class opForm(forms.Form):
+class OpForm(forms.Form):
     doctrine = forms.CharField(max_length=254, required=True, label=_('Doctrine'))
     system = forms.CharField(max_length=254, required=True, label=_("System"))
     location = forms.CharField(max_length=254, required=True, label=_("Location"))

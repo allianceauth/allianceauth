@@ -330,9 +330,9 @@ class EveXmlProvider(EveProvider):
             self.adapter,
             id,
             corpinfo['name'],
+            corpinfo['ticker'],
             corpinfo['ceo']['id'],
             corpinfo['members']['current'],
-            corpinfo['ticker'],
             corpinfo['alliance']['id'] if corpinfo['alliance'] else None,
         )
         return model

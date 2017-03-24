@@ -1,6 +1,5 @@
 from django.contrib.auth.models import Group
-from django.conf import settings
-from authentication.managers import UserState
+
 
 class GroupManager:
     def __init__(self):
@@ -39,7 +38,7 @@ class GroupManager:
         :return: bool True if user can manage groups, False otherwise
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or (user.leads_groups.all() and UserState.member_state(user))
+            return cls.has_management_permission(user) or user.leads_groups.all()
         return False
 
     @classmethod
@@ -51,6 +50,5 @@ class GroupManager:
         :return: True if the user can manage the group
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or (
-                user.leads_groups.filter(group=group).exists() and UserState.member_state(user))
+            return cls.has_management_permission(user) or user.leads_groups.filter(group=group).exists()
         return False

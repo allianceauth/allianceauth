@@ -58,9 +58,6 @@
                                         <tr>
                                             <th></th>
                                             <th class="text-center">{% trans "Character" %}</th>
-                                            {% if corpstats.show_apis %}
-                                                <th class="text-center">API</th>
-                                            {% endif %}
                                             <th class="text-center">{% trans "zKillboard" %}</th>
                                             <th class="text-center">{% trans "Main Character" %}</th>
                                             <th class="text-center">{% trans "Main Corporation" %}</th>
@@ -70,13 +67,6 @@
                                             <tr {% if not member.registered %}class="danger"{% endif %}>
                                                 <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                 <td class="text-center">{{ member.character_name }}</td>
-                                                {% if corpstats.show_apis %}
-                                                    {% if member.api %}
-                                                        <td class="text-center">{{ member.api|api_link:'label label-primary' }}</td>
-                                                    {% else %}
-                                                        <td></td>
-                                                    {% endif %}
-                                                {% endif %}
                                                 <td class="text-center"><a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
                                                 <td class="text-center">{{ member.main.character_name }}</td>
                                                 <td class="text-center">{{ member.main.corporation_name }}</td>

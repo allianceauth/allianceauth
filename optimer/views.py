@@ -6,11 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from authentication.models import AuthServicesInfo
-from eveonline.managers import EveManager
-from optimer.form import opForm
-from optimer.models import optimer
-from authentication.decorators import members_and_blues
+from optimer.form import OpForm
+from optimer.models import OpTimer
 
 import logging
 
@@ -18,11 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-@members_and_blues()
 @permission_required('auth.optimer_view')
 def optimer_view(request):
     logger.debug("optimer_view called by user %s" % request.user)
-    render_items = {'optimer': optimer.objects.all(), }
+    render_items = {'optimer': OpTimer.objects.all(), }
 
     return render(request, 'registered/operationmanagement.html', context=render_items)
 
@@ -32,16 +28,15 @@ def optimer_view(request):
 def add_optimer_view(request):
     logger.debug("add_optimer_view called by user %s" % request.user)
     if request.method == 'POST':
-        form = opForm(request.POST)
+        form = OpForm(request.POST)
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             # Get Current Time
             post_time = timezone.now()
             # Get character
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
-            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            character = request.user.profile.main_character
             # handle valid form
-            op = optimer()
+            op = OpTimer()
             op.doctrine = form.cleaned_data['doctrine']
             op.system = form.cleaned_data['system']
             op.location = form.cleaned_data['location']
@@ -58,7 +53,7 @@ def add_optimer_view(request):
             return redirect("/optimer/")
     else:
         logger.debug("Returning new opForm")
-        form = opForm()
+        form = OpForm()
 
     render_items = {'form': form}
 
@@ -69,14 +64,10 @@ def add_optimer_view(request):
 @permission_required('auth.optimer_management')
 def remove_optimer(request, optimer_id):
     logger.debug("remove_optimer called by user %s for operation id %s" % (request.user, optimer_id))
-    if optimer.objects.filter(id=optimer_id).exists():
-        op = optimer.objects.get(id=optimer_id)
-        op.delete()
-        logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
-        messages.success(request, _('Removed operation timer for %(opname)s.') % {"opname": op.operation_name})
-    else:
-        logger.error("Unable to delete optimer id %s for user %s - operation matching id not found." % (
-            optimer_id, request.user))
+    op = get_object_or_404(OpTimer, id=optimer_id)
+    op.delete()
+    logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
+    messages.success(request, _('Removed operation timer for %(opname)s.') % {"opname": op.operation_name})
     return redirect("auth_optimer_view")
 
 
@@ -84,13 +75,12 @@ def remove_optimer(request, optimer_id):
 @permission_required('auth.optimer_management')
 def edit_optimer(request, optimer_id):
     logger.debug("edit_optimer called by user %s for optimer id %s" % (request.user, optimer_id))
-    op = get_object_or_404(optimer, id=optimer_id)
+    op = get_object_or_404(OpTimer, id=optimer_id)
     if request.method == 'POST':
-        form = opForm(request.POST)
+        form = OpForm(request.POST)
         logger.debug("Received POST request containing update optimer form, is valid: %s" % form.is_valid())
         if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
-            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            character = request.user.profile.main_character
             op.doctrine = form.cleaned_data['doctrine']
             op.system = form.cleaned_data['system']
             op.location = form.cleaned_data['location']
@@ -115,5 +105,5 @@ def edit_optimer(request, optimer_id):
             'fc': op.fc,
             'details': op.details,
         }
-        form = opForm(initial=data)
+        form = OpForm(initial=data)
     return render(request, 'registered/optimerupdate.html', context={'form': form})

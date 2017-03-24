@@ -16,7 +16,6 @@
                     <th class="text-center"></th>
                     <th class="text-center">{% trans "Character" %}</th>
                     <th class="text-center">{% trans "Corporation" %}</th>
-                    <th class="text-center">{% trans "API" %}</th>
                     <th class="text-center">{% trans "zKillboard" %}</th>
                     <th class="text-center">{% trans "Main Character" %}</th>
                     <th class="text-center">{% trans "Main Corporation" %}</th>
@@ -27,11 +26,6 @@
                         <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle"></td>
                         <td class="text-center">{{ result.1.character_name }}</td>
                         <td class="text-center">{{ result.0.corp.corporation_name }}</td>
-                        {% if result.1.api %}
-                            <td class="text-center">{{ result.1.api|api_link:"label label-primary" }}</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
                         <td class="text-center"><a href="https://zkillboard.com/character/{{ result.1.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
                         <td class="text-center">{{ result.1.main.character_name }}</td>
                         <td class="text-center">{{ result.1.main.corporation_name }}</td>

@@ -5,37 +5,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django import forms
-from authentication.models import AuthServicesInfo, State, get_none_state
-from eveonline.models import EveCharacter
+from authentication.models import State, get_guest_state
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
-
-
-@admin.register(AuthServicesInfo)
-class AuthServicesInfoManager(admin.ModelAdmin):
-
-    @staticmethod
-    def main_character(obj):
-        if obj.main_char_id:
-            try:
-                return EveCharacter.objects.get(character_id=obj.main_char_id)
-            except EveCharacter.DoesNotExist:
-                pass
-        return None
-
-    @staticmethod
-    def has_delete_permission(request, obj=None):
-        return False
-
-    @staticmethod
-    def has_add_permission(request, obj=None):
-        return False
-
-    search_fields = [
-        'user__username',
-        'main_char_id',
-    ]
-    list_display = ('user', 'main_character')
 
 
 def make_service_hooks_update_groups_action(service):
@@ -103,16 +75,16 @@ class StateForm(forms.ModelForm):
     def _is_none_state(self):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            return instance == get_none_state()
+            return instance == get_guest_state()
 
     def __init__(self, *args, **kwargs):
         super(StateForm, self).__init__(*args, **kwargs)
-        if _is_none_state():
+        if self._is_none_state():
             self.fields['name'].widget.attrs['readonly'] = True
 
     def clean_name(self):
         if self._is_none_state():
-            return instance.name
+            return self.instance.name
         return self.cleaned_data['name']
 
 
@@ -122,6 +94,6 @@ class StateAdmin(admin.ModelAdmin):
 
     @staticmethod
     def has_delete_permission(request, obj=None):
-        if obj == get_none_state():
+        if obj == get_guest_state():
             return False
 

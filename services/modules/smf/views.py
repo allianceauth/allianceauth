@@ -23,7 +23,7 @@ ACCESS_PERM = 'smf.access_smf'
 def activate_smf(request):
     logger.debug("activate_smf called by user %s" % request.user)
     # Valid now we get the main characters
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding smf user for user %s with main character %s" % (request.user, character))
     result = SmfManager.add_user(character.character_name, request.user.email, ['Member'], character.character_id)
     # if empty we failed
@@ -64,7 +64,7 @@ def deactivate_smf(request):
 @permission_required(ACCESS_PERM)
 def reset_smf_password(request):
     logger.debug("reset_smf_password called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     if SmfTasks.has_account(request.user) and character is not None:
         result = SmfManager.update_user_password(request.user.smf.username, character.character_id)
         # false we failed
@@ -90,7 +90,7 @@ def set_smf_password(request):
         logger.debug("Received POST request with form.")
         form = ServicePasswordForm(request.POST)
         logger.debug("Form is valid: %s" % form.is_valid())
-        character = EveManager.get_main_character(request.user)
+        character = request.user.profile.main_character
         if form.is_valid() and SmfTasks.has_account(request.user) and character is not None:
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))

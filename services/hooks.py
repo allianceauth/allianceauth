@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
 
 from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 
 from alliance_auth.hooks import get_hooks
-from authentication.states import MEMBER_STATE, BLUE_STATE
-from authentication.models import AuthServicesInfo
 
 
 class ServicesHook:
@@ -72,13 +69,12 @@ class ServicesHook:
     def service_active_for_user(self, user):
         pass
 
-    def show_service_ctrl(self, user, state):
+    def show_service_ctrl(self, user):
         """
         Whether the service control should be displayed to the given user
         who has the given service state. Usually this function wont
         require overloading.
         :param user: django.contrib.auth.models.User
-        :param state: auth user state
         :return: bool True if the service should be shown
         """
         return self.service_active_for_user(user) or user.is_superuser

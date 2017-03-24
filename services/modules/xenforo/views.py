@@ -21,7 +21,7 @@ ACCESS_PERM = 'xenforo.access_xenforo'
 @permission_required(ACCESS_PERM)
 def activate_xenforo_forum(request):
     logger.debug("activate_xenforo_forum called by user %s" % request.user)
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding XenForo user for user %s with main character %s" % (request.user, character))
     result = XenForoManager.add_user(character.character_name, request.user.email)
     # Based on XenAPI's response codes

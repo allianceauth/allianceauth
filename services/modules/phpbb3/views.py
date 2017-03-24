@@ -4,8 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 
-from authentication.decorators import members_and_blues
-from eveonline.managers import EveManager
 from services.forms import ServicePasswordForm
 
 from .manager import Phpbb3Manager
@@ -24,7 +22,7 @@ ACCESS_PERM = 'phpbb3.access_phpbb3'
 def activate_forum(request):
     logger.debug("activate_forum called by user %s" % request.user)
     # Valid now we get the main characters
-    character = EveManager.get_main_character(request.user)
+    character = request.user.profile.main_character
     logger.debug("Adding phpbb user for user %s with main character %s" % (request.user, character))
     result = Phpbb3Manager.add_user(character.character_name, request.user.email, ['REGISTERED'],
                                     character.character_id)
@@ -66,7 +64,7 @@ def deactivate_forum(request):
 def reset_forum_password(request):
     logger.debug("reset_forum_password called by user %s" % request.user)
     if Phpbb3Tasks.has_account(request.user):
-        character = EveManager.get_main_character(request.user)
+        character = request.user.profile.main_character
         result = Phpbb3Manager.update_user_password(request.user.phpbb3.username, character.character_id)
         # false we failed
         if result != "":
@@ -95,7 +93,7 @@ def set_forum_password(request):
         if form.is_valid() and Phpbb3Tasks.has_account(request.user):
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            character = EveManager.get_main_character(request.user)
+            character = request.user.profile.main_character
             result = Phpbb3Manager.update_user_password(request.user.phpbb3.username, character.character_id,
                                                         password=password)
             if result != "":

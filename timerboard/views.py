@@ -5,12 +5,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
-from authentication.decorators import members_and_blues
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from authentication.states import MEMBER_STATE, BLUE_STATE
-from authentication.models import AuthServicesInfo
 from eveonline.managers import EveManager
 from timerboard.form import TimerForm
 from timerboard.models import Timer
@@ -20,17 +17,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def timer_util_test(user):
-    return AuthServicesInfo.objects.get(user=user).state in [BLUE_STATE, MEMBER_STATE]
-
-
 @login_required
-@members_and_blues()
 @permission_required('auth.timer_view')
 def timer_view(request):
     logger.debug("timer_view called by user %s" % request.user)
-    auth_info = AuthServicesInfo.objects.get(user=request.user)
-    char = EveManager.get_character_by_id(auth_info.main_char_id)
+    char = request.user.profile.main_character
     if char:
         corp = EveManager.get_corporation_info_by_id(char.corporation_id)
     else:
@@ -65,8 +56,7 @@ def add_timer_view(request):
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             # Get character
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
-            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            character = request.user.profile.main_character
             corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
             logger.debug(
                 "Determined timer add request on behalf of character %s corporation %s" % (character, corporation))
@@ -107,15 +97,10 @@ def add_timer_view(request):
 @permission_required('auth.timer_management')
 def remove_timer(request, timer_id):
     logger.debug("remove_timer called by user %s for timer id %s" % (request.user, timer_id))
-    if Timer.objects.filter(id=timer_id).exists():
-        timer = Timer.objects.get(id=timer_id)
-        timer.delete()
-        logger.debug("Deleting timer id %s by user %s" % (timer_id, request.user))
-        messages.success(request, _('Deleted timer in %(system)s at %(time)s.') % (timer.system, timer.eve_time))
-    else:
-        logger.error(
-            "Unable to delete timer id %s for user %s - timer matching id not found." % (timer_id, request.user))
-        messages.error(request, _('Unable to locate timer with ID %(timerid)s.') % {"timerid": timer_id})
+    timer = get_object_or_404(Timer, id=timer_id)
+    timer.delete()
+    logger.debug("Deleting timer id %s by user %s" % (timer_id, request.user))
+    messages.success(request, _('Deleted timer in %(system)s at %(time)s.') % (timer.system, timer.eve_time))
     return redirect("auth_timer_view")
 
 
@@ -128,8 +113,7 @@ def edit_timer(request, timer_id):
         form = TimerForm(request.POST)
         logger.debug("Received POST request containing updated timer form, is valid: %s" % form.is_valid())
         if form.is_valid():
-            auth_info = AuthServicesInfo.objects.get(user=request.user)
-            character = EveManager.get_character_by_id(auth_info.main_char_id)
+            character = request.user.profile.main_character
             corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
             logger.debug(
                 "Determined timer edit request on behalf of character %s corporation %s" % (character, corporation))
@@ -169,7 +153,6 @@ def edit_timer(request, timer_id):
             'days_left': tddays,
             'hours_left': tdhours,
             'minutes_left': tdminutes,
-
         }
         form = TimerForm(initial=data)
     return render(request, 'registered/timerupdate.html', context={'form': form})
