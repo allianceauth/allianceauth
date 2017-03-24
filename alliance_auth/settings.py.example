@@ -225,6 +225,7 @@ SITE_NAME = 'Alliance Auth'
 #################
 # EMAIL SETTINGS
 #################
+# DEFAULT_FROM_EMAIL - no-reply email address
 # DOMAIN - The Alliance Auth domain (or subdomain) address, starting with http://
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
@@ -232,6 +233,7 @@ SITE_NAME = 'Alliance Auth'
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
+DEFAULT_FROM_EMAIL = 'no-reply@example.com'
 DOMAIN = 'https://example.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -261,10 +263,12 @@ ESI_SSO_CALLBACK_URL = ''
 # LOGIN_REDIRECT_URL - default destination when logging in if no redirect specified
 # LOGOUT_REDIRECT_URL - destination after logging out
 # LOGIN_TOKEN_SCOPES - scopes required on new tokens when logging in. Cannot be blank.
+# ACCOUNT_ACTIVATION_DAYS - number of days email verification tokens are valid for
 ##################
 LOGIN_REDIRECT_URL = 'authentication:dashboard'
 LOGOUT_REDIRECT_URL = 'authentication:dashboard'
 LOGIN_TOKEN_SCOPES = ['esi-characters.read_opportunities.v1']
+ACCOUNT_ACTIVATION_DAYS = 1
 
 #####################
 # Alliance Market

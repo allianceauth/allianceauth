@@ -45,7 +45,7 @@ class StateBackend(ModelBackend):
             return self.create_user(token)
 
     def create_user(self, token):
-        username = self.iterate_username(token.charater_name)  # build unique username off character name
+        username = self.iterate_username(token.character_name)  # build unique username off character name
         user = User.objects.create_user(username)
         user.set_unusable_password()  # prevent login via password
         user.is_active = False  # prevent login until email set

@@ -1,0 +1,24 @@
+{% extends 'public/base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="col-md-4 col-md-offset-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.level_tag}}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="panel panel-default panel-transparent">
+            <div class="panel-body">
+                <div class="col-md-12">
+                    {% block middle_box_content %}
+                    {% endblock %}
+                </div>
+            </div>
+            {% include 'public/lang_select.html' %}
+        </div>
+    </div>
+{% endblock %}
+{% block extra_include %}
+    {% include 'bundles/bootstrap-js.html' %}
+{% endblock %}

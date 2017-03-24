@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core import signing
+from django.core.urlresolvers import reverse
 from esi.decorators import token_required
 from registration.backends.hmac.views import RegistrationView as BaseRegistrationView, \
     ActivationView as BaseActivationView, REGISTRATION_SALT
@@ -23,13 +24,19 @@ logger = logging.getLogger(__name__)
 def main_character_change(request, token):
     logger.debug("main_character_change called by user %s for character %s" % (request.user, token.character_name))
     try:
-        co = CharacterOwnership.objects.get(character__character_id=token.character_id)
+        co = CharacterOwnership.objects.get(character__character_id=token.character_id, user=request.user)
     except CharacterOwnership.DoesNotExist:
-        co = CharacterOwnership.objects.create_by_token(token)
-    request.user.profile.main_character = co.character
-    request.user.profile.save(update_fields=['main_character'])
-    messages.success(request, _('Changed main character to %(char)s') % {"char": co.character})
-    return redirect("auth_dashboard")
+        if not CharacterOwnership.objects.filter(character__character_id=token.character_id).exists():
+            co = CharacterOwnership.objects.create_by_token(token)
+        else:
+            messages.error(request, 'Cannot change main character to %(char)s: character owned by a different account.' % ({'char': token.character_name}))
+            co = None
+    if co:
+        request.user.profile.main_character = co.character
+        request.user.profile.save(update_fields=['main_character'])
+        messages.success(request, _('Changed main character to %(char)s') % {"char": co.character})
+        logger.info('Changed user %(user)s main character to %(char)s' % ({'user': request.user, 'char': co.character}))
+    return redirect("authentication:dashboard")
 
 
 @token_required(new=True, scopes=settings.LOGIN_TOKEN_SCOPES)
@@ -38,7 +45,7 @@ def add_character(request, token):
             owner_hash=token.character_owner_hash).filter(user=request.user).exists():
         messages.success(request, _('Added %(name)s to your account.'% ({'name': token.character_name})))
     else:
-        messages.error(request, _('Failed to add %(name)s to your account.' % ({'name': token.charater_name})))
+        messages.error(request, _('Failed to add %(name)s to your account: they already have an account.' % ({'name': token.character_name})))
     return redirect('authentication:dashboard')
 
 
@@ -65,12 +72,12 @@ def sso_login(request, token):
     user = authenticate(token=token)
     if user and user.is_active:
         login(request, user)
-        return redirect(request.POST.get('next', request.GET.get('next', 'auth_dashboard')))
+        return redirect(request.POST.get('next', request.GET.get('next', 'authentication:dashboard')))
     elif user and not user.email:
         # Store the new user PK in the session to enable us to identify the registering user in Step 2
         request.session['registration_uid'] = user.pk
         # Go to Step 2
-        return redirect('authentication:register')
+        return redirect('registration_register')
     else:
         messages.error(request, _('Unable to authenticate as the selected character.'))
         return redirect(settings.LOGIN_URL)
@@ -100,6 +107,13 @@ class RegistrationView(BaseRegistrationView):
     def get_activation_key(self, user):
         return signing.dumps(obj=[getattr(user, User.USERNAME_FIELD), user.email], salt=REGISTRATION_SALT)
 
+    def get_email_context(self, activation_key):
+        context = super(RegistrationView, self).get_email_context(activation_key)
+        context['url'] = context['site'].domain + reverse('registration_activate', args=[activation_key])
+        context['plural'] = 's' if context['expiration_days'] > 1 else '',
+        print(context)
+        return context
+
 
 # Step 3
 class ActivationView(BaseActivationView):
@@ -121,3 +135,18 @@ class ActivationView(BaseActivationView):
                 user.save()
                 return user
         return False
+
+
+def registration_complete(request):
+    messages.success(request, _('Sent confirmation email. Please follow the link to confirm your email address.'))
+    return redirect('authentication:login')
+
+
+def activation_complete(request):
+    messages.success(request, _('Confirmed your email address. Please login to continue.'))
+    return redirect('authentication:dashboard')
+
+
+def registration_closed(request):
+    messages.error(request, _('Registraion of new accounts it not allowed at this time.'))
+    return redirect('authentication:login')

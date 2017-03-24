@@ -1,27 +1,10 @@
-{% extends 'public/base.html' %}
+{% extends 'public/middle_box.html' %}
+{% load static %}
 {% block title %}Login{% endblock %}
-{% block content %}
-    <div class="col-md-4 col-md-offset-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.level_tag}}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        <div class="panel panel-default panel-transparent">
-            <div class="panel-body">
-                <div class="col-md-12">
-                    <p style="text-align:center">
-                        <a href="{% url 'auth_sso_login' %}">
-                            <img src="{% static 'img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}" border=0>
-                        </a>
-                    </p>
-                </div>              
-            </div>
-        </div>
-        {% include 'public/lang_select.html' %}
-    </div>
+{% block middle_box_content %}
+    <p style="text-align:center">
+        <a href="{% url 'auth_sso_login' %}">
+            <img src="{% static 'img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}" border=0>
+        </a>
+    </p>
 {% endblock %}
-{% block extra_include %}
-    {% include 'bundles/bootstrap-js.html' %}
-{% endblock %}
-

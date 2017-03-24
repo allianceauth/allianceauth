@@ -145,7 +145,7 @@ class CorpStats(models.Model):
     class ViewModel(object):
         def __init__(self, corpstats, user):
             self.corp = corpstats.corp
-            self.members = corpstats.get_member_objects(user)
+            self.members = corpstats.get_member_objects()
             self.can_update = corpstats.can_update(user)
             self.total_members = len(self.members)
             self.total_users = corpstats.user_count(self.members)

@@ -1,12 +1,9 @@
 from __future__ import unicode_literals
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.translation import ugettext_lazy as _
 
 from alliance_auth.hooks import get_hooks
-from eveonline.models import EveCharacter
 from services.forms import FleetFormatterForm
 
 import logging
@@ -47,7 +44,7 @@ def fleet_formatter_view(request):
 @login_required
 def services_view(request):
     logger.debug("services_view called by user %s" % request.user)
-    char = request.profile.main_character
+    char = request.user.profile.main_character
     context = {'service_ctrls': []}
     for fn in get_hooks('services_hook'):
         # Render hooked services controls

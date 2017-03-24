@@ -67,9 +67,9 @@
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
                     {% endif %}
-                    <li><a href="{% url 'auth_logout_user' %}">{% trans "Logout" %}</a></li>
+                    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
                 {% else %}
-                    <li><a href="{% url 'auth_login_user' %}">{% trans "Login" %}</a></li>
+                    <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
                 {% endif %}
 
             </ul>
@@ -85,7 +85,7 @@
                         </li>
 
                         <li>
-                            <a class="{% navactive request 'auth_dashboard' %}" href="{% url 'auth_dashboard' %}">
+                            <a class="{% navactive request 'authentication:dashboard' %}" href="{% url 'authentication:dashboard' %}">
                                 <i class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}
                             </a>
                         </li>
@@ -95,7 +95,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="{% navactive request 'auth_help' %}" href="{% url 'auth_help' %}">
+                            <a class="{% navactive request 'authentication:help' %}" href="{% url 'authentication:help' %}">
                                 <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
                             </a>
                         </li>
@@ -170,9 +170,6 @@
                             </a>
                         </li>
                         {% menu_aux %}
-                        <li class="text-center divider-horizontal">
-                            <h5>{% trans "Util" %}</h5>
-                        </li>
 
                         {% if perms.auth.jabber_broadcast or perms.auth.jabber_broadcast_all or user.is_superuser %}
                             <li>

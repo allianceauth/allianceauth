@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django import forms
-from authentication.models import State, get_guest_state
+from authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
 
@@ -97,3 +97,6 @@ class StateAdmin(admin.ModelAdmin):
         if obj == get_guest_state():
             return False
 
+
+admin.site.register(CharacterOwnership)
+admin.site.register(UserProfile)

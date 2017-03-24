@@ -4,6 +4,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 import authentication.urls
+from authentication import hmac_urls
 import authentication.views
 import services.views
 import groupmanagement.views
@@ -19,6 +20,7 @@ import esi.urls
 import permissions_tool.urls
 from alliance_auth import NAME
 from alliance_auth.hooks import get_hooks
+from django.views.generic.base import TemplateView
 
 admin.site.site_header = NAME
 
@@ -30,6 +32,8 @@ urlpatterns = [
 
     # Authentication
     url(r'', include(authentication.urls, namespace='authentication')),
+    url(r'^account/login/$', TemplateView.as_view(template_name='public/login.html'), name='auth_login_user'),
+    url(r'account/', include(hmac_urls)),
 
     # Admin urls
     url(r'^admin/', include(admin.site.urls)),

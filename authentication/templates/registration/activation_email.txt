@@ -1,0 +1,9 @@
+You're receiving this email because someone has entered this email address while registering for an account on {{ site.domain }}
+
+If this was you, please go to the following URL to confirm your email address:
+
+{{ url }}
+
+This link will expire in {{ expiration_days }} day{{ plural }}.
+
+If this was not you, it is safe to ignore this email.

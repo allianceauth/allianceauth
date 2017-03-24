@@ -1,0 +1,14 @@
+{% extends 'public/middle_box.html' %}
+{% load bootstrap %}
+{% load i18n %}
+{% load static %}
+{% block title %}Register{% endblock %}
+{% block middle_box_content %}
+    <form class="form-signin" role="form" action="" method="POST">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <br/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Submit" %}</button>
+        <br/>
+    </form>
+{% endblock %}

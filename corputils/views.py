@@ -90,7 +90,7 @@ def corpstats_view(request, corp_id=None):
     members = []
     if corpstats:
         page = request.GET.get('page', 1)
-        members = get_page(corpstats.get_member_objects(request.user), page)
+        members = get_page(corpstats.get_member_objects(), page)
 
     if corpstats:
         context.update({

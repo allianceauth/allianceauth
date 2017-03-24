@@ -6,6 +6,7 @@ import authentication.models
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from django.contrib.auth.hashers import make_password
 
 
 def create_guest_state(apps, schema_editor):
@@ -41,8 +42,8 @@ def create_member_group(apps, schema_editor):
     State = apps.get_model('authentication', 'State')
     member_state_name = getattr(settings, 'DEFAULT_AUTH_GROUP', 'Member')
 
-    g = Group.objects.get_or_create(name=member_state_name)[0]
     try:
+        g = Group.objects.get(name=member_state_name)
         # move permissions back
         state = State.objects.get(name=member_state_name)
         [g.permissions.add(p.pk) for p in state.permissions.all()]
@@ -50,7 +51,7 @@ def create_member_group(apps, schema_editor):
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
             profile.user.groups.add(g.pk)
-    except State.DoesNotExist:
+    except (Group.DoesNotExist, State.DoesNotExist):
         pass
 
 
@@ -82,8 +83,8 @@ def create_blue_group(apps, schema_editor):
     State = apps.get_model('authentication', 'State')
     blue_state_name = getattr(settings, 'DEFAULT_BLUE_GROUP', 'Blue')
 
-    g = Group.objects.get_or_create(name=blue_state_name)[0]
     try:
+        g = Group.objects.get(name=blue_state_name)
         # move permissions back
         state = State.objects.get(name=blue_state_name)
         [g.permissions.add(p.pk) for p in state.permissions.all()]
@@ -91,7 +92,7 @@ def create_blue_group(apps, schema_editor):
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
             profile.user.groups.add(g.pk)
-    except State.DoesNotExist:
+    except (Group.DoesNotExist, State.DoesNotExist):
         pass
 
 
@@ -124,17 +125,18 @@ def create_profiles(apps, schema_editor):
     unique_mains = [auth['main_char_id'] for auth in
                     AuthServicesInfo.objects.exclude(main_char_id='').values('main_char_id').annotate(
                         n=models.Count('main_char_id')) if
-                    auth['n'] == 1 and EveCharacter.objects.filter(character_id=auth['main_char_id'].exists())]
+                    auth['n'] == 1 and EveCharacter.objects.filter(character_id=auth['main_char_id']).exists()]
 
     auths = AuthServicesInfo.objects.filter(main_char_id__in=unique_mains).select_related('user')
     for auth in auths:
         # carry states and mains forward
-        profile = UserProfile.objects.get_or_create(user=auth.user.pk)
         state = State.objects.get(name=auth.state if auth.state else 'Guest')
-        profile.state = state.pk
         char = EveCharacter.objects.get(character_id=auth.main_char_id)
-        profile.main_character = char.pk
-        profile.save()
+        profile = UserProfile.objects.create(user=auth.user, state=state, main_character=char)
+    for auth in AuthServicesInfo.objects.exclude(main_char_id__in=unique_mains).select_related('user'):
+        # prepare empty profiles
+        state = State.objects.get(name='Guest')
+        UserProfile.objects.create(user=auth.user, state=state)
 
 
 def recreate_authservicesinfo(apps, schema_editor):
@@ -152,6 +154,15 @@ def recreate_authservicesinfo(apps, schema_editor):
     # repopulate states we understand
     for profile in UserProfile.objects.exclude(state__name='Guest').filter(state__name__in=['Member', 'Blue']).select_related('user', 'state'):
         AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'state': profile.state.name})
+
+
+def disable_passwords(apps, schema_editor):
+    User = apps.get_model('auth', 'User')
+    for u in User.objects.exclude(is_staff=True):
+        # remove passwords for non-staff users to prevent password-based authentication
+        # set_unusable_password is unavailable in migrations because :reasons:
+        u.password = make_password(None)
+        u.save()
 
 
 class Migration(migrations.Migration):
@@ -187,13 +198,13 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=20, unique=True)),
                 ('priority', models.IntegerField(unique=True)),
                 ('public', models.BooleanField(default=False)),
-                ('member_alliances', models.ManyToManyField(to='eveonline.EveAllianceInfo')),
-                ('member_characters', models.ManyToManyField(to='eveonline.EveCharacter')),
-                ('member_corporations', models.ManyToManyField(to='eveonline.EveCorporationInfo')),
+                ('member_alliances', models.ManyToManyField(blank=True,to='eveonline.EveAllianceInfo')),
+                ('member_characters', models.ManyToManyField(blank=True,to='eveonline.EveCharacter')),
+                ('member_corporations', models.ManyToManyField(blank=True,to='eveonline.EveCorporationInfo')),
                 ('permissions', models.ManyToManyField(blank=True, to='auth.Permission')),
             ],
             options={
-                'ordering': ['priority'],
+                'ordering': ['-priority'],
             },
         ),
         migrations.CreateModel(
@@ -204,7 +215,7 @@ class Migration(migrations.Migration):
                  models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
                                       to='eveonline.EveCharacter')),
                 ('state', models.ForeignKey(on_delete=models.SET(authentication.models.get_guest_state),
-                                            to='authentication.State')),
+                                            to='authentication.State', default=authentication.models.get_guest_state_pk)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile',
                                               to=settings.AUTH_USER_MODEL)),
             ],
@@ -224,4 +235,5 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name='AuthServicesInfo',
         ),
+        migrations.RunPython(disable_passwords, migrations.RunPython.noop),
     ]
