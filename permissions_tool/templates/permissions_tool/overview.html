@@ -41,7 +41,7 @@
                         {% trans "Groups" %}
                     </th>
                     <th class="col-md-1">
-                        {% trans "Groups Users" %}
+                        {% trans "States" %}
                     </th>
                 </tr>
             </thead>
@@ -66,10 +66,10 @@
                         {{ perm.users }}
                     </td>
                     <td class="{% if perm.groups > 0 %}info {% endif %}text-right">
-                        {{ perm.groups }}
+                        {{ perm.groups }} ({{ perm.group_users }})
                     </td>
-                    <td class="{% if perm.group_users > 0 %}info {% endif %}text-right">
-                        {{ perm.group_users }}
+                    <td class="{% if perm.states > 0 %}info {% endif %}text-right">
+                        {{ perm.states }} ({{ perm.state_users }})
                     </td>
                 </tr>
             {% endfor %}

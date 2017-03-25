@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
+from authentication.models import UserProfile
 
 import logging
 
@@ -22,14 +23,16 @@ def permissions_overview(request):
         this_perm = {
             'users': perm.user_set.all().count(),
             'groups': perm.group_set.all().count(),
+            'states': perm.state_set.all().count(),
             'permission': perm
         }
 
-        if get_all or this_perm['users'] > 0 or this_perm['groups'] > 0:
+        if get_all or this_perm['users'] > 0 or this_perm['groups'] > 0 or this_perm['states'] > 0:
             # Only add if we're getting everything or one of the objects has this permission
             # Add group_users separately to improve performance
             this_perm['group_users'] = sum(group.user_count for group in
                                            perm.group_set.annotate(user_count=Count('user')))
+            this_perm['state_users'] = UserProfile.objects.filter(state__in=perm.state_set.all()).count()
             context['permissions'].append(this_perm)
 
     return render(request, 'permissions_tool/overview.html', context=context)
@@ -48,7 +51,9 @@ def permissions_audit(request, app_label, model, codename):
         'permission': perm,
         'users': perm.user_set.all(),
         'groups': perm.group_set.all(),
-        'group_users': [group.user_set.all() for group in perm.group_set.all()]
+        'states': perm.state_set.all(),
+        'group_users': [group.user_set.all() for group in perm.group_set.all()],
+        'state_users': User.objects.filter(profile__state__in=perm.state_set.all()),
         }
     }
 

@@ -33,6 +33,15 @@
                     {% include 'permissions_tool/audit_row.html' %}
                 {% endfor %}
             {% endfor %}
+            {% for state in permission.states %}
+                {% for profile in state.userprofile_set.all %}
+                    {% with profile.user as user %}
+                        <tr>
+                            {% include 'permissions_tool/audit_state_row.html' %}
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+            {% endfor %}
             </tbody>
         </table>
     </div>

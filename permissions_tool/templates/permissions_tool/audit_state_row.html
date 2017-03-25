@@ -1,0 +1,11 @@
+{% load i18n %}
+<tr>
+    <td>
+        {% if forloop.first %}
+            <b>{% trans 'State' %}: {{ state }}</b>
+        {% endif %}
+    </td>
+    <td>
+        {{ user }}
+    </td>
+</tr>
