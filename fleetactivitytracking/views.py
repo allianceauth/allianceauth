@@ -49,7 +49,6 @@ class CorpStat(object):
             self.corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         self.n_fats = Fat.objects.filter(character__corporation_id=self.corp.corporation_id).filter(
             fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
-        self.blue = self.corp.is_blue
 
     def avg_fat(self):
         return "%.2f" % (float(self.n_fats) / float(self.corp.member_count))

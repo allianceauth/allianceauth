@@ -113,5 +113,7 @@ def assign_state_on_reactivate(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=EveCharacter)
 def check_state_on_character_update(sender, instance, *args, **kwargs):
     # if this is a main character updating, check that user's state
-    if instance.userprofile:
+    try:
         instance.userprofile.assign_state()
+    except UserProfile.DoesNotExist:
+        pass

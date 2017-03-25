@@ -12,13 +12,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 @task
-def update_corp(corp_id, is_blue=None):
-    EveManager.update_corporation(corp_id, is_blue=is_blue)
+def update_corp(corp_id):
+    EveManager.update_corporation(corp_id)
 
 
 @task
-def update_alliance(alliance_id, is_blue=None):
-    EveManager.update_alliance(alliance_id, is_blue=is_blue)
+def update_alliance(alliance_id):
+    EveManager.update_alliance(alliance_id)
     EveManager.populate_alliance(alliance_id)
 
 
@@ -26,24 +26,22 @@ def update_alliance(alliance_id, is_blue=None):
 def run_corp_update():
     # generate member corps
     for corp_id in settings.STR_CORP_IDS + settings.STR_BLUE_CORP_IDS:
-        is_blue = True if corp_id in settings.STR_BLUE_CORP_IDS else False
         try:
             if EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
-                update_corp(corp_id, is_blue=is_blue)
+                update_corp(corp_id)
             else:
-                EveManager.create_corporation(corp_id, is_blue=is_blue)
+                EveManager.create_corporation(corp_id)
         except ObjectNotFound:
             logger.warn('Bad corp ID in settings: %s' % corp_id)
 
     # generate member alliances
     for alliance_id in settings.STR_ALLIANCE_IDS + settings.STR_BLUE_ALLIANCE_IDS:
-        is_blue = True if alliance_id in settings.STR_BLUE_ALLIANCE_IDS else False
         try:
             if EveAllianceInfo.objects.filter(alliance_id=alliance_id).exists():
                 logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
-                update_alliance(alliance_id, is_blue=is_blue)
+                update_alliance(alliance_id)
             else:
-                EveManager.create_alliance(alliance_id, is_blue=is_blue)
+                EveManager.create_alliance(alliance_id)
                 EveManager.populate_alliance(alliance_id)
         except ObjectNotFound:
             logger.warn('Bad alliance ID in settings: %s' % alliance_id)

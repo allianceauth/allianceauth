@@ -16,8 +16,6 @@ class CorpStatsQuerySet(models.QuerySet):
                 queries.append(models.Q(corp__corporation_id=char.corporation_id))
             if user.has_perm('corputils.view_alliance_corpstats'):
                 queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
-            if user.has_perm('corputils.view_blue_corpstats'):
-                queries.append(models.Q(corp__is_blue=True))
 
             # filter based on queries
             if queries:

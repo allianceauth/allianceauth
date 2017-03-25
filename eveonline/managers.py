@@ -58,28 +58,26 @@ class EveManager(object):
         return cls.get_adapter().get_alliance(alliance_id)
 
     @staticmethod
-    def create_alliance(id, is_blue=False):
-        return EveManager.create_alliance_obj(EveManager.get_alliance(id), is_blue=is_blue)
+    def create_alliance(id):
+        return EveManager.create_alliance_obj(EveManager.get_alliance(id))
 
     @staticmethod
-    def create_alliance_obj(alliance, is_blue=False):
+    def create_alliance_obj(alliance):
         return EveAllianceInfo.objects.create(
             alliance_id=alliance.id,
             alliance_name=alliance.name,
             alliance_ticker=alliance.ticker,
             executor_corp_id=alliance.executor_corp_id,
-            is_blue=is_blue,
         )
 
     @staticmethod
-    def update_alliance(id, is_blue=None):
-        return EveManager.update_alliance_obj(EveManager.get_alliance(id), is_blue=is_blue)
+    def update_alliance(id):
+        return EveManager.update_alliance_obj(EveManager.get_alliance(id))
 
     @staticmethod
-    def update_alliance_obj(alliance, is_blue=None):
+    def update_alliance_obj(alliance):
         model = EveAllianceInfo.objects.get(alliance_id=alliance.id)
         model.executor_corp_id = alliance.executor_corp_id
-        model.is_blue = model.is_blue if is_blue is None else is_blue
         model.save()
         return model
 
@@ -89,23 +87,21 @@ class EveManager(object):
         alliance = EveManager.get_alliance(id)
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
-                EveManager.create_corporation(corp_id, is_blue=alliance_model.is_blue)
+                EveManager.create_corporation(corp_id)
         EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(alliance=alliance_model)
         EveCorporationInfo.objects.filter(alliance=alliance_model).exclude(corporation_id__in=alliance.corp_ids).update(
             alliance=None)
-        if alliance_model.is_blue:
-            EveCorporationInfo.objects.filter(alliance=alliance_model).update(is_blue=True)
 
     @classmethod
     def get_corporation(cls, corp_id):
         return cls.get_adapter().get_corp(corp_id)
 
     @staticmethod
-    def create_corporation(id, is_blue=False):
-        return EveManager.create_corporation_obj(EveManager.get_corporation(id), is_blue=is_blue)
+    def create_corporation(id):
+        return EveManager.create_corporation_obj(EveManager.get_corporation(id))
 
     @staticmethod
-    def create_corporation_obj(corp, is_blue=False):
+    def create_corporation_obj(corp):
         try:
             alliance = EveAllianceInfo.objects.get(alliance_id=corp.alliance_id)
         except EveAllianceInfo.DoesNotExist:
@@ -116,22 +112,20 @@ class EveManager(object):
             corporation_ticker=corp.ticker,
             member_count=corp.members,
             alliance=alliance,
-            is_blue=is_blue,
         )
 
     @staticmethod
-    def update_corporation(id, is_blue=None):
-        return EveManager.update_corporation_obj(EveManager.get_corporation(id), is_blue=is_blue)
+    def update_corporation(id):
+        return EveManager.update_corporation_obj(EveManager.get_corporation(id))
 
     @staticmethod
-    def update_corporation_obj(corp, is_blue=None):
+    def update_corporation_obj(corp):
         model = EveCorporationInfo.objects.get(corporation_id=corp.id)
         model.member_count = corp.members
         try:
             model.alliance = EveAllianceInfo.objects.get(alliance_id=corp.alliance_id)
         except EveAllianceInfo.DoesNotExist:
             model.alliance = None
-        model.is_blue = model.is_blue if is_blue is None else is_blue
         model.save()
         return model
 
