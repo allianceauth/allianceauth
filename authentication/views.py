@@ -110,8 +110,6 @@ class RegistrationView(BaseRegistrationView):
     def get_email_context(self, activation_key):
         context = super(RegistrationView, self).get_email_context(activation_key)
         context['url'] = context['site'].domain + reverse('registration_activate', args=[activation_key])
-        context['plural'] = 's' if context['expiration_days'] > 1 else '',
-        print(context)
         return context
 
 

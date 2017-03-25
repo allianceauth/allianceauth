@@ -149,10 +149,12 @@ def recreate_authservicesinfo(apps, schema_editor):
 
     # repopulate main characters
     for profile in UserProfile.objects.exclude(main_character__isnull=True).select_related('user', 'main_character'):
-        AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'main_char_id': profile.main_character.character_id})
+        AuthServicesInfo.objects.update_or_create(user=profile.user,
+                                                  defaults={'main_char_id': profile.main_character.character_id})
 
     # repopulate states we understand
-    for profile in UserProfile.objects.exclude(state__name='Guest').filter(state__name__in=['Member', 'Blue']).select_related('user', 'state'):
+    for profile in UserProfile.objects.exclude(state__name='Guest').filter(
+            state__name__in=['Member', 'Blue']).select_related('user', 'state'):
         AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'state': profile.state.name})
 
 
@@ -196,11 +198,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=20, unique=True)),
-                ('priority', models.IntegerField(unique=True)),
-                ('public', models.BooleanField(default=False)),
-                ('member_alliances', models.ManyToManyField(blank=True,to='eveonline.EveAllianceInfo')),
-                ('member_characters', models.ManyToManyField(blank=True,to='eveonline.EveCharacter')),
-                ('member_corporations', models.ManyToManyField(blank=True,to='eveonline.EveCorporationInfo')),
+                ('priority', models.IntegerField(unique=True,
+                                                 help_text="Users get assigned the state with the highest priority available to them.")),
+                ('public', models.BooleanField(default=False, help_text="Make this state available to any character.")),
+                ('member_alliances', models.ManyToManyField(blank=True, to='eveonline.EveAllianceInfo',
+                                                            help_text="Alliances to whose members this state is available.")),
+                ('member_characters', models.ManyToManyField(blank=True, to='eveonline.EveCharacter',
+                                                             help_text="Characters to which this state is available.")),
+                ('member_corporations', models.ManyToManyField(blank=True, to='eveonline.EveCorporationInfo',
+                                                               help_text="Corporations to whose members this state is available.")),
                 ('permissions', models.ManyToManyField(blank=True, to='auth.Permission')),
             ],
             options={
@@ -215,7 +221,8 @@ class Migration(migrations.Migration):
                  models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
                                       to='eveonline.EveCharacter')),
                 ('state', models.ForeignKey(on_delete=models.SET(authentication.models.get_guest_state),
-                                            to='authentication.State', default=authentication.models.get_guest_state_pk)),
+                                            to='authentication.State',
+                                            default=authentication.models.get_guest_state_pk)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile',
                                               to=settings.AUTH_USER_MODEL)),
             ],

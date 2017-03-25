@@ -108,3 +108,10 @@ def assign_state_on_reactivate(sender, instance, *args, **kwargs):
     # If we're saving a user and that user is in the Guest state, assume is_active was just set to True and assign state
     if instance.is_active and instance.profile.state == get_guest_state():
         instance.profile.assign_state()
+
+
+@receiver(post_save, sender=EveCharacter)
+def check_state_on_character_update(sender, instance, *args, **kwargs):
+    # if this is a main character updating, check that user's state
+    if instance.userprofile:
+        instance.userprofile.assign_state()

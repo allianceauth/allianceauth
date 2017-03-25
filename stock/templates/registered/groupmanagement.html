@@ -9,13 +9,14 @@
 
 {% block content %}
     <div class="col-lg-12">
+        <br>
         {% include 'registered/groupmanagementmenu.html' %}
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#add">{% trans "Group Add Requests" %}</a></li>
             <li><a data-toggle="tab" href="#leave">{% trans "Group Leave Requests" %}</a></li>
         </ul>
         <div class="tab-content">
-            <div id="add" class="tab-pane fade in active">
+            <div id="add" class="tab-pane fade in active panel panel-default">
                 <div class="panel-body">
                 {% if acceptrequests %}
                     <table class="table">
@@ -46,7 +47,7 @@
                 {% endif %}
                 </div>
             </div>
-            <div id="leave" class="tab-pane fade">
+            <div id="leave" class="tab-pane fade panel panel-default">
                 <div class="panel-body">
                 {% if leaverequests %}
                     <table class="table">

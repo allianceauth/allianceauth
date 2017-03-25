@@ -81,6 +81,12 @@ def corpstats_view(request, corp_id=None):
     # get default model if none requested
     if not corp_id and available.count() == 1:
         corpstats = available[0]
+    elif available.count() > 1 and request.user.profile.main_character:
+        # get their main corp if available
+        try:
+            corpstats = available.get(corp__corporation_id=request.user.profile.main_character.corporation_id)
+        except CorpStats.DoesNotExist:
+            pass
 
     context = {
         'available': available,

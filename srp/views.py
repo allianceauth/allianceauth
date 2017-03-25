@@ -14,6 +14,7 @@ from srp.managers import SRPManager
 from notifications import notify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.humanize.templatetags.humanize import intcomma
 import uuid
 
 import logging
@@ -56,7 +57,7 @@ def srp_fleet_view(request, fleet_id):
     fleet_main = get_object_or_404(SrpFleetMain, id=fleet_id)
     context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
                "srpfleetrequests": fleet_main.srpuserrequest_set.all(),
-                "totalcost": fleet_main.total_cost}
+               "totalcost": fleet_main.total_cost}
 
     return render(request, 'registered/srpfleetdata.html', context=context)
 
@@ -138,7 +139,8 @@ def srp_fleet_mark_completed(request, fleet_id):
     srpfleetmain.fleet_srp_status = "Completed"
     srpfleetmain.save()
     logger.info("Marked SRP Fleet %s as completed by user %s" % (srpfleetmain.fleet_name, request.user))
-    messages.success(request, _('Marked SRP fleet %(fleetname)s as completed.') % {"fleetname": srpfleetmain.fleet_name})
+    messages.success(request,
+                     _('Marked SRP fleet %(fleetname)s as completed.') % {"fleetname": srpfleetmain.fleet_name})
     return redirect("auth_srp_fleet_view", fleet_id)
 
 
@@ -150,7 +152,8 @@ def srp_fleet_mark_uncompleted(request, fleet_id):
     srpfleetmain.fleet_srp_status = ""
     srpfleetmain.save()
     logger.info("Marked SRP Fleet %s as incomplete for user %s" % (fleet_id, request.user))
-    messages.success(request, _('Marked SRP fleet %(fleetname)s as incomplete.') % {"fleetname": srpfleetmain.fleet_name})
+    messages.success(request,
+                     _('Marked SRP fleet %(fleetname)s as incomplete.') % {"fleetname": srpfleetmain.fleet_name})
     return redirect("auth_srp_fleet_view", fleet_id)
 
 
@@ -158,12 +161,10 @@ def srp_fleet_mark_uncompleted(request, fleet_id):
 @permission_required('srp.access_srp')
 def srp_request_view(request, fleet_srp):
     logger.debug("srp_request_view called by user %s for fleet srp code %s" % (request.user, fleet_srp))
-    completed = False
-    no_srp_code = False
 
     if SrpFleetMain.objects.filter(fleet_srp_code=fleet_srp).exists() is False:
-        no_srp_code = True
-        logger.error("Unable to locate SRP Fleet using code %s for user %s" % (fleet_srp, request.user))
+        messages.error(request, _("Unable to locate SRP Fleet using code %(code)s") % fleet_srp)
+        return redirect(srp_management)
 
     if request.method == 'POST':
         form = SrpFleetUserRequestForm(request.POST)
@@ -188,7 +189,8 @@ def srp_request_view(request, fleet_srp):
                     request.user, srp_request.killboard_link))
                 # THIS SHOULD BE IN FORM VALIDATION
                 messages.error(request,
-                               _("Your SRP request Killmail link is invalid. Please make sure you are using zKillboard."))
+                               _(
+                                   "Your SRP request Killmail link is invalid. Please make sure you are using zKillboard."))
                 return redirect("auth_srp_management_view")
             srp_ship_name = EveManager.get_itemtype(ship_type_id).name
             srp_request.srp_ship_name = srp_ship_name
@@ -196,16 +198,16 @@ def srp_request_view(request, fleet_srp):
             srp_request.kb_total_loss = kb_total_loss
             srp_request.post_time = post_time
             srp_request.save()
-            completed = True
             logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (
                 request.user, srp_fleet_main.fleet_name))
             messages.success(request, _('Submitted SRP request for your %(ship)s.') % {"ship": srp_ship_name})
+            return redirect(srp_management)
 
     else:
         logger.debug("Returning blank SrpFleetUserRequestForm")
         form = SrpFleetUserRequestForm()
 
-    render_items = {'form': form, "completed": completed, "no_srp_code": no_srp_code}
+    render_items = {'form': form}
 
     return render(request, 'registered/srpfleetrequest.html', context=render_items)
 
@@ -219,7 +221,7 @@ def srp_request_remove(request, srp_request_id):
     srpuserrequest.delete()
     logger.info("Deleted SRP request id %s for user %s" % (srp_request_id, request.user))
     messages.success(request, _('Deleted SRP request from %(character)s for their %(ship)s.') % {
-            "character": srpuserrequest.character, "ship": srpuserrequest.srp_ship_name})
+        "character": srpuserrequest.character, "ship": srpuserrequest.srp_ship_name})
     return redirect("auth_srp_fleet_view", srpuserrequest.srp_fleet_main.id)
 
 
@@ -236,13 +238,15 @@ def srp_request_approve(request, srp_request_id):
         srp_request_id, srpuserrequest.character, request.user))
     messages.success(request, _('Approved SRP request from %(character)s for their %(ship)s.') % {
         "character": srpuserrequest.character, "ship": srpuserrequest.srp_ship_name})
-    notify(
-        srpuserrequest.character.user,
-        'SRP Request Approved',
-        level='success',
-        message='Your SRP request for a %s lost during %s has been approved for %s ISK.' % (
-            srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name, srpuserrequest.srp_total_amount)
-    )
+    if srpuserrequest.character.userprofile:
+        notify(
+            srpuserrequest.character.userprofile.user,
+            'SRP Request Approved',
+            level='success',
+            message='Your SRP request for a %s lost during %s has been approved for %s ISK.' % (
+                srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name,
+                intcomma(srpuserrequest.srp_total_amount))
+        )
     return redirect("auth_srp_fleet_view", srpuserrequest.srp_fleet_main.id)
 
 
@@ -257,13 +261,14 @@ def srp_request_reject(request, srp_request_id):
         srp_request_id, srpuserrequest.character, request.user))
     messages.success(request, _('Rejected SRP request from %(character)s for their %(ship)s.') % {
         "character": srpuserrequest.character, "ship": srpuserrequest.srp_ship_name})
-    notify(
-        srpuserrequest.character.user,
-        'SRP Request Rejected',
-        level='danger',
-        message='Your SRP request for a %s lost during %s has been rejected.' % (
-            srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name)
-    )
+    if srpuserrequest.character.userprofile:
+        notify(
+            srpuserrequest.character.userprofile.user,
+            'SRP Request Rejected',
+            level='danger',
+            message='Your SRP request for a %s lost during %s has been rejected.' % (
+                srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name)
+        )
     return redirect("auth_srp_fleet_view", srpuserrequest.srp_fleet_main.id)
 
 
@@ -281,12 +286,12 @@ def srp_request_update_amount_view(request, fleet_srp_request_id):
             srp_request.srp_total_amount = form.cleaned_data['srp_total_amount']
             srp_request.save()
             logger.info("Updated srp request id %s total to %s by user %s" % (
-                fleet_srp_request_id, form.cleaned_data['srp_total_amount'], request.user))
+                fleet_srp_request_id, intcomma(form.cleaned_data['srp_total_amount']), request.user))
             messages.success(request, _('Updated SRP amount.'))
             return redirect("auth_srp_fleet_view", srp_request.srp_fleet_main.id)
     else:
         logger.debug("Returning blank SrpFleetUpdateCostForm")
-        form = SrpFleetUpdateCostForm()
+        form = SrpFleetUpdateCostForm(initial={'srp_total_amount': srp_request.srp_total_amount or srp_request.kb_total_loss})
 
     render_items = {'form': form}
 
@@ -305,7 +310,8 @@ def srp_fleet_edit_view(request, fleet_id):
             srpfleetmain.fleet_srp_aar_link = form.cleaned_data['fleet_aar_link']
             srpfleetmain.save()
             logger.info("User %s edited SRP Fleet %s" % (request.user, srpfleetmain.fleet_name))
-            messages.success(request, _('Saved changes to SRP fleet %(fleetname)s') % {"fleetname": srpfleetmain.fleet_name})
+            messages.success(request,
+                             _('Saved changes to SRP fleet %(fleetname)s') % {"fleetname": srpfleetmain.fleet_name})
             return redirect("auth_srp_management_view")
     else:
         logger.debug("Returning blank SrpFleetMainUpdateForm")

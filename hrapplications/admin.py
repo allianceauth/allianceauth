@@ -10,5 +10,9 @@ from hrapplications.models import ApplicationComment
 admin.site.register(Application)
 admin.site.register(ApplicationComment)
 admin.site.register(ApplicationQuestion)
-admin.site.register(ApplicationForm)
 admin.site.register(ApplicationResponse)
+
+
+@admin.register(ApplicationForm)
+class ApplicationFormAdmin(admin.ModelAdmin):
+    filter_horizontal = ['questions']

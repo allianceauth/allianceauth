@@ -75,29 +75,31 @@
                         <div class="row">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">{% trans "Actions" %}</div>
-                                {% if app.approved == None %}
-                                    {% if app.reviewer == user %}
-                                        {% if perms.hrapplications.approve_application %}
-                                            <a href="{% url 'auth_hrapplication_approve' app.id %}"
-                                               class="btn btn-success">{% trans "Approve" %}</a>
+                                <div class="panel-body text-center">
+                                    {% if app.approved == None %}
+                                        {% if app.reviewer == user %}
+                                            {% if perms.hrapplications.approve_application %}
+                                                <a href="{% url 'auth_hrapplication_approve' app.id %}"
+                                                   class="btn btn-success">{% trans "Approve" %}</a>
+                                            {% endif %}
+                                            {% if perms.hrapplications.reject_application %}
+                                                <a href="{% url 'auth_hrapplication_reject' app.id %}"
+                                                   class="btn btn-danger">{% trans "Reject" %}</a>
+                                            {% endif %}
+                                            {% if perms.hrapplications.delete_application %}
+                                                <a href="{% url 'auth_hrapplication_remove' app.id %}"
+                                                   class="btn btn-danger">{% trans "Delete" %}</a>
+                                            {% endif %}
+                                        {% elif not app.reviewer %}
+                                            <a href="{% url 'auth_hrapplication_mark_in_progress' app.id %}"
+                                               class="btn btn-warning">{% trans "Mark in Progress" %}</a>
                                         {% endif %}
-                                        {% if perms.hrapplications.reject_application %}
-                                            <a href="{% url 'auth_hrapplication_reject' app.id %}"
-                                               class="btn btn-danger">{% trans "Reject" %}</a>
-                                        {% endif %}
-                                        {% if perms.hrapplications.delete_application %}
-                                            <a href="{% url 'auth_hrapplication_remove' app.id %}"
-                                               class="btn btn-danger">{% trans "Delete" %}</a>
-                                        {% endif %}
-                                    {% elif not app.reviewer %}
-                                        <a href="{% url 'auth_hrapplication_mark_in_progress' app.id %}"
-                                           class="btn btn-warning">{% trans "Mark in Progress" %}</a>
                                     {% endif %}
-                                {% endif %}
-                                {% if perms.hrapplications.add_applicationcomment %}
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#myModal">{% trans "Comment" %}</button>
-                                {% endif %}
+                                    {% if perms.hrapplications.add_applicationcomment %}
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#myModal">{% trans "Comment" %}</button>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

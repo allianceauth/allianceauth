@@ -5,9 +5,12 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django import forms
+from django.db.models.signals import post_save
 from authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
+from authentication.signals import reassess_on_profile_save
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
+from services.tasks import validate_services
 
 
 def make_service_hooks_update_groups_action(service):
@@ -92,6 +95,18 @@ class StateForm(forms.ModelForm):
 class StateAdmin(admin.ModelAdmin):
     form = StateForm
 
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'permissions', 'priority'),
+        }),
+        ('Membership', {
+            'classes': ('collapse',),
+            'fields': ('public', 'member_characters', 'member_corporations', 'member_alliances'),
+        })
+    )
+
+    filter_horizontal = ['member_characters', 'member_corporations', 'member_alliances', 'permissions']
+
     @staticmethod
     def has_delete_permission(request, obj=None):
         if obj == get_guest_state():
@@ -99,4 +114,18 @@ class StateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CharacterOwnership)
-admin.site.register(UserProfile)
+
+
+class UserProfileAdminForm(forms.ModelForm):
+    def save(self, *args, **kwargs):
+        # prevent state reassessment to allow manually overriding states
+        post_save.disconnect(reassess_on_profile_save, sender=UserProfile)
+        model = super(UserProfileAdminForm, self).save(*args, **kwargs)
+        post_save.connect(reassess_on_profile_save, sender=UserProfile)
+        validate_services(model.user)
+        return model
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    form = UserProfileAdminForm

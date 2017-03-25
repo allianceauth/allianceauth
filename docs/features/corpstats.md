@@ -31,9 +31,9 @@ This bar contains a dropdown menu of all available corps. If the user has the `a
 
 On the right of this bar is a search field. Press enter to search. It checks all characters in all Corp Stats you have view permission to and returns search results. Generic searches (such as 'a') will be slow.
 
-### API Index
+### Registration Index
 
-![API Index](/_static/images/features/corpstats/api_index.png)
+![Registration Index](/_static/images/features/corpstats/api_index.png)
 
 This is a visual indication of the number of registered characters.
 
@@ -41,9 +41,9 @@ This is a visual indication of the number of registered characters.
 
 ![last update and update button](/_static/images/features/corpstats/last_update.png)
 
-Corp Stats do not automatically update. They update once upon creation for initial data, and whenever someone presses the update button.
+Corp Stats automatically update every 6 hours. An update can be performed immediately by pressing thi update button.
 
-Only superusers and the creator of the Corp Stat can update it.
+Only superusers and the creator of the Corp Stat can trigger an immediate update.
 
 ### Member List
 

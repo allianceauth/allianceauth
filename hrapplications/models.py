@@ -49,7 +49,7 @@ class Application(models.Model):
 
     @property
     def characters(self):
-        return EveCharacter.objects.filter(user=self.user)
+        return [o.character for o in self.user.character_ownerships.all()]
 
     @property
     def reviewer_str(self):

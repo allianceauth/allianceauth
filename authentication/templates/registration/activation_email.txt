@@ -4,6 +4,6 @@ If this was you, please go to the following URL to confirm your email address:
 
 {{ url }}
 
-This link will expire in {{ expiration_days }} day{{ plural }}.
+This link will expire in {{ expiration_days }} day(s).
 
 If this was not you, it is safe to ignore this email.

@@ -17,31 +17,6 @@ import djcelery
 from django.contrib import messages
 from celery.schedules import crontab
 
-djcelery.setup_loader()
-
-# Celery configuration
-BROKER_URL = 'redis://localhost:6379/0'
-CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-CELERYBEAT_SCHEDULE = dict()
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,7 +43,7 @@ INSTALLED_APPS = [
     'geelweb.django.navhelper',
     'bootstrap_pagination',
 
-    # Services
+    # Services - comment out if not used
     'services.modules.mumble',
     'services.modules.discord',
     'services.modules.discourse',
@@ -82,6 +57,25 @@ INSTALLED_APPS = [
     'services.modules.xenforo',
     'services.modules.teamspeak3',
 ]
+
+#####################################################
+##
+## Django Project Configuration
+##
+#####################################################
+# You shouldn't need to touch most of this.
+# Scroll down for Auth Configuration
+#####################################################
+
+djcelery.setup_loader()
+
+# Celery configuration
+BROKER_URL = 'redis://localhost:6379/0'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERYBEAT_SCHEDULE = dict()
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,20 +130,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'alliance_auth.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alliance_auth',
-        'USER': 'allianceserver',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    },
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -213,20 +193,46 @@ CACHES = {
 
 #####################################################
 ##
-## Auth configuration starts here
+## Auth Configuration
 ##
 #####################################################
 
-####################
+###############################
+# Required Django Settings
+###############################
+# SECRET_KEY - Random alphanumeric string for cryptographic signing
+#              http://www.miniwebtool.com/django-secret-key-generator/
+# DEBUG - True to display stack traces when errors are encountered.
+#         Set this False once auth is installed and working for security.
+# ALLOWED_HOSTS - A list of hosts to serve content on. Wildcards accepted.
+#                 Requests for hosts not listed here will be rejected.
+#                 Example: ['example.com', 'auth.example.com']
+# DATABASES - Auth database connection information.
+################################
+SECRET_KEY = ''
+DEBUG = True
+ALLOWED_HOSTS = []
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_auth',
+        'USER': 'allianceserver',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    },
+}
+
+####################################
 # SITE_NAME - Name of the auth site.
-####################
+####################################
 SITE_NAME = 'Alliance Auth'
 
 #################
 # EMAIL SETTINGS
 #################
 # DEFAULT_FROM_EMAIL - no-reply email address
-# DOMAIN - The Alliance Auth domain (or subdomain) address, starting with http://
+# DOMAIN - The Alliance Auth domain (or subdomain) address, no leading http://
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
 # EMAIL_HOST_USER - Email Username (for gmail, the entire address)
@@ -234,7 +240,7 @@ SITE_NAME = 'Alliance Auth'
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
 DEFAULT_FROM_EMAIL = 'no-reply@example.com'
-DOMAIN = 'https://example.com'
+DOMAIN = 'example.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
@@ -255,13 +261,13 @@ ESI_SSO_CALLBACK_URL = ''
 #################
 # Login Settings
 #################
+# LOGIN_REDIRECT_URL - default destination when logging in if no redirect specified
+# LOGOUT_REDIRECT_URL - destination after logging out
 # Both of these redirects accept values as per the django redirect shortcut
 # https://docs.djangoproject.com/en/1.10/topics/http/shortcuts/#redirect
 # - url names eg 'authentication:dashboard'
 # - relative urls eg '/dashboard'
 # - absolute urls eg 'http://example.com/dashboard'
-# LOGIN_REDIRECT_URL - default destination when logging in if no redirect specified
-# LOGOUT_REDIRECT_URL - destination after logging out
 # LOGIN_TOKEN_SCOPES - scopes required on new tokens when logging in. Cannot be blank.
 # ACCOUNT_ACTIVATION_DAYS - number of days email verification tokens are valid for
 ##################
@@ -269,6 +275,12 @@ LOGIN_REDIRECT_URL = 'authentication:dashboard'
 LOGOUT_REDIRECT_URL = 'authentication:dashboard'
 LOGIN_TOKEN_SCOPES = ['esi-characters.read_opportunities.v1']
 ACCOUNT_ACTIVATION_DAYS = 1
+
+#####################################################
+##
+## Service Configuration
+##
+#####################################################
 
 #####################
 # Alliance Market
@@ -402,10 +414,8 @@ DISCOURSE_SSO_SECRET = ''
 # IPS4 Configuration
 #####################################
 # IPS4_URL - Base URL of the IPS4 install (no trailing slash). Include http://
-# IPS4_API_KEY - API key provided by IPS4
 #####################################
 IPS4_URL = ''
-IPS4_API_KEY = ''
 IPS4_DB = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_ips4',
@@ -452,9 +462,11 @@ FLEETUP_USER_ID = ''
 FLEETUP_API_ID = ''
 FLEETUP_GROUP_ID = ''
 
-#####################################
-# Logging Configuration
-#####################################
+#####################################################
+##
+## Logging Configuration
+##
+#####################################################
 # Set log_file and console level to desired state:
 # DEBUG - basically stack trace, explains every step
 # INFO - model creation, deletion, updates, etc
@@ -559,11 +571,21 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'django': {
-            'handlers': ['log_file', 'console', 'notifications'],
+            'handlers': ['log_file', 'console'],
             'level': 'ERROR',
         },
     }
 }
+
+#####################################################
+##
+## Magic Block
+##
+#####################################################
+# This block automagically inserts needed settings if
+# certain services are installed.
+# Don't touch.
+#########################################
 
 # Conditionally add databases only if configured
 if 'services.modules.phpbb3' in INSTALLED_APPS:

@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth.models import User, Permission
 from authentication.managers import CharacterOwnershipManager, StateManager
 from eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
+from notifications import notify
+from django.utils.translation import ugettext_lazy as _
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,12 +15,16 @@ logger = logging.getLogger(__name__)
 class State(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(Permission, blank=True)
-    priority = models.IntegerField(unique=True)
+    priority = models.IntegerField(unique=True,
+                                   help_text="Users get assigned the state with the highest priority available to them.")
 
-    member_characters = models.ManyToManyField(EveCharacter, blank=True)
-    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True)
-    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True)
-    public = models.BooleanField(default=False)
+    member_characters = models.ManyToManyField(EveCharacter, blank=True,
+                                               help_text="Characters to which this state is available.")
+    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True,
+                                                 help_text="Corporations to whose members this state is available.")
+    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True,
+                                              help_text="Alliances to whose members this state is available.")
+    public = models.BooleanField(default=False, help_text="Make this state available to any character.")
 
     objects = StateManager()
 
@@ -62,6 +68,9 @@ class UserProfile(models.Model):
             if commit:
                 logger.info('Updating {} state to {}'.format(self.user, self.state))
                 self.save(update_fields=['state'])
+                notify(self.user, _('State Changed'),
+                       _('Your user state has been changed to %(state)s') % ({'state': state}),
+                       'info')
 
     def __str__(self):
         return str(self.user)
