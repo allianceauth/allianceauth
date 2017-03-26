@@ -58,6 +58,8 @@ class StateBackend(ModelBackend):
 
     @staticmethod
     def iterate_username(name):
+        name = str.replace(name, "'", "")
+        name = str.replace(name, ' ', '_')
         if User.objects.filter(username__startswith=name).exists():
             u = User.objects.filter(username__startswith=name)
             num = len(u)

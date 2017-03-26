@@ -11,6 +11,7 @@ from django.dispatch import receiver
 
 from services.hooks import ServicesHook
 from services.tasks import disable_user
+from authentication.models import State
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +87,39 @@ def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwa
                     break  # Found service, break out of services iteration and go back to permission iteration
         if not got_change:
             logger.debug("Permission change for group {} was not service permission, ignoring".format(instance))
+
+
+@receiver(m2m_changed, sender=State.permissions.through)
+def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwargs):
+    logger.debug("Received m2m_changed from state %s permissions with action %s" % (instance, action))
+    if instance.pk and (action == "post_remove" or action == "post_clear"):
+        logger.debug("Checking if service permission changed for state {}".format(instance))
+        # As validating an entire groups service could lead to many thousands of permission checks
+        # first we check that one of the permissions changed is, in fact, a service permission.
+        perms = Permission.objects.filter(pk__in=pk_set)
+        got_change = False
+        service_perms = [svc.access_perm for svc in ServicesHook.get_services()]
+        for perm in perms:
+            natural_key = perm.natural_key()
+            path_perm = "{}.{}".format(natural_key[1], natural_key[0])
+            if path_perm not in service_perms:
+                # Not a service permission, keep searching
+                continue
+            for svc in ServicesHook.get_services():
+                if svc.access_perm == path_perm:
+                    logger.debug("Permissions changed for state {} on "
+                                 "service {}, re-validating services for state users".format(instance, svc))
+
+                    def validate_all_state_users_for_service():
+                        logger.debug("Performing validation for service {}".format(svc))
+                        for profile in instance.userprofile_set.all():
+                            svc.validate_user(profile.user)
+
+                    transaction.on_commit(validate_all_state_users_for_service)
+                    got_change = True
+                    break  # Found service, break out of services iteration and go back to permission iteration
+        if not got_change:
+            logger.debug("Permission change for state {} was not service permission, ignoring".format(instance))
 
 
 @receiver(pre_delete, sender=User)

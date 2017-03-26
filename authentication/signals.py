@@ -71,9 +71,12 @@ def create_required_models(sender, instance, created, *args, **kwargs):
 @receiver(post_save, sender=Token)
 def record_character_ownership(sender, instance, created, *args, **kwargs):
     if created:
+        if instance.user:
+            query = Q(owner_hash=instance.character_owner_hash) & Q(user=instance.user)
+        else:
+            query = Q(owner_hash=instance.character_owner_hash)
         # purge ownership records if the hash or auth user account has changed
-        CharacterOwnership.objects.filter(character__character_id=instance.character_id).exclude(Q(
-            owner_hash=instance.character_owner_hash) & Q(user=instance.user)).delete()
+        CharacterOwnership.objects.filter(character__character_id=instance.character_id).exclude(query).delete()
         # create character if needed
         if EveCharacter.objects.filter(character_id=instance.character_id).exists() is False:
             EveManager.create_character(instance.character_id)
