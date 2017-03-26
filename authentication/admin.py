@@ -5,12 +5,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django import forms
-from django.db.models.signals import post_save
 from authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
-from authentication.signals import reassess_on_profile_save
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
-from services.tasks import validate_services
 
 
 def make_service_hooks_update_groups_action(service):
@@ -107,8 +104,7 @@ class StateAdmin(admin.ModelAdmin):
 
     filter_horizontal = ['member_characters', 'member_corporations', 'member_alliances', 'permissions']
 
-    @staticmethod
-    def has_delete_permission(request, obj=None):
+    def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
             return False
 
@@ -117,15 +113,29 @@ admin.site.register(CharacterOwnership)
 
 
 class UserProfileAdminForm(forms.ModelForm):
-    def save(self, *args, **kwargs):
-        # prevent state reassessment to allow manually overriding states
-        post_save.disconnect(reassess_on_profile_save, sender=UserProfile)
-        model = super(UserProfileAdminForm, self).save(*args, **kwargs)
-        post_save.connect(reassess_on_profile_save, sender=UserProfile)
-        validate_services(model.user)
-        return model
+    def __init__(self, *args, **kwargs):
+        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
+        self.fields['state'].widget.attrs['disabled'] = True
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['state'].queryset = State.objects.filter(pk=instance.state.pk)
+        else:
+            self.fields['state'].queryset = State.objects.filter(pk=get_guest_state().pk)
+
+    def clean_state(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return UserProfile.objects.get(pk=instance.pk).state
+        else:
+            return get_guest_state()
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     form = UserProfileAdminForm
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

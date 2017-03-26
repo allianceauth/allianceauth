@@ -132,7 +132,7 @@ def create_profiles(apps, schema_editor):
         # carry states and mains forward
         state = State.objects.get(name=auth.state if auth.state else 'Guest')
         char = EveCharacter.objects.get(character_id=auth.main_char_id)
-        profile = UserProfile.objects.create(user=auth.user, state=state, main_character=char)
+        UserProfile.objects.create(user=auth.user, state=state, main_character=char)
     for auth in AuthServicesInfo.objects.exclude(main_char_id__in=unique_mains).select_related('user'):
         # prepare empty profiles
         state = State.objects.get(name='Guest')

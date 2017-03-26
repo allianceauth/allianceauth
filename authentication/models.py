@@ -30,6 +30,7 @@ class State(models.Model):
 
     class Meta:
         ordering = ['-priority']
+        default_permissions = ('change',)
 
     def __str__(self):
         return self.name
