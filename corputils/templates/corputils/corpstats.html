@@ -4,55 +4,108 @@
 {% load bootstrap_pagination %}
 {% load eveonline_extras %}
 {% block member_data %}
-            {% if corpstats %}
-                <div class="row">
-                    <div class="col-lg-12 text-center">
-                        <table class="table">
-                            <tr>
-                                <td class="text-center col-lg-6 {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}"><img class="ra-avatar" src="{{ corpstats.corp_logo }}"></td>
-                                {% if corpstats.corp.alliance %}
-                                    <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance_logo }}"></td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <td class="text-center"><h4>{{ corpstats.corp.corporation_name }}</h4></td>
-                                {% if corpstats.corp.alliance %}
-                                    <td class="text-center"><h4>{{ corpstats.corp.alliance.alliance_name }}</h4></td>
-                                {% endif %}
-                            </tr>
-                        </table>
+    {% if corpstats %}
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <table class="table">
+                    <tr>
+                        <td class="text-center col-lg-6
+                                {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}"><img
+                                class="ra-avatar" src="{{ corpstats.corp_logo }}"></td>
+                        {% if corpstats.corp.alliance %}
+                            <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance_logo }}">
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td class="text-center"><h4>{{ corpstats.corp.corporation_name }}</h4></td>
+                        {% if corpstats.corp.alliance %}
+                            <td class="text-center"><h4>{{ corpstats.corp.alliance.alliance_name }}</h4></td>
+                        {% endif %}
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <b>{% trans "Registration Index" %}</b>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_member_count }}"
+                         aria-valuemin="0" aria-valuemax="{{ corpstats.member_count }}"
+                         style="width: {% widthratio corpstats.registered_member_count corpstats.member_count 100 %}%;">
+                        {{ corpstats.registered_member_count }}/{{ corpstats.member_count }}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <b>{% trans "Registration Index: " %}</b> {{ corpstats.total_users }} Main Character{{ corpstats.total_users|pluralize }}
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_members }}" aria-valuemin="0" aria-valuemax="{{ corpstats.total_members }}" style="width: {% widthratio corpstats.registered_members corpstats.total_members 100 %}%;">
-                                {{ corpstats.registered_members }}/{{ corpstats.total_members }}
-                            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <ul class="nav nav-pills pull-left">
+                            <li class="active"><a href="#mains" data-toggle="pill">{% trans 'Mains' %} ({{ corpstats.main_count }})</a></li>
+                            <li><a href="#members" data-toggle="pill">{% trans 'Members' %} ({{ corpstats.member_count }})</a></li>
+                            <li><a href="#unregistered" data-toggle="pill">{% trans 'Unregistered' %} ({{ corpstats.unregistered_member_count }})</a></li>
+                        </ul>
+                        <div class="pull-right">
+                            {% trans "Last update:" %} {{ corpstats.last_update|naturaltime }}
+                                <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </a>
                         </div>
+                        <div class="clearfix"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading clearfix">
-                                <div class="panel-title pull-left">
-                                    <h4>{% trans "Members" %}</h4>
-                                </div>
-                                <div class="panel-title pull-right">
-                                    {% trans "Last update:" %} {{ corpstats.last_updated|naturaltime }}
-                                    {% if corpstats.can_update %}
-                                        <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
-                                            <span class="glyphicon glyphicon-refresh"></span>
-                                        </a>
-                                    {% endif %}
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="mains">
+                                <div class="text-center">{% bootstrap_paginate mains range=10 %}</div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th class="text-center">{% trans "Main" %}</th>
+                                            <th class="text-center">{% trans "Characters" %}</th>
+                                        </tr>
+                                        {% for main in mains %}
+                                            <tr>
+                                                <td class="text-center" style="vertical-align:middle">
+                                                    <div class="thumbnail"
+                                                         style="border: 0 none; box-shadow: none; background: transparent;">
+                                                        <img src="{{ main.portrait_url_64 }}" class="img-circle">
+                                                        <div class="caption text-center">
+                                                            {{ main }}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <table class="table table-hover">
+                                                        {% for alt in main.alts %}
+                                                            {% if forloop.first %}
+                                                                <tr>
+                                                                    <th class="text-center">{% trans "Character" %}</th>
+                                                                    <th class="text-center">{% trans "zKillboard" %}</th>
+                                                                    <th class="text-center">{% trans "Corporation" %}</th>
+                                                                    <th class="text-center">{% trans "Alliance" %}</th>
+                                                                </tr>
+                                                            {% endif %}
+                                                            <tr>
+                                                                <td class="text-center">{{ alt.character_name }}</td>
+                                                                <td class="text-center"><a
+                                                                        href="https://zkillboard.com/character/{{ alt.character_id }}/"
+                                                                        class="label label-danger"
+                                                                        target="_blank">{% trans "Killboard" %}</a></td>
+                                                                <td class="text-center">{{ alt.corporation_name }}</td>
+                                                                <td class="text-center">{{ alt.alliance_name }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
                                 </div>
                             </div>
-                            <div class="panel-body">
-                                <div class="text-center">
-                                    {% bootstrap_paginate members range=10 %}
-                                </div>
+                            <div class="tab-pane fade" id="members">
+                                <div class="text-center">{% bootstrap_paginate members range=10 %}</div>
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <tr>
@@ -67,10 +120,38 @@
                                             <tr {% if not member.registered %}class="danger"{% endif %}>
                                                 <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                 <td class="text-center">{{ member.character_name }}</td>
-                                                <td class="text-center"><a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
-                                                <td class="text-center">{{ member.main.character_name }}</td>
-                                                <td class="text-center">{{ member.main.corporation_name }}</td>
-                                                <td class="text-center">{{ member.main.alliance_name }}</td>
+                                                <td class="text-center"><a
+                                                        href="https://zkillboard.com/character/{{ member.character_id }}/"
+                                                        class="label label-danger"
+                                                        target="_blank">{% trans "Killboard" %}</a></td>
+                                                <td class="text-center">{{ member.main_character.character_name }}</td>
+                                                <td class="text-center">{{ member.main_character.corporation_name }}</td>
+                                                <td class="text-center">{{ member.main_character.alliance_name }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="unregistered">
+                                <div class="text-center">{% bootstrap_paginate unregistered range=10 %}</div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-center">{% trans "Character" %}</th>
+                                            <th class="text-center">{% trans "zKillboard" %}</th>
+                                        </tr>
+                                        {% for member in unregistered %}
+                                            <tr class="danger">
+                                                <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
+                                                <td class="text-center">{{ member.character_name }}</td>
+                                                <td class="text-center">
+                                                    <a href="https://zkillboard.com/character/{{ member.character_id }}/"
+                                                       class="label label-danger"
+                                                       target="_blank">
+                                                        {% trans "Killboard" %}
+                                                    </a>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </table>
@@ -79,5 +160,7 @@
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

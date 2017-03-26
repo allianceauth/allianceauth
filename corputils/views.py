@@ -94,14 +94,20 @@ def corpstats_view(request, corp_id=None):
 
     # paginate
     members = []
+    mains = []
+    unregistered = []
     if corpstats:
         page = request.GET.get('page', 1)
-        members = get_page(corpstats.get_member_objects(), page)
+        members = get_page(corpstats.members.all(), page)
+        mains = get_page(corpstats.mains.all(), page)
+        unregistered = get_page(corpstats.unregistered_members.all(), page)
 
     if corpstats:
         context.update({
-            'corpstats': corpstats.get_view_model(request.user),
+            'corpstats': corpstats,
             'members': members,
+            'mains': mains,
+            'unregistered': unregistered,
         })
 
     return render(request, 'corputils/corpstats.html', context=context)
@@ -112,14 +118,10 @@ def corpstats_view(request, corp_id=None):
 def corpstats_update(request, corp_id):
     corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
     corpstats = get_object_or_404(CorpStats, corp=corp)
-    if corpstats.can_update(request.user):
-        try:
-            corpstats.update()
-        except HTTPError as e:
-            messages.error(request, str(e))
-    else:
-        raise PermissionDenied(
-            'You do not have permission to update member data for the selected corporation statistics module.')
+    try:
+        corpstats.update()
+    except HTTPError as e:
+        messages.error(request, str(e))
     if corpstats.pk:
         return redirect('corputils:view_corp', corp_id=corp.corporation_id)
     else:
@@ -132,13 +134,11 @@ def corpstats_search(request):
     results = []
     search_string = request.GET.get('search_string', None)
     if search_string:
-        has_similar = CorpStats.objects.filter(_members__icontains=search_string).visible_to(request.user)
+        has_similar = CorpStats.objects.filter(members__character_name__icontains=search_string).visible_to(request.user).distinct()
         for corpstats in has_similar:
-            similar = [(member_id, corpstats.members[member_id]) for member_id in corpstats.members if
-                       search_string.lower() in corpstats.members[member_id].lower()]
+            similar = corpstats.members.filter(character_name__icontains=search_string)
             for s in similar:
-                results.append(
-                    (corpstats, CorpStats.MemberObject(s[0], s[1])))
+                results.append((corpstats, s))
         page = request.GET.get('page', 1)
         results = sorted(results, key=lambda x: x[1].character_name)
         results_page = get_page(results, page)

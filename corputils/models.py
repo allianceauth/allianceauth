@@ -8,8 +8,6 @@ from notifications import notify
 from authentication.models import CharacterOwnership, UserProfile
 from bravado.exception import HTTPForbidden
 from corputils.managers import CorpStatsManager
-from operator import attrgetter
-import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,7 +18,6 @@ class CorpStats(models.Model):
     token = models.ForeignKey(Token, on_delete=models.CASCADE)
     corp = models.OneToOneField(EveCorporationInfo)
     last_update = models.DateTimeField(auto_now=True)
-    _members = models.TextField(default='{}')
 
     class Meta:
         permissions = (
@@ -52,15 +49,23 @@ class CorpStats(models.Model):
             # the swagger spec doesn't have a maxItems count
             # manual testing says we can do over 350, but let's not risk it
             member_id_chunks = [member_ids[i:i + 255] for i in range(0, len(member_ids), 255)]
-            c = self.token.get_esi_client(Character='v1') # ccplease bump versions of whole resources
+            c = self.token.get_esi_client(Character='v1')  # ccplease bump versions of whole resources
             member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in
                                   member_id_chunks]
             member_list = {}
             for name_chunk in member_name_chunks:
                 member_list.update({m['character_id']: m['character_name'] for m in name_chunk})
 
-            self.members = member_list
-            self.save()
+            # bulk create new member models
+            missing_members = [m_id for m_id in member_ids if
+                               not CorpMember.objects.filter(corpstats=self, character_id=m_id).exists()]
+            CorpMember.objects.bulk_create(
+                [CorpMember(character_id=m_id, character_name=member_list[m_id], corpstats=self) for m_id in
+                 missing_members])
+
+            # purge old members
+            self.members.exclude(character_id__in=member_ids).delete()
+
         except TokenError as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
@@ -82,87 +87,95 @@ class CorpStats(models.Model):
             self.delete()
 
     @property
-    def members(self):
-        return json.loads(self._members)
-
-    @members.setter
-    def members(self, dict):
-        self._members = json.dumps(dict)
-
-    @property
-    def member_ids(self):
-        return [id for id, name in self.members.items()]
-
-    @property
-    def member_names(self):
-        return [name for id, name in self.members.items()]
-
     def member_count(self):
-        return len(self.members)
+        return self.members.count()
 
-    @staticmethod
-    def user_count(members):
-        mainchars = []
-        for member in members:
-            if hasattr(member.main, 'character_name'):
-                mainchars.append(member.main.character_name)
-        return len(set(mainchars))
+    @property
+    def user_count(self):
+        return len(set([m.main_character for m in self.members.all() if m.main_character]))
 
-    def registered_characters(self):
-        return len(CharacterOwnership.objects.filter(character__character_id__in=self.member_ids))
+    @property
+    def registered_member_count(self):
+        return len(self.registered_members)
 
-    @python_2_unicode_compatible
-    class MemberObject(object):
-        def __init__(self, character_id, character_name):
-            self.character_id = character_id
-            self.character_name = character_name
-            try:
-                char = EveCharacter.objects.get(character_id=character_id)
-                self.main_user = char.character_ownership.user
-                self.main = self.main_user.profile.main_character
-                self.registered = True
-            except (EveCharacter.DoesNotExist, CharacterOwnership.DoesNotExist, UserProfile.DoesNotExist, AttributeError):
-                self.main = None
-                self.registered = False
-                self.main_user = ''
+    @property
+    def registered_members(self):
+        return self.members.filter(pk__in=[m.pk for m in self.members.all() if m.registered])
 
-        def __str__(self):
-            return self.character_name
+    @property
+    def unregistered_member_count(self):
+        return self.member_count - self.registered_member_count
 
-        def portrait_url(self, size=32):
-            return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
+    @property
+    def unregistered_members(self):
+        return self.members.filter(pk__in=[m.pk for m in self.members.all() if not m.registered])
 
-    def get_member_objects(self):
-        member_list = [CorpStats.MemberObject(id, name) for id, name in self.members.items()]
-        outlist = sorted([m for m in member_list if m.main_user], key=attrgetter('main_user', 'character_name'))
-        outlist = outlist + sorted([m for m in member_list if not m.main_user], key=attrgetter('character_name'))
-        return outlist
+    @property
+    def main_count(self):
+        return len(self.mains)
+
+    @property
+    def mains(self):
+        return self.members.filter(pk__in=[m.pk for m in self.members.all() if
+                                           m.main_character and int(m.main_character.character_id) == int(
+                                               m.character_id)])
 
     def can_update(self, user):
         return user.is_superuser or user == self.token.user
 
-    @python_2_unicode_compatible
-    class ViewModel(object):
-        def __init__(self, corpstats, user):
-            self.corp = corpstats.corp
-            self.members = corpstats.get_member_objects()
-            self.can_update = corpstats.can_update(user)
-            self.total_members = len(self.members)
-            self.total_users = corpstats.user_count(self.members)
-            self.registered_members = corpstats.registered_characters()
-            self.last_updated = corpstats.last_update
+    def corp_logo(self, size=128):
+        return "https://image.eveonline.com/Corporation/%s_%s.png" % (self.corp.corporation_id, size)
 
-        def __str__(self):
-            return str(self.corp)
+    def alliance_logo(self, size=128):
+        if self.corp.alliance:
+            return "https://image.eveonline.com/Alliance/%s_%s.png" % (self.corp.alliance.alliance_id, size)
+        else:
+            return "https://image.eveonline.com/Alliance/1_%s.png" % size
 
-        def corp_logo(self, size=128):
-            return "https://image.eveonline.com/Corporation/%s_%s.png" % (self.corp.corporation_id, size)
 
-        def alliance_logo(self, size=128):
-            if self.corp.alliance:
-                return "https://image.eveonline.com/Alliance/%s_%s.png" % (self.corp.alliance.alliance_id, size)
-            else:
-                return "https://image.eveonline.com/Alliance/1_%s.png" % size
+class CorpMember(models.Model):
+    character_id = models.PositiveIntegerField()
+    character_name = models.CharField(max_length=37)
+    corpstats = models.ForeignKey(CorpStats, on_delete=models.CASCADE, related_name='members')
 
-    def get_view_model(self, user):
-        return CorpStats.ViewModel(self, user)
+    class Meta:
+        # not making character_id unique in case a character moves between two corps while only one updates
+        unique_together = ('corpstats', 'character_id')
+        ordering = ['character_name']
+
+    def __str__(self):
+        return self.character_name
+
+    @property
+    def character(self):
+        try:
+            return EveCharacter.objects.get(character_id=self.character_id)
+        except EveCharacter.DoesNotExist:
+            return None
+
+    @property
+    def main_character(self):
+        try:
+            return self.character.character_ownership.user.profile.main_character
+        except (CharacterOwnership.DoesNotExist, UserProfile.DoesNotExist, AttributeError):
+            return None
+
+    @property
+    def alts(self):
+        if self.main_character:
+            return [co.character for co in self.main_character.character_ownership.user.character_ownerships.all()]
+        else:
+            return []
+
+    @property
+    def registered(self):
+        return CharacterOwnership.objects.filter(character__character_id=self.character_id).exists()
+
+    def portrait_url(self, size=32):
+        return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
+
+    def __getattr__(self, item):
+        if item.startswith('portrait_url_'):
+            size = item.strip('portrait_url_')
+            return self.portrait_url(size)
+        return super(CorpMember, self).__getattr__(item)

@@ -27,9 +27,9 @@
                         <td class="text-center">{{ result.1.character_name }}</td>
                         <td class="text-center">{{ result.0.corp.corporation_name }}</td>
                         <td class="text-center"><a href="https://zkillboard.com/character/{{ result.1.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
-                        <td class="text-center">{{ result.1.main.character_name }}</td>
-                        <td class="text-center">{{ result.1.main.corporation_name }}</td>
-                        <td class="text-center">{{ result.1.main.alliance_name }}</td>
+                        <td class="text-center">{{ result.1.main_character.character_name }}</td>
+                        <td class="text-center">{{ result.1.main_character.corporation_name }}</td>
+                        <td class="text-center">{{ result.1.main_character.alliance_name }}</td>
                     </tr>
                 {% endfor %}
             </table>
