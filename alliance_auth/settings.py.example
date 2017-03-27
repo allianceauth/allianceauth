@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'permissions_tool',
     'geelweb.django.navhelper',
     'bootstrap_pagination',
+    'sortedm2m',
 
     # Services - comment out if not used
     'services.modules.mumble',

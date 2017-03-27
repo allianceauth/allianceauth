@@ -17,6 +17,7 @@ django-navhelper
 django-bootstrap-pagination
 django-redis>=4.4
 django-registration
+django-sortedm2m
 
 # awating release for fix to celery/django-celery#447
 # django-celery

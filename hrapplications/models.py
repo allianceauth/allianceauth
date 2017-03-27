@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.contrib.auth.models import User
-
+from sortedm2m.fields import SortedManyToManyField
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 
@@ -18,7 +18,7 @@ class ApplicationQuestion(models.Model):
 
 @python_2_unicode_compatible
 class ApplicationForm(models.Model):
-    questions = models.ManyToManyField(ApplicationQuestion)
+    questions = SortedManyToManyField(ApplicationQuestion)
     corp = models.OneToOneField(EveCorporationInfo)
 
     def __str__(self):
