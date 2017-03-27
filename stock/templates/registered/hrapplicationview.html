@@ -109,7 +109,7 @@
                                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                                            href="#collapseThree" aria-expanded="false"
                                            aria-controls="collapseThree">
-                                            {% blocktrans %}Comments - {{ comments|length }}{% endblocktrans %}
+                                            {% trans 'Comments' %} ({{ comments.count }})
                                         </a>
                                     </h4>
                                 </div>
@@ -119,7 +119,11 @@
                                         {% for comment in comments %}
                                             <div class="panel panel-default">
                                                 <div class="panel-heading" role="tab" id="">
-                                                    <div class="panel-title">{{ comment.created }} - {{ comment.user }}</div>
+                                                    <div class="panel-title">
+                                                        <div class="pull-right">{{ comment.created }}</div>
+                                                        <div class="pull-left">{% if comment.user.profile.main_character %}{{ comment.user.profile.main_character }}{% else %}{{ comment.user }}{% endif %}</div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
                                                 </div>
                                                 <div class="panel-body">{{ comment.text|linebreaks }}</div>
                                             </div>

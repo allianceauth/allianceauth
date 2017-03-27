@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from eveonline.models import EveCharacter, EveCorporationInfo
+from eveonline.managers import EveManager
 from corputils.models import CorpStats
 from esi.decorators import token_required
 from bravado.exception import HTTPError
@@ -41,9 +42,12 @@ def corpstats_add(request, token):
             corp_id = EveCharacter.objects.get(character_id=token.character_id).corporation_id
         else:
             corp_id = \
-                token.get_esi_client(Character='v4').Character.get_characters_character_id(character_id=token.character_id).result()[
-                    'corporation_id']
-        corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
+                token.get_esi_client(Character='v4').Character.get_characters_character_id(
+                    character_id=token.character_id).result()['corporation_id']
+        try:
+            corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
+        except EveCorporationInfo.DoesNotExist:
+            corp = EveManager.create_corporation(corp_id)
         cs = CorpStats.objects.create(token=token, corp=corp)
         try:
             cs.update()
@@ -52,8 +56,6 @@ def corpstats_add(request, token):
         assert cs.pk  # ensure update was successful
         if CorpStats.objects.filter(pk=cs.pk).visible_to(request.user).exists():
             return redirect('corputils:view_corp', corp_id=corp.corporation_id)
-    except EveCorporationInfo.DoesNotExist:
-        messages.error(request, _('Unrecognized corporation. Please ensure it is a member of the alliance or a blue.'))
     except IntegrityError:
         messages.error(request, _('Selected corp already has a statistics module.'))
     except AssertionError:
@@ -81,7 +83,7 @@ def corpstats_view(request, corp_id=None):
     # get default model if none requested
     if not corp_id and available.count() == 1:
         corpstats = available[0]
-    elif available.count() > 1 and request.user.profile.main_character:
+    elif not corp_id and available.count() > 1 and request.user.profile.main_character:
         # get their main corp if available
         try:
             corpstats = available.get(corp__corporation_id=request.user.profile.main_character.corporation_id)
@@ -134,7 +136,8 @@ def corpstats_search(request):
     results = []
     search_string = request.GET.get('search_string', None)
     if search_string:
-        has_similar = CorpStats.objects.filter(members__character_name__icontains=search_string).visible_to(request.user).distinct()
+        has_similar = CorpStats.objects.filter(members__character_name__icontains=search_string).visible_to(
+            request.user).distinct()
         for corpstats in has_similar:
             similar = corpstats.members.filter(character_name__icontains=search_string)
             for s in similar:
