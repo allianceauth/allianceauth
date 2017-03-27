@@ -184,10 +184,10 @@ class Teamspeak3Manager:
         logger.debug("Adding user to TS3 server with cleaned username %s" % username_clean)
         server_groups = Teamspeak3Manager._group_list()
 
-        if settings.DEFAULT_AUTH_GROUP not in server_groups:
-            Teamspeak3Manager._create_group(settings.DEFAULT_AUTH_GROUP)
+        if 'Member' not in server_groups:
+            Teamspeak3Manager._create_group('Member')
 
-        alliance_group_id = Teamspeak3Manager._group_id_by_name(settings.DEFAULT_AUTH_GROUP)
+        alliance_group_id = Teamspeak3Manager._group_id_by_name('Member')
 
         try:
             ret = server.send_command('tokenadd', {'tokentype': 0, 'tokenid1': alliance_group_id, 'tokenid2': 0,

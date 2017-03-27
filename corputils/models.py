@@ -66,6 +66,9 @@ class CorpStats(models.Model):
             # purge old members
             self.members.exclude(character_id__in=member_ids).delete()
 
+            # update the timer
+            self.save()
+
         except TokenError as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
