@@ -53,7 +53,7 @@ def m2m_changed_user_permissions(sender, instance, action, *args, **kwargs):
                     svc.validate_user(instance)
                 except:
                     logger.exception(
-                        'Exception running validate_user for services module {} on user {}'.format(svc, user))
+                        'Exception running validate_user for services module {} on user {}'.format(svc, instance))
 
         transaction.on_commit(lambda: validate_all_services())
 
