@@ -11,7 +11,8 @@ from django.dispatch import receiver
 
 from services.hooks import ServicesHook
 from services.tasks import disable_user
-from authentication.models import State
+from authentication.models import State, UserProfile
+from authentication.signals import state_changed
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +121,19 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
                     break  # Found service, break out of services iteration and go back to permission iteration
         if not got_change:
             logger.debug("Permission change for state {} was not service permission, ignoring".format(instance))
+
+
+@receiver(state_changed, sender=UserProfile)
+def check_service_accounts_state_changed(sender, user, state, **kwargs):
+    logger.debug("Received state_changed from %s to state %s" % (user, state))
+    service_perms = [svc.access_perm for svc in ServicesHook.get_services()]
+    state_perms = ["{}.{}".format(perm.natural_key()[1], perm.natural_key()[0]) for perm in state.permissions.all()]
+    for perm in service_perms:
+        if perm not in state_perms:
+            for svc in ServicesHook.get_services():
+                if svc.access_perm == perm:
+                    logger.debug("User %s new state %s does not have service %s permission. Checking account." % (user, state, svc))
+                    svc.validate_user(user)
 
 
 @receiver(pre_delete, sender=User)

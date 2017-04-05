@@ -4,8 +4,7 @@ from django.db.models.signals import m2m_changed, pre_save
 from django.contrib.auth.models import User, Group
 from services.signals import m2m_changed_user_groups, pre_save_user
 from services.signals import m2m_changed_group_permissions, m2m_changed_user_permissions, m2m_changed_state_permissions
-from authentication.models import UserProfile, State
-
+from authentication.models import UserProfile, State, CharacterOwnership
 from eveonline.models import EveCharacter
 
 
@@ -25,14 +24,6 @@ class AuthUtils:
         if disconnect_signals:
             cls.connect_signals()
         return user
-
-    @classmethod
-    def create_member(cls, username):
-        return cls.create_user(username, disconnect_signals=True)
-
-    @classmethod
-    def create_blue(cls, username):
-        return cls.create_user(username, disconnect_signals=True)
 
     @classmethod
     def disconnect_signals(cls):
@@ -61,8 +52,6 @@ class AuthUtils:
             corporation_ticker=corp_ticker,
             alliance_id=alliance_id,
             alliance_name=alliance_name,
-            api_id='1234',
-            user=user
         )
         UserProfile.objects.update_or_create(user=user, defaults={'main_character': char})
 
@@ -77,3 +66,7 @@ class AuthUtils:
 
         if disconnect_signals:
             cls.connect_signals()
+
+    @classmethod
+    def add_permissions_to_state(cls, perms, states, disconnect_signals=True):
+        return cls.add_permissions_to_groups(perms, states, disconnect_signals=disconnect_signals)

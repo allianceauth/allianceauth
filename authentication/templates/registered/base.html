@@ -113,7 +113,7 @@
 
                         {% if perms.corputils.view_corp_corpstats or perms.corputils.view_alliance_corpstats or perms.corputils.view_blue_corpstats %}
                             <li>
-                                <a class="{% navactive request 'corputils:view corputils:search' %}" href="{% url 'corputils:view' %}">
+                                <a class="{% navactive request 'corputils:' %}" href="{% url 'corputils:view' %}">
                                     <i class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}
                                 </a>
                             </li>

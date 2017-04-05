@@ -72,6 +72,8 @@ class UserProfile(models.Model):
                 notify(self.user, _('State Changed'),
                        _('Your user state has been changed to %(state)s') % ({'state': state}),
                        'info')
+                from authentication.signals import state_changed
+                state_changed.send(sender=self.__class__, user=self.user, state=self.state)
 
     def __str__(self):
         return str(self.user)

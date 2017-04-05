@@ -1,16 +1,18 @@
 from __future__ import unicode_literals
 from django.db.models.signals import post_save, pre_delete, m2m_changed
 from django.db.models import Q
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 from django.contrib.auth.models import User
 from authentication.models import CharacterOwnership, UserProfile, get_guest_state, State
-from services.tasks import validate_services
 from esi.models import Token
 from eveonline.managers import EveManager
 from eveonline.models import EveCharacter
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+state_changed = Signal(providing_args=['user', 'state'])
 
 
 def trigger_state_check(state):
@@ -57,8 +59,6 @@ def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
         update_fields = kwargs.pop('update_fields', []) or []
         if 'state' not in update_fields:
             instance.assign_state()
-        # TODO: how do we prevent running this twice on profile state change?
-        validate_services(instance.user)
 
 
 @receiver(post_save, sender=User)

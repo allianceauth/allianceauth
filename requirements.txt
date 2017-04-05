@@ -13,11 +13,11 @@ redis
 # Django Stuff #
 django>=1.10,<2.0
 django-bootstrap-form
-django-navhelper
 django-bootstrap-pagination
 django-redis>=4.4
 django-registration
 django-sortedm2m
+git+https://github.com/adarnof/django-navhelper
 
 # awating release for fix to celery/django-celery#447
 # django-celery
