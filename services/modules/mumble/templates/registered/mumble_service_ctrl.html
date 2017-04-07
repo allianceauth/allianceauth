@@ -1,32 +1,25 @@
-{% load i18n %}
-
 <tr>
     <td class="text-center">{{ service_name }}</td>
     <td class="text-center">{{ username }}</td>
-    <td class="text-center"><a href="{{ service_url }}">{{ service_url }}</a></td>
+    <td class="text-center"><a href="mumble://{{ service_url }}">{{ service_url }}</a></td>
     <td class="text-center">
         {% ifequal username "" %}
-            {% if urls.auth_activate %}
             <a href="{% url urls.auth_activate %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
-            {% endif %}
         {% else %}
-            {% if urls.auth_set_password %}
             <a href="{% url urls.auth_set_password %}" title="Set Password" class="btn btn-warning">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
-            {% endif %}
-            {% if urls.auth_reset_password %}
             <a href="{% url urls.auth_reset_password %}" title="Reset Password" class="btn btn-primary">
                 <span class="glyphicon glyphicon-refresh"></span>
             </a>
-            {% endif %}
-            {% if urls.auth_deactivate %}
             <a href="{% url urls.auth_deactivate %}" title="Deactivate" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
-            {% endif %}
+            <a  href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
+                <span class="glyphicon glyphicon-arrow-right"></span>
+            </a>
         {% endifequal %}
     </td>
 </tr>

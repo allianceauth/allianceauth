@@ -21,6 +21,7 @@ class MumbleService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.MUMBLE_URL
         self.access_perm = 'mumble.access_mumble'
+        self.service_ctrl_template = 'registered/mumble_service_ctrl.html'
 
     def delete_user(self, user, notify_user=False):
         logging.debug("Deleting user %s %s account" % (user, self.name))
@@ -57,6 +58,7 @@ class MumbleService(ServicesHook):
             'service_name': self.title,
             'urls': urls,
             'service_url': self.service_url,
+            'connect_url': request.user.mumble.username + '@' + self.service_url if MumbleTasks.has_account(request.user) else self.service_url,
             'username': request.user.mumble.username if MumbleTasks.has_account(request.user) else '',
         }, request=request)
 

@@ -121,7 +121,7 @@ class DiscordTasks:
     def update_all_nicknames():
         logger.debug("Updating ALL discord nicknames")
         for discord_user in DiscordUser.objects.exclude(uid__exact=''):
-            DiscordTasks.update_nickname.delay(discord_user.user.user_id)
+            DiscordTasks.update_nickname.delay(discord_user.user.pk)
 
     @classmethod
     def disable(cls):

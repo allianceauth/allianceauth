@@ -215,52 +215,6 @@ If `True`, add members to groups with their alliance name, prefixed with `Allian
 If `True`, add blues to groups with their corp name, prefixed with `Corp_`
 ### BLUE_ALLIANCE_GROUPS
 If `True`, add blues to groups with their alliance name, prefixed with `Alliance_`
-## Alliance Service Setup
-### ENABLE_AUTH_FORUM
-Allow members of the owning corp or alliance to generate accounts on a Phpbb3 install.
-### ENABLE_AUTH_JABBER
-Allow members of the owning corp or alliance to generate accounts on an Openfire install.
-### ENABLE_AUTH_MUMBLE
-Allow members of the owning corp or alliance to generate accounts on a Mumble install.
-### ENABLE_AUTH_IPBOARD
-Allow members of the owning corp or alliance to generate accounts on an IPBoard install.
-### ENABLE_AUTH_TEAMSPEAK3
-Allow members of the owning corp or alliance to generate accounts on a Teamspeak3 install.
-### ENABLE_AUTH_DISCORD
-Allow members of the owning corp or alliance to link accounts to a Discord server.
-### ENABLE_AUTH_DISCOURSE
-Allow members of the owning corp or alliance to generate accounts on a Discourse install
-### ENABLE_AUTH_IPS4
-Allow members of the owning corp or alliance to generate accounts on a IPSuite4 install.
-### ENABLE_AUTH_SMF
-Allow members of the owning corp or alliance to generate accounts on a SMF install.
-### ENABLE_AUTH_MARKET
-Allow members of the owning corp or alliance to generate accounts on an alliance market install.
-### ENABLE_AUTH_XENFORO
-Allow members of the owning corp or alliance to generate accounts on a XenForo install.
-## Blue Service Setup
-### ENABLE_BLUE_FORUM
-Allow blues of the owning corp or alliance to generate accounts on a Phpbb3 install.
-### ENABLE_BLUE_JABBER
-Allow blues of the owning corp or alliance to generate accounts on an Openfire install.
-### ENABLE_BLUE_MUMBLE
-Allow blues of the owning corp or alliance to generate accounts on a Mumble install.
-### ENABLE_BLUE_IPBOARD
-Allow blues of the owning corp or alliance to generate accounts on an IPBoard install.
-### ENABLE_BLUE_TEAMSPEAK3
-Allow blues of the owning corp or alliance to generate accounts on a Teamspeak3 install.
-### ENABLE_BLUE_DISCORD
-Allow blues of the owning corp or alliance to link accounts to a Discord server.
-### ENABLE_BLUE_DISCOURSE
-Allow blues of the owning corp or alliance to generate accounts on a Discourse install.
-### ENABLE_BLUE_IPS4
-Allow blues of the owning corp or alliance to generate accounts on an IPSuite4 install.
-### ENABLE_BLUE_SMF
-Allow blues of the owning corp or alliance to generate accounts on a SMF install.
-### ENABLE_BLUE_MARKET
-Allow blues of the owning corp or alliance to generate accounts on an alliance market install.
-### ENABLE_BLUE_XENFORO
-Allow blues of the owning corp or alliance to generate accounts on a XenForo install.
 ## Tenant Configuration
 Characters of any corp or alliance with their ID here will be treated as a member.
 ### CORP_IDS
