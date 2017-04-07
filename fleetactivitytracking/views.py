@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
@@ -98,15 +97,10 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
 
     fat_stats = {}
 
-    # get FAT stats for member corps
-    for corp_id in settings.STR_CORP_IDS:
-        fat_stats[corp_id] = CorpStat(corp_id, start_of_month, start_of_next_month)
-    for alliance_id in settings.STR_ALLIANCE_IDS:
-        alliance_corps = EveCorporationInfo.objects.filter(alliance__alliance_id=alliance_id)
-        for corp in alliance_corps:
-            fat_stats[corp.corporation_id] = CorpStat(corp.corporation_id, start_of_month, start_of_next_month)
+    for corp in EveCorporationInfo.objects.all():
+        fat_stats[corp.corporation_id] = CorpStat(corp.corporation_id, start_of_month, start_of_next_month)
 
-    # get FAT stats for corps not in alliance
+    # get FAT stats for corps without models
     fats_in_span = Fat.objects.filter(fatlink__fatdatetime__gte=start_of_month).filter(
         fatlink__fatdatetime__lt=start_of_next_month).exclude(character__corporation_id__in=fat_stats)
 
@@ -210,10 +204,12 @@ def click_fatlink_view(request, token, hash, fatname):
             location['solar_system_name'] = \
                 c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
                     'name']
+            print(location)
             if location['station_id']:
                 location['station_name'] = \
                     c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
             elif location['structure_id']:
+                print('HERE')
                 c = token.get_esi_client(Universe='v1')
                 location['station_name'] = \
                     c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
@@ -228,7 +224,7 @@ def click_fatlink_view(request, token, hash, fatname):
             fat.shiptype = ship['ship_type_name']
             fat.fatlink = fatlink
             fat.character = character
-            fat.user = character.user
+            fat.user = request.user
             try:
                 fat.full_clean()
                 fat.save()
@@ -236,7 +232,7 @@ def click_fatlink_view(request, token, hash, fatname):
             except ValidationError as e:
                 err_messages = []
                 for errorname, message in e.message_dict.items():
-                    err_messages.append(message[0].decode())
+                    err_messages.append(message[0])
                 messages.error(request, ' '.join(err_messages))
         else:
             context = {'character_id': token.character_id,
@@ -244,6 +240,7 @@ def click_fatlink_view(request, token, hash, fatname):
             return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
     else:
         messages.error(request, _('FAT link has expired.'))
+    return redirect(fatlink_view)
 
 
 @login_required

@@ -64,7 +64,7 @@ INSTALLED_APPS = [
 ## Django Project Configuration
 ##
 #####################################################
-# You shouldn't need to touch most of this.
+# Don't touch unless you know what you're doing.
 # Scroll down for Auth Configuration
 #####################################################
 

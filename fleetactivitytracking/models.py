@@ -36,5 +36,4 @@ class Fat(models.Model):
         unique_together = (('character', 'fatlink'),)
 
     def __str__(self):
-        output = "Fat-link for %s" % self.character.character_name
-        return output.encode('utf-8')
+        return "Fat-link for %s" % self.character.character_name

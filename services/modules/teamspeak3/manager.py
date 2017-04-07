@@ -57,7 +57,7 @@ class Teamspeak3Manager:
         sanatized = "[" + corp_ticker + "]" + username
         return sanatized[:30]
 
-    def _get_userid(self, uid)::
+    def _get_userid(self, uid):
         logger.debug("Looking for uid %s on TS3 server." % uid)
         try:
             ret = self.server.send_command('customsearch', {'ident': 'sso_uid', 'pattern': uid})
