@@ -50,13 +50,24 @@ class TS3Proto:
             return True
 
     def disconnect(self):
-        self.send_command("quit")
-        self._conn.close()
-        self._connected = False
-        self._log.info('Disconnected')
+        if self._connected:
+            try:
+                self.send("quit")
+                self._conn.close()
+            except:
+                self._log.exception('Error while disconnecting')
+            self._connected = False
+            self._log.info('Disconnected')
+        else:
+            self._log.info("Not connected")
 
     def send_command(self, command, keys=None, opts=None):
         cmd = self.construct_command(command, keys=keys, opts=opts)
+
+        # Clear read buffer of any stray bytes
+        self._conn.read_very_eager()
+
+        # Send command
         self.send('%s\n' % cmd)
 
         data = []

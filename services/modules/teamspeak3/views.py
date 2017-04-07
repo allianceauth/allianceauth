@@ -22,9 +22,9 @@ def activate_teamspeak3(request):
 
     character = request.user.profile.main_character
     ticker = character.corporation_ticker
-
-    logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
-    result = Teamspeak3Manager.add_user(character.character_name, ticker)
+    with Teamspeak3Manager() as ts3man:
+        logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
+        result = ts3man.add_user(character.character_name, ticker)
 
     # if its empty we failed
     if result[0] is not "":
@@ -52,7 +52,7 @@ def verify_teamspeak3(request):
             logger.debug("Validated user %s joined TS server" % request.user)
             return redirect("auth_services")
     else:
-        form = TeamspeakJoinForm({'username': request.user.teamspeak3.uid})
+        form = TeamspeakJoinForm(initial={'username': request.user.teamspeak3.uid})
     context = {
         'form': form,
         'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid,
@@ -68,8 +68,9 @@ def deactivate_teamspeak3(request):
     if Teamspeak3Tasks.has_account(request.user) and Teamspeak3Tasks.delete_user(request.user):
         logger.info("Successfully deactivated TS3 for user %s" % request.user)
         messages.success(request, 'Deactivated TeamSpeak3 account.')
-    logger.error("Unsuccessful attempt to deactivate TS3 for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
+    else:
+        logger.error("Unsuccessful attempt to deactivate TS3 for user %s" % request.user)
+        messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
     return redirect("auth_services")
 
 
@@ -81,11 +82,12 @@ def reset_teamspeak3_perm(request):
         return redirect("auth_services")
     character = request.user.profile.main_character
     logger.debug("Deleting TS3 user for user %s" % request.user)
-    Teamspeak3Manager.delete_user(request.user.teamspeak3.uid)
+    with Teamspeak3Manager() as ts3man:
+        ts3man.delete_user(request.user.teamspeak3.uid)
 
-    logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
-    result = Teamspeak3Manager.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
-                                                              character.corporation_ticker)
+        logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
+        result = ts3man.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name,
+                                                       character.corporation_ticker)
 
     # if blank we failed
     if result[0] != "":
