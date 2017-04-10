@@ -30,12 +30,8 @@ class RegistrationForm(forms.Form):
         if ' ' in self.cleaned_data['username']:
             raise forms.ValidationError('Username cannot contain a space')
 
-        # We attempt to get the user object if we succeed we know email as been used
-        try:
-            User.objects.get(email=self.cleaned_data['email'])
+        if User.objects.filter(email=self.cleaned_data['email']).count() >= 1:
             raise forms.ValidationError('Email as already been used')
-        except User.DoesNotExist:
-            pass
 
         if not re.match("^\w+$", self.cleaned_data['username']):
             raise forms.ValidationError('Username contains illegal characters')
