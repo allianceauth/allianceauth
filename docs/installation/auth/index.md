@@ -8,6 +8,7 @@
     centos
     settings
     apache
+    gunicorn
     cloudflare
     supervisor
     quickstart
