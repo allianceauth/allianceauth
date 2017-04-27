@@ -5,6 +5,8 @@ AllianceAuth gets served using a Web Server Gateway Interface (WSGI) script. Thi
 
 In the interest of ~~laziness~~ time-efficiency, scroll down for example configs. Use these, changing the ServerName to your domain name.
 
+If you're using a small VPS to host services with very limited memory resources, consider using NGINX with [Gunicorn](gunicorn.md). Even if you would like to use Apache, Gunicorn may give you lower memory usage over mod_wsgi.
+
 ### Required Parameters for AllianceAuth Core
 
 The AllianceAuth core requires the following parameters to be set:
@@ -51,6 +53,31 @@ For Apache 2.3 or older:
 You can supply your own SSL certificates if you so desire. The alternative is running behind cloudflare for free SSL.
 
 ## Sample Config Files
+
+### Minimally functional config
+
+```
+<VirtualHost *:80>
+        ServerName example.com
+        ServerAdmin webmaster@localhost
+ 
+        DocumentRoot /var/www
+ 
+        WSGIDaemonProcess allianceauth python-path=/home/allianceserver/allianceauth
+        WSGIProcessGroup allianceauth
+        WSGIScriptAlias / /home/allianceserver/allianceauth/alliance_auth/wsgi.py
+ 
+        Alias /static/ /home/allianceserver/allianceauth/static/
+ 
+        <Directory /home/allianceserver/allianceauth/>
+                Require all granted
+        </Directory>
+
+        <Directory /var/www/>
+                Require all granted
+        </Directory>        
+</VirtualHost>
+```
 
 ### Own SSL Cert
  - Apache 2.4 or newer:
