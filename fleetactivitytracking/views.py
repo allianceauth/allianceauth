@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.managers import EveManager
@@ -100,19 +101,16 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
     fat_stats = {}
 
     # get FAT stats for member corps
-    for corp_id in settings.STR_CORP_IDS:
-        fat_stats[corp_id] = CorpStat(corp_id, start_of_month, start_of_next_month)
-    for alliance_id in settings.STR_ALLIANCE_IDS:
-        alliance_corps = EveCorporationInfo.objects.filter(alliance__alliance_id=alliance_id)
-        for corp in alliance_corps:
-            fat_stats[corp.corporation_id] = CorpStat(corp.corporation_id, start_of_month, start_of_next_month)
+    query = Q(corporation_id__in=settings.STR_CORP_IDS) | Q(alliance__alliance_id__in=settings.STR_ALLIANCE_IDS)
+    for corp in EveCorporationInfo.objects.filter(query).distinct():
+        fat_stats[corp.corporation_id] = CorpStat(corp.corporation_id, start_of_month, start_of_next_month)
 
     # get FAT stats for corps not in alliance
     fats_in_span = Fat.objects.filter(fatlink__fatdatetime__gte=start_of_month).filter(
         fatlink__fatdatetime__lt=start_of_next_month).exclude(character__corporation_id__in=fat_stats)
 
-    for fat in fats_in_span:
-        if fat.character.corporation_id not in fat_stats:
+    for fat in fats_in_span.exclude(character__corporation_id__in=fat_stats):
+        if EveCorporationInfo.objects.filter(corporation_id=fat.character.corporation_id).exists():
             fat_stats[fat.character.corporation_id] = CorpStat(fat.character.corporation_id, start_of_month,
                                                                start_of_next_month)
 
