@@ -41,7 +41,7 @@
                     <th class="text-center">{% trans "Fleet ISK Cost" %}</th>
                     <th class="text-center">{% trans "SRP Status" %}</th>
                     <th class="text-center">{% trans "Pending Requests" %}</th>
-                    <th class="text-center">{% trans "Actions" %}</th>
+                    <th width="100px" class="text-center">{% trans "Actions" %}</th>
                 </tr>
                 {% for srpfleet in srpfleets %}
                     <tr>
@@ -98,7 +98,7 @@
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
 
-                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" class="btn btn-danger" title="Remove">
+                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" onclick="return confirm('{% trans "Are you sure you want to delete this SRP code and its contents?" %}')" class="btn btn-danger" title="Remove">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </a>
                                 {% if srpfleet.fleet_srp_code %}

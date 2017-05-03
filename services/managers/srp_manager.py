@@ -31,6 +31,7 @@ class srpManager:
             logger.debug("Ship type for kill ID %s is determined to be %s" % (kill_id, ship_type))
             ship_value = result['zkb']['totalValue']
             logger.debug("total loss value for kill id %s is %s" % (kill_id, ship_value))
-            return ship_type, ship_value
+            victim_name = result['victim']['characterName']
+            return ship_type, ship_value, victim_name
         else:
             raise ValueError("Invalid Kill ID")
