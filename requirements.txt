@@ -9,6 +9,7 @@ slugify
 requests-oauthlib
 sleekxmpp
 redis
+celery>=4.0.2
 
 # Django Stuff #
 django>=1.10,<2.0
@@ -17,10 +18,7 @@ django-navhelper
 django-bootstrap-pagination
 django-redis>=4.4
 django-recaptcha
-
-# awating release for fix to celery/django-celery#447
-# django-celery
-git+https://github.com/celery/django-celery
+django-celery-beat
 
 # awating pyghassen/openfire-restapi #1 to fix installation issues
 git+https://github.com/adarnof/openfire-restapi

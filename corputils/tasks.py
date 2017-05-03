@@ -1,15 +1,14 @@
 from corputils.models import CorpStats
-from celery.task import task, periodic_task
-from celery.task.schedules import crontab
+from alliance_auth.celeryapp import app
 
 
-@task
+@app.task
 def update_corpstats(pk):
     cs = CorpStats.objects.get(pk=pk)
     cs.update()
 
 
-@periodic_task(run_every=crontab(minute=0, hour="*/6"))
+@app.task
 def update_all_corpstats():
     for cs in CorpStats.objects.all():
         update_corpstats.delay(cs.pk)

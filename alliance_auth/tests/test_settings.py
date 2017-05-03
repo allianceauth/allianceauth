@@ -4,13 +4,9 @@ Alliance Auth Test Suite Django settings.
 
 import os
 
-import djcelery
-
 from django.contrib import messages
 
 import alliance_auth
-
-djcelery.setup_loader()
 
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -40,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'djcelery',
+    'django_celery_beat',
     'bootstrapform',
     'authentication',
     'services',

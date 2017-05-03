@@ -164,7 +164,7 @@ def user_refresh_api(request, api_id):
     if EveApiKeyPair.objects.filter(api_id=api_id).exists():
         api_key_pair = EveApiKeyPair.objects.get(api_id=api_id)
         if api_key_pair.user == request.user:
-            refresh_api(api_key_pair)
+            refresh_api.apply(args=(api_key_pair,))
             messages.success(request, _('Refreshed API key %(apiid)s') % {"apiid": api_id})
             set_state(request.user)
         else:

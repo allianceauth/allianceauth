@@ -10,5 +10,5 @@ The big goal of AllianceAuth is the automation of group membership, so we’ll n
 
 To start the background processes to sync groups and check api keys, issue these commands:
 
-    screen -dm bash -c 'python manage.py celeryd'
-    screen -dm bash -c 'python manage.py celerybeat'
+    screen -dm bash -c 'celery -A alliance_auth worker'
+    screen -dm bash -c 'celery -A alliance_auth beat'
