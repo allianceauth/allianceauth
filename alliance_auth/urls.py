@@ -194,6 +194,9 @@ urlpatterns += i18n_patterns(
     # FleetActivityTracking (FAT)
     url(r'^fat/$', fleetactivitytracking.views.fatlink_view, name='auth_fatlink_view'),
     url(r'^fat/statistics/$', fleetactivitytracking.views.fatlink_statistics_view, name='auth_fatlink_view_statistics'),
+    url(r'^fat/statistics/corp/(\w+)$', fleetactivitytracking.views.fatlink_statistics_corp_view, name='auth_fatlink_view_statistics_corp'),
+    url(r'^fat/statistics/corp/(?P<corpid>\w+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/', fleetactivitytracking.views.fatlink_statistics_corp_view,
+        name='auth_fatlink_view_statistics_corp_month'),
     url(r'^fat/statistics/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', fleetactivitytracking.views.fatlink_statistics_view,
         name='auth_fatlink_view_statistics_month'),
     url(r'^fat/user/statistics/$', fleetactivitytracking.views.fatlink_personal_statistics_view,

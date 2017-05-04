@@ -1,0 +1,48 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Alliance Auth{% endblock %}
+{% block page_title %}{% trans "Fatlink Corp Statistics" %}{% endblock page_title %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ month }}, {{ year }}{% endblocktrans %}
+            <div class="text-right">
+                <a href="{% url 'auth_fatlink_view_statistics_corp_month' corpid previous_month|date:"Y" previous_month|date:"m" %}" class="btn btn-info">{% trans "Previous month" %}</a>
+                {%  if next_month %}
+                <a href="{% url 'auth_fatlink_view_statistics_corp_month' corpid next_month|date:"Y" next_month|date:"m" %}" class="btn btn-info">{% trans "Next month" %}</a>
+                {%  endif %}
+            </div>
+        </h1>
+        {% if fatStats %}
+        <table class="table table-responsive">
+            <tr>
+                <th class="col-md-1"></th>
+                <th class="col-md-2 text-center">{% trans "Main Character" %}</th>
+                <th class="col-md-2 text-center">{% trans "Characters" %}</th>
+                <th class="col-md-2 text-center">{% trans "Fats" %}</th>
+                <th class="col-md-2 text-center">{% trans "Average fats" %}
+                  <i class="glyphicon glyphicon-question-sign" rel="tooltip" title="Fats ÷ Characters"></i>
+                </th>
+            </tr>
+            {% for memberStat in fatStats %}
+            <tr>
+                <td>
+                    <img src="https://image.eveonline.com/Character/{{ memberStat.mainchid }}_32.jpg" class="ra-avatar img-responsive">
+                </td>
+                <td class="text-center">{{ memberStat.mainchar.character_name }}</td>
+                <td class="text-center">{{ memberStat.n_chars }}</td>
+                <td class="text-center">{{ memberStat.n_fats }}</td>
+                <td class="text-center">{{ memberStat.avg_fat }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+{% endblock content %}
+{% block extra_script %}
+$(document).ready(function(){
+  $("[rel=tooltip]").tooltip();
+{% endblock extra_script %}

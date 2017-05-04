@@ -24,14 +24,16 @@
                 <th class="col-md-5 text-center">{% trans "Corp" %}</th>
                 <th class="col-md-2 text-center">{% trans "Members" %}</th>
                 <th class="col-md-2 text-center">{% trans "Fats" %}</th>
-                <th class="col-md-2 text-center">{% trans "Average fats" %}</th>
+                <th class="col-md-2 text-center">{% trans "Average fats" %}
+                  <i class="glyphicon glyphicon-question-sign" rel="tooltip" title="Fats ÷ Characters"></i>
+                </th>
             </tr>
             {% for corpStat in fatStats %}
             <tr>
                 <td>
                     <img src="https://image.eveonline.com/Corporation/{{ corpStat.corp.corporation_id }}_32.png" class="ra-avatar img-responsive">
                 </td>
-                <td class="text-center">[{{ corpStat.corp.corporation_ticker }}]</td>
+                <td class="text-center"><a href="{% url 'auth_fatlink_view_statistics_corp' corpStat.corp.corporation_id %}">[{{ corpStat.corp.corporation_ticker }}]</td>
                 <td class="text-center">{{ corpStat.corp.corporation_name }}</td>
                 <td class="text-center">{{ corpStat.corp.member_count }}</td>
                 <td class="text-center">{{ corpStat.n_fats }}</td>
@@ -42,3 +44,7 @@
         {% endif %}
     </div>
 {% endblock content %}
+{% block extra_script %}
+$(document).ready(function(){
+  $("[rel=tooltip]").tooltip();
+{% endblock extra_script %}
