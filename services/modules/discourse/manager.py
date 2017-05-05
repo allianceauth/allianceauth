@@ -376,6 +376,5 @@ class DiscourseManager:
         logger.debug("Disabling user %s Discourse access." % user)
         d_user = DiscourseManager.__get_user_by_external(user.pk)
         DiscourseManager.__logout(d_user['user']['id'])
-        DiscourseManager.__suspend_user(d_user['user']['username'])
         logger.info("Disabled user %s Discourse access." % user)
         return True
