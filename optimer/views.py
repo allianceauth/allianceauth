@@ -22,7 +22,11 @@ logger = logging.getLogger(__name__)
 @permission_required('auth.optimer_view')
 def optimer_view(request):
     logger.debug("optimer_view called by user %s" % request.user)
-    render_items = {'optimer': optimer.objects.all(), }
+    render_items = {'optimer': optimer.objects.all(),
+                    'future_timers': optimer.objects.all().filter(
+                        start__gte=timezone.now()),
+                    'past_timers': optimer.objects.all().filter(
+                        start__lt=timezone.now()).order_by('-start')}
 
     return render(request, 'registered/operationmanagement.html', context=render_items)
 
@@ -44,12 +48,10 @@ def add_optimer_view(request):
             op = optimer()
             op.doctrine = form.cleaned_data['doctrine']
             op.system = form.cleaned_data['system']
-            op.location = form.cleaned_data['location']
             op.start = form.cleaned_data['start']
             op.duration = form.cleaned_data['duration']
             op.operation_name = form.cleaned_data['operation_name']
             op.fc = form.cleaned_data['fc']
-            op.details = form.cleaned_data['details']
             op.create_time = post_time
             op.eve_character = character
             op.save()
@@ -93,12 +95,10 @@ def edit_optimer(request, optimer_id):
             character = EveManager.get_character_by_id(auth_info.main_char_id)
             op.doctrine = form.cleaned_data['doctrine']
             op.system = form.cleaned_data['system']
-            op.location = form.cleaned_data['location']
             op.start = form.cleaned_data['start']
             op.duration = form.cleaned_data['duration']
             op.operation_name = form.cleaned_data['operation_name']
             op.fc = form.cleaned_data['fc']
-            op.details = form.cleaned_data['details']
             op.eve_character = character
             logger.info("User %s updating optimer id %s " % (request.user, optimer_id))
             op.save()
@@ -108,12 +108,10 @@ def edit_optimer(request, optimer_id):
         data = {
             'doctrine': op.doctrine,
             'system': op.system,
-            'location': op.location,
             'start': op.start,
             'duration': op.duration,
             'operation_name': op.operation_name,
             'fc': op.fc,
-            'details': op.details,
         }
         form = opForm(initial=data)
     return render(request, 'registered/optimerupdate.html', context={'form': form})

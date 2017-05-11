@@ -1,0 +1,44 @@
+{% load i18n %}
+
+{% block content %}
+     <table class="table">
+        <thead>
+            <tr>
+                <th class="text-center col-lg-3">{% trans "Operation Name" %}</th>
+                <th class="text-center col lg-2">{% trans "Doctrine" %}</th>
+                <th class="text-center col-lg-1">{% trans "Form Up System" %}</th>
+                <th class="text-center col-lg-1">{% trans "Start Time" %}</th>
+                <th class="text-center col-lg-1">{% trans "Local Time" %}</th>
+                <th class="text-center col-lg-1">{% trans "Duration" %}</th>
+                <th class="text-center col-lg-1">{% trans "FC" %}</th>
+                {% if perms.auth.optimer_management %}
+                <th class="text-center col-lg-1">{% trans "Creator" %}</th>
+                <th class="text-center col-lg-2">{% trans "Action" %}</th>
+                {% endif %}
+            </tr>
+        </thead>
+     {% for ops in timers %}
+         <tbody>
+            <tr>
+                <td class="text-center">{{ ops.operation_name }}</td>
+                <td class="text-center">{{ ops.doctrine }}</td>
+                <td class="text-center">
+                    <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
+                </td>
+                <td class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
+                <td class="text-center" nowrap><div id="localtime{{ ops.id }}"></div><div id="countdown{{ ops.id }}"></div></td>
+                <td class="text-center">{{ ops.duration }}</td>
+                <td class="text-center">{{ ops.fc }}</td>
+                {% if perms.auth.optimer_management %}
+                    <td class="text-center">{{ ops.eve_character }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'auth_remove_optimer' ops.id %}" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a><a href="{% url 'auth_edit_optimer' ops.id %}" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                {% endif %}
+            </tr>
+        </tbody>
+    {% endfor %}
+    </table>
+{% endblock content %}

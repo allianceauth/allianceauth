@@ -17,62 +17,26 @@
                 {% endif %}
             </div>
         </h1>
-     <div class="col-lg-12 text-center row">
-        <div class="label label-info text-left">
-            <b>{% trans "Current Eve Time:" %} </b>
-        </div><div class="label label-info text-left" id="current-time"></div>
-        <br  />
-     </div>
-     {% if optimer %}
-        <table class="table table-responsive">
-            <tr>
-                <th class="text-center">{% trans "Operation Name" %}</th>
-		<th class="text-center">{% trans "Doctrine" %}</th>
-                <th class="text-center">{% trans "Form Up System" %}</th>
-                <th class="text-center">{% trans "Form Up Location" %}</th>
-                <th class="text-center">{% trans "Start Time" %}</th>
-                <th class="text-center">{% trans "Local Time" %}</th>
-		<th class="text-center">{% trans "Duration" %}</th>
-                <th class="text-center">{% trans "FC" %}</th>
-                <th class="text-center">{% trans "Details" %}</th>
-		<th class="text-center">{% trans "Post Time" %}</th>
-		{% if perms.auth.optimer_management %}
-                	<th class="text-center">{% trans "Creator" %}</th>
-		        <th class="text-center">{% trans "Action" %}</th>
-                {% endif %}
-            </tr>
 
-                {% for ops in optimer %}
-                    <tr>
-                	<td style="width:150px" class="text-center">{{ ops.operation_name }}</td>
-                	<td style="width:150px" class="text-center">{{ ops.doctrine }}</td>
-                	<td class="text-center">
-                            <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
-                	</td>
-                	<td style="width:150px" class="text-center">{{ ops.location }}</td>
-                	<td style="width:150px" class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
-                	<td class="text-center" nowrap><div id="localtime{{ ops.id }}"></div><div id="countdown{{ ops.id }}"></div></td>
-		        <td style="width:150px" class="text-center">{{ ops.duration }}</td>
-		        <td style="width:150px" class="text-center">{{ ops.fc }}</td>
-                	<td style="width:150px" class="text-center">{{ ops.details }}</td>
-                	<td style="width:150px" class="text-center">{{ ops.post_time}}</td>
-                        {% if perms.auth.optimer_management %}
-                            <td style="width:150px" class="text-center">{{ ops.eve_character }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'auth_remove_optimer' ops.id %}" class="btn btn-danger">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </a>
-                                <a href="{% url 'auth_edit_optimer' ops.id %}" class="btn btn-info">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                </a>
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tr>
-        </table>
+        <div class="col-lg-12 text-center row">
+            <div class="label label-info text-left">
+                <b>{% trans "Current Eve Time:" %} </b>
+            </div><div class="label label-info text-left" id="current-time"></div>
+            <br  />
+        </div>
+    
+        <h4><b>{% trans "Next Timers" %}</b></h4>
+        {% if future_timers %}
+            {% include "registered/fleetoptable.html" with timers=future_timers %}
         {% else %}
-        <br  /><div class="alert alert-warning text-center">{% trans "No fleet operations found." %}</div>
+            <div class="alert alert-warning text-center">{% trans "No upcoming timers." %}</div>
+        {% endif %}
+    
+        <h4><b>{% trans "Past Timers" %}</b></h4>
+        {% if past_timers %}
+            {% include "registered/fleetoptable.html" with timers=past_timers %}
+        {% else %}
+            <div class="alert alert-warning text-center">{% trans "No past timers." %}</div>
         {% endif %}
     </div>
 

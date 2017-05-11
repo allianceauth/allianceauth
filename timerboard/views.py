@@ -40,14 +40,8 @@ def timer_view(request):
     else:
         corp_timers = []
     timer_list = Timer.objects.filter(corp_timer=False)
-    closest_timer = None
-    if timer_list:
-        closest_timer = \
-            sorted(list(Timer.objects.all().filter(corp_timer=False)), key=lambda d: (timezone.now()))[0]
-    logger.debug("Determined closest timer is %s" % closest_timer)
     render_items = {'timers': Timer.objects.all().filter(corp_timer=False),
                     'corp_timers': corp_timers,
-                    'closest_timer': closest_timer,
                     'future_timers': Timer.objects.all().filter(corp_timer=False).filter(
                         eve_time__gte=datetime.datetime.now()),
                     'past_timers': Timer.objects.all().filter(corp_timer=False).filter(
