@@ -15,8 +15,8 @@ Ubuntu:
 CentOS:
 
     sudo yum install supervisor
-    sudo systemctl enable supervisor.service
-    sudo systemctl start supervisor.service
+    sudo systemctl enable supervisord.service
+    sudo systemctl start supervisord.service
 
 ## Configuration
 
