@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class Phpbb3Manager:
     SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
-                   r"user_sig) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                   r"user_sig, user_lang) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'en')"
 
     SQL_DEL_USER = r"DELETE FROM phpbb_users where username = %s"
 

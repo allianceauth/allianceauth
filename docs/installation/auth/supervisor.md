@@ -15,12 +15,12 @@ Ubuntu:
 CentOS:
 
     sudo yum install supervisor
-    sudo systemctl enable supervisor.service
-    sudo systemctl start supervisor.service
+    sudo systemctl enable supervisord.service
+    sudo systemctl start supervisord.service
 
 ## Configuration
 
-Auth provides example config files for the celery workers (celeryd), the periodic task scheduler (celerybeat), and the mumble authenticator. All of these are available in `thirdparty/Supervisor`.
+Auth provides example config files for the celery workers, the periodic task scheduler (celery beat), and the mumble authenticator. All of these are available in `thirdparty/Supervisor`.
 
 For most users, all you have to do is copy the config files to `/etc/supervisor/conf.d` then restart the service. Copy `auth-celerybeat.conf` and `auth-celeryd.conf` for the celery workers, and `auth-mumble.conf` for the mumble authenticator. For all three just use a wildcard:
 
@@ -41,15 +41,15 @@ To ensure the processes are working, check their status:
     sudo supervisorctl status
 
 Processes will be `STARTING`, `RUNNING`, or `ERROR`. If an error has occurred, check their log files:
- - celeryd: `log/worker.log`
- - celerybeat: `log/beat.log`
+ - celery workers: `log/worker.log`
+ - celery beat: `log/beat.log`
  - authenticator: `log/authenticator.log`
 
 ## Customizing Config Files
 
 The only real customization needed is if running in a virtual environment. The python path will have to be changed in order to start in the venv.
 
-Edit the config files and find the line saying `command`. Replace `python` with `/path/to/venv/python`. This can be relative to the `directory` specified in the config file.
+Edit the config files and find the line saying `command`. Replace `python` with `/path/to/venv/bin/python`. For Celery replace `celery` with `/path/to/venv/bin/celery`. This can be relative to the `directory` specified in the config file.
 
 Note that for config changes to be loaded, the supervisor service must be restarted.
 

@@ -19,7 +19,7 @@ Either you need to `sudo` that command, or it's a missing dependency. Check [the
 
 ### I'm getting an error 500 trying to connect to the website on a new install
 
-Read the apache error log: `sudo nano /var/log/apache2/error.log`
+Read the apache error log: `sudo less /var/log/apache2/error.log`. Press Shift+G to go to the end of the file.
 
 If it talks about failing to import something, google its name and install it.
 
@@ -36,13 +36,9 @@ Make sure the background processes are running: `ps aux | grep celery` should re
 If that doesn't do it, try clearing the worker queue. First kill all celery processes as described above, then do the following:
 
     redis-cli FLUSHALL
-    python manage.py celeryd --purge
+    celery -A alliance_auth worker --purge
 
-Press control+C once.
-
-    python manage.py celeryd --discard
-
-Press control+C once.
+Press Control+C once.
 
 Now start celery again with [these background process commands.](../installation/auth/quickstart.md)
 

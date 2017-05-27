@@ -9,6 +9,7 @@ python-slugify>=1.2
 requests-oauthlib
 sleekxmpp
 redis
+celery>=4.0.2
 
 # Django Stuff #
 django>=1.10,<2.0
@@ -17,6 +18,7 @@ django-bootstrap-pagination
 django-redis>=4.4
 django-registration
 django-sortedm2m
+django-celery-beat
 git+https://github.com/adarnof/django-navhelper
 
 # awating release for fix to celery/django-celery#447

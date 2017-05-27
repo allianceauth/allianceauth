@@ -7,7 +7,9 @@
     ubuntu
     centos
     settings
+    nginx
     apache
+    gunicorn
     cloudflare
     supervisor
     quickstart

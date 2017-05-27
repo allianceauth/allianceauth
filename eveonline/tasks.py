@@ -9,26 +9,28 @@ from eveonline.models import EveAllianceInfo
 from eveonline.providers import ObjectNotFound
 import logging
 
+from alliance_auth.celeryapp import app
+
 logger = logging.getLogger(__name__)
 
-@task
+@app.task
 def update_corp(corp_id):
     EveManager.update_corporation(corp_id)
 
 
-@task
+@app.task
 def update_alliance(alliance_id):
     EveManager.update_alliance(alliance_id)
     EveManager.populate_alliance(alliance_id)
 
 
-@periodic_task(run_every=crontab(minute=0, hour="*/2"))
+@app.task
 def run_corp_update():
     # generate member corps
     for corp_id in settings.STR_CORP_IDS + settings.STR_BLUE_CORP_IDS:
         try:
             if EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
-                update_corp(corp_id)
+                update_corp.apply(arge=[corp_id])
             else:
                 EveManager.create_corporation(corp_id)
         except ObjectNotFound:
@@ -39,7 +41,7 @@ def run_corp_update():
         try:
             if EveAllianceInfo.objects.filter(alliance_id=alliance_id).exists():
                 logger.debug("Updating existing owner alliance model with id %s" % alliance_id)
-                update_alliance(alliance_id)
+                update_alliance.apply(args=[alliance_id])
             else:
                 EveManager.create_alliance(alliance_id)
                 EveManager.populate_alliance(alliance_id)

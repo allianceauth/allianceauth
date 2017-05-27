@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
-import djcelery
-
 from django.contrib import messages
 from celery.schedules import crontab
 
@@ -25,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'djcelery',
+    'django_celery_beat',
     'bootstrapform',
     'authentication',
     'services',
@@ -68,11 +66,9 @@ INSTALLED_APPS = [
 # Scroll down for Auth Configuration
 #####################################################
 
-djcelery.setup_loader()
-
 # Celery configuration
 BROKER_URL = 'redis://localhost:6379/0'
-CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERYBEAT_SCHEDULE = {
     'esi_cleanup_callbackredirect': {
         'task': 'esi.tasks.cleanup_callbackredirect',
@@ -81,6 +77,14 @@ CELERYBEAT_SCHEDULE = {
     'esi_cleanup_token': {
         'task': 'esi.tasks.cleanup_token',
         'schedule': crontab(day_of_month='*/1'),
+    },
+    'run_corp_update': {
+        'task': 'eveonline.tasks.run_corp_update',
+        'schedule': crontab(minute=0, hour="*/2"),
+    },
+    'update_all_corpstats': {
+        'task': 'corputils.tasks.update_all_corpstats',
+        'schedule': crontab(minute=0, hour="*/6"),
     },
 }
 
