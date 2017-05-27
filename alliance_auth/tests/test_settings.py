@@ -94,7 +94,7 @@ LANGUAGES = (
     ('en', ugettext('English')),
     ('de', ugettext('German')),
 )
-
+LOGIN_TOKEN_SCOPES = ['esi-characters.read_opportunities.v1']
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -115,8 +115,6 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'services.context_processors.auth_settings',
                 'notifications.context_processors.user_notification_count',
-                'authentication.context_processors.states',
-                'authentication.context_processors.membership_state',
                 'groupmanagement.context_processors.can_manage_groups',
             ],
         },
@@ -174,6 +172,8 @@ CACHES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend']
+
 #####################################################
 ##
 ## Auth configuration starts here
@@ -219,6 +219,8 @@ EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
 SITE_NAME = os.environ.get('AA_SITE_NAME', 'Test Alliance Auth')
 
+PHPBB3_URL = FORUM_URL
+
 ###################
 # SSO Settings
 ###################
@@ -231,21 +233,6 @@ SITE_NAME = os.environ.get('AA_SITE_NAME', 'Test Alliance Auth')
 ESI_SSO_CLIENT_ID = os.environ.get('AA_ESI_SSO_CLIENT_ID', '')
 ESI_SSO_CLIENT_SECRET = os.environ.get('AA_ESI_SSO_CLIENT_SECRET', '')
 ESI_SSO_CALLBACK_URL = os.environ.get('AA_ESI_SSO_CALLBACK_URL', '')
-
-#########################
-# Default Group Settings
-#########################
-# DEFAULT_AUTH_GROUP - Default group members are put in
-# DEFAULT_BLUE_GROUP - Default group for blue members
-# MEMBER_CORP_GROUPS - Assign members to a group representing their main corp
-# BLUE_CORP_GROUPS - Assign blues to a group representing their main corp
-#########################
-DEFAULT_AUTH_GROUP = os.environ.get('AA_DEFAULT_ALLIANCE_GROUP', 'Member')
-DEFAULT_BLUE_GROUP = os.environ.get('AA_DEFAULT_BLUE_GROUP', 'Blue')
-MEMBER_CORP_GROUPS = 'True' == os.environ.get('AA_MEMBER_CORP_GROUPS', 'True')
-MEMBER_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_MEMBER_ALLIANCE_GROUPS', 'False')
-BLUE_CORP_GROUPS = 'True' == os.environ.get('AA_BLUE_CORP_GROUPS', 'False')
-BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'False')
 
 #########################
 # Corp Configuration

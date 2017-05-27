@@ -73,7 +73,16 @@ djcelery.setup_loader()
 # Celery configuration
 BROKER_URL = 'redis://localhost:6379/0'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-CELERYBEAT_SCHEDULE = dict()
+CELERYBEAT_SCHEDULE = {
+    'esi_cleanup_callbackredirect': {
+        'task': 'esi.tasks.cleanup_callbackredirect',
+        'schedule': crontab(hour='*/4'),
+    },
+    'esi_cleanup_token': {
+        'task': 'esi.tasks.cleanup_token',
+        'schedule': crontab(day_of_month='*/1'),
+    },
+}
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -150,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend', 'authentication.backends.ModelBackend']
+AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend']
 LOGIN_URL = 'auth_login_user'
 
 # Internationalization
