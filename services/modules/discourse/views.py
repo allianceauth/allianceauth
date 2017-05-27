@@ -33,27 +33,25 @@ ACCESS_PERM = 'discourse.access_discourse'
 @login_required
 def discourse_sso(request):
 
-    ## Check if user has access
-
+    # Check if user has access
     if not request.user.has_perm(ACCESS_PERM):
-            messages.error(request, 'You are not authorized to access Discourse.')
-            return redirect('auth_dashboard')
+        messages.error(request, 'You are not authorized to access Discourse.')
+        logger.warning('User %s attempted to access Discourse but does not have permission.' % request.user)
+        return redirect('authentication:dashboard')
 
     if not request.user.profile.main_character:
         messages.error(request, "You must have a main character set to access Discourse.")
-        return redirect('auth_characters')
+        logger.warning('User %s attempted to access Discourse but does not have a main character.' % request.user)
+        return redirect('authentication:characters')
 
     main_char = request.user.profile.main_character
-    if main_char is None:
-        messages.error(request, "Your main character is missing a database model. Please select a new one.")
-        return redirect('auth_characters')
 
     payload = request.GET.get('sso')
     signature = request.GET.get('sig')
 
     if None in [payload, signature]:
         messages.error(request, 'No SSO payload or signature. Please contact support if this problem persists.')
-        return redirect('auth_dashboard')
+        return redirect('authentication:dashboard')
 
     # Validate the payload
     try:
@@ -63,7 +61,7 @@ def discourse_sso(request):
         assert len(payload) > 0
     except AssertionError:
         messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
-        return redirect('auth_dashboard')
+        return redirect('authentication:dashboard')
 
     key = str(settings.DISCOURSE_SSO_SECRET).encode('utf-8')
     h = hmac.new(key, payload, digestmod=hashlib.sha256)
@@ -71,7 +69,7 @@ def discourse_sso(request):
 
     if this_signature != signature:
         messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
-        return redirect('auth_dashboard')
+        return redirect('authentication:dashboard')
 
     ## Build the return payload
 
@@ -87,7 +85,7 @@ def discourse_sso(request):
     }
 
     if main_char:
-        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % main_char.main_char_id
+        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % main_char.character_id
 
     return_payload = base64.encodestring(urlencode(params).encode('utf-8'))
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)

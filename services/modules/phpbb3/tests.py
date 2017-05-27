@@ -8,7 +8,6 @@ except ImportError:
     import mock
 
 from django.test import TestCase, RequestFactory
-from django.conf import settings
 from django import urls
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
@@ -20,13 +19,13 @@ from .models import Phpbb3User
 from .tasks import Phpbb3Tasks
 
 MODULE_PATH = 'services.modules.phpbb3'
+DEFAULT_AUTH_GROUP = 'Member'
 
 
 def add_permissions():
     permission = Permission.objects.get(codename='access_phpbb3')
-    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
-    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
-    AuthUtils.add_permissions_to_groups([permission], [members, blues])
+    members = Group.objects.get_or_create(name=DEFAULT_AUTH_GROUP)[0]
+    AuthUtils.add_permissions_to_groups([permission], [members])
 
 
 class Phpbb3HooksTestCase(TestCase):
@@ -34,9 +33,6 @@ class Phpbb3HooksTestCase(TestCase):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
         Phpbb3User.objects.create(user=member, username=self.member)
-        self.blue = 'blue_user'
-        blue = AuthUtils.create_blue(self.blue)
-        Phpbb3User.objects.create(user=blue, username=self.blue)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = Phpbb3Service
@@ -44,20 +40,16 @@ class Phpbb3HooksTestCase(TestCase):
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
         self.assertTrue(Phpbb3Tasks.has_account(member))
-        self.assertTrue(Phpbb3Tasks.has_account(blue))
         self.assertFalse(Phpbb3Tasks.has_account(none_user))
 
     def test_service_enabled(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
 
         self.assertTrue(service.service_active_for_user(member))
-        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.Phpbb3Manager')
@@ -66,7 +58,7 @@ class Phpbb3HooksTestCase(TestCase):
         service.update_all_groups()
         # Check member and blue user have groups updated
         self.assertTrue(manager.update_groups.called)
-        self.assertEqual(manager.update_groups.call_count, 2)
+        self.assertEqual(manager.update_groups.call_count, 1)
 
     def test_update_groups(self):
         # Check member has Member group updated
@@ -77,7 +69,7 @@ class Phpbb3HooksTestCase(TestCase):
             self.assertTrue(manager.update_groups.called)
             args, kwargs = manager.update_groups.call_args
             user_id, groups = args
-            self.assertIn(settings.DEFAULT_AUTH_GROUP, groups)
+            self.assertIn(DEFAULT_AUTH_GROUP, groups)
             self.assertEqual(user_id, member.phpbb3.username)
 
         # Check none user does not have groups updated

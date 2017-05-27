@@ -8,7 +8,6 @@ except ImportError:
     import mock
 
 from django.test import TestCase, RequestFactory
-from django.conf import settings
 from django import urls
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
@@ -20,13 +19,13 @@ from .models import Ips4User
 from .tasks import Ips4Tasks
 
 MODULE_PATH = 'services.modules.ips4'
+DEFAULT_AUTH_GROUP = 'Member'
 
 
 def add_permissions():
     permission = Permission.objects.get(codename='access_ips4')
-    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
-    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
-    AuthUtils.add_permissions_to_groups([permission], [members, blues])
+    members = Group.objects.get_or_create(name=DEFAULT_AUTH_GROUP)[0]
+    AuthUtils.add_permissions_to_groups([permission], [members])
 
 
 class Ips4HooksTestCase(TestCase):
@@ -34,9 +33,6 @@ class Ips4HooksTestCase(TestCase):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
         Ips4User.objects.create(user=member, id='12345', username=self.member)
-        self.blue = 'blue_user'
-        blue = AuthUtils.create_blue(self.blue)
-        Ips4User.objects.create(user=blue, id='67891', username=self.blue)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = Ips4Service
@@ -44,20 +40,16 @@ class Ips4HooksTestCase(TestCase):
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
         self.assertTrue(Ips4Tasks.has_account(member))
-        self.assertTrue(Ips4Tasks.has_account(blue))
         self.assertFalse(Ips4Tasks.has_account(none_user))
 
     def test_service_enabled(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
 
         self.assertTrue(service.service_active_for_user(member))
-        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     def test_render_services_ctrl(self):

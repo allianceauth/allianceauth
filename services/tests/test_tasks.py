@@ -16,8 +16,7 @@ from services.tasks import validate_services
 
 class ServicesTasksTestCase(TestCase):
     def setUp(self):
-        self.member = AuthUtils.create_member('auth_member')
-        self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)
+        self.member = AuthUtils.create_user('auth_member')
 
     @mock.patch('services.tasks.ServicesHook')
     def test_validate_services(self, services_hook):

@@ -8,7 +8,6 @@ except ImportError:
     import mock
 
 from django.test import TestCase, RequestFactory
-from django.conf import settings
 from django.contrib.auth.models import User, Group, Permission
 from django import urls
 from django.core.exceptions import ObjectDoesNotExist
@@ -21,13 +20,13 @@ from .tasks import IpboardTasks
 from .manager import IPBoardManager
 
 MODULE_PATH = 'services.modules.ipboard'
+DEFAULT_AUTH_GROUP = 'Member'
 
 
 def add_permissions():
     permission = Permission.objects.get(codename='access_ipboard')
-    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
-    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
-    AuthUtils.add_permissions_to_groups([permission], [members, blues])
+    members = Group.objects.get_or_create(name=DEFAULT_AUTH_GROUP)[0]
+    AuthUtils.add_permissions_to_groups([permission], [members])
 
 
 class IpboardHooksTestCase(TestCase):
@@ -35,9 +34,6 @@ class IpboardHooksTestCase(TestCase):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
         IpboardUser.objects.create(user=member, username=self.member)
-        self.blue = 'blue_user'
-        blue = AuthUtils.create_blue(self.blue)
-        IpboardUser.objects.create(user=blue, username=self.blue)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = IpboardService
@@ -45,20 +41,16 @@ class IpboardHooksTestCase(TestCase):
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
         self.assertTrue(IpboardTasks.has_account(member))
-        self.assertTrue(IpboardTasks.has_account(blue))
         self.assertFalse(IpboardTasks.has_account(none_user))
 
     def test_service_enabled(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
 
         self.assertTrue(service.service_active_for_user(member))
-        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.IPBoardManager')
@@ -67,7 +59,7 @@ class IpboardHooksTestCase(TestCase):
         service.update_all_groups()
         # Check member and blue user have groups updated
         self.assertTrue(manager.update_groups.called)
-        self.assertEqual(manager.update_groups.call_count, 2)
+        self.assertEqual(manager.update_groups.call_count, 1)
 
     def test_update_groups(self):
         # Check member has Member group updated
@@ -158,7 +150,8 @@ class IpboardViewsTestCase(TestCase):
         args, kwargs = manager.add_user.call_args
         self.assertEqual(args[0], 'auth_member')  # Character name
         self.assertEqual(args[1], self.member.email)
-        self.assertEqual(self.member.ipboard.username, expected_username)
+        ipboard_user = IpboardUser.objects.get(user=self.member)
+        self.assertEqual(ipboard_user.username, expected_username)
 
     @mock.patch(MODULE_PATH + '.tasks.IPBoardManager')
     def test_deactivate(self, manager):

@@ -8,7 +8,6 @@ except ImportError:
     import mock
 
 from django.test import TestCase, RequestFactory
-from django.conf import settings
 from django import urls
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
@@ -20,13 +19,13 @@ from .models import SeatUser
 from .tasks import SeatTasks
 
 MODULE_PATH = 'services.modules.seat'
+DEFAULT_AUTH_GROUP = 'Member'
 
 
 def add_permissions():
     permission = Permission.objects.get(codename='access_seat')
-    members = Group.objects.get(name=settings.DEFAULT_AUTH_GROUP)
-    blues = Group.objects.get(name=settings.DEFAULT_BLUE_GROUP)
-    AuthUtils.add_permissions_to_groups([permission], [members, blues])
+    members = Group.objects.get_or_create(name=DEFAULT_AUTH_GROUP)[0]
+    AuthUtils.add_permissions_to_groups([permission], [members])
 
 
 class SeatHooksTestCase(TestCase):
@@ -34,9 +33,6 @@ class SeatHooksTestCase(TestCase):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
         SeatUser.objects.create(user=member, username=self.member)
-        self.blue = 'blue_user'
-        blue = AuthUtils.create_blue(self.blue)
-        SeatUser.objects.create(user=blue, username=self.blue)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user, disconnect_signals=True)
         self.service = SeatService
@@ -44,20 +40,16 @@ class SeatHooksTestCase(TestCase):
 
     def test_has_account(self):
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
         self.assertTrue(SeatTasks.has_account(member))
-        self.assertTrue(SeatTasks.has_account(blue))
         self.assertFalse(SeatTasks.has_account(none_user))
 
     def test_service_enabled(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        blue = User.objects.get(username=self.blue)
         none_user = User.objects.get(username=self.none_user)
 
         self.assertTrue(service.service_active_for_user(member))
-        self.assertTrue(service.service_active_for_user(blue))
         self.assertFalse(service.service_active_for_user(none_user))
 
     @mock.patch(MODULE_PATH + '.tasks.SeatManager')
@@ -66,7 +58,7 @@ class SeatHooksTestCase(TestCase):
         service.update_all_groups()
         # Check member and blue user have groups updated
         self.assertTrue(manager.update_roles.called)
-        self.assertEqual(manager.update_roles.call_count, 2)
+        self.assertEqual(manager.update_roles.call_count, 1)
 
     def test_update_groups(self):
         # Check member has Member group updated
@@ -77,7 +69,7 @@ class SeatHooksTestCase(TestCase):
             self.assertTrue(manager.update_roles.called)
             args, kwargs = manager.update_roles.call_args
             user_id, groups = args
-            self.assertIn(settings.DEFAULT_AUTH_GROUP, groups)
+            self.assertIn(DEFAULT_AUTH_GROUP, groups)
             self.assertEqual(user_id, member.seat.username)
 
         # Check none user does not have groups updated
