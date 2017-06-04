@@ -11,7 +11,7 @@ import groupmanagement.views
 import optimer.views
 import timerboard.views
 import fleetactivitytracking.views
-import fleetup.views
+import fleetup.urls
 import srp.views
 import notifications.views
 import hrapplications.views
@@ -75,12 +75,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
 
     # Fleetup
-    url(r'^fleetup/$', fleetup.views.fleetup_view, name='auth_fleetup_view'),
-    url(r'^fleetup/fittings/$', fleetup.views.fleetup_fittings, name='auth_fleetup_fittings'),
-    url(r'^fleetup/fittings/(?P<fittingnumber>[0-9]+)/$', fleetup.views.fleetup_fitting, name='auth_fleetup_fitting'),
-    url(r'^fleetup/doctrines/$', fleetup.views.fleetup_doctrines, name='auth_fleetup_doctrines'),
-    url(r'^fleetup/characters/$', fleetup.views.fleetup_characters, name='auth_fleetup_characters'),
-    url(r'^fleetup/doctrines/(?P<doctrinenumber>[0-9]+)/$', fleetup.views.fleetup_doctrine, name='auth_fleetup_doctrine'),
+    url(r'^fleetup/', include(fleetup.urls.urlpatterns)),
 
     # Authentication
     url(_(r'^login_user/'), authentication.views.login_user, name='auth_login_user'),

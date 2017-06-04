@@ -8,30 +8,7 @@
 
 {% block content %}
 <div class="col-lg-12">
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">{% trans "Fleet-Up" %}</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">{% trans "Ops and Timers" %} <span class="sr-only">(current)</span></a></li>
-                <li><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %}</a></li>
-                <li><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %}</a></li>
-                {% if perms.auth.human_resources %}
-                <li><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %}</a></li>
-                {% endif %}
-                <li></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{% include "fleetup/menu.html" %}
 <div class="panel">
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#operations">{% trans "Operations" %}</a></li>
