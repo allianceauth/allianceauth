@@ -8,15 +8,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('optimer', '0001_initial'),
+        ('optimer', '0002_auto_20170413_0442'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='optimer',
-            name='details',
-            field=models.CharField(default='', max_length=254),
-        ),
         migrations.AlterField(
             model_name='optimer',
             name='doctrine',
@@ -30,11 +25,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='optimer',
             name='fc',
-            field=models.CharField(default='', max_length=254),
-        ),
-        migrations.AlterField(
-            model_name='optimer',
-            name='location',
             field=models.CharField(default='', max_length=254),
         ),
         migrations.AlterField(

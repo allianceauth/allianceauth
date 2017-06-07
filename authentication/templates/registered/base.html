@@ -157,11 +157,14 @@
                             </a>
                         </li>
 
-                        <li>
-                            <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
-                                <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
-                            </a>
-                        </li>
+                        {% if perms.srp.access_srp %}
+                            <li>
+                                <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
+                                    <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
+                                </a>
+                            </li>
+                        {% endif %}
+
                         {% menu_aux %}
 
                         {% if perms.auth.jabber_broadcast or perms.auth.jabber_broadcast_all or user.is_superuser %}

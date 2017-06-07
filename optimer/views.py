@@ -18,10 +18,10 @@ logger = logging.getLogger(__name__)
 @permission_required('auth.optimer_view')
 def optimer_view(request):
     logger.debug("optimer_view called by user %s" % request.user)
-    render_items = {'optimer': optimer.objects.all(),
-                    'future_timers': optimer.objects.all().filter(
+    render_items = {'optimer': OpTimer.objects.all(),
+                    'future_timers': OpTimer.objects.all().filter(
                         start__gte=timezone.now()),
-                    'past_timers': optimer.objects.all().filter(
+                    'past_timers': OpTimer.objects.all().filter(
                         start__lt=timezone.now()).order_by('-start')}
 
     return render(request, 'registered/operationmanagement.html', context=render_items)

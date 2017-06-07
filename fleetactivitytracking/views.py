@@ -3,16 +3,14 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
 from eveonline.managers import EveManager
-from authentication.models import AuthServicesInfo
 from fleetactivitytracking.forms import FatlinkForm
 from fleetactivitytracking.models import Fatlink, Fat
 
@@ -60,7 +58,7 @@ class MemberStat(object):
         if mainchid:
             self.mainchid = mainchid
         else:
-            self.mainchid = request.user.profile.main_character.character_id if request.user.profile.main_character else None
+            self.mainchid = member.profile.main_character.character_id if member.profile.main_character else None
         self.mainchar = EveCharacter.objects.get(character_id=self.mainchid)
         nchars = 0
         for alliance_id in settings.STR_ALLIANCE_IDS:

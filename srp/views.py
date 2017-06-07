@@ -272,11 +272,11 @@ def srp_request_approve(request):
             logger.info("Approved SRP request id %s for character %s by user %s" % (
                 srp_request_id, srpuserrequest.character, request.user))
             notify(
-                srpuserrequest.character.user,
+                srpuserrequest.character.character_ownership.user,
                 'SRP Request Approved',
                 level='success',
                 message='Your SRP request for a %s lost during %s has been approved for %s ISK.' % (
-                    srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name, srpuserrequest.srp_total_amount)
+                    srpuserrequest.srp_ship_name, srpuserrequest.srp_fleet_main.fleet_name, intcomma(srpuserrequest.srp_total_amount))
             )
     if stored_fleet_view is None:
         logger.error("Unable to approve srp request id %s on behalf of user %s - request matching id not found." % (
@@ -308,7 +308,7 @@ def srp_request_reject(request):
             logger.info("SRP request id %s for character %s rejected by %s" % (
                 srp_request_id, srpuserrequest.character, request.user))
             notify(
-                srpuserrequest.character.user,
+                srpuserrequest.character.character_ownership.user,
                 'SRP Request Rejected',
                 level='danger',
                 message='Your SRP request for a %s lost during %s has been rejected.' % (
