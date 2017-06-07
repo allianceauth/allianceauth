@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from notifications import notify
-from services.modules.discord.manager import DiscordOAuthManager
+from services.modules.discord.manager import DiscordOAuthManager, DiscordApiBackoff
 from services.tasks import only_one
 from .models import DiscordUser
 
@@ -74,6 +74,10 @@ class DiscordTasks:
             logger.debug("Updating user %s discord groups to %s" % (user, groups))
             try:
                 DiscordOAuthManager.update_groups(user.discord.uid, groups)
+            except DiscordApiBackoff as bo:
+                logger.info("Discord group sync API back off for %s, "
+                            "retrying in %s seconds" % (user, bo.retry_after))
+                raise task_self.retry(countdown=bo.retry_after)
             except Exception as e:
                 if task_self:
                     logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)

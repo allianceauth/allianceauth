@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'optimer',
     'corputils',
     'fleetactivitytracking',
+    'fleetup',
     'notifications',
     'esi',
     'permissions_tool',
@@ -579,6 +580,10 @@ LOGGING = {
         'fleetactivitytracking': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'ERROR',
+        },
+        'fleetup': {
+            'handlers': ['log_file', 'console', 'notifications'],
+            'level': 'DEBUG',
         },
         'util': {
             'handlers': ['log_file', 'console', 'notifications'],
