@@ -10,8 +10,8 @@
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Corporations" %}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <a href="#" id="dLabel" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">{% trans "Corporations" %}<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                 {% for corpstat in available %}
                                     <li>
                                         <a href="{% url 'corputils:view_corp' corpstat.corp.corporation_id %}">{{ corpstat.corp.corporation_name }}</a>
@@ -27,7 +27,7 @@
                     </ul>
                     <form class="navbar-form navbar-right" role="search" action="{% url 'corputils:search' %}" method="GET">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="search_string" placeholder="{% if search_string %}{{ search_string }}{% else %}{% trans "Search characters..." %}{% endif %}">
+                            <input type="text" class="form-control" name="search_string" placeholder="{% if search_string %}{{ search_string }}{% else %}{% trans "Search all corporations..." %}{% endif %}">
                         </div>
                     </form>
                 </div>
@@ -36,4 +36,3 @@
         </div>
     </div>
 {% endblock %}
-

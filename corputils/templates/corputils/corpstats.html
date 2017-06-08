@@ -1,7 +1,6 @@
 {% extends 'corputils/base.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load bootstrap_pagination %}
 {% block member_data %}
     {% if corpstats %}
         <div class="row">
@@ -58,104 +57,117 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active" id="mains">
                                 {% if mains %}
-                                    <div class="text-center">{% bootstrap_paginate mains range=10 %}</div>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            {% for main in mains %}
+                                        <table class="table table-hover" id="table-mains">
+                                            <thead>
                                                 <tr>
-                                                    <td class="text-center" style="vertical-align:middle">
-                                                        <div class="thumbnail"
-                                                             style="border: 0 none; box-shadow: none; background: transparent;">
-                                                            <img src="{{ main.portrait_url_64 }}" class="img-circle">
-                                                            <div class="caption text-center">
-                                                                {{ main }}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <table class="table table-hover">
-                                                            {% for alt in main.alts %}
-                                                                {% if forloop.first %}
-                                                                    <tr>
-                                                                        <th class="text-center">{% trans "Character" %}</th>
-                                                                        <th class="text-center">{% trans "Corporation" %}</th>
-                                                                        <th class="text-center">{% trans "Alliance" %}</th>
-                                                                        <th class="text-center"></th>
-                                                                    </tr>
-                                                                {% endif %}
-                                                                <tr>
-                                                                    <td class="text-center">{{ alt.character_name }}</td>
-                                                                    <td class="text-center">{{ alt.corporation_name }}</td>
-                                                                    <td class="text-center">{{ alt.alliance_name }}</td>
-                                                                    <td class="text-center">
-                                                                        <a href="https://zkillboard.com/character/{{ alt.character_id }}/"
-                                                                           class="label label-danger" target="_blank">
-                                                                            {% trans "Killboard" %}
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                        </table>
-                                                    </td>
+                                                    <th></th>
+                                                    <th></th>
                                                 </tr>
-                                            {% endfor %}
+                                            </thead>
+                                            <tbody>
+                                                {% for main in mains %}
+                                                    <tr>
+                                                        <td class="text-center" style="vertical-align:middle">
+                                                            <div class="thumbnail"
+                                                                 style="border: 0 none; box-shadow: none; background: transparent;">
+                                                                <img src="{{ main.portrait_url_64 }}" class="img-circle">
+                                                                <div class="caption text-center">
+                                                                    {{ main }}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <table class="table table-hover">
+                                                                {% for alt in main.alts %}
+                                                                    {% if forloop.first %}
+                                                                        <tr>
+                                                                            <th class="text-center">{% trans "Character" %}</th>
+                                                                            <th class="text-center">{% trans "Corporation" %}</th>
+                                                                            <th class="text-center">{% trans "Alliance" %}</th>
+                                                                            <th class="text-center"></th>
+                                                                        </tr>
+                                                                    {% endif %}
+                                                                    <tr>
+                                                                        <td class="text-center">{{ alt.character_name }}</td>
+                                                                        <td class="text-center">{{ alt.corporation_name }}</td>
+                                                                        <td class="text-center">{{ alt.alliance_name }}</td>
+                                                                        <td class="text-center">
+                                                                            <a href="https://zkillboard.com/character/{{ alt.character_id }}/"
+                                                                               class="label label-danger" target="_blank">
+                                                                                {% trans "Killboard" %}
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
                                         </table>
                                     </div>
                                 {% endif %}
                             </div>
                             <div class="tab-pane fade" id="members">
                                 {% if members %}
-                                    <div class="text-center">{% bootstrap_paginate members range=10 %}</div>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <tr>
-                                                <th></th>
-                                                <th class="text-center">{% trans "Character" %}</th>
-                                                <th class="text-center"></th>
-                                                <th class="text-center">{% trans "Main Character" %}</th>
-                                                <th class="text-center">{% trans "Main Corporation" %}</th>
-                                                <th class="text-center">{% trans "Main Alliance" %}</th>
-                                            </tr>
-                                            {% for member in members %}
-                                                <tr {% if not member.registered %}class="danger"{% endif %}>
-                                                    <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
-                                                    <td class="text-center">{{ member.character_name }}</td>
-                                                    <td class="text-center"><a
-                                                            href="https://zkillboard.com/character/{{ member.character_id }}/"
-                                                            class="label label-danger"
-                                                            target="_blank">{% trans "Killboard" %}</a></td>
-                                                    <td class="text-center">{{ member.main_character.character_name }}</td>
-                                                    <td class="text-center">{{ member.main_character.corporation_name }}</td>
-                                                    <td class="text-center">{{ member.main_character.alliance_name }}</td>
+                                        <table class="table table-hover" id="table-members">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="text-center">{% trans "Character" %}</th>
+                                                    <th class="text-center"></th>
+                                                    <th class="text-center">{% trans "Main Character" %}</th>
+                                                    <th class="text-center">{% trans "Main Corporation" %}</th>
+                                                    <th class="text-center">{% trans "Main Alliance" %}</th>
                                                 </tr>
-                                            {% endfor %}
+                                            </thead>
+                                            <tbody>
+                                                {% for member in members %}
+                                                    <tr {% if not member.registered %}class="danger"{% endif %}>
+                                                        <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
+                                                        <td class="text-center">{{ member.character_name }}</td>
+                                                        <td class="text-center"><a
+                                                                href="https://zkillboard.com/character/{{ member.character_id }}/"
+                                                                class="label label-danger"
+                                                                target="_blank">{% trans "Killboard" %}</a></td>
+                                                        <td class="text-center">{{ member.main_character.character_name }}</td>
+                                                        <td class="text-center">{{ member.main_character.corporation_name }}</td>
+                                                        <td class="text-center">{{ member.main_character.alliance_name }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
                                         </table>
                                     </div>
                                 {% endif %}
                             </div>
                             <div class="tab-pane fade" id="unregistered">
                                 {% if unregistered %}
-                                    <div class="text-center">{% bootstrap_paginate unregistered range=10 %}</div>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <tr>
-                                                <th></th>
-                                                <th class="text-center">{% trans "Character" %}</th>
-                                                <th class="text-center"></th>
-                                            </tr>
-                                            {% for member in unregistered %}
-                                                <tr class="danger">
-                                                    <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
-                                                    <td class="text-center">{{ member.character_name }}</td>
-                                                    <td class="text-center">
-                                                        <a href="https://zkillboard.com/character/{{ member.character_id }}/"
-                                                           class="label label-danger"
-                                                           target="_blank">
-                                                            {% trans "Killboard" %}
-                                                        </a>
-                                                    </td>
+                                        <table class="table table-hover" id="table-unregistered">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="text-center">{% trans "Character" %}</th>
+                                                    <th class="text-center"></th>
                                                 </tr>
-                                            {% endfor %}
+                                            </thead>
+                                            <tbody>
+                                                {% for member in unregistered %}
+                                                    <tr class="danger">
+                                                        <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
+                                                        <td class="text-center">{{ member.character_name }}</td>
+                                                        <td class="text-center">
+                                                            <a href="https://zkillboard.com/character/{{ member.character_id }}/"
+                                                               class="label label-danger"
+                                                               target="_blank">
+                                                                {% trans "Killboard" %}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
                                         </table>
                                     </div>
                                 {% endif %}
@@ -166,4 +178,18 @@
             </div>
         </div>
     {% endif %}
+{% endblock %}
+{% block extra_javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#table-mains').DataTable();
+            $('#table-members').DataTable();
+            $('#table-unregistered').DataTable();
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.css"/>
 {% endblock %}

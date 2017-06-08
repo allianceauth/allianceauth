@@ -4,27 +4,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 from eveonline.models import EveCharacter, EveCorporationInfo
 from eveonline.managers import EveManager
 from corputils.models import CorpStats
 from esi.decorators import token_required
 from bravado.exception import HTTPError
-
-MEMBERS_PER_PAGE = int(getattr(settings, 'CORPSTATS_MEMBERS_PER_PAGE', 20))
-
-
-def get_page(model_list, page_num):
-    p = Paginator(model_list, MEMBERS_PER_PAGE)
-    try:
-        members = p.page(page_num)
-    except PageNotAnInteger:
-        members = p.page(1)
-    except EmptyPage:
-        members = p.page(p.num_pages)
-    return members
 
 
 def access_corpstats_test(user):
@@ -94,17 +79,10 @@ def corpstats_view(request, corp_id=None):
         'available': available,
     }
 
-    # paginate
-    members = []
-    mains = []
-    unregistered = []
     if corpstats:
-        page = request.GET.get('page', 1)
-        members = get_page(corpstats.members.all(), page)
-        mains = get_page(corpstats.mains.all(), page)
-        unregistered = get_page(corpstats.unregistered_members.all(), page)
-
-    if corpstats:
+        members = corpstats.members.all()
+        mains = corpstats.mains.all()
+        unregistered = corpstats.unregistered_members.all()
         context.update({
             'corpstats': corpstats,
             'members': members,
@@ -142,12 +120,10 @@ def corpstats_search(request):
             similar = corpstats.members.filter(character_name__icontains=search_string)
             for s in similar:
                 results.append((corpstats, s))
-        page = request.GET.get('page', 1)
         results = sorted(results, key=lambda x: x[1].character_name)
-        results_page = get_page(results, page)
         context = {
             'available': CorpStats.objects.visible_to(request.user),
-            'results': results_page,
+            'results': results,
             'search_string': search_string,
         }
         return render(request, 'corputils/search.html', context=context)

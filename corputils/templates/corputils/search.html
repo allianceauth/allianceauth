@@ -1,38 +1,50 @@
 {% extends "corputils/base.html" %}
 {% load i18n %}
 {% load bootstrap_pagination %}
-{% load eveonline_extras %}
 {% block member_data %}
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <div class="panel-title pull-left">{% trans "Search Results" %}</div>
         </div>
         <div class="panel-body">
-            <div class="text-center">
-                {% bootstrap_paginate results range=10 %}
-            </div>
-            <table class="table table-hover">
-                <tr>
-                    <th class="text-center"></th>
-                    <th class="text-center">{% trans "Character" %}</th>
-                    <th class="text-center">{% trans "Corporation" %}</th>
-                    <th class="text-center">{% trans "zKillboard" %}</th>
-                    <th class="text-center">{% trans "Main Character" %}</th>
-                    <th class="text-center">{% trans "Main Corporation" %}</th>
-                    <th class="text-center">{% trans "Main Alliance" %}</th>
-                </tr>
-                {% for result in results %}
-                    <tr {% if not result.1.registered %}class="danger"{% endif %}>
-                        <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle"></td>
-                        <td class="text-center">{{ result.1.character_name }}</td>
-                        <td class="text-center">{{ result.0.corp.corporation_name }}</td>
-                        <td class="text-center"><a href="https://zkillboard.com/character/{{ result.1.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
-                        <td class="text-center">{{ result.1.main_character.character_name }}</td>
-                        <td class="text-center">{{ result.1.main_character.corporation_name }}</td>
-                        <td class="text-center">{{ result.1.main_character.alliance_name }}</td>
+            <table class="table table-hover" id="table-search">
+                <thead>
+                    <tr>
+                        <th class="text-center"></th>
+                        <th class="text-center">{% trans "Character" %}</th>
+                        <th class="text-center">{% trans "Corporation" %}</th>
+                        <th class="text-center">{% trans "zKillboard" %}</th>
+                        <th class="text-center">{% trans "Main Character" %}</th>
+                        <th class="text-center">{% trans "Main Corporation" %}</th>
+                        <th class="text-center">{% trans "Main Alliance" %}</th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr {% if not result.1.registered %}class="danger"{% endif %}>
+                            <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle"></td>
+                            <td class="text-center">{{ result.1.character_name }}</td>
+                            <td class="text-center">{{ result.0.corp.corporation_name }}</td>
+                            <td class="text-center"><a href="https://zkillboard.com/character/{{ result.1.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
+                            <td class="text-center">{{ result.1.main_character.character_name }}</td>
+                            <td class="text-center">{{ result.1.main_character.corporation_name }}</td>
+                            <td class="text-center">{{ result.1.main_character.alliance_name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
+{% endblock %}
+{% block extra_javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#table-search').DataTable();
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.css"/>
 {% endblock %}
