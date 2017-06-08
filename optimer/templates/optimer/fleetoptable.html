@@ -32,9 +32,9 @@
                 {% if perms.auth.optimer_management %}
                     <td class="text-center">{{ ops.eve_character }}</td>
                     <td class="text-center">
-                        <a href="{% url 'auth_remove_optimer' ops.id %}" class="btn btn-danger">
+                        <a href="{% url 'optimer:remove' ops.id %}" class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
-                    </a><a href="{% url 'auth_edit_optimer' ops.id %}" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </a><a href="{% url 'optimer:edit' ops.id %}" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                 {% endif %}
             </tr>

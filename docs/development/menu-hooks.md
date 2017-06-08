@@ -7,17 +7,9 @@
 
 The menu hooks allow you to dynamically specify menu items from your plugin app or service. To achieve this you should subclass or instantiate the `services.hooks.MenuItemHook` class and then register the menu item with one of the hooks.
 
-There are three levels of Menu Item Hooks
-
-- `menu_main_hook`
-- `menu_aux_hook`
-- `menu_util_hook`
-
-These represent the 3 levels of menu displayed on the site.
-
 To register a MenuItemHook class you would do the following:
 
-    @hooks.register('menu_util_hook')
+    @hooks.register('menu_item_hook')
     def register_menu():
         return MenuItemHook('Example Item', 'glyphicon glyphicon-heart', 'example_url_name', 150)
         
@@ -34,5 +26,7 @@ The classes that should be applied to the bootstrap menu item icon
 The name of the Django URL to use
 #### order
 An integer which specifies the order of the menu item, lowest to highest
+#### navactive
+A list of views or namespaces the link should be highlighted on. See [django-navhelper](https://github.com/geelweb/django-navhelper#navactive) for usage. Defaults to the supplied `url_name`.
 
 If you cannot get the menu item to look the way you wish, you are free to subclass and override the default render function and the template used.

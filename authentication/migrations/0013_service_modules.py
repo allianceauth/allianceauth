@@ -23,7 +23,7 @@ def optional_dependencies():
     dependencies = []
 
     # Skip adding module dependencies if the settings specifies that services have been migrated
-    if hasattr(settings, 'SERVICES_MIGRATED') and settings.SERVICES_MIGRATED:
+    if not hasattr(settings, 'SERVICES_MIGRATED') or settings.SERVICES_MIGRATED:
         return dependencies
 
     if 'services.modules.xenforo' in installed_apps:

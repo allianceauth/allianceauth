@@ -30,7 +30,6 @@ def timer_view(request):
         corp_timers = Timer.objects.all().filter(corp_timer=True).filter(eve_corp=corp)
     else:
         corp_timers = []
-    timer_list = Timer.objects.filter(corp_timer=False)
     render_items = {'timers': Timer.objects.all().filter(corp_timer=False),
                     'corp_timers': corp_timers,
                     'future_timers': Timer.objects.all().filter(corp_timer=False).filter(
@@ -38,7 +37,7 @@ def timer_view(request):
                     'past_timers': Timer.objects.all().filter(corp_timer=False).filter(
                         eve_time__lt=datetime.datetime.now())}
 
-    return render(request, 'registered/timermanagement.html', context=render_items)
+    return render(request, 'timerboard/management.html', context=render_items)
 
 
 @login_required
@@ -84,7 +83,7 @@ def add_timer_view(request):
 
     render_items = {'form': form}
 
-    return render(request, 'registered/addtimer.html', context=render_items)
+    return render(request, 'timerboard/add.html', context=render_items)
 
 
 @login_required
@@ -150,4 +149,4 @@ def edit_timer(request, timer_id):
             'minutes_left': tdminutes,
         }
         form = TimerForm(initial=data)
-    return render(request, 'registered/timerupdate.html', context={'form': form})
+    return render(request, 'timerboard/update.html', context={'form': form})

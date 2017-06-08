@@ -81,11 +81,29 @@ class JabberBroadcast(MenuItemHook):
                               'auth_jabber_broadcast_view')
 
     def render(self, request):
-        if request.user.has_perm('auth.jabber_broadcast'):
+        if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):
             return MenuItemHook.render(self, request)
         return ''
 
 
-@hooks.register('menu_util_hook')
+class FleetBroadcastFormatter(MenuItemHook):
+    def __init__(self):
+        MenuItemHook.__init__(self,
+                              'Fleet Broadcast Formatter',
+                              'fa fa-lock fa-fw fa-space-shuttle grayiconecolor',
+                              'auth_fleet_format_tool_view')
+
+    def render(self, request):
+        if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):
+            return MenuItemHook.render(self, request)
+        return ''
+
+
+@hooks.register('menu_item_hook')
+def register_formatter():
+    return FleetBroadcastFormatter()
+
+
+@hooks.register('menu_item_hook')
 def register_menu():
     return JabberBroadcast()

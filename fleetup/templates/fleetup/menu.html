@@ -14,11 +14,11 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="{% navactive request 'auth_fleetup_view' %}"><a href="{% url 'auth_fleetup_view' %}">{% trans "Ops and Timers" %}</a></li>
-                <li class="{% navactive request 'auth_fleetup_doctrines auth_fleetup_doctrine' %}"><a href="{% url 'auth_fleetup_doctrines' %}">{% trans "Doctrines" %}</a></li>
-                <li class="{% navactive request 'auth_fleetup_fittings auth_fleetup_fitting' %}"><a href="{% url 'auth_fleetup_fittings' %}">{% trans "Fittings" %}</a></li>
+                <li class="{% navactive request 'fleetup:view' %}"><a href="{% url 'fleetup:view' %}">{% trans "Ops and Timers" %}</a></li>
+                <li class="{% navactive request 'fleetup:doctrines fleetup:doctrine' %}"><a href="{% url 'fleetup:doctrines' %}">{% trans "Doctrines" %}</a></li>
+                <li class="{% navactive request 'fleetup:fittings fleetup:fitting' %}"><a href="{% url 'fleetup:fittings' %}">{% trans "Fittings" %}</a></li>
                 {% if perms.auth.corp_stats %}
-                <li class="{% navactive request 'auth_fleetup_characters' %}"><a href="{% url 'auth_fleetup_characters' %}">{% trans "Characters" %}</a></li>
+                <li class="{% navactive request 'fleetup:characters' %}"><a href="{% url 'fleetup:characters' %}">{% trans "Characters" %}</a></li>
                 {% endif %}
             </ul>
         </div>

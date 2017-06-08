@@ -10,10 +10,12 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from eveonline.models import EveCharacter
 from eveonline.models import EveCorporationInfo
+from eveonline.models import EveAllianceInfo
 from eveonline.managers import EveManager
 from fleetactivitytracking.forms import FatlinkForm
 from fleetactivitytracking.models import Fatlink, Fat
-
+from authentication.models import CharacterOwnership
+from django.contrib.auth.models import User
 from esi.decorators import token_required
 
 from slugify import slugify
@@ -61,10 +63,10 @@ class MemberStat(object):
             self.mainchid = member.profile.main_character.character_id if member.profile.main_character else None
         self.mainchar = EveCharacter.objects.get(character_id=self.mainchid)
         nchars = 0
-        for alliance_id in settings.STR_ALLIANCE_IDS:
-            nchars += EveCharacter.objects.filter(user_id=member['user_id']).filter(alliance_id=alliance_id).count()
+        for alliance in EveAllianceInfo.objects.all():
+            nchars += EveCharacter.objects.filter(character_ownership__user=member).filter(alliance_id=alliance.alliance_id).count()
         self.n_chars = nchars
-        self.n_fats = Fat.objects.filter(user_id=member['user_id']).filter(
+        self.n_fats = Fat.objects.filter(user_id=member.pk).filter(
             fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
 
     def avg_fat(self):
@@ -118,11 +120,12 @@ def fatlink_statistics_corp_view(request, corpid, year=None, month=None):
     start_of_next_month = first_day_of_next_month(year, month)
     start_of_previous_month = first_day_of_previous_month(year, month)
     fat_stats = {}
-    corp_members = EveCharacter.objects.filter(corporation_id=corpid).values('user_id').distinct()
+    corp_members = CharacterOwnership.objects.filter(character__corporation_id=corpid).values('user_id').distinct()
 
     for member in corp_members:
+        print(member)
         try:
-            fat_stats[member['user_id']] = MemberStat(member, start_of_month, start_of_next_month)
+            fat_stats[member['user_id']] = MemberStat(User.objects.get(pk=member['user_id']), start_of_month, start_of_next_month)
         except ObjectDoesNotExist:
             continue
 
@@ -255,12 +258,10 @@ def click_fatlink_view(request, token, hash, fatname):
             location['solar_system_name'] = \
                 c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
                     'name']
-            print(location)
             if location['station_id']:
                 location['station_name'] = \
                     c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
             elif location['structure_id']:
-                print('HERE')
                 c = token.get_esi_client(Universe='v1')
                 location['station_name'] = \
                     c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
@@ -291,7 +292,7 @@ def click_fatlink_view(request, token, hash, fatname):
             return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
     else:
         messages.error(request, _('FAT link has expired.'))
-    return redirect(fatlink_view)
+    return redirect('fatlink:view')
 
 
 @login_required
@@ -324,8 +325,8 @@ def create_fatlink_view(request):
             else:
                 form = FatlinkForm()
                 context = {'form': form, 'badrequest': True}
-                return render(request, 'registered/fatlinkformatter.html', context=context)
-            return redirect('auth_fatlink_view')
+                return render(request, 'fleetactivitytracking/fatlinkformatter.html', context=context)
+            return redirect('fatlink:view')
 
     else:
         form = FatlinkForm()
@@ -341,7 +342,7 @@ def create_fatlink_view(request):
 def modify_fatlink_view(request, hash=""):
     logger.debug("modify_fatlink_view called by user %s" % request.user)
     if not hash:
-        return redirect('auth_fatlink_view')
+        return redirect('fatlink:view')
 
     fatlink = Fatlink.objects.filter(hash=hash)[0]
 
@@ -355,7 +356,7 @@ def modify_fatlink_view(request, hash=""):
     if request.GET.get('deletefat', None):
         logger.debug("Removing fleetactivitytracking  %s" % fatlink.name)
         fatlink.delete()
-        return redirect('auth_fatlink_view')
+        return redirect('fatlink:view')
 
     registered_fats = Fat.objects.filter(fatlink=fatlink).order_by('character__character_name')
 

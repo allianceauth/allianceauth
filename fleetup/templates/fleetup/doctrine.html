@@ -33,7 +33,7 @@
                                 {% for item in Role.list %}
                                 <tr>
                                     <td>
-                                       <a href="{% url 'auth_fleetup_fitting' item.FittingId %}"><img src="https://image.eveonline.com/InventoryType/{{ item.EveTypeId }}_32.png"></a>
+                                       <a href="{% url 'fleetup:fitting' item.FittingId %}"><img src="https://image.eveonline.com/InventoryType/{{ item.EveTypeId }}_32.png"></a>
                                     </td>
                                     <td>
                                         {{ item.Name }}

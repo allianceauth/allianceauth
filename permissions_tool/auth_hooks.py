@@ -1,5 +1,6 @@
-from services.hooks import MenuItemHook
+from services.hooks import MenuItemHook, UrlHook
 from alliance_auth import hooks
+from permissions_tool import urls
 
 
 class PermissionsTool(MenuItemHook):
@@ -7,7 +8,9 @@ class PermissionsTool(MenuItemHook):
         MenuItemHook.__init__(self,
                               'Permissions Audit',
                               'fa fa-key fa-id-card grayiconecolor',
-                              'permissions_overview', 400)
+                              'permissions_tool:overview',
+                              order=400,
+                              navactive=['permissions_tool:'])
 
     def render(self, request):
         if request.user.has_perm('permissions_tool.audit_permissions'):
@@ -15,6 +18,11 @@ class PermissionsTool(MenuItemHook):
         return ''
 
 
-@hooks.register('menu_util_hook')
+@hooks.register('menu_item_hook')
 def register_menu():
     return PermissionsTool()
+
+
+@hooks.register('url_hook')
+def register_url():
+    return UrlHook(urls, 'permissions_tool', r'^permissions/')

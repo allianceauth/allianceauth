@@ -16,6 +16,7 @@ from django.contrib import messages
 from celery.schedules import crontab
 
 INSTALLED_APPS = [
+    # Core apps - required to function
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,25 +26,27 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_celery_beat',
     'bootstrapform',
+    'geelweb.django.navhelper',
+    'bootstrap_pagination',
+    'sortedm2m',
     'authentication',
     'services',
     'eveonline',
     'groupmanagement',
+    'notifications',
+    'esi',
+
+    # Optional apps - remove if not desired
+    'corputils',
     'hrapplications',
     'timerboard',
     'srp',
     'optimer',
-    'corputils',
-    'fleetactivitytracking',
     'fleetup',
-    'notifications',
-    'esi',
+    'fleetactivitytracking',
     'permissions_tool',
-    'geelweb.django.navhelper',
-    'bootstrap_pagination',
-    'sortedm2m',
 
-    # Services - comment out if not used
+    # Services - remove if not used
     'services.modules.mumble',
     'services.modules.discord',
     'services.modules.discourse',
@@ -135,8 +138,6 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'services.context_processors.auth_settings',
                 'notifications.context_processors.user_notification_count',
-                'authentication.context_processors.states',
-                'authentication.context_processors.membership_state',
                 'groupmanagement.context_processors.can_manage_groups',
             ],
         },
@@ -164,7 +165,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend']
+AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend', 'django.contrib.auth.backends.ModelBackend']
 LOGIN_URL = 'auth_login_user'
 
 # Internationalization

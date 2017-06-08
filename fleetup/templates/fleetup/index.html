@@ -62,7 +62,7 @@
                                         {% if start.doctrine %}
                                         {% for doctrine in start.doctrine %}
                                             
-                                            <a href="{% url 'auth_fleetup_doctrine' doctrine.Id %}" class="label label-success">{{ doctrine.Name }}</a>
+                                            <a href="{% url 'fleetup:doctrine' doctrine.Id %}" class="label label-success">{{ doctrine.Name }}</a>
                                             
                                         {% endfor %}
                                             

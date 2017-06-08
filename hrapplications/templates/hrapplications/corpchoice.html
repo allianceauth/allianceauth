@@ -14,7 +14,7 @@
                     {% for choice in choices %}
                         <tr>
                             <td class="text-center">
-                                <a href="{% url 'auth_hrapplication_create_view' choice.0 %}" class="btn btn-primary" title="Apply">{{ choice.1 }}</a>
+                                <a href="{% url 'hrapplications:create_view' choice.0 %}" class="btn btn-primary" title="Apply">{{ choice.1 }}</a>
                             </td>
                         </tr>
                     {% endfor %}

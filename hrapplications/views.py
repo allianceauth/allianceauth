@@ -10,7 +10,6 @@ from hrapplications.models import ApplicationResponse
 from hrapplications.models import ApplicationComment
 from hrapplications.forms import HRApplicationCommentForm
 from hrapplications.forms import HRApplicationSearchForm
-from eveonline.models import EveCharacter
 
 import logging
 
@@ -44,7 +43,7 @@ def hr_application_management_view(request):
         'search_form': HRApplicationSearchForm(),
         'create': create_application_test(request.user)
     }
-    return render(request, 'registered/hrapplicationmanagement.html', context=context)
+    return render(request, 'hrapplications/management.html', context=context)
 
 
 @login_required
@@ -67,14 +66,14 @@ def hr_application_create_view(request, form_id=None):
             return redirect('auth_hrapplications_view')
         else:
             questions = app_form.questions.all()
-            return render(request, 'registered/hrapplicationcreate.html',
+            return render(request, 'hrapplications/create.html',
                           context={'questions': questions, 'corp': app_form.corp})
     else:
         choices = []
         for app_form in ApplicationForm.objects.all():
             if not Application.objects.filter(user=request.user).filter(form=app_form).exists():
                 choices.append((app_form.id, app_form.corp.corporation_name))
-        return render(request, 'registered/hrapplicationcorpchoice.html', context={'choices': choices})
+        return render(request, 'hrapplications/corpchoice.html', context={'choices': choices})
 
 
 @login_required
@@ -89,7 +88,7 @@ def hr_application_personal_view(request, app_id):
             'comments': ApplicationComment.objects.filter(application=app),
             'comment_form': HRApplicationCommentForm(),
         }
-        return render(request, 'registered/hrapplicationview.html', context=context)
+        return render(request, 'hrapplications/view.html', context=context)
     else:
         logger.warn("User %s not authorized to view %s" % (request.user, app))
         return redirect('auth_hrapplications_view')
@@ -140,7 +139,7 @@ def hr_application_view(request, app_id):
         'comments': ApplicationComment.objects.filter(application=app),
         'comment_form': form,
     }
-    return render(request, 'registered/hrapplicationview.html', context=context)
+    return render(request, 'hrapplications/view.html', context=context)
 
 
 @login_required
@@ -232,11 +231,11 @@ def hr_application_search(request):
 
             context = {'applications': applications, 'search_form': HRApplicationSearchForm()}
 
-            return render(request, 'registered/hrapplicationsearchview.html', context=context)
+            return render(request, 'hrapplications/searchview.html', context=context)
         else:
             logger.debug("Form invalid - returning for user %s to retry." % request.user)
             context = {'applications': None, 'search_form': form}
-            return render(request, 'registered/hrapplicationsearchview.html', context=context)
+            return render(request, 'hrapplications/searchview.html', context=context)
 
     else:
         logger.debug("Returning empty search form for user %s" % request.user)
@@ -258,4 +257,4 @@ def hr_application_mark_in_progress(request, app_id):
     else:
         logger.warn(
             "User %s unable to mark %s in progress: already being reviewed by %s" % (request.user, app, app.reviewer))
-    return redirect("auth_hrapplication_view", app_id)
+    return redirect("hrapplications:view", app_id)

@@ -51,11 +51,11 @@
                 <div class="text-right">
                     {% if perms.auth.srp_management %}
                         {% if fleet_status == "Completed" %}
-                            <a href="{% url 'auth_srp_fleet_mark_uncompleted' fleet_id %}" class="btn btn-warning">
+                            <a href="{% url 'srp:mark_uncompleted' fleet_id %}" class="btn btn-warning">
                                 {% trans "Mark Incomplete" %}
                             </a>
                         {% else %}
-                            <a href="{% url 'auth_srp_fleet_mark_completed' fleet_id %}" class="btn btn-success">
+                            <a href="{% url 'srp:mark_completed' fleet_id %}" class="btn btn-success">
                                 {% trans "Mark Completed" %}
                             </a>
                         {% endif %}
@@ -71,13 +71,13 @@
                         <b><span style="padding-right:2.5em">{% trans "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
                         <b><span style="padding-right:2.5em">{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
                         {% if perms.auth.srp_management %}
-                            <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'auth_srp_request_approve' %}">
+                            <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'srp:request_approve' %}">
                                 <span class="glyphicon glyphicon-ok"></span>
                             </button>
-                            <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'auth_srp_request_reject' %}">
+                            <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'srp:request_reject' %}">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </button>
-                            <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'auth_srp_request_remove' %}">
+                            <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         {% endif %}
@@ -112,7 +112,7 @@ ESC to cancel"
                             <td class="text-center">{{ srpfleetrequest.additional_info }}</td>
                             <td class="text-center">{{ srpfleetrequest.srp_ship_name }}</td>
                             <td class="text-center">{{ srpfleetrequest.kb_total_loss | intcomma }} ISK</td>
-                            <td class="srp" data-name="srp_total_amount" data-type="number" data-pk="{{srpfleetrequest.id}}" data-url="{% url 'auth_srp_request_update_amount' srpfleetrequest.id %}" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}" class="text-center">{{ srpfleetrequest.srp_total_amount | intcomma }} ISK</td>
+                            <td class="srp" data-name="srp_total_amount" data-type="number" data-pk="{{srpfleetrequest.id}}" data-url="{% url 'srp:request_update_amount' srpfleetrequest.id %}" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}" class="text-center">{{ srpfleetrequest.srp_total_amount | intcomma }} ISK</td>
                             <td class="text-center">{{ srpfleetrequest.post_time | date:"Y-m-d H:i" }}</td>
                             <td class="text-center">
                                 {% if srpfleetrequest.srp_status == "Approved" %}
@@ -147,13 +147,13 @@ ESC to cancel"
                         <b><span style="padding-right:2.5em">{% trans "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
                         <b><span style="padding-right:2.5em">{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
                         {% if perms.auth.srp_management %}
-                            <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'auth_srp_request_approve' %}">
+                            <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'srp:request_approve' %}">
                                 <span class="glyphicon glyphicon-ok"></span>
                             </button>
-                            <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'auth_srp_request_reject' %}">
+                            <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'srp:request_reject' %}">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </button>
-                            <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'auth_srp_request_remove' %}">
+                            <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         {% endif %}

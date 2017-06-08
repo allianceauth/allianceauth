@@ -13,7 +13,7 @@
         <h1 class="page-header text-center">{% trans "Fleet Operation Timers" %}
             <div class="text-right">
                 {% if perms.auth.optimer_management %}
-                    <a href="{% url 'auth_add_optimer_view' %}" class="btn btn-success">{% trans "Create Operation" %}</a>
+                    <a href="{% url 'optimer:add' %}" class="btn btn-success">{% trans "Create Operation" %}</a>
                 {% endif %}
             </div>
         </h1>
@@ -27,14 +27,14 @@
 
         <h4><b>{% trans "Next Timers" %}</b></h4>
         {% if future_timers %}
-            {% include "registered/fleetoptable.html" with timers=future_timers %}
+            {% include "optimer/fleetoptable.html" with timers=future_timers %}
         {% else %}
             <div class="alert alert-warning text-center">{% trans "No upcoming timers." %}</div>
         {% endif %}
 
         <h4><b>{% trans "Past Timers" %}</b></h4>
         {% if past_timers %}
-            {% include "registered/fleetoptable.html" with timers=past_timers %}
+            {% include "optimer/fleetoptable.html" with timers=past_timers %}
         {% else %}
             <div class="alert alert-warning text-center">{% trans "No past timers." %}</div>
         {% endif %}

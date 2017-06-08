@@ -11,12 +11,12 @@
         {% if request.GET.all != 'yes' %}
             <span class="pull-right">
                 {% blocktrans %}Showing only applied permissions{% endblocktrans %}
-                <a href="{% url 'permissions_overview' %}?all=yes" class="btn btn-primary">{% trans "Show All" %}</a>
+                <a href="{% url 'permissions_tool:overview' %}?all=yes" class="btn btn-primary">{% trans "Show All" %}</a>
             </span>
         {% else %}
             <span class="pull-right">
                 {% blocktrans %}Showing all permissions{% endblocktrans %}
-                <a href="{% url 'permissions_overview' %}?all=no" class="btn btn-primary">{% trans "Show Applied" %}</a>
+                <a href="{% url 'permissions_tool:overview' %}?all=no" class="btn btn-primary">{% trans "Show Applied" %}</a>
             </span>
         {% endif %}
         <table class="table table-hover">
@@ -55,7 +55,7 @@
                         {{ perm.permission.content_type.model }}
                     </td>
                     <td>
-                        <a href="{% url "permissions_audit" app_label=perm.permission.content_type.app_label model=perm.permission.content_type.model codename=perm.permission.codename %}">
+                        <a href="{% url "permissions_tool:audit" app_label=perm.permission.content_type.app_label model=perm.permission.content_type.model codename=perm.permission.codename %}">
                             {{ perm.permission.codename }}
                         </a>
                     </td>

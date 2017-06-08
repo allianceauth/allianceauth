@@ -10,9 +10,9 @@
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ year }}{% endblocktrans %}
             <div class="text-right">
-                <a href="{% url 'auth_fatlink_view_personal_statistics_year' previous_year %}" class="btn btn-info">{% trans "Previous year" %}</a>
+                <a href="{% url 'fatlink:personal_statistics_year' previous_year %}" class="btn btn-info">{% trans "Previous year" %}</a>
                 {%  if next_year %}
-                <a href="{% url 'auth_fatlink_view_personal_statistics_year' next_year  %}" class="btn btn-info">{% trans "Next year" %}</a>
+                <a href="{% url 'fatlink:personal_statistics_year' next_year  %}" class="btn btn-info">{% trans "Next year" %}</a>
                 {%  endif %}
             </div>
         </h1>
@@ -25,7 +25,7 @@
             {% for monthnr, month, n_fats in monthlystats %}
             <tr>
                 <td class="text-center">
-                    <a href="{% url 'auth_fatlink_view_personal_statistics_month' year monthnr %}">
+                    <a href="{% url 'fatlink:personal_statistics_month' year monthnr %}">
                         {{ month }}
                     </a>
                 </td>

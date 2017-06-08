@@ -15,10 +15,10 @@
             <h1 class="page-header text-center">{% trans "SRP Management" %}
                 <div class="text-right">
                     {% if perms.auth.srp_management %}
-                        <a href="{% url 'auth_srp_management_all_view' %}" class="btn btn-primary">
+                        <a href="{% url 'srp:all' %}" class="btn btn-primary">
                             {% trans "View All" %}
                         </a>
-                        <a href="{% url 'auth_srp_fleet_add_view' %}" class="btn btn-success">
+                        <a href="{% url 'srp:add' %}" class="btn btn-success">
                             {% trans "Add SRP Fleet" %}
                         </a>
                     {% endif %}
@@ -64,7 +64,7 @@
                         </td>
                         <td class="text-center">
                             {% if srpfleet.fleet_srp_code %}
-                                <a class="label label-warning" href="{% url 'auth_srp_request_view' srpfleet.fleet_srp_code %}">{{ srpfleet.fleet_srp_code }}</a>
+                                <a class="label label-warning" href="{% url 'srp:request' srpfleet.fleet_srp_code %}">{{ srpfleet.fleet_srp_code }}</a>
                             {% else %}
                                 <div class="label label-danger">
                                     {% trans "Disabled" %}
@@ -89,24 +89,24 @@
                         </td>
                         <td class="text-center">
 
-                            <a href="{% url 'auth_srp_fleet_view' srpfleet.id %}" class="btn btn-primary" title="View">
+                            <a href="{% url 'srp:fleet' srpfleet.id %}" class="btn btn-primary" title="View">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
                             {% if perms.auth.srp_management %}
-                                <a href="{% url 'auth_srp_fleet_edit_view' srpfleet.id %}" class="btn btn-info" title="Edit">
+                                <a href="{% url 'srp:edit' srpfleet.id %}" class="btn btn-info" title="Edit">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
 
-                                <a href="{% url 'auth_srp_fleet_remove' srpfleet.id %}" onclick="return confirm('{% trans "Are you sure you want to delete this SRP code and its contents?" %}')" class="btn btn-danger" title="Remove">
+                                <a href="{% url 'srp:remove' srpfleet.id %}" onclick="return confirm('{% trans "Are you sure you want to delete this SRP code and its contents?" %}')" class="btn btn-danger" title="Remove">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </a>
                                 {% if srpfleet.fleet_srp_code %}
-                                    <a href="{% url 'auth_srp_fleet_disable' srpfleet.id %}" class="btn btn-warning" title="Disable">
+                                    <a href="{% url 'srp:disable' srpfleet.id %}" class="btn btn-warning" title="Disable">
                                         <span class="glyphicon glyphicon-remove-sign"></span>
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'auth_srp_fleet_enable' srpfleet.id %}" class="btn btn-success" title="Enable">
+                                    <a href="{% url 'srp:enable' srpfleet.id %}" class="btn btn-success" title="Enable">
                                         <span class="glyphicon glyphicon-ok-sign"></span>
                                     </a>
                                 {% endif %}

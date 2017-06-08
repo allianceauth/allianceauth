@@ -29,59 +29,61 @@
 
         <nav class="navbar navbar-inverse navbar-static-top auth-navbar-top" role="navigation">
             <div class="container-fluid">
-            <a class="navbar-brand">
+                <a class="navbar-brand">
                     {{ SITE_NAME }}
-            </a>
-            <!-- /.navbar-header -->
+                </a>
+                <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="nav-link">
-                    <form id="f_lang_select" action="{% url 'set_language' %}" method="post">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}" />
-                        <select onchange="this.form.submit()" class="form-control" id="lang_select" name="language">
-                            {% get_language_info_list for LANGUAGES as languages %}
-                            {% for language in languages %}
-                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
-                                {{ language.name_local }} ({{ language.code }})
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </form>
-                </li>
-                {% if notifications %}
-                    <li class="nav-link active">
-                        <a href="{% url 'auth_notification_list' %}">
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="nav-link">
+                        <form id="f_lang_select" action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+                            <select onchange="this.form.submit()" class="form-control" id="lang_select" name="language">
+                                {% get_language_info_list for LANGUAGES as languages %}
+                                {% for language in languages %}
+                                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
+                                            selected="selected"{% endif %}>
+                                        {{ language.name_local }} ({{ language.code }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </li>
+                    {% if notifications %}
+                        <li class="nav-link active">
+                            <a href="{% url 'auth_notification_list' %}">
                             <span class="fa-stack">
                                 <i class="fa fa-bell fa-stack-2x"></i>
                                 <i class="fa fa-inverse fa-stack-1x">{{ notifications }}</i>
                             </span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-link"><a href="{% url 'auth_notification_list' %}">
-                        <i class="fa fa-bell-o"></i></a>
-                    </li>
-                {% endif %}
-                {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-link"><a href="{% url 'auth_notification_list' %}">
+                            <i class="fa fa-bell-o"></i></a>
+                        </li>
                     {% endif %}
-                    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                {% else %}
-                    <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
-                {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+                    {% else %}
+                        <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
+                    {% endif %}
 
-            </ul>
+                </ul>
             </div>
-            
+
             <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar auth-sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a class="{% navactive request 'authentication:dashboard' %}" href="{% url 'authentication:dashboard' %}">
+                            <a class="{% navactive request 'authentication:dashboard' %}"
+                               href="{% url 'authentication:dashboard' %}">
                                 <i class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}
                             </a>
                         </li>
@@ -90,91 +92,24 @@
                                 <i class="fa fa-cogs fa-fw fa-sitemap grayiconecolor"></i>{% trans " Groups" %}
                             </a>
                         </li>
-                        <li>
-                            <a class="{% navactive request 'authentication:help' %}" href="{% url 'authentication:help' %}">
-                                <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
-                            </a>
-                        </li>
-                        {% menu_main %}
-
-
-                        <li>
-                            <a class="{% navactive request 'auth_services' %}" href="{% url 'auth_services' %}">
-                                <i class="fa fa-cogs fa-fw grayiconecolor"></i>{% trans " Services" %}
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="{% navactive request 'auth_hrapplications_view auth_hrapplication_create_view auth_hrapplication_personal_view auth_hrapplication_search auth_hrapplication_view' %}"
-                               href="{% url 'auth_hrapplications_view' %}">
-                                <i class="fa fa-file-o fa-fw grayiconecolor"></i>{% trans " Applications" %}
-                            </a>
-                        </li>
-
-                        {% if perms.corputils.view_corp_corpstats or perms.corputils.view_alliance_corpstats or perms.corputils.view_blue_corpstats %}
-                            <li>
-                                <a class="{% navactive request 'corputils:' %}" href="{% url 'corputils:view' %}">
-                                    <i class="fa fa-share-alt fa-fw grayiconecolor"></i>{% trans " Corporation Stats" %}
-                                </a>
-                            </li>
-                        {% endif %}
 
                         {% if can_manage_groups %}
                             <li>
-                                <a class="{% navactive request 'auth_group_management auth_group_membership auth_group_membership_list' %}" href="{% url 'auth_group_management' %}">
+                                <a class="{% navactive request 'auth_group_management auth_group_membership auth_group_membership_list' %}"
+                                   href="{% url 'auth_group_management' %}">
                                     <i class="fa fa-lock fa-sitemap fa-fw grayiconecolor"></i>{% trans " Group Management" %}
                                 </a>
                             </li>
                         {% endif %}
 
-                        {% if perms.auth.view_fleetup %}
-                            <li>
-                                <a class="{% navactive request 'auth_fleetup_view auth_fleetup_fittings auth_fleetup_fitting auth_fleetup_doctrines auth_fleetup_doctrine auth_fleetup_characters' %}" href="{% url 'auth_fleetup_view' %}">
-                                    <i class="fa fa-clock-o fa-fw grayiconecolor"></i> Fleet-Up
-                                </a>
-                            </li>
-			            {% endif %}
-
-                        {% if perms.auth.optimer_view %}
-                            <li>
-                                <a class="{% navactive request 'auth_optimer_view auth_add_optimer_view auth_edit_optimer' %}" href="{% url 'auth_optimer_view' %}">
-                                    <i class="fa fa-exclamation  fa-fw grayiconecolor"></i>{% trans " Fleet Operations" %}
-                                </a>
-                            </li>
-			            {% endif %}
-
-                        {% if perms.auth.timer_view %}
-                            <li>
-                                <a class="{% navactive request 'auth_timer_view auth_add_timer_view auth_edit_timer' %}" href="{% url 'auth_timer_view' %}">
-                                    <i class="fa fa-clock-o fa-fw grayiconecolor"></i>{% trans " Structure Timers" %}
-                                </a>
-                            </li>
-                        {% endif %}
+                        {% menu_items %}
 
                         <li>
-                            <a class="{% navactive request 'auth_fatlink_view auth_fatlink_view_statistics auth_fatlink_view_statistics_month auth_fatlink_view_personal_statistics auth_fatlink_view_personal_statistics_year auth_fatlink_view_personal_statistics_month auth_fatlink_view_user_statistics_month auth_create_fatlink_view auth_modify_fatlink_view auth_click_fatlink_view' %}" href="{% url 'auth_fatlink_view' %}">
-                                <i class="fa fa-users fa-lightbulb-o fa-fw grayiconecolor"></i>{% trans " Fleet Activity Tracking" %}
+                            <a class="{% navactive request 'authentication:help' %}"
+                               href="{% url 'authentication:help' %}">
+                                <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
                             </a>
                         </li>
-
-                        {% if perms.srp.access_srp %}
-                            <li>
-                                <a class="{% navactive request 'auth_srp_management_view auth_srp_management_all_view auth_srp_fleet_view auth_srp_fleet_add_view auth_srp_fleet_edit_view auth_srp_request_view auth_srp_request_update_amount_view' %}" href="{% url 'auth_srp_management_view' %}">
-                                    <i class="fa fa-money fa-fw grayiconecolor"></i>{% trans " Ship Replacement" %}
-                                </a>
-                            </li>
-                        {% endif %}
-
-                        {% menu_aux %}
-
-                        {% if perms.auth.jabber_broadcast or perms.auth.jabber_broadcast_all or user.is_superuser %}
-                            <li>
-                                <a class="{% navactive request 'auth_fleet_format_tool_view' %}" href="{% url 'auth_fleet_format_tool_view' %}">
-                                    <i class="fa fa-space-shuttle fa-fw grayiconecolor"></i>{% trans " Fleet Broadcast Formatter" %}
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% menu_util %}
                     </ul>
 
                 </div>
@@ -188,11 +123,11 @@
                 {% if messages %}
                     <br>
                     {% for message in messages %}
-                        <div class="alert alert-{{ message.level_tag}}">{{ message }}</div>
+                        <div class="alert alert-{{ message.level_tag }}">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
-            	{% block content %}
-            	{% endblock content %}
+                {% block content %}
+                {% endblock content %}
             </div>
         </div>
     </div>

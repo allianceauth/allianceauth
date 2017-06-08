@@ -17,27 +17,9 @@ def process_menu_items(hooks, request):
 
 
 @register.inclusion_tag('public/menublock.html', takes_context=True)
-def menu_main(context):
+def menu_items(context):
     request = context['request']
 
     return {
-        'menu_items': process_menu_items(get_hooks('menu_main_hook'), request),
-    }
-
-
-@register.inclusion_tag('public/menublock.html', takes_context=True)
-def menu_aux(context):
-    request = context['request']
-
-    return {
-        'menu_items': process_menu_items(get_hooks('menu_aux_hook'), request),
-    }
-
-
-@register.inclusion_tag('public/menublock.html', takes_context=True)
-def menu_util(context):
-    request = context['request']
-
-    return {
-        'menu_items': process_menu_items(get_hooks('menu_util_hook'), request),
+        'menu_items': process_menu_items(get_hooks('menu_item_hook'), request),
     }

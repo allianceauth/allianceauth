@@ -13,7 +13,7 @@
         <h1 class="page-header text-center">{% trans "Structure Timers" %}
             <div class="text-right">
                 {% if perms.auth.timer_management %}
-                    <a href="{% url 'auth_add_timer_view' %}" class="btn btn-success">{% trans "Create Structure Timer" %}</a>
+                    <a href="{% url 'timerboard:add' %}" class="btn btn-success">{% trans "Create Structure Timer" %}</a>
                 {% endif %}
             </div>
         </h1>
@@ -279,11 +279,12 @@
                 <td class="text-center">{{ timer.eve_character.character_name }}</td>
                 {% if perms.auth.timer_management %}
                     <td class="text-center">
-                        <a href="{% url 'auth_remove_timer' timer.id %}" class="btn btn-danger">
+                        <a href="{% url 'timerboard:remove' timer.id %}" class="btn btn-danger">
                             <span class="glyphicon glyphicon-remove"></span>
                         </a>
-                        <a href="{% url 'auth_edit_timer' timer.id %}" class="btn btn-info">
+                        <a href="{% url 'timerboard:edit' timer.id %}" class="btn btn-info">
                             <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
                     </td>
                 {% endif %}
                 </tr>

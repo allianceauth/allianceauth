@@ -8,16 +8,8 @@ from authentication import hmac_urls
 import authentication.views
 import services.views
 import groupmanagement.views
-import optimer.views
-import timerboard.views
-import fleetactivitytracking.views
-import fleetup.urls
-import srp.views
 import notifications.views
-import hrapplications.views
-import corputils.urls
 import esi.urls
-import permissions_tool.urls
 from alliance_auth import NAME
 from alliance_auth.hooks import get_hooks
 from django.views.generic.base import TemplateView
@@ -42,23 +34,6 @@ urlpatterns = [
     url(r'^sso/', include(esi.urls, namespace='esi')),
     url(r'^sso/login$', authentication.views.sso_login, name='auth_sso_login'),
 
-    # SRP URLS
-    url(r'^srp_fleet_remove/(\w+)$', srp.views.srp_fleet_remove, name='auth_srp_fleet_remove'),
-    url(r'^srp_fleet_disable/(\w+)$', srp.views.srp_fleet_disable, name='auth_srp_fleet_disable'),
-    url(r'^srp_fleet_enable/(\w+)$', srp.views.srp_fleet_enable, name='auth_srp_fleet_enable'),
-    url(r'^srp_fleet_mark_completed/(\w+)', srp.views.srp_fleet_mark_completed,
-        name='auth_srp_fleet_mark_completed'),
-    url(r'^srp_fleet_mark_uncompleted/(\w+)', srp.views.srp_fleet_mark_uncompleted,
-        name='auth_srp_fleet_mark_uncompleted'),
-    url(r'^srp_request_remove/', srp.views.srp_request_remove,
-        name="auth_srp_request_remove"),
-    url(r'srp_request_approve/', srp.views.srp_request_approve,
-        name='auth_srp_request_approve'),
-    url(r'srp_request_reject/', srp.views.srp_request_reject, 
-        name='auth_srp_request_reject'),
-    url(_(r'srp_request_amount_update/(\w+)'), srp.views.srp_request_update_amount,
-        name="auth_srp_request_update_amount"),
-
     # Notifications
     url(r'^remove_notifications/(\w+)/$', notifications.views.remove_notification, name='auth_remove_notification'),
     url(r'^notifications/mark_all_read/$', notifications.views.mark_all_read, name='auth_mark_all_notifications_read'),
@@ -68,13 +43,6 @@ urlpatterns = [
 
 # User viewed/translated URLS
 urlpatterns += i18n_patterns(
-
-    # Fleetup
-    url(r'^fleetup/', include(fleetup.urls.urlpatterns)),
-
-    # Corputils
-    url(_(r'^corpstats/'), include(corputils.urls, namespace='corputils')),
-
     # Group management
     url(_(r'^groups/'), groupmanagement.views.groups_view, name='auth_groups'),
     url(_(r'^group/management/'), groupmanagement.views.group_management,
@@ -99,53 +67,7 @@ urlpatterns += i18n_patterns(
     url(_(r'^group/leave_request/reject/(\w+)'), groupmanagement.views.group_leave_reject_request,
         name='auth_group_leave_reject_request'),
 
-    # HR Application Management
-    url(_(r'^hr_application_management/'), hrapplications.views.hr_application_management_view,
-        name="auth_hrapplications_view"),
-    url(_(r'^hr_application_create/$'), hrapplications.views.hr_application_create_view,
-        name="auth_hrapplication_create_view"),
-    url(_(r'^hr_application_create/(\d+)'), hrapplications.views.hr_application_create_view,
-        name="auth_hrapplication_create_view"),
-    url(_(r'^hr_application_remove/(\w+)'), hrapplications.views.hr_application_remove,
-        name="auth_hrapplication_remove"),
-    url(_(r'hr_application_view/(\w+)'), hrapplications.views.hr_application_view,
-        name="auth_hrapplication_view"),
-    url(_(r'hr_application_personal_view/(\w+)'), hrapplications.views.hr_application_personal_view,
-        name="auth_hrapplication_personal_view"),
-    url(_(r'hr_application_personal_removal/(\w+)'),
-        hrapplications.views.hr_application_personal_removal,
-        name="auth_hrapplication_personal_removal"),
-    url(_(r'hr_application_approve/(\w+)'), hrapplications.views.hr_application_approve,
-        name="auth_hrapplication_approve"),
-    url(_(r'hr_application_reject/(\w+)'), hrapplications.views.hr_application_reject,
-        name="auth_hrapplication_reject"),
-    url(_(r'hr_application_search/'), hrapplications.views.hr_application_search,
-        name="auth_hrapplication_search"),
-    url(_(r'hr_mark_in_progress/(\w+)'), hrapplications.views.hr_application_mark_in_progress,
-        name="auth_hrapplication_mark_in_progress"),
-
-    # Fleet Operations Timers
-    url(_(r'^optimer/$'), optimer.views.optimer_view, name='auth_optimer_view'),
-    url(_(r'^add_optimer/$'), optimer.views.add_optimer_view, name='auth_add_optimer_view'),
-    url(_(r'^remove_optimer/(\w+)'), optimer.views.remove_optimer, name='auth_remove_optimer'),
-    url(_(r'^edit_optimer/(\w+)$'), optimer.views.edit_optimer, name='auth_edit_optimer'),
-
-    # Service Urls
     url(_(r'^services/$'), services.views.services_view, name='auth_services'),
-
-    # Timer URLS
-    url(_(r'^timers/$'), timerboard.views.timer_view, name='auth_timer_view'),
-    url(_(r'^add_timer/$'), timerboard.views.add_timer_view, name='auth_add_timer_view'),
-    url(_(r'^remove_timer/(\w+)'), timerboard.views.remove_timer, name='auth_remove_timer'),
-    url(_(r'^edit_timer/(\w+)$'), timerboard.views.edit_timer, name='auth_edit_timer'),
-
-    # SRP URLS
-    url(_(r'^srp/$'), srp.views.srp_management, name='auth_srp_management_view'),
-    url(_(r'^srp_all/$'), srp.views.srp_management_all, name='auth_srp_management_all_view'),
-    url(_(r'^srp_fleet_view/(\w+)$'), srp.views.srp_fleet_view, name='auth_srp_fleet_view'),
-    url(_(r'^srp_fleet_add_view/$'), srp.views.srp_fleet_add_view, name='auth_srp_fleet_add_view'),
-    url(_(r'^srp_fleet_edit/(\w+)$'), srp.views.srp_fleet_edit_view, name='auth_srp_fleet_edit_view'),
-    url(_(r'^srp_request/(\w+)'), srp.views.srp_request_view, name='auth_srp_request_view'),
 
     # Tools
     url(_(r'^tool/fleet_formatter_tool/$'), services.views.fleet_formatter_view,
@@ -155,33 +77,7 @@ urlpatterns += i18n_patterns(
     url(_(r'^notifications/$'), notifications.views.notification_list, name='auth_notification_list'),
     url(_(r'^notifications/(\w+)/$'), notifications.views.notification_view, name='auth_notification_view'),
 
-    # FleetActivityTracking (FAT)
-    url(r'^fat/$', fleetactivitytracking.views.fatlink_view, name='auth_fatlink_view'),
-    url(r'^fat/statistics/$', fleetactivitytracking.views.fatlink_statistics_view, name='auth_fatlink_view_statistics'),
-    url(r'^fat/statistics/corp/(\w+)$', fleetactivitytracking.views.fatlink_statistics_corp_view, name='auth_fatlink_view_statistics_corp'),
-    url(r'^fat/statistics/corp/(?P<corpid>\w+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/', fleetactivitytracking.views.fatlink_statistics_corp_view,
-        name='auth_fatlink_view_statistics_corp_month'),
-    url(r'^fat/statistics/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', fleetactivitytracking.views.fatlink_statistics_view,
-        name='auth_fatlink_view_statistics_month'),
-    url(r'^fat/user/statistics/$', fleetactivitytracking.views.fatlink_personal_statistics_view,
-        name='auth_fatlink_view_personal_statistics'),
-    url(r'^fat/user/statistics/(?P<year>[0-9]+)/$', fleetactivitytracking.views.fatlink_personal_statistics_view,
-        name='auth_fatlink_view_personal_statistics_year'),
-    url(r'^fat/user/statistics/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$',
-        fleetactivitytracking.views.fatlink_monthly_personal_statistics_view,
-        name='auth_fatlink_view_personal_statistics_month'),
-    url(r'^fat/user/(?P<char_id>[0-9]+)/statistics/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$',
-        fleetactivitytracking.views.fatlink_monthly_personal_statistics_view,
-        name='auth_fatlink_view_user_statistics_month'),
-    url(r'^fat/create/$', fleetactivitytracking.views.create_fatlink_view, name='auth_create_fatlink_view'),
-    url(r'^fat/modify/$', fleetactivitytracking.views.modify_fatlink_view, name='auth_modify_fatlink_view'),
-    url(r'^fat/modify/(?P<hash>[a-zA-Z0-9_-]+)/([a-z0-9_-]+)$',
-        fleetactivitytracking.views.modify_fatlink_view),
-    url(r'^fat/link/$', fleetactivitytracking.views.fatlink_view, name='auth_click_fatlink_view'),
-    url(r'^fat/link/(?P<hash>[a-zA-Z0-9]+)/(?P<fatname>[a-z0-9_-]+)/$',
-        fleetactivitytracking.views.click_fatlink_view),
 
-    url(r'^permissions/', include(permissions_tool.urls))
 )
 
 # Append hooked service urls
@@ -189,3 +85,7 @@ services = get_hooks('services_hook')
 for svc in services:
     urlpatterns += svc().urlpatterns
 
+# Append app urls
+app_urls = get_hooks('url_hook')
+for app in app_urls:
+    urlpatterns += [app().include_pattern]

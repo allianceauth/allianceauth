@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.template.loader import render_to_string
-
+from django.conf.urls import include, url
 from alliance_auth.hooks import get_hooks
 
 
@@ -104,14 +104,22 @@ class ServicesHook:
 
 
 class MenuItemHook:
-    def __init__(self, text, classes, url_name, order=None):
+    def __init__(self, text, classes, url_name, order=None, navactive=list([])):
         self.text = text
         self.classes = classes
         self.url_name = url_name
         self.template = 'public/menuitem.html'
         self.order = order if order is not None else 9999
+        navactive = navactive or []
+        navactive.append(url_name)
+        self.navactive = navactive
 
     def render(self, request):
         return render_to_string(self.template,
                                 {'item': self},
                                 request=request)
+
+
+class UrlHook:
+    def __init__(self, urls, namespace, base_url):
+        self.include_pattern = url(base_url, include(urls, namespace=namespace))

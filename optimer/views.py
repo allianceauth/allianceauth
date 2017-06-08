@@ -24,7 +24,7 @@ def optimer_view(request):
                     'past_timers': OpTimer.objects.all().filter(
                         start__lt=timezone.now()).order_by('-start')}
 
-    return render(request, 'registered/operationmanagement.html', context=render_items)
+    return render(request, 'optimer/management.html', context=render_items)
 
 
 @login_required
@@ -52,14 +52,14 @@ def add_optimer_view(request):
             op.save()
             logger.info("User %s created op timer with name %s" % (request.user, op.operation_name))
             messages.success(request, _('Created operation timer for %(opname)s.') % {"opname": op.operation_name})
-            return redirect("/optimer/")
+            return redirect("optimer:view")
     else:
         logger.debug("Returning new opForm")
         form = OpForm()
 
     render_items = {'form': form}
 
-    return render(request, 'registered/addoperation.html', context=render_items)
+    return render(request, 'optimer/add.html', context=render_items)
 
 
 @login_required
@@ -70,7 +70,7 @@ def remove_optimer(request, optimer_id):
     op.delete()
     logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
     messages.success(request, _('Removed operation timer for %(opname)s.') % {"opname": op.operation_name})
-    return redirect("auth_optimer_view")
+    return redirect("optimer:view")
 
 
 @login_required
@@ -93,7 +93,7 @@ def edit_optimer(request, optimer_id):
             logger.info("User %s updating optimer id %s " % (request.user, optimer_id))
             op.save()
             messages.success(request, _('Saved changes to operation timer for %(opname)s.') % {"opname": op.operation_name})
-            return redirect("auth_optimer_view")
+            return redirect("optimer:view")
     else:
         data = {
             'doctrine': op.doctrine,
@@ -104,4 +104,4 @@ def edit_optimer(request, optimer_id):
             'fc': op.fc,
         }
         form = OpForm(initial=data)
-    return render(request, 'registered/optimerupdate.html', context={'form': form})
+    return render(request, 'optimer/update.html', context={'form': form})
