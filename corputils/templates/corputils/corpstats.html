@@ -26,18 +26,6 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <b>{% trans "Registration Index" %}</b>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_member_count }}"
-                         aria-valuemin="0" aria-valuemax="{{ corpstats.member_count }}"
-                         style="width: {% widthratio corpstats.registered_member_count corpstats.member_count 100 %}%;">
-                        {{ corpstats.registered_member_count }}/{{ corpstats.member_count }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <ul class="nav nav-pills pull-left">
@@ -180,16 +168,16 @@
     {% endif %}
 {% endblock %}
 {% block extra_javascript %}
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#table-mains').DataTable();
-            $('#table-members').DataTable();
-            $('#table-unregistered').DataTable();
-            $('.dropdown-toggle').dropdown();
-        });
-    </script>
+    {% include 'bundles/datatables-js.html' %}
 {% endblock %}
 {% block extra_css %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/dt-1.10.15/r-2.1.1/rg-1.0.0/datatables.min.css"/>
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+{% block extra_script %}
+    $(document).ready(function(){
+        $('#table-mains').DataTable();
+        $('#table-members').DataTable();
+        $('#table-unregistered').DataTable();
+
+    });
 {% endblock %}
