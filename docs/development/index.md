@@ -6,4 +6,5 @@
     documentation
     integrating-services
     menu-hooks
+    url-hooks
 ```

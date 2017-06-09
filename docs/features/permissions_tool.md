@@ -18,7 +18,7 @@ When a user has access to the tool they will see the "Permissions Audit" menu it
 
 The first page gives you a general overview of permissions and how many users have access to each permission.
 
-![permissions overview](https://i.imgur.com/XALVFtc.png)
+![permissions overview](/_static/images/features/permissions_tool/overview.png)
 
 **App**, **Model** and **Code Name** contain the internal details of the permission while **Name** contains the name/description you'll see in the admin panel.
 
@@ -34,6 +34,6 @@ Clicking on the **Code Name** link will take you to the [Permissions Audit Page]
 
 The permissions audit page will give you an overview of all the users who have access to this permission either directly or granted via group membership.
 
-![permissions audit](https://i.imgur.com/XjnfC9Z.png)
+![permissions audit](/_static/images/features/permissions_tool/audit.png)
 
 Please note that users may appear multiple times if this permission is granted via multiple sources.

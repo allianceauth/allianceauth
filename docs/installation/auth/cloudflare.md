@@ -26,7 +26,7 @@ CloudFlare blocks ports outside 80 and 443 on hosts it protects. This means, if 
 
 Now we need to configure the https redirect to force all traffic to https. Along the top bar of CloudFlare, select `Page Rules`. Add a new rule, Pattern is example.com, toggle the `Always use https` to ON, and save. It’ll take a few minutes to propagate. 
 
-![infographic](http://i.stack.imgur.com/VUBvo.jpg)
+![infographic](/_static/images/installation/auth/cloudflare/page_rules.jpg)
 
 ## Update Auth URLs
 

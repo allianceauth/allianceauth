@@ -61,11 +61,11 @@ Before users can see the forums, we need to remove the install directory
 ### Enabling Avatars
 AllianceAuth sets user avatars to their character portrait when the account is created or password reset. We need to allow external URLs for avatars for them to behave properly. Navigate to the admin control panel for phpbb3, and under the `General` tab, along the left navigation bar beneath `Board Configuration`, select `Avatar Settings`. Set `Enable Remote Avatars` to `Yes` and then `Submit`.
 
-![location of the remote avatar setting](http://i.imgur.com/eWrotRX.png)
+![location of the remote avatar setting](/_static/images/installation/services/phpbb3/avatar_settings.png)
 
 You can allow members to overwrite the portrait with a custom image if desired. Navigate to `Users and Groups`, `Group Permissions`, select the appropriate group (usually `Member` if you want everyone to have this ability), expand `Advanced Permissions`, under the `Profile` tab, set `Can Change Avatars` to `Yes`, and press `Apply Permissions`.
 
-![location of change avatar setting](http://i.imgur.com/Nc6Rzo9.png)
+![location of change avatar setting](/_static/images/installation/services/phpbb3/avatar_permissions.png)
 
 ## Setup Complete
 You’ve finished the steps required to make AllianceAuth work with phpBB. Play around with it and make it your own.
