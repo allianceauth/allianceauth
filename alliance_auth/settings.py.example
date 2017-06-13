@@ -82,12 +82,8 @@ CELERYBEAT_SCHEDULE = {
         'task': 'esi.tasks.cleanup_token',
         'schedule': crontab(day_of_month='*/1'),
     },
-    'run_corp_update': {
-        'task': 'eveonline.tasks.run_corp_update',
-        'schedule': crontab(minute=0, hour="*/2"),
-    },
-    'update_all_corpstats': {
-        'task': 'corputils.tasks.update_all_corpstats',
+    'run_model_update': {
+        'task': 'eveonline.tasks.run_model_update',
         'schedule': crontab(minute=0, hour="*/6"),
     },
 }
