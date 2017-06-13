@@ -16,6 +16,9 @@ class CorpStatsQuerySet(models.QuerySet):
                 queries.append(models.Q(corp__corporation_id=char.corporation_id))
             if user.has_perm('corputils.view_alliance_corpstats'):
                 queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
+            if user.has_perm('corputils.view_state_corpstats'):
+                queries.append(models.Q(corp__in=user.profile.state.member_corporations.all()))
+                queries.append(models.Q(corp__alliance__in=user.profile.state.member_alliances.all()))
 
             # filter based on queries
             query = queries.pop()

@@ -21,12 +21,9 @@ class CorpStats(models.Model):
 
     class Meta:
         permissions = (
-            ('corp_apis', 'Can view API keys of members of their corporation.'),
-            ('alliance_apis', 'Can view API keys of members of their alliance.'),
-            ('blue_apis', 'Can view API keys of members of blue corporations.'),
             ('view_corp_corpstats', 'Can view corp stats of their corporation.'),
             ('view_alliance_corpstats', 'Can view corp stats of members of their alliance.'),
-            ('view_blue_corpstats', 'Can view corp stats of blue corporations.'),
+            ('view_state_corpstats', 'Can view corp stats of members of their auth state.'),
         )
         verbose_name = "corp stats"
         verbose_name_plural = "corp stats"

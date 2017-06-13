@@ -27,7 +27,7 @@ def convert_members_to_json(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('corputils', '0003_make_strings_more_stringy'),
+        ('corputils', '0003_granular_permissions'),
     ]
 
     operations = [

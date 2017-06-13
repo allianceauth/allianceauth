@@ -14,7 +14,7 @@ from bravado.exception import HTTPError
 
 def access_corpstats_test(user):
     return user.has_perm('corputils.view_corp_corpstats') or user.has_perm(
-        'corputils.view_alliance_corpstats') or user.has_perm('corputils.view_blue_corpstats')
+        'corputils.view_alliance_corpstats') or user.has_perm('corputils.view_state_corpstats')
 
 
 @login_required

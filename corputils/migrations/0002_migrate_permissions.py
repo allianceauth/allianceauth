@@ -19,6 +19,7 @@ PERMISSIONS = {
     }
 }
 
+
 def user_permissions_dict(apps):
     Permission = apps.get_model('auth', 'Permission')
     ContentType = apps.get_model('contenttypes', 'ContentType')
@@ -33,13 +34,16 @@ def user_permissions_dict(apps):
         'corpstats': {x: Permission.objects.get_or_create(codename=x, name=y, content_type=corpstats_ct)[0] for x, y in PERMISSIONS['corpstats'].items()},
     }
 
+
 def users_with_permission(apps, perm):
     User = apps.get_model('auth', 'User')
     return User.objects.filter(user_permissions=perm.pk)
 
+
 def groups_with_permission(apps, perm):
     Group = apps.get_model('auth', 'Group')
     return Group.objects.filter(permissions=perm.pk)
+
 
 def forward(apps, schema_editor):
     perm_dict = user_permissions_dict(apps)
@@ -66,8 +70,9 @@ def forward(apps, schema_editor):
 
     for name, perm in perm_dict['user'].items():
         perm.delete()
-    
-def reverse(apps, schema_editor):        
+
+
+def reverse(apps, schema_editor):
     perm_dict = user_permissions_dict(apps)
 
     corp_users = users_with_permission(apps, perm_dict['corpstats']['view_corp_corpstats'])
@@ -79,7 +84,6 @@ def reverse(apps, schema_editor):
         u.user_permissions.remove(perm_dict['corpstats']['view_corp_corpstats'].pk)
     for u in corp_api_users:
         u.user_permissions.remove(perm_dict['corpstats']['corp_apis'].pk)
-        
 
     alliance_users = users_with_permission(apps, perm_dict['corpstats']['view_alliance_corpstats'])
     alliance_api_users = users_with_permission(apps, perm_dict['corpstats']['alliance_apis'])
@@ -93,7 +97,6 @@ def reverse(apps, schema_editor):
 
     corp_groups = groups_with_permission(apps, perm_dict['corpstats']['view_corp_corpstats'])
     corp_api_groups = groups_with_permission(apps, perm_dict['corpstats']['corp_apis'])
-    corp_gs = corp_groups | corp_api_groups
     for g in corp_groups.distinct():
         g.permissions.add(perm_dict['user']['corp_apis'].pk)
     for g in corp_groups:

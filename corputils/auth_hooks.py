@@ -12,8 +12,10 @@ class CorpStats(MenuItemHook):
                               navactive=['corputils:'])
 
     def render(self, request):
-        if request.user.has_perm('corputils.view_corp_corpstats') or request.user.has_perm('corputils.view_alliance_corpstats') or request.user.has_perm('corputils.add_corpstats'):
-                return MenuItemHook.render(self, request)
+        if request.user.has_perm('corputils.view_corp_corpstats') or request.user.has_perm(
+                'corputils.view_alliance_corpstats') or request.user.has_perm(
+                'corputils.add_corpstats') or request.user.has_perm('corputils.view_state_corpstats'):
+            return MenuItemHook.render(self, request)
         return ''
 
 
@@ -22,11 +24,6 @@ def register_menu():
     return CorpStats()
 
 
-class CorpStatsUrl(UrlHook):
-    def __init__(self):
-        UrlHook.__init__(self, urls, 'corputils', r'^corpstats/')
-
-
 @hooks.register('url_hook')
 def register_url():
-    return CorpStatsUrl()
+    return UrlHook(urls, 'corputils', r'^corpstats/')

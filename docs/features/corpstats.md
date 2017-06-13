@@ -89,17 +89,11 @@ To use this feature, users will require some of the following:
 +---------------------------------------+------------------+----------------------------------------------------+
 | Permission                            | Admin Site       | Auth Site                                          |
 +=======================================+==================+====================================================+
-| corpstats.corp_apis                   | None             | Can view API keys of members of their corporation. |
-+---------------------------------------+------------------+----------------------------------------------------+
-| corpstats.alliance_apis               | None             | Can view API keys of members of their alliance.    |
-+---------------------------------------+------------------+----------------------------------------------------+
-| corpstats.blue_apis                   | None             | Can view API keys of members of blue corporations. |
-+---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.view_corp_corpstats         | None             | Can view corp stats of their corporation.          |
 +---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.view_alliance_corpstats     | None             | Can view corp stats of members of their alliance.  |
 +---------------------------------------+------------------+----------------------------------------------------+
-| corpstats.view_blue_corpstats         | None             | Can view corp stats of blue corporations.          |
+| corpstats.view_state_corpstats        | None             | Can view corp stats of members of their auth state.|
 +---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.add_corpstats               | Can create model | Can add new corpstats using an SSO token.          |
 +---------------------------------------+------------------+----------------------------------------------------+
@@ -110,8 +104,7 @@ To use this feature, users will require some of the following:
 
 ```
 
-Typical use-cases would see the bundling of `corp_apis` and `view_corp_corpstats`, same for alliances and blues.
-Alliance permissions supersede corp permissions. Note that these evaluate against the user's main character.
+Users who add a Corp Stats with their token will be granted permissions to view it regardless of the above permissions. View permissions are interpreted in the "OR" sense: a user can view their corp's Corp Stats without the `view_corp_corpstats` permission if they have the `view_alliance_corpstats` permission, same idea for their state. Note that these evaluate against the user's main character.
 
 ## Troubleshooting
 
@@ -138,7 +131,7 @@ Any of the following errors will result in a notification to the owning user, an
 
 This occurs when the SSO token is invalid, which can occur when deleted by the user, the character is transferred between accounts, or the API is having a bad day.
 
->CorpStats for corp_name cannot update with your ESI token as you have left corp.
+>CorpStats for (corp name) cannot update with your ESI token as you have left corp.
 
 The SSO token's character is no longer in the corp which the Corp Stats is for, and therefore membership data cannot be retrieved.
 
