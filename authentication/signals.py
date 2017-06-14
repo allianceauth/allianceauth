@@ -98,11 +98,12 @@ def validate_main_character(sender, instance, *args, **kwargs):
 
 @receiver(pre_delete, sender=Token)
 def validate_main_character_token(sender, instance, *args, **kwargs):
-    if UserProfile.objects.filter(main_character__character_id=instance.character_id):
-        if not Token.objects.filter(character_id=instance.character_id).filter(user=instance.user).exists():
+    if UserProfile.objects.filter(main_character__character_id=instance.character_id).exists():
+        profile = UserProfile.objects.get(main_character__character_id=instance.character_id)
+        if not Token.objects.filter(character_id=instance.character_id).filter(user=profile.user).exclude(pk=instance.pk).exists():
             # clear main character as we can no longer verify ownership
-            instance.user.profile.main_character = None
-            instance.user.profile.save()
+            profile.main_character = None
+            profile.save()
 
 
 @receiver(post_save, sender=User)

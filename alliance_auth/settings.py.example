@@ -620,9 +620,3 @@ if 'services.modules.teamspeak3' in INSTALLED_APPS:
         'task': 'services.modules.teamspeak3.tasks.run_ts3_group_update',
         'schedule': crontab(minute='*/30'),
     }
-
-if 'services.modules.seat' in INSTALLED_APPS:
-    CELERYBEAT_SCHEDULE['run_seat_api_sync'] = {
-        'task': 'services.modules.seat.tasks.run_api_sync',
-        'schedule': crontab(minute='*/30'),
-    }
