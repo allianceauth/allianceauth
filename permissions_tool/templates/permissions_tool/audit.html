@@ -8,7 +8,7 @@
 {% block content %}
     <div>
         <h1 class="page-header">{% trans "Permissions Audit" %}: {{ permission.permission.codename }}</h1>
-        <a href="{% url 'permissions_overview' %}" class="btn btn-default">
+        <a href="{% url 'permissions_tool:overview' %}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i> {% trans "Back" %}
         </a>
         <table class="table table-hover">

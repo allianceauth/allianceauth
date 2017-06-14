@@ -170,7 +170,7 @@ CACHES = {
     }
 }
 
-AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend']
+AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend', 'django.contrib.auth.backends.ModelBackend']
 
 #####################################################
 ##

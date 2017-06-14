@@ -9,7 +9,7 @@ except ImportError:
 
 from django.test import TestCase
 from django import urls
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
 
 from alliance_auth.tests.auth_utils import AuthUtils
 
@@ -47,21 +47,20 @@ class PermissionsToolViewsTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_menu_item(self):
-        self.client.login(username=self.member.username, password='password')
-
-        response = self.client.get(urls.reverse('permissions_overview'))
+        response = self.client.get(urls.reverse('permissions_tool:overview'))
 
         response_content = response.content
         if six.PY3:
             response_content = str(response_content, encoding='utf8')
 
-        self.assertInHTML('<li><a class="active" href="/en/permissions/overview/"><i class="fa fa-key fa-id-card '
-                          'grayiconecolor"></i> Permissions Audit</a></li>', response_content)
+        self.assertInHTML(
+            '<li><a class="active" href="/permissions/overview/"><i class="fa fa-key fa-id-card grayiconecolor"></i> Permissions Audit</a></li>',
+            response_content)
 
     def test_permissions_overview(self):
         self.client.login(username=self.member.username, password='password')
 
-        response = self.client.get(urls.reverse('permissions_overview'))
+        response = self.client.get(urls.reverse('permissions_tool:overview'))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('permissions_tool/overview.html')
@@ -84,19 +83,19 @@ class PermissionsToolViewsTestCase(TestCase):
         # Ensure permission effectively denys access
         self.client.login(username=self.no_perm_user.username, password='password')
 
-        response = self.client.get(urls.reverse('permissions_overview'))
+        response = self.client.get(urls.reverse('permissions_tool:overview'))
 
         self.assertEqual(response.status_code, 302)
 
     def test_permissions_audit(self):
         self.client.login(username=self.member.username, password='password')
 
-        response = self.client.get(urls.reverse('permissions_audit',
-                                   kwargs={
-                                       'app_label': self.permission.content_type.app_label,
-                                       'model': self.permission.content_type.model,
-                                       'codename': self.permission.codename,
-                                   }))
+        response = self.client.get(urls.reverse('permissions_tool:audit',
+                                                kwargs={
+                                                    'app_label': self.permission.content_type.app_label,
+                                                    'model': self.permission.content_type.model,
+                                                    'codename': self.permission.codename,
+                                                }))
 
         self.assertTemplateUsed('permissions_tool/audit.html')
         self.assertTemplateUsed('permissions_tool/audit_row.html')
@@ -112,11 +111,11 @@ class PermissionsToolViewsTestCase(TestCase):
         # Ensure permission effectively denys access
         self.client.login(username=self.no_perm_user.username, password='password')
 
-        response = self.client.get(urls.reverse('permissions_audit',
-                                   kwargs={
-                                       'app_label': self.permission.content_type.app_label,
-                                       'model': self.permission.content_type.model,
-                                       'codename': self.permission.codename,
-                                   }))
+        response = self.client.get(urls.reverse('permissions_tool:audit',
+                                                kwargs={
+                                                    'app_label': self.permission.content_type.app_label,
+                                                    'model': self.permission.content_type.model,
+                                                    'codename': self.permission.codename,
+                                                }))
 
         self.assertEqual(response.status_code, 302)
