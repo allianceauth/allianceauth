@@ -23,31 +23,29 @@ def optional_dependencies():
     dependencies = []
 
     # Skip adding module dependencies if the settings specifies that services have been migrated
-    if getattr(settings, 'SERVICES_MIGRATED', True):
-        return dependencies
-
-    if 'services.modules.xenforo' in installed_apps:
-        dependencies.append(('xenforo', '0001_initial'))
-    if 'services.modules.discord' in installed_apps:
-        dependencies.append(('discord', '0001_initial'))
-    if 'services.modules.discourse' in installed_apps:
-        dependencies.append(('discourse', '0001_initial'))
-    if 'services.modules.ipboard' in installed_apps:
-        dependencies.append(('ipboard', '0001_initial'))
-    if 'services.modules.ips4' in installed_apps:
-        dependencies.append(('ips4', '0001_initial'))
-    if 'services.modules.market' in installed_apps:
-        dependencies.append(('market', '0001_initial'))
-    if 'services.modules.openfire' in installed_apps:
-        dependencies.append(('openfire', '0001_initial'))
-    if 'services.modules.smf' in installed_apps:
-        dependencies.append(('smf', '0001_initial'))
-    if 'services.modules.teamspeak3' in installed_apps:
-        dependencies.append(('teamspeak3', '0003_teamspeak3user'))
-    if 'services.modules.mumble' in installed_apps:
-        dependencies.append(('mumble', '0003_mumbleuser_user'))
-    if 'services.modules.phpbb3' in installed_apps:
-        dependencies.append(('phpbb3', '0001_initial'))
+    if not getattr(settings, 'SERVICES_MIGRATED', False):
+        if 'services.modules.xenforo' in installed_apps:
+            dependencies.append(('xenforo', '0001_initial'))
+        if 'services.modules.discord' in installed_apps:
+            dependencies.append(('discord', '0001_initial'))
+        if 'services.modules.discourse' in installed_apps:
+            dependencies.append(('discourse', '0001_initial'))
+        if 'services.modules.ipboard' in installed_apps:
+            dependencies.append(('ipboard', '0001_initial'))
+        if 'services.modules.ips4' in installed_apps:
+            dependencies.append(('ips4', '0001_initial'))
+        if 'services.modules.market' in installed_apps:
+            dependencies.append(('market', '0001_initial'))
+        if 'services.modules.openfire' in installed_apps:
+            dependencies.append(('openfire', '0001_initial'))
+        if 'services.modules.smf' in installed_apps:
+            dependencies.append(('smf', '0001_initial'))
+        if 'services.modules.teamspeak3' in installed_apps:
+            dependencies.append(('teamspeak3', '0003_teamspeak3user'))
+        if 'services.modules.mumble' in installed_apps:
+            dependencies.append(('mumble', '0003_mumbleuser_user'))
+        if 'services.modules.phpbb3' in installed_apps:
+            dependencies.append(('phpbb3', '0001_initial'))
 
     return dependencies
 
