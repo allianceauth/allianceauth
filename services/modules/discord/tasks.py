@@ -59,8 +59,8 @@ class DiscordTasks:
             return True
 
     @staticmethod
-    @only_one
     @app.task(bind=True, name='discord.update_groups')
+    @only_one
     def update_groups(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)

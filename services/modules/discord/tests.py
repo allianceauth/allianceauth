@@ -168,6 +168,8 @@ class DiscordViewsTestCase(TestCase):
         manager.add_user.return_value = '1234'
         response = self.client.get('/discord/callback/', data={'code': '1234'})
 
+        self.member = User.objects.get(pk=self.member.pk)
+
         self.assertTrue(manager.add_user.called)
         self.assertEqual(manager.update_nickname.called, settings.DISCORD_SYNC_NAMES)
         self.assertEqual(self.member.discord.uid, '1234')
