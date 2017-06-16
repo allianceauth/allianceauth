@@ -51,6 +51,17 @@ def state_saved(sender, instance, *args, **kwargs):
     trigger_state_check(instance)
 
 
+@receiver(pre_delete, sender=State)
+def state_deleted(sender, instance, *args, **kwargs):
+    for profile in instance.userprofile_set.all():
+        available = State.objects.exclude(pk=instance.pk).available_to_user(profile.user)
+        if available:
+            profile.state = available[0]
+        else:
+            profile.state = get_guest_state()
+        profile.save(update_fields=['state'])
+
+
 # Is there a smarter way to intercept pre_save with a diff main_character or state?
 @receiver(post_save, sender=UserProfile)
 def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
