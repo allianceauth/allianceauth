@@ -2,9 +2,8 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.utils.text import slugify
-from django import forms
 from authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
 from alliance_auth.hooks import get_hooks
 from services.hooks import ServicesHook
@@ -63,79 +62,96 @@ class UserAdmin(BaseUserAdmin):
                                             action.short_description)
 
         return actions
-
-# Re-register UserAdmin
-try:
-    admin.site.unregister(User)
-finally:
-    admin.site.register(User, UserAdmin)
-
-
-class StateForm(forms.ModelForm):
-    def _is_none_state(self):
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            return instance == get_guest_state()
-
-    def __init__(self, *args, **kwargs):
-        super(StateForm, self).__init__(*args, **kwargs)
-        if self._is_none_state():
-            self.fields['name'].widget.attrs['readonly'] = True
-
-    def clean_name(self):
-        if self._is_none_state():
-            return self.instance.name
-        return self.cleaned_data['name']
+    list_filter = BaseUserAdmin.list_filter + ('profile__state',)
 
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
-    form = StateForm
-
     fieldsets = (
         (None, {
             'fields': ('name', 'permissions', 'priority'),
         }),
         ('Membership', {
-            'classes': ('collapse',),
             'fields': ('public', 'member_characters', 'member_corporations', 'member_alliances'),
         })
     )
-
     filter_horizontal = ['member_characters', 'member_corporations', 'member_alliances', 'permissions']
+    list_display = ('name', 'priority', 'user_count')
 
     def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
             return False
+        return super(StateAdmin, self).has_delete_permission(request, obj=obj)
 
+    def get_fieldsets(self, request, obj=None):
+        if obj == get_guest_state():
+            return (
+                (None, {
+                    'fields': ('permissions', 'priority'),
+                }),
+            )
+        return super(StateAdmin, self).get_fieldsets(request, obj=obj)
 
-admin.site.register(CharacterOwnership)
-
-
-class UserProfileAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
-        self.fields['state'].widget.attrs['disabled'] = True
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            self.fields['state'].queryset = State.objects.filter(pk=instance.state.pk)
-        else:
-            self.fields['state'].queryset = State.objects.filter(pk=get_guest_state().pk)
-
-    def clean_state(self):
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            return UserProfile.objects.get(pk=instance.pk).state
-        else:
-            return get_guest_state()
+    @staticmethod
+    def user_count(obj):
+        return obj.userprofile_set.all().count()
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    form = UserProfileAdminForm
+    readonly_fields = ('user', 'state')
+    search_fields = ('user__username', 'main_character__character_name')
+    list_filter = ('state',)
+    list_display = ('user', 'main_character')
+    actions = None
 
     def has_add_permission(self, request):
         return False
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(CharacterOwnership)
+class CharacterOwnershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'character')
+    search_fields = ('user__username', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
+    readonly_fields = ('owner_hash', 'character')
+
+
+class PermissionAdmin(admin.ModelAdmin):
+    actions = None
+    readonly_fields = [field.name for field in Permission._meta.fields]
+    list_display = ('admin_name', 'name', 'codename', 'content_type')
+    list_filter = ('content_type__app_label',)
+
+    @staticmethod
+    def admin_name(obj):
+        return str(obj)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+# Hack to allow registration of django.contrib.auth models in our authentication app
+class ProxyUser(User):
+    class Meta:
+        proxy = True
+        verbose_name = User._meta.verbose_name
+        verbose_name_plural = User._meta.verbose_name_plural
+
+
+class ProxyPermission(Permission):
+    class Meta:
+        proxy = True
+        verbose_name = Permission._meta.verbose_name
+        verbose_name_plural = Permission._meta.verbose_name_plural
+
+try:
+    admin.site.unregister(User)
+finally:
+    admin.site.register(ProxyUser, UserAdmin)
+    admin.site.register(ProxyPermission, PermissionAdmin)

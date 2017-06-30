@@ -83,6 +83,7 @@ class UserProfile(models.Model):
 class CharacterOwnership(models.Model):
     class Meta:
         default_permissions = ('change', 'delete')
+        ordering = ['user', 'character__character_name']
 
     character = models.OneToOneField(EveCharacter, on_delete=models.CASCADE, related_name='character_ownership')
     owner_hash = models.CharField(max_length=28, unique=True)

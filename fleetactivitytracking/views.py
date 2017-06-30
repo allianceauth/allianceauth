@@ -123,7 +123,6 @@ def fatlink_statistics_corp_view(request, corpid, year=None, month=None):
     corp_members = CharacterOwnership.objects.filter(character__corporation_id=corpid).values('user_id').distinct()
 
     for member in corp_members:
-        print(member)
         try:
             fat_stats[member['user_id']] = MemberStat(User.objects.get(pk=member['user_id']), start_of_month, start_of_next_month)
         except ObjectDoesNotExist:

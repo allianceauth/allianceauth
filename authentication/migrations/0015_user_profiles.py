@@ -191,6 +191,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'default_permissions': ('change', 'delete'),
+                'ordering': ['user', 'character__character_name'],
             },
         ),
         migrations.CreateModel(
