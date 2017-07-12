@@ -71,7 +71,8 @@ def refresh_api(api):
 
 
 @app.task
-def refresh_user_apis(user):
+def refresh_user_apis(pk):
+    user = User.objects.get(pk=pk)
     logger.debug('Refreshing all APIs belonging to user %s' % user)
     apis = EveApiKeyPair.objects.filter(user=user)
     for x in apis:
@@ -98,7 +99,7 @@ def run_api_refresh():
         return
 
     for u in User.objects.all():
-        refresh_user_apis.delay(u)
+        refresh_user_apis.delay(u.pk)
 
 
 @app.task
