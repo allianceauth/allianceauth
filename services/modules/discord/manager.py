@@ -110,16 +110,16 @@ def api_backoff(func):
                     break
                 except requests.HTTPError as e:
                     if e.response.status_code == 429:
-                        if 'Retry-After' in e.response.headers:
-                            retry_after = e.response.headers['Retry-After']
-                        else:
+                        try:
+                            retry_after = int(e.response.headers['Retry-After'])
+                        except (TypeError, KeyError):
                             # Pick some random time
                             retry_after = 5
 
                         logger.info("Received backoff from API of %s seconds, handling" % retry_after)
                         # Store value in redis
                         backoff_until = (datetime.datetime.utcnow() +
-                                         datetime.timedelta(seconds=int(retry_after)))
+                                         datetime.timedelta(seconds=retry_after))
                         global_backoff = bool(e.response.headers.get('X-RateLimit-Global', False))
                         if global_backoff:
                             logger.info("Global backoff!!")
