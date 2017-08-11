@@ -47,6 +47,7 @@ class PermissionsToolViewsTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_menu_item(self):
+        self.client.login(username=self.member.username, password='password')
         response = self.client.get(urls.reverse('permissions_tool:overview'))
 
         response_content = response.content
