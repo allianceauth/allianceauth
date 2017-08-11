@@ -8,10 +8,13 @@ logger = logging.getLogger(__name__)
 
 
 def available_states_query(character):
-    query = Q(member_characters__character_id=character.character_id)
-    query |= Q(member_corporations__corporation_id=character.corporation_id)
-    query |= Q(member_alliances__alliance_id=character.alliance_id)
-    query |= Q(public=True)
+    query = Q(public=True)
+    if character.character_id:
+        query |= Q(member_characters__character_id=character.character_id)
+    if character.corporation_id:
+        query |= Q(member_corporations__corporation_id=character.corporation_id)
+    if character.alliance_id:
+        query |= Q(member_alliances__alliance_id=character.alliance_id)
     return query
 
 

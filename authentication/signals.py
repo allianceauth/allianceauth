@@ -26,6 +26,7 @@ def trigger_state_check(state):
         if state.available_to_user(profile.user):
             profile.state = state
             profile.save(update_fields=['state'])
+            state_changed.send(sender=state.__class__, user=profile.user, state=state)
 
 
 @receiver(m2m_changed, sender=State.member_characters.through)
@@ -60,6 +61,7 @@ def state_deleted(sender, instance, *args, **kwargs):
         else:
             profile.state = get_guest_state()
         profile.save(update_fields=['state'])
+        state_changed.send(sender=State, user=profile.user, state=profile.state)
 
 
 # Is there a smarter way to intercept pre_save with a diff main_character or state?

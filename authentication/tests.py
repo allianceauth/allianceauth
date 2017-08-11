@@ -17,33 +17,34 @@ from esi.models import Token
 
 
 class BackendTestCase(TestCase):
-    def setUp(self):
-        self.main_character = EveCharacter.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.main_character = EveCharacter.objects.create(
             character_id=1,
             character_name='Main Character',
             corporation_id=1,
             corporation_name='Corp',
             corporation_ticker='CORP',
         )
-        self.alt_character = EveCharacter.objects.create(
+        cls.alt_character = EveCharacter.objects.create(
             character_id=2,
             character_name='Alt Character',
             corporation_id=1,
             corporation_name='Corp',
             corporation_ticker='CORP',
         )
-        self.unclaimed_character = EveCharacter.objects.create(
+        cls.unclaimed_character = EveCharacter.objects.create(
             character_id=3,
             character_name='Unclaimed Character',
             corporation_id=1,
             corporation_name='Corp',
             corporation_ticker='CORP',
         )
-        self.user = AuthUtils.create_user('test_user', disconnect_signals=True)
+        cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
         AuthUtils.disconnect_signals()
-        CharacterOwnership.objects.create(user=self.user, character=self.main_character, owner_hash='1')
-        CharacterOwnership.objects.create(user=self.user, character=self.alt_character, owner_hash='2')
-        UserProfile.objects.update_or_create(user=self.user, defaults={'main_character': self.main_character})
+        CharacterOwnership.objects.create(user=cls.user, character=cls.main_character, owner_hash='1')
+        CharacterOwnership.objects.create(user=cls.user, character=cls.alt_character, owner_hash='2')
+        UserProfile.objects.update_or_create(user=cls.user, defaults={'main_character': cls.main_character})
         AuthUtils.connect_signals()
 
     def test_authenticate_main_character(self):
@@ -77,10 +78,11 @@ class BackendTestCase(TestCase):
 
 
 class CharacterOwnershipTestCase(TestCase):
-    def setUp(self):
-        self.user = AuthUtils.create_user('user', disconnect_signals=True)
-        self.alt_user = AuthUtils.create_user('alt_user', disconnect_signals=True)
-        self.character = EveCharacter.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = AuthUtils.create_user('user', disconnect_signals=True)
+        cls.alt_user = AuthUtils.create_user('alt_user', disconnect_signals=True)
+        cls.character = EveCharacter.objects.create(
             character_id=1,
             character_name='Main Character',
             corporation_id=1,
@@ -136,17 +138,18 @@ class CharacterOwnershipTestCase(TestCase):
 
 
 class StateTestCase(TestCase):
-    def setUp(self):
-        self.user = AuthUtils.create_user('test_user', disconnect_signals=True)
-        AuthUtils.add_main_character(self.user, 'Test Character', '1', corp_id='1', alliance_id='1',
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
+        AuthUtils.add_main_character(cls.user, 'Test Character', '1', corp_id='1', alliance_id='1',
                                      corp_name='Test Corp', alliance_name='Test Alliance')
-        self.guest_state = get_guest_state()
-        self.test_character = EveCharacter.objects.get(character_id='1')
-        self.test_corporation = EveCorporationInfo.objects.create(corporation_id='1', corporation_name='Test Corp',
+        cls.guest_state = get_guest_state()
+        cls.test_character = EveCharacter.objects.get(character_id='1')
+        cls.test_corporation = EveCorporationInfo.objects.create(corporation_id='1', corporation_name='Test Corp',
                                                                   corporation_ticker='TEST', member_count=1)
-        self.test_alliance = EveAllianceInfo.objects.create(alliance_id='1', alliance_name='Test Alliance',
+        cls.test_alliance = EveAllianceInfo.objects.create(alliance_id='1', alliance_name='Test Alliance',
                                                             alliance_ticker='TEST', executor_corp_id='1')
-        self.member_state = State.objects.create(
+        cls.member_state = State.objects.create(
             name='Test Member',
             priority=150,
         )
@@ -183,58 +186,75 @@ class StateTestCase(TestCase):
 
     def test_state_assignment_on_higher_priority_state_creation(self):
         self.member_state.member_characters.add(self.test_character)
-        self.higher_state = State.objects.create(
+        higher_state = State.objects.create(
             name='Higher State',
             priority=200,
         )
-        self.higher_state.member_characters.add(self.test_character)
+        higher_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.higher_state, self.user.profile.state)
-        self.higher_state.member_characters.clear()
+        self.assertEquals(higher_state, self.user.profile.state)
+        higher_state.member_characters.clear()
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
         self.member_state.member_characters.clear()
 
     def test_state_assignment_on_lower_priority_state_creation(self):
         self.member_state.member_characters.add(self.test_character)
-        self.lower_state = State.objects.create(
+        lower_state = State.objects.create(
             name='Lower State',
             priority=125,
         )
-        self.lower_state.member_characters.add(self.test_character)
+        lower_state.member_characters.add(self.test_character)
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
-        self.lower_state.member_characters.clear()
+        lower_state.member_characters.clear()
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
         self.member_state.member_characters.clear()
 
     def test_state_assignment_on_priority_change(self):
         self.member_state.member_characters.add(self.test_character)
-        self.lower_state = State.objects.create(
+        lower_state = State.objects.create(
             name='Lower State',
             priority=125,
         )
-        self.lower_state.member_characters.add(self.test_character)
+        lower_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.lower_state.priority = 500
-        self.lower_state.save()
+        lower_state.priority = 500
+        lower_state.save()
         self._refresh_user()
-        self.assertEquals(self.lower_state, self.user.profile.state)
-        self.lower_state.priority = 125
-        self.lower_state.save()
+        self.assertEquals(lower_state, self.user.profile.state)
+        lower_state.priority = 125
+        lower_state.save()
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
 
     def test_state_assignment_on_state_deletion(self):
         self.member_state.member_characters.add(self.test_character)
-        self.higher_state = State.objects.create(
+        higher_state = State.objects.create(
             name='Higher State',
             priority=200,
         )
-        self.higher_state.member_characters.add(self.test_character)
+        higher_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.higher_state, self.user.profile.state)
-        self.higher_state.delete()
+        self.assertEquals(higher_state, self.user.profile.state)
+        higher_state.delete()
+        self._refresh_user()
+        self.assertEquals(self.member_state, self.user.profile.state)
+
+    def test_state_assignment_on_public_toggle(self):
+        self.member_state.member_characters.add(self.test_character)
+        higher_state = State.objects.create(
+            name='Higher State',
+            priority=200,
+        )
+        self._refresh_user()
+        self.assertEquals(self.member_state, self.user.profile.state)
+        higher_state.public = True
+        higher_state.save()
+        self._refresh_user()
+        self.assertEquals(higher_state, self.user.profile.state)
+        higher_state.public = False
+        higher_state.save()
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
