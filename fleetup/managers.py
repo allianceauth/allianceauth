@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from django.core.cache import cache
+from django.utils import timezone
 from datetime import datetime
 
 import logging
@@ -16,6 +17,8 @@ class FleetUpManager:
     API_ID = settings.FLEETUP_API_ID
     GROUP_ID = settings.FLEETUP_GROUP_ID
     BASE_URL = "http://api.fleet-up.com/Api.svc/{}/{}/{}".format(APP_KEY, USER_ID, API_ID)
+
+    TZ = timezone.utc
 
     def __init__(self):
         pass
@@ -60,7 +63,7 @@ class FleetUpManager:
                 cache.set(cache_key, json, cls._cache_until_seconds(json['CachedUntilUTC']))
             return json
         except requests.exceptions.ConnectionError:
-            logger.warn("Can't connect to Fleet-Up API, is it offline?!")
+            logger.warning("Can't connect to Fleet-Up API, is it offline?!")
         except requests.HTTPError:
             logger.exception("Error accessing Fleetup API")
         return None
@@ -87,8 +90,10 @@ class FleetUpManager:
         if foperations is None:
             return None
         return {row["StartString"]: {"subject": row["Subject"],
-                                     "start": datetime.strptime(row["StartString"], "%Y-%m-%d %H:%M:%S"),
-                                     "end": datetime.strptime(row["EndString"], "%Y-%m-%d %H:%M:%S"),
+                                     "start": timezone.make_aware(
+                                         datetime.strptime(row["StartString"], "%Y-%m-%d %H:%M:%S"), cls.TZ),
+                                     "end": timezone.make_aware(
+                                         datetime.strptime(row["EndString"], "%Y-%m-%d %H:%M:%S"), cls.TZ),
                                      "operation_id": row["OperationId"],
                                      "location": row["Location"],
                                      "location_info": row["LocationInfo"],
@@ -109,9 +114,9 @@ class FleetUpManager:
                                        "owner": row["Owner"],
                                        "type": row["Type"],
                                        "timer_type": row["TimerType"],
-                                       "expires": (datetime.strptime(row["ExpiresString"], "%Y-%m-%d %H:%M:%S")),
+                                       "expires": timezone.make_aware(
+                                           datetime.strptime(row["ExpiresString"], "%Y-%m-%d %H:%M:%S"), cls.TZ),
                                        "notes": row["Notes"]} for row in ftimers["Data"]}
-        return {}
 
     @classmethod
     def get_fleetup_doctrines(cls):
@@ -143,9 +148,10 @@ class FleetUpManager:
                                    "estimated": row["EstPrice"],
                                    "faction": row["Faction"],
                                    "categories": row["Categories"],
-                                   "last_update": (
-                                   datetime.strptime(row["LastUpdatedString"], "%Y-%m-%d %H:%M:%S"))} for row in
-                ffittings["Data"]}
+                                   "last_update":
+                                       timezone.make_aware(
+                                           datetime.strptime(row["LastUpdatedString"], "%Y-%m-%d %H:%M:%S"), cls.TZ)}
+                for row in ffittings["Data"]}
 
     @classmethod
     def get_fleetup_fitting(cls, fittingnumber):
@@ -156,7 +162,7 @@ class FleetUpManager:
                 return None
             return {"fitting_data": ffitting["Data"]}
         except KeyError:
-            logger.warn("Failed to retrieve fleetup fitting number %s" % fittingnumber)
+            logger.warning("Failed to retrieve fleetup fitting number %s" % fittingnumber)
         return {"fitting_data": {}}
 
     @classmethod
@@ -180,5 +186,5 @@ class FleetUpManager:
                 return None
             return {"fitting_eft": ffittingeft["Data"]["FittingData"]}
         except KeyError:
-            logger.warn("Fleetup fitting eft not found for fitting number %s" % fittingnumber)
+            logger.warning("Fleetup fitting eft not found for fitting number %s" % fittingnumber)
         return {"fitting_eft": {}}

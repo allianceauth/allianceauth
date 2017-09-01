@@ -12,6 +12,7 @@ import json
 import datetime
 
 from django.test import TestCase
+from django.utils.timezone import make_aware, utc
 
 from fleetup.managers import FleetUpManager
 
@@ -148,8 +149,8 @@ class FleetupManagerTestCase(TestCase):
         expected_result = {
             '2017-05-06 11:11:11': {
                 'subject': 'test_operation',
-                'start': datetime.datetime(2017, 5, 6, 11, 11, 11),
-                'end': datetime.datetime(2017, 5, 6, 12, 12, 12),
+                'start': make_aware(datetime.datetime(2017, 5, 6, 11, 11, 11), utc),
+                'end': make_aware(datetime.datetime(2017, 5, 6, 12, 12, 12), utc),
                 'operation_id': 1234,
                 'location': 'Jita',
                 'location_info': '4-4',
@@ -208,7 +209,7 @@ class FleetupManagerTestCase(TestCase):
                          FleetUpManager.GROUP_ID)
         expected_result = {
             '2017-05-06 11:11:11': {
-                'expires': datetime.datetime(2017, 5, 6, 11, 11, 11),
+                'expires': make_aware(datetime.datetime(2017, 5, 6, 11, 11, 11), utc),
                 'solarsystem': 'Jita',
                 'planet': '4',
                 'moon': '4',
@@ -361,7 +362,7 @@ class FleetupManagerTestCase(TestCase):
                 'estimated': 500000000,
                 'faction': 'Amarr',
                 'categories': ["Armor", "Laser"],
-                'last_update': datetime.datetime(2017, 5, 6, 11, 11, 11)
+                'last_update': make_aware(datetime.datetime(2017, 5, 6, 11, 11, 11), utc)
             }
         }
         self.assertDictEqual(expected_result, result)
