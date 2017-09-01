@@ -228,7 +228,7 @@ class EveProvider(object):
 @python_2_unicode_compatible
 class EveSwaggerProvider(EveProvider):
     def __init__(self, token=None, adapter=None):
-        self.client = esi_client_factory(token=token, Alliance='v1', Character='v4', Corporation='v2', Universe='v2')
+        self.client = esi_client_factory(token=token, Alliance='v3', Character='v4', Corporation='v2', Universe='v2')
         self.adapter = adapter or self
 
     def __str__(self):
