@@ -63,7 +63,7 @@ class SeatManager:
             logger.info("Added SeAT user with username %s" % sanitized)
             return sanitized, password
         logger.info("Failed to add SeAT user with username %s" % sanitized)
-        return None
+        return None, None
 
     @classmethod
     def delete_user(cls, username):
