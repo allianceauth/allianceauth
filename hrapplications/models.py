@@ -11,12 +11,20 @@ from authentication.models import AuthServicesInfo
 
 @python_2_unicode_compatible
 class ApplicationQuestion(models.Model):
-    title = models.CharField(max_length=254)
+    title = models.CharField(max_length=254, verbose_name='Question')
     help_text = models.CharField(max_length=254, blank=True, null=True)
 
     def __str__(self):
         return "Question: " + self.title
 
+
+@python_2_unicode_compatible
+class ApplicationChoice(models.Model):
+    question = models.ForeignKey(ApplicationQuestion,on_delete=models.CASCADE,related_name="choices")
+    choice_text = models.CharField(max_length=200, verbose_name='Choice')
+
+    def __str__(self):
+        return self.choice_text
 
 @python_2_unicode_compatible
 class ApplicationForm(models.Model):

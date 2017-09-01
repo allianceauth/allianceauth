@@ -5,29 +5,33 @@
 {% block title %}Apply To {{ corp.corporation_name }}{% endblock title %}
 {% block page_title %}{% trans "Apply To" %} {{ corp.corporation_name }}{% endblock page_title %}
 {% block content %}
-    <div class="col-lg-12">
-        <h1 class="page-header text-center">{% trans "Apply To" %} {{ corp.corporation_name }}</h1>
-        <div class="container-fluid">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="row">
-                    <form class="form-signin">
-                        {% csrf_token %}
-                        {% for question in questions %}
-                            <div class="form-group">
-                                <label class="control-label" for="id_{{ question.pk }}">{{ question.title }}</label>
-                                <div class=" ">
-                                    {% if question.help_text %}
-                                        <div cass="text-center">{{ question.help_text }}</div>
-                                    {% endif %}
-                                    <textarea class="form-control" cols="40" id="id_{{ question.pk }}" name="{{ question.pk }}" rows="10"></textarea>
-                                </div>
-                            </div>
-                        {% endfor %}
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post">{% trans "Submit" %}</button>
-                    </form>
-                </div>
+<div class="col-lg-12">
+    <h1 class="page-header text-center">{% trans "Apply To" %} {{ corp.corporation_name }}</h1>
+    <div class="container-fluid">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="row">
+                <form class="form-signin">
+                    {% csrf_token %}
+                    {% for question in questions %}
+                        <div class="form-group">
+                            <label class="control-label" for="id_{{ question.pk }}">{{ question.title }}</label>
+                            <div class=" ">
+                            {% if question.help_text %}
+                                <div cass="text-center">{{ question.help_text }}</div>
+                            {% endif %}
+                            {% for choice in question.choices.all %}
+                                <input type="radio" name="{{ question.pk }}" id="id_{{ question.pk }}" value="{{ choice.choice_text }}" />
+                                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+                            {% empty %}
+                                <textarea class="form-control" cols="30" id="id_{{ question.pk }}" name="{{ question.pk }}" rows="4"></textarea>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <button class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post">{% trans "Submit" %}</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
-                        
