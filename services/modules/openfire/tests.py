@@ -219,3 +219,28 @@ class OpenfireManagerTestCase(TestCase):
         result_username = self.manager._OpenfireManager__sanitize_username(test_username)
 
         self.assertEqual(result_username, 'My_Test\\20User\\22\\27\\26\\2f\\3a\\3c\\3e\\40name\\5c20name')
+
+    def test__sanitize_groupname(self):
+        test_groupname = " My_Test Groupname"
+
+        result_groupname = self.manager._sanitize_groupname(test_groupname)
+
+        self.assertEqual(result_groupname, "my_testgroupname")
+
+    @mock.patch(MODULE_PATH + '.manager.ofUsers')
+    def test_update_user_groups(self, api):
+        groups = ["AddGroup", "othergroup", "Guest Group"]
+        server_groups = ["othergroup", "Guest Group", "REMOVE group"]
+        username = "testuser"
+        api_instance = api.return_value
+        api_instance.get_user_groups.return_value = {'groupname': server_groups}
+
+        self.manager.update_user_groups(username, groups)
+
+        self.assertTrue(api_instance.add_user_groups.called)
+        args, kwargs = api_instance.add_user_groups.call_args
+        self.assertEqual(args[1], ["addgroup"])
+
+        self.assertTrue(api_instance.delete_user_groups.called)
+        args, kwargs = api_instance.delete_user_groups.call_args
+        self.assertEqual(args[1], ["removegroup"])
