@@ -246,6 +246,10 @@ class Teamspeak3Manager:
         logger.debug("Deleting user %s with id %s from TS3 server." % (user, uid))
         if user:
             clients = self.server.send_command('clientlist')
+            if isinstance(clients, dict):
+                # Rewrap list
+                clients = [clients]
+                
             for client in clients:
                 try:
                     if client['keys']['client_database_id'] == user:
