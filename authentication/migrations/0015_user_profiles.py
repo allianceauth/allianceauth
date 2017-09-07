@@ -182,12 +182,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('owner_hash', models.CharField(max_length=28, unique=True)),
-                ('character',
-                 models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='character_ownership',
-                                      to='eveonline.EveCharacter')),
-                ('user',
-                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='character_ownerships',
-                                   to=settings.AUTH_USER_MODEL)),
+                ('character', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='character_ownership', to='eveonline.EveCharacter')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='character_ownerships', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'default_permissions': ('change', 'delete'),
@@ -199,18 +195,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=20, unique=True)),
-                ('priority', models.IntegerField(unique=True,
-                                                 help_text="Users get assigned the state with the highest priority available to them.")),
-                ('public', models.BooleanField(default=False, help_text="Make this state available to any character.")),
-                ('member_alliances', models.ManyToManyField(blank=True, to='eveonline.EveAllianceInfo',
-                                                            help_text="Alliances to whose members this state is available.")),
-                ('member_characters', models.ManyToManyField(blank=True, to='eveonline.EveCharacter',
-                                                             help_text="Characters to which this state is available.")),
-                ('member_corporations', models.ManyToManyField(blank=True, to='eveonline.EveCorporationInfo',
-                                                               help_text="Corporations to whose members this state is available.")),
+                ('priority', models.IntegerField(help_text='Users get assigned the state with the highest priority available to them.', unique=True)),
+                ('public', models.BooleanField(default=False, help_text='Make this state available to any character.')),
+                ('member_alliances', models.ManyToManyField(blank=True, help_text='Alliances to whose members this state is available.', to='eveonline.EveAllianceInfo')),
+                ('member_characters', models.ManyToManyField(blank=True, help_text='Characters to which this state is available.', to='eveonline.EveCharacter')),
+                ('member_corporations', models.ManyToManyField(blank=True, help_text='Corporations to whose members this state is available.', to='eveonline.EveCorporationInfo')),
                 ('permissions', models.ManyToManyField(blank=True, to='auth.Permission')),
             ],
             options={
+                'default_permissions': ('change',),
                 'ordering': ['-priority'],
             },
         ),
@@ -218,14 +211,9 @@ class Migration(migrations.Migration):
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('main_character',
-                 models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                      to='eveonline.EveCharacter')),
-                ('state', models.ForeignKey(on_delete=models.SET(authentication.models.get_guest_state),
-                                            to='authentication.State',
-                                            default=authentication.models.get_guest_state_pk)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile',
-                                              to=settings.AUTH_USER_MODEL)),
+                ('main_character', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='eveonline.EveCharacter')),
+                ('state', models.ForeignKey(default=authentication.models.get_guest_state_pk, on_delete=django.db.models.deletion.SET_DEFAULT, to='authentication.State')),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'default_permissions': ('change',),
@@ -244,4 +232,32 @@ class Migration(migrations.Migration):
             name='AuthServicesInfo',
         ),
         migrations.RunPython(disable_passwords, migrations.RunPython.noop),
+        migrations.CreateModel(
+            name='ProxyPermission',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+                'verbose_name': 'permission',
+                'verbose_name_plural': 'permissions',
+            },
+            bases=('auth.permission',),
+            managers=[
+                ('objects', django.contrib.auth.models.PermissionManager()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProxyUser',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+                'verbose_name': 'user',
+                'verbose_name_plural': 'users',
+            },
+            bases=('auth.user',),
+            managers=[
+                ('objects', django.contrib.auth.models.UserManager()),
+            ],
+        ),
     ]

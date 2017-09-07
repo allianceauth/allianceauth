@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.db.models import Manager, QuerySet, Q
+from django.db import transaction
 from eveonline.managers import EveManager
 from eveonline.models import EveCharacter
 import logging
@@ -36,6 +37,21 @@ class StateQuerySet(QuerySet):
         else:
             return self.none()
 
+    def get_for_user(self, user):
+        states = self.available_to_user(user)
+        if states.exists():
+            return states[0]
+        else:
+            from authentication.models import get_guest_state
+            return get_guest_state()
+
+    def delete(self):
+        with transaction.atomic():
+            for state in self:
+                for profile in state.userprofile_set.all():
+                    profile.assign_state(state=self.model.objects.exclude(pk=state.pk).get_for_user(profile.user))
+        super(StateQuerySet, self).delete()
+
 
 class StateManager(Manager):
     def get_queryset(self):
@@ -56,9 +72,4 @@ class StateManager(Manager):
             return get_guest_state()
 
     def get_for_user(self, user):
-        states = self.get_queryset().available_to_user(user)
-        if states.exists():
-            return states[0]
-        else:
-            from authentication.models import get_guest_state
-            return get_guest_state()
+        return self.get_queryset().get_for_user(user)

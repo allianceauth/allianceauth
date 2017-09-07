@@ -239,6 +239,7 @@ class StateTestCase(TestCase):
         self._refresh_user()
         self.assertEquals(higher_state, self.user.profile.state)
         higher_state.delete()
+        self.assertFalse(State.objects.filter(name='Higher State').count())
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
 
@@ -258,3 +259,14 @@ class StateTestCase(TestCase):
         higher_state.save()
         self._refresh_user()
         self.assertEquals(self.member_state, self.user.profile.state)
+
+    def test_state_assignment_on_active_changed(self):
+        self.member_state.member_characters.add(self.test_character)
+        self.user.is_active = False
+        self.user.save()
+        self._refresh_user()
+        self.assertEquals(self.user.profile.state, self.guest_state)
+        self.user.is_active = True
+        self.user.save()
+        self._refresh_user()
+        self.assertEquals(self.user.profile.state, self.member_state)

@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.db.models.signals import post_save, pre_delete, m2m_changed
+from django.db.models.signals import post_save, pre_delete, m2m_changed, pre_save
 from django.db.models import Q
 from django.dispatch import receiver, Signal
 from django.contrib.auth.models import User
@@ -50,18 +50,6 @@ def state_member_alliances_changed(sender, instance, action, *args, **kwargs):
 @receiver(post_save, sender=State)
 def state_saved(sender, instance, *args, **kwargs):
     trigger_state_check(instance)
-
-
-@receiver(pre_delete, sender=State)
-def state_deleted(sender, instance, *args, **kwargs):
-    for profile in instance.userprofile_set.all():
-        available = State.objects.exclude(pk=instance.pk).available_to_user(profile.user)
-        if available:
-            profile.state = available[0]
-        else:
-            profile.state = get_guest_state()
-        profile.save(update_fields=['state'])
-        state_changed.send(sender=State, user=profile.user, state=profile.state)
 
 
 # Is there a smarter way to intercept pre_save with a diff main_character or state?
@@ -119,12 +107,17 @@ def validate_main_character_token(sender, instance, *args, **kwargs):
             profile.save()
 
 
-@receiver(post_save, sender=User)
-def assign_state_on_reactivate(sender, instance, *args, **kwargs):
-    # There's no easy way to trigger an action upon saving from pre_save signal
-    # If we're saving a user and that user is in the Guest state, assume is_active was just set to True and assign state
-    if instance.is_active and instance.profile.state == get_guest_state():
-        instance.profile.assign_state()
+@receiver(pre_save, sender=User)
+def assign_state_on_active_change(sender, instance, *args, **kwargs):
+    # set to guest state if inactive, assign proper state if reactivated
+    if instance.pk:
+        old_instance = User.objects.get(pk=instance.pk)
+        if old_instance.is_active != instance.is_active:
+            if instance.is_active:
+                instance.profile.assign_state()
+            else:
+                instance.profile.state = get_guest_state()
+                instance.profile.save(update_fields=['state'])
 
 
 @receiver(post_save, sender=EveCharacter)

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User, Permission
 from authentication.managers import CharacterOwnershipManager, StateManager
 from eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
@@ -30,7 +30,6 @@ class State(models.Model):
 
     class Meta:
         ordering = ['-priority']
-        default_permissions = ('change',)
 
     def __str__(self):
         return self.name
@@ -40,6 +39,12 @@ class State(models.Model):
 
     def available_to_user(self, user):
         return self in State.objects.available_to_user(user)
+
+    def delete(self, **kwargs):
+        with transaction.atomic():
+            for profile in self.userprofile_set.all():
+                profile.assign_state(state=State.objects.exclude(pk=self.pk).get_for_user(profile.user))
+        super(State, self).delete(**kwargs)
 
 
 def get_guest_state():
@@ -60,10 +65,11 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     main_character = models.OneToOneField(EveCharacter, blank=True, null=True, on_delete=models.SET_NULL)
-    state = models.ForeignKey(State, on_delete=models.SET(get_guest_state), default=get_guest_state_pk)
+    state = models.ForeignKey(State, on_delete=models.SET_DEFAULT, default=get_guest_state_pk)
 
-    def assign_state(self, commit=True):
-        state = State.objects.get_for_user(self.user)
+    def assign_state(self, state=None, commit=True):
+        if not state:
+            state = State.objects.get_for_user(self.user)
         if self.state != state:
             self.state = state
             if commit:
