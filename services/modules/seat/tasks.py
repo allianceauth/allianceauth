@@ -28,7 +28,7 @@ class SeatTasks:
 
     @classmethod
     def delete_user(cls, user, notify_user=False):
-        if cls.has_account(user) and SeatManager.disable_user(user.seat.username):
+        if cls.has_account(user) and SeatManager.delete_user(user.seat.username):
             user.seat.delete()
             logger.info("Successfully deactivated SeAT for user %s" % user)
             if notify_user:
