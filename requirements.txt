@@ -16,7 +16,7 @@ django>=1.10,<2.0
 django-bootstrap-form
 django-navhelper
 django-bootstrap-pagination
-django-redis>=4.4
+django-redis-cache>=1.7.1
 django-recaptcha
 django-celery-beat
 

@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from notifications import notify
 
-from services.tasks import only_one
-
 from .manager import DiscourseManager
 from .models import DiscourseUser
 

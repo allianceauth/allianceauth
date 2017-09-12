@@ -10,7 +10,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from eveonline.managers import EveManager
 from notifications import notify
 from services.modules.discord.manager import DiscordOAuthManager, DiscordApiBackoff
-from services.tasks import only_one
 from .models import DiscordUser
 
 logger = logging.getLogger(__name__)
