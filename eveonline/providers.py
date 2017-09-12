@@ -237,7 +237,7 @@ class EveSwaggerProvider(EveProvider):
     def get_alliance(self, alliance_id):
         try:
             data = self.client.Alliance.get_alliances_alliance_id(alliance_id=alliance_id).result()
-            corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
+            corps = esi_client_factory(Alliance='v1').Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
             model = Alliance(
                 self.adapter,
                 alliance_id,
