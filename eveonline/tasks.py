@@ -36,7 +36,7 @@ def refresh_api(api):
                 EveManager.create_character_obj(c, api.user, api.api_id)
         current_chars = EveCharacter.objects.filter(api_id=api.api_id)
         for c in current_chars:
-            if not int(c.character_id) in [c.id for c in characters]:
+            if not int(c.character_id) in [d.id for d in characters]:
                 logger.info("Character %s no longer found on API ID %s" % (c, api.api_id))
                 c.delete()
     except evelink.api.APIError as e:
@@ -60,7 +60,7 @@ def refresh_api(api):
                    api.api_id, e.required_mask, e.api_mask), level="danger")
         still_valid = False
     except EveApiManager.ApiServerUnreachableError as e:
-        logger.warn("Error updating API %s\n%s" % (api.api_id, str(e)))
+        logger.warning("Error updating API %s\n%s" % (api.api_id, str(e)))
     finally:
         if not still_valid:
             EveManager.delete_characters_by_api_id(api.api_id, api.user.id)
