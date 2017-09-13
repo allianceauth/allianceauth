@@ -264,5 +264,5 @@ class SeatManager:
     @staticmethod
     def username_hash(username):
         m = hashlib.sha1()
-        m.update(username)
+        m.update(username.encode('utf-8'))
         return m.hexdigest()
