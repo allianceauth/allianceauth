@@ -1,10 +1,14 @@
 from django.db import models
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CorpStatsQuerySet(models.QuerySet):
     def visible_to(self, user):
         # superusers get all visible
         if user.is_superuser:
+            logger.debug('Returning all corpstats for superuser %s.' % user)
             return self
 
         try:
@@ -19,13 +23,14 @@ class CorpStatsQuerySet(models.QuerySet):
             if user.has_perm('corputils.view_state_corpstats'):
                 queries.append(models.Q(corp__in=user.profile.state.member_corporations.all()))
                 queries.append(models.Q(corp__alliance__in=user.profile.state.member_alliances.all()))
-
+            logger.debug('%s queries for user %s visible corpstats.' % (len(queries), user))
             # filter based on queries
             query = queries.pop()
             for q in queries:
                 query |= q
             return self.filter(query)
         except AssertionError:
+            logger.debug('User %s has no main character. No corpstats visible.' % user)
             return self.none()        
 
 
