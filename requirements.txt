@@ -20,6 +20,7 @@ django-sortedm2m
 django-redis-cache>=1.7.1
 django-recaptcha
 django-celery-beat
+git+https://github.com/adarnof/django-navhelper
 
 # awating pyghassen/openfire-restapi #1 to fix installation issues
 git+https://github.com/adarnof/openfire-restapi
