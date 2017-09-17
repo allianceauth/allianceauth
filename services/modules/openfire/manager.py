@@ -61,7 +61,7 @@ class OpenfireManager:
 
     @staticmethod
     def _sanitize_groupname(name):
-        name = name.strip(' _')
+        name = name.strip(' _').lower()
         return re.sub('[^\w.-]', '', name)
 
     @staticmethod
@@ -120,9 +120,10 @@ class OpenfireManager:
             logger.error("Unable to update openfire user %s password - user not found on server." % username)
             return ""
 
-    @staticmethod
-    def update_user_groups(username, groups):
+    @classmethod
+    def update_user_groups(cls, username, groups):
         logger.debug("Updating openfire user %s groups %s" % (username, groups))
+        s_groups = list(map(cls._sanitize_groupname, groups))  # Sanitized group names
         api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         response = api.get_user_groups(username)
         remote_groups = []
@@ -130,16 +131,15 @@ class OpenfireManager:
             remote_groups = response['groupname']
             if isinstance(remote_groups, six.string_types):
                 remote_groups = [remote_groups]
+        remote_groups = list(map(cls._sanitize_groupname, remote_groups))
         logger.debug("Openfire user %s has groups %s" % (username, remote_groups))
         add_groups = []
         del_groups = []
-        for g in groups:
-            g = OpenfireManager._sanitize_groupname(g)
+        for g in s_groups:
             if g not in remote_groups:
                 add_groups.append(g)
         for g in remote_groups:
-            g = OpenfireManager._sanitize_groupname(g)
-            if g not in groups:
+            if g not in s_groups:
                 del_groups.append(g)
         logger.info(
             "Updating openfire groups for user %s - adding %s, removing %s" % (username, add_groups, del_groups))
@@ -155,10 +155,11 @@ class OpenfireManager:
         api.delete_user_groups(username, groups)
         logger.info("Deleted groups %s from openfire user %s" % (groups, username))
 
-    @staticmethod
-    def send_broadcast_message(group_name, broadcast_message):
-        logger.debug("Sending jabber ping to group %s with message %s" % (group_name, broadcast_message))
-        to_address = group_name + '@' + settings.BROADCAST_SERVICE_NAME + '.' + settings.JABBER_URL
+    @classmethod
+    def send_broadcast_message(cls, group_name, broadcast_message):
+        s_group_name = cls._sanitize_groupname(group_name)
+        logger.debug("Sending jabber ping to group %s with message %s" % (s_group_name, broadcast_message))
+        to_address = s_group_name + '@' + settings.BROADCAST_SERVICE_NAME + '.' + settings.JABBER_URL
         xmpp = PingBot(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, to_address, broadcast_message)
         xmpp.register_plugin('xep_0030')  # Service Discovery
         xmpp.register_plugin('xep_0199')  # XMPP Ping

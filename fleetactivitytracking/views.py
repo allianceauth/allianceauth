@@ -17,14 +17,14 @@ from fleetactivitytracking.models import Fatlink, Fat
 from authentication.models import CharacterOwnership
 from django.contrib.auth.models import User
 from esi.decorators import token_required
-
 from slugify import slugify
-
 import string
 import random
 import datetime
-
 import logging
+import os
+
+SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 
 logger = logging.getLogger(__name__)
 
@@ -251,7 +251,7 @@ def click_fatlink_view(request, token, hash, fatname):
 
         if character:
             # get data
-            c = token.get_esi_client(Location='v1', Universe='v2')
+            c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
             location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
             ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
             location['solar_system_name'] = \
@@ -261,7 +261,6 @@ def click_fatlink_view(request, token, hash, fatname):
                 location['station_name'] = \
                     c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
             elif location['structure_id']:
-                c = token.get_esi_client(Universe='v1')
                 location['station_name'] = \
                     c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
                         'name']

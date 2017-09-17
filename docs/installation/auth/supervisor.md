@@ -22,7 +22,7 @@ CentOS:
 
 Auth provides example config files for the celery workers, the periodic task scheduler (celery beat), and the mumble authenticator. All of these are available in `thirdparty/Supervisor`.
 
-For most users, all you have to do is copy the config files to `/etc/supervisor/conf.d` then restart the service. Copy `auth-celerybeat.conf` and `auth-celeryd.conf` for the celery workers, and `auth-mumble.conf` for the mumble authenticator. For all three just use a wildcard:
+For most users, all you have to do is copy the config files to `/etc/supervisor/conf.d` then restart the service. Copy `auth.conf` for the celery workers, and `auth-mumble.conf` for the mumble authenticator. For all three just use a wildcard:
 
     sudo cp thirdparty/Supervisor/* /etc/supervisor/conf.d
 
@@ -44,6 +44,24 @@ Processes will be `STARTING`, `RUNNING`, or `ERROR`. If an error has occurred, c
  - celery workers: `log/worker.log`
  - celery beat: `log/beat.log`
  - authenticator: `log/authenticator.log`
+ 
+## Restarting Processes
+
+To restart the celery group:
+
+    sudo supervisorctl restart auth:*
+
+To restart just celerybeat:
+
+    sudo supervisorctl restart auth:celerybeat
+
+To restart just celeryd:
+
+    sudo supervisorctl restart auth:celeryd
+
+To restart just mumble authenticator:
+
+    sudo supervisorctl restart auth-mumble
 
 ## Customizing Config Files
 

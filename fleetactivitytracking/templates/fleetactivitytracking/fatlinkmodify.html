@@ -37,7 +37,7 @@
                             <td class="text-center">{{ fat.user }}</td>
                             <td class="text-center">{{ fat.character.character_name }}</td>
                             {%  if fat.station != "No Station" %}
-                                <td class="text-center">{% blocktrans %}Docked in {{ fat.system }}{% endblocktrans %}</td>
+                                <td class="text-center">{% blocktrans %}Docked in {% endblocktrans %}{{ fat.system }}</td>
                             {% else %}
                                 <td class="text-center">{{ fat.system }}</td>
                             {% endif %}

@@ -6,6 +6,9 @@ import json
 from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
 import evelink
 import logging
+import os
+
+SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 
 logger = logging.getLogger(__name__)
 
@@ -228,7 +231,7 @@ class EveProvider(object):
 @python_2_unicode_compatible
 class EveSwaggerProvider(EveProvider):
     def __init__(self, token=None, adapter=None):
-        self.client = esi_client_factory(token=token, Alliance='v1', Character='v4', Corporation='v2', Universe='v2')
+        self.client = esi_client_factory(token=token, spec_file=SWAGGER_SPEC_PATH)
         self.adapter = adapter or self
 
     def __str__(self):
@@ -244,7 +247,7 @@ class EveSwaggerProvider(EveProvider):
                 data['alliance_name'],
                 data['ticker'],
                 corps,
-                data['executor_corporation_id'],
+                data['executor_corp'],
             )
             return model
         except HTTPNotFound:

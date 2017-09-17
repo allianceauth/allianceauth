@@ -1,16 +1,14 @@
 from __future__ import unicode_literals
 import logging
 import requests
-import random
-import string
-import datetime
-import json
 import re
 from django.conf import settings
-from django.utils import timezone
-from services.models import GroupCache
+from django.core.cache import cache
+from hashlib import md5
 
 logger = logging.getLogger(__name__)
+
+GROUP_CACHE_MAX_AGE = int(getattr(settings, 'DISCOURSE_GROUP_CACHE_MAX_AGE', 2 * 60 * 60))  # default 2 hours
 
 
 class DiscourseError(Exception):
@@ -21,12 +19,13 @@ class DiscourseError(Exception):
     def __str__(self):
         return "API execution failed.\nErrors: %s\nEndpoint: %s" % (self.errors, self.endpoint)
 
+
 # not exhaustive, only the ones we need
 ENDPOINTS = {
     'groups': {
         'list': {
             'path': "/admin/groups.json",
-            'method': requests.get,
+            'method': 'get',
             'args': {
                 'required': [],
                 'optional': [],
@@ -34,7 +33,7 @@ ENDPOINTS = {
         },
         'create': {
             'path': "/admin/groups",
-            'method': requests.post,
+            'method': 'post',
             'args': {
                 'required': ['name'],
                 'optional': ['visible'],
@@ -42,7 +41,7 @@ ENDPOINTS = {
         },
         'add_user': {
             'path': "/admin/groups/%s/members.json",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': ['usernames'],
                 'optional': [],
@@ -50,7 +49,7 @@ ENDPOINTS = {
         },
         'remove_user': {
             'path': "/admin/groups/%s/members.json",
-            'method': requests.delete,
+            'method': 'delete',
             'args': {
                 'required': ['username'],
                 'optional': [],
@@ -58,7 +57,7 @@ ENDPOINTS = {
         },
         'delete': {
             'path': "/admin/groups/%s.json",
-            'method': requests.delete,
+            'method': 'delete',
             'args': {
                 'required': [],
                 'optional': [],
@@ -68,7 +67,7 @@ ENDPOINTS = {
     'users': {
         'create': {
             'path': "/users",
-            'method': requests.post,
+            'method': 'post',
             'args': {
                 'required': ['name', 'email', 'password', 'username'],
                 'optional': ['active'],
@@ -76,7 +75,7 @@ ENDPOINTS = {
         },
         'update': {
             'path': "/users/%s.json",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': ['params'],
                 'optional': [],
@@ -84,7 +83,7 @@ ENDPOINTS = {
         },
         'get': {
             'path': "/users/%s.json",
-            'method': requests.get,
+            'method': 'get',
             'args': {
                 'required': [],
                 'optional': [],
@@ -92,7 +91,7 @@ ENDPOINTS = {
         },
         'activate': {
             'path': "/admin/users/%s/activate",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': [],
                 'optional': [],
@@ -100,7 +99,7 @@ ENDPOINTS = {
         },
         'set_email': {
             'path': "/users/%s/preferences/email",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': ['email'],
                 'optional': [],
@@ -108,7 +107,7 @@ ENDPOINTS = {
         },
         'suspend': {
             'path': "/admin/users/%s/suspend",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': ['duration', 'reason'],
                 'optional': [],
@@ -116,7 +115,7 @@ ENDPOINTS = {
         },
         'unsuspend': {
             'path': "/admin/users/%s/unsuspend",
-            'method': requests.put,
+            'method': 'put',
             'args': {
                 'required': [],
                 'optional': [],
@@ -124,7 +123,7 @@ ENDPOINTS = {
         },
         'logout': {
             'path': "/admin/users/%s/log_out",
-            'method': requests.post,
+            'method': 'post',
             'args': {
                 'required': [],
                 'optional': [],
@@ -132,7 +131,7 @@ ENDPOINTS = {
         },
         'external': {
             'path': "/users/by-external/%s.json",
-            'method': requests.get,
+            'method': 'get',
             'args': {
                 'required': [],
                 'optional': [],
@@ -146,8 +145,7 @@ class DiscourseManager:
     def __init__(self):
         pass
 
-    GROUP_CACHE_MAX_AGE = datetime.timedelta(minutes=30)
-    REVOKED_EMAIL = 'revoked@' + settings.DOMAIN
+    REVOKED_EMAIL = 'revoked@localhost'
     SUSPEND_DAYS = 99999
     SUSPEND_REASON = "Disabled by auth."
 
@@ -171,7 +169,8 @@ class DiscourseManager:
         for arg in kwargs:
             if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = endpoint['method'](settings.DISCOURSE_URL + endpoint['parsed_url'], params=params, json=data)
+        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], params=params,
+                                                  json=data)
         try:
             if 'errors' in r.json() and not silent:
                 logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))
@@ -190,67 +189,59 @@ class DiscourseManager:
         return out
 
     @staticmethod
-    def __generate_random_pass():
-        return ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-
-    @staticmethod
-    def __get_groups():
+    def _get_groups():
         endpoint = ENDPOINTS['groups']['list']
         data = DiscourseManager.__exc(endpoint)
         return [g for g in data if not g['automatic']]
 
     @staticmethod
-    def __update_group_cache():
-        GroupCache.objects.filter(service="discourse").delete()
-        cache = GroupCache.objects.create(service="discourse")
-        cache.groups = json.dumps(DiscourseManager.__get_groups())
-        cache.save()
-        return cache
-
-    @staticmethod
-    def __get_group_cache():
-        if not GroupCache.objects.filter(service="discourse").exists():
-            DiscourseManager.__update_group_cache()
-        cache = GroupCache.objects.get(service="discourse")
-        age = timezone.now() - cache.created
-        if age > DiscourseManager.GROUP_CACHE_MAX_AGE:
-            logger.debug("Group cache has expired. Triggering update.")
-            cache = DiscourseManager.__update_group_cache()
-        return json.loads(cache.groups)
-
-    @staticmethod
-    def __create_group(name):
+    def _create_group(name):
         endpoint = ENDPOINTS['groups']['create']
-        DiscourseManager.__exc(endpoint, name=name[:20], visible=True)
-        DiscourseManager.__update_group_cache()
+        return DiscourseManager.__exc(endpoint, name=name[:20], visible=True)['basic_group']
+
+    @staticmethod
+    def _generate_cache_group_name_key(name):
+        return 'DISCOURSE_GROUP_NAME__%s' % md5(name.encode('utf-8')).hexdigest()
+
+    @staticmethod
+    def _generate_cache_group_id_key(g_id):
+        return 'DISCOURSE_GROUP_ID__%s' % g_id
 
     @staticmethod
     def __group_name_to_id(name):
-        cache = DiscourseManager.__get_group_cache()
-        for g in cache:
-            if g['name'] == name[0:20]:
-                return g['id']
-        logger.debug("Group %s not found on Discourse. Creating" % name)
-        DiscourseManager.__create_group(name)
-        return DiscourseManager.__group_name_to_id(name)
+        name = DiscourseManager._sanitize_groupname(name)
+
+        def get_or_create_group():
+            groups = DiscourseManager._get_groups()
+            for g in groups:
+                if g['name'] == name:
+                    return g['id']
+            return DiscourseManager._create_group(name)['id']
+
+        return cache.get_or_set(DiscourseManager._generate_cache_group_name_key(name), get_or_create_group,
+                                GROUP_CACHE_MAX_AGE)
 
     @staticmethod
-    def __group_id_to_name(id):
-        cache = DiscourseManager.__get_group_cache()
-        for g in cache:
-            if g['id'] == id:
-                return g['name']
-        raise KeyError("Group ID %s not found on Discourse" % id)
+    def __group_id_to_name(g_id):
+        def get_group_name():
+            groups = DiscourseManager._get_groups()
+            for g in groups:
+                if g['id'] == g_id:
+                    return g['name']
+            raise KeyError("Group ID %s not found on Discourse" % g_id)
+
+        return cache.get_or_set(DiscourseManager._generate_cache_group_id_key(g_id), get_group_name,
+                                GROUP_CACHE_MAX_AGE)
 
     @staticmethod
-    def __add_user_to_group(id, username):
+    def __add_user_to_group(g_id, username):
         endpoint = ENDPOINTS['groups']['add_user']
-        DiscourseManager.__exc(endpoint, id, usernames=[username])
+        DiscourseManager.__exc(endpoint, g_id, usernames=[username])
 
     @staticmethod
-    def __remove_user_from_group(id, username):
+    def __remove_user_from_group(g_id, username):
         endpoint = ENDPOINTS['groups']['remove_user']
-        DiscourseManager.__exc(endpoint, id, username=username)
+        DiscourseManager.__exc(endpoint, g_id, username=username)
 
     @staticmethod
     def __generate_group_dict(names):
@@ -270,10 +261,6 @@ class DiscourseManager:
         return data['user']['id']
 
     @staticmethod
-    def __user_id_to_name(id):
-        raise NotImplementedError
-
-    @staticmethod
     def __get_user(username, silent=False):
         endpoint = ENDPOINTS['users']['get']
         return DiscourseManager.__exc(endpoint, username, silent=silent)
@@ -281,14 +268,14 @@ class DiscourseManager:
     @staticmethod
     def __activate_user(username):
         endpoint = ENDPOINTS['users']['activate']
-        id = DiscourseManager.__user_name_to_id(username)
-        DiscourseManager.__exc(endpoint, id)
+        u_id = DiscourseManager.__user_name_to_id(username)
+        DiscourseManager.__exc(endpoint, u_id)
 
     @staticmethod
     def __update_user(username, **kwargs):
         endpoint = ENDPOINTS['users']['update']
-        id = DiscourseManager.__user_name_to_id(username)
-        DiscourseManager.__exc(endpoint, id, params=kwargs)
+        u_id = DiscourseManager.__user_name_to_id(username)
+        DiscourseManager.__exc(endpoint, u_id, params=kwargs)
 
     @staticmethod
     def __create_user(username, email, password):
@@ -300,21 +287,21 @@ class DiscourseManager:
         try:
             DiscourseManager.__user_name_to_id(username, silent=True)
             return True
-        except:
+        except DiscourseError:
             return False
 
     @staticmethod
     def __suspend_user(username):
-        id = DiscourseManager.__user_name_to_id(username)
+        u_id = DiscourseManager.__user_name_to_id(username)
         endpoint = ENDPOINTS['users']['suspend']
-        return DiscourseManager.__exc(endpoint, id, duration=DiscourseManager.SUSPEND_DAYS,
+        return DiscourseManager.__exc(endpoint, u_id, duration=DiscourseManager.SUSPEND_DAYS,
                                       reason=DiscourseManager.SUSPEND_REASON)
 
     @staticmethod
     def __unsuspend(username):
-        id = DiscourseManager.__user_name_to_id(username)
+        u_id = DiscourseManager.__user_name_to_id(username)
         endpoint = ENDPOINTS['users']['unsuspend']
-        return DiscourseManager.__exc(endpoint, id)
+        return DiscourseManager.__exc(endpoint, u_id)
 
     @staticmethod
     def __set_email(username, email):
@@ -322,47 +309,53 @@ class DiscourseManager:
         return DiscourseManager.__exc(endpoint, username, email=email)
 
     @staticmethod
-    def __logout(id):
+    def __logout(u_id):
         endpoint = ENDPOINTS['users']['logout']
-        return DiscourseManager.__exc(endpoint, id)
+        return DiscourseManager.__exc(endpoint, u_id)
 
     @staticmethod
-    def __get_user_by_external(id):
+    def __get_user_by_external(u_id):
         endpoint = ENDPOINTS['users']['external']
-        return DiscourseManager.__exc(endpoint, id)
+        return DiscourseManager.__exc(endpoint, u_id)
 
     @staticmethod
-    def __user_id_by_external_id(id):
-        data = DiscourseManager.__get_user_by_external(id)
+    def __user_id_by_external_id(u_id):
+        data = DiscourseManager.__get_user_by_external(u_id)
         return data['user']['id']
 
     @staticmethod
+    def _sanitize_name(name):
+        name = name.replace(' ', '_')
+        name = name.replace("'", '')
+        name = name.lstrip(' _')
+        name = name[:20]
+        name = name.rstrip(' _')
+        return name
+
+    @staticmethod
     def _sanitize_username(username):
-        sanitized = username.replace(" ", "_")
-        sanitized = sanitized.strip(' _')
-        sanitized = sanitized.replace("'", "")
-        return sanitized
+        return DiscourseManager._sanitize_name(username)
 
     @staticmethod
     def _sanitize_groupname(name):
-        name = name.strip(' _')
         name = re.sub('[^\w]', '', name)
+        name = DiscourseManager._sanitize_name(name)
         if len(name) < 3:
-            name = name + "".join('_' for i in range(3-len(name)))
-        return name[:20]
+            name = "Group " + name
+        return name
 
     @staticmethod
     def update_groups(user):
         groups = []
         for g in user.groups.all():
-            groups.append(DiscourseManager._sanitize_groupname(str(g)[:20]))
+            groups.append(DiscourseManager._sanitize_groupname(str(g)))
         logger.debug("Updating discourse user %s groups to %s" % (user, groups))
         group_dict = DiscourseManager.__generate_group_dict(groups)
         inv_group_dict = {v: k for k, v in group_dict.items()}
         username = DiscourseManager.__get_user_by_external(user.pk)['user']['username']
         user_groups = DiscourseManager.__get_user_groups(username)
         add_groups = [group_dict[x] for x in group_dict if not group_dict[x] in user_groups]
-        rem_groups = [x for x in user_groups if not x in inv_group_dict]
+        rem_groups = [x for x in user_groups if x not in inv_group_dict]
         if add_groups or rem_groups:
             logger.info(
                 "Updating discourse user %s groups: adding %s, removing %s" % (username, add_groups, rem_groups))

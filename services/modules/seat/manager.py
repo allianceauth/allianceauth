@@ -63,7 +63,7 @@ class SeatManager:
             logger.info("Added SeAT user with username %s" % sanitized)
             return sanitized, password
         logger.info("Failed to add SeAT user with username %s" % sanitized)
-        return None
+        return None, None
 
     @classmethod
     def delete_user(cls, username):
@@ -73,25 +73,6 @@ class SeatManager:
         if cls._response_ok(ret):
             logger.info("Deleted SeAT user with username %s" % username)
             return username
-        return None
-
-    @classmethod
-    def disable_user(cls, username):
-        """ Disable user """
-        ret = cls.exec_request('user/{}'.format(username), 'put', active=0)
-        logger.debug(ret)
-        ret = cls.exec_request('user/{}'.format(username), 'put', email="")
-        logger.debug(ret)
-        if cls._response_ok(ret):
-            try:
-                cls.update_roles(username, [])
-                logger.info("Disabled SeAT user with username %s" % username)
-                return username
-            except KeyError:
-                # if something goes wrong, delete user from seat instead of disabling
-                if cls.delete_user(username):
-                    return username
-        logger.info("Failed to disabled SeAT user with username %s" % username)
         return None
 
     @classmethod
@@ -106,13 +87,21 @@ class SeatManager:
         return None
 
     @classmethod
+    def _check_email_changed(cls, username, email):
+        """Compares email to one set on SeAT"""
+        ret = cls.exec_request('user/{}'.format(username), 'get', raise_for_status=True)
+        return ret['email'] != email
+
+    @classmethod
     def update_user(cls, username, email, password):
         """ Edit user info """
-        logger.debug("Updating SeAT username %s with email %s and password" % (username, email))
-        ret = cls.exec_request('user/{}'.format(username), 'put', email=email)
-        logger.debug(ret)
-        if not cls._response_ok(ret):
-            logger.warn("Failed to update email for username {}".format(username))
+        if cls._check_email_changed(username, email):
+            # if we try to set the email to whatever it is already on SeAT, we get a HTTP422 error
+            logger.debug("Updating SeAT username %s with email %s and password" % (username, email))
+            ret = cls.exec_request('user/{}'.format(username), 'put', email=email)
+            logger.debug(ret)
+            if not cls._response_ok(ret):
+                logger.warn("Failed to update email for username {}".format(username))
         ret = cls.exec_request('user/{}'.format(username), 'put', password=password)
         logger.debug(ret)
         if not cls._response_ok(ret):
@@ -275,5 +264,5 @@ class SeatManager:
     @staticmethod
     def username_hash(username):
         m = hashlib.sha1()
-        m.update(username)
+        m.update(username.encode('utf-8'))
         return m.hexdigest()
