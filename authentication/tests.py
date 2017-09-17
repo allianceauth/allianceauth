@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from alliance_auth.tests.auth_utils import AuthUtils
 from authentication.models import CharacterOwnership, UserProfile, State, get_guest_state
 from authentication.backends import StateBackend
+from authentication.tasks import check_character_ownership
 from eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
 from esi.models import Token
 
@@ -135,6 +136,28 @@ class CharacterOwnershipTestCase(TestCase):
         )
         self.user = User.objects.get(pk=self.user.pk)
         self.assertIsNone(self.user.profile.main_character)
+
+    @mock.patch('esi.models.Token.update_token_data')
+    def test_character_ownership_check(self, update_token_data):
+        t = Token.objects.create(
+            user=self.user,
+            character_id=self.character.character_id,
+            character_name=self.character.character_name,
+            character_owner_hash='1',
+        )
+        co = CharacterOwnership.objects.get(owner_hash='1')
+        check_character_ownership(co.owner_hash)
+        self.assertTrue(CharacterOwnership.objects.filter(owner_hash='1').exists())
+
+        t.character_owner_hash = '2'
+        t.save()
+        check_character_ownership(co.owner_hash)
+        self.assertFalse(CharacterOwnership.objects.filter(owner_hash='1').exists())
+
+        t.delete()
+        co = CharacterOwnership.objects.create(user=self.user, character=self.character, owner_hash='3')
+        check_character_ownership(co.owner_hash)
+        self.assertFalse(CharacterOwnership.objects.filter(owner_hash='3').exists())
 
 
 class StateTestCase(TestCase):

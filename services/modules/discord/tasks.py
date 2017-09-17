@@ -6,7 +6,6 @@ from alliance_auth.celeryapp import app
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-
 from notifications import notify
 from services.modules.discord.manager import DiscordOAuthManager, DiscordApiBackoff
 from .models import DiscordUser
@@ -59,7 +58,6 @@ class DiscordTasks:
 
     @staticmethod
     @app.task(bind=True, name='discord.update_groups')
-    @only_one
     def update_groups(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)

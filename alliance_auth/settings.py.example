@@ -87,6 +87,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'eveonline.tasks.run_model_update',
         'schedule': crontab(minute=0, hour="*/6"),
     },
+    'check_all_character_ownership': {
+        'task': 'authentication.tasks.check_all_character_ownership',
+        'schedule': crontab(hour='*/4'),
+    }
 }
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
