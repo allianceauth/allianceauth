@@ -2,9 +2,11 @@ language: python
 python:
   - "3.5"
   - "3.6"
+  - "3.7-dev"
 # command to install dependencies
 install:
   - pip install requests
+  - pip install Django==$DJANGO_VERSION
   - pip install -r requirements.txt
   - pip install -r testing-requirements.txt
 # command to run tests
@@ -12,3 +14,10 @@ script: coverage run runtests.py
 cache: pip
 after_success:
   coveralls
+matrix:
+  allow_failures:
+  - python: "3.7-dev"
+env:
+  - DJANGO_VERSION=1.10.8 # Remove in December 2017
+  - DJANGO_VERSION=1.11.5
+  # Add 2.0 when available and allow_failures (env: KEY=VALUE)

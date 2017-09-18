@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-from __future__ import unicode_literals
 import os
 import sys
 
 if __name__ == "__main__":
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'alliance_auth.tests.test_settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'test_allianceauth.settings'
 
     try:
         from django.core.management import execute_from_command_line

@@ -1,0 +1,7 @@
+include LICENSE
+include README.md
+include MANIFEST.in
+graft allianceauth
+
+global-exclude __pycache__
+global-exclude *.py[co]

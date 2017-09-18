@@ -27,39 +27,39 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_celery_beat',
     'bootstrapform',
-    'geelweb.django.navhelper',
+    'allianceauth.thirdparty.navhelper',
     'bootstrap_pagination',
     'sortedm2m',
-    'authentication',
-    'services',
-    'eveonline',
-    'groupmanagement',
-    'notifications',
+    'allianceauth.authentication',
+    'allianceauth.services',
+    'allianceauth.eveonline',
+    'allianceauth.groupmanagement',
+    'allianceauth.notifications',
     'esi',
 
     # Optional apps - remove if not desired
-    'corputils',
-    'hrapplications',
-    'timerboard',
-    'srp',
-    'optimer',
-    'fleetup',
-    'fleetactivitytracking',
-    'permissions_tool',
+    'allianceauth.corputils',
+    'allianceauth.hrapplications',
+    'allianceauth.timerboard',
+    'allianceauth.srp',
+    'allianceauth.optimer',
+    'allianceauth.fleetup',
+    'allianceauth.fleetactivitytracking',
+    'allianceauth.permissions_tool',
 
     # Services - remove if not used
-    'services.modules.mumble',
-    'services.modules.discord',
-    'services.modules.discourse',
-    'services.modules.ipboard',
-    'services.modules.ips4',
-    'services.modules.market',
-    'services.modules.openfire',
-    'services.modules.seat',
-    'services.modules.smf',
-    'services.modules.phpbb3',
-    'services.modules.xenforo',
-    'services.modules.teamspeak3',
+    'allianceauth.services.modules.mumble',
+    'allianceauth.services.modules.discord',
+    'allianceauth.services.modules.discourse',
+    'allianceauth.services.modules.ipboard',
+    'allianceauth.services.modules.ips4',
+    'allianceauth.services.modules.market',
+    'allianceauth.services.modules.openfire',
+    'allianceauth.services.modules.seat',
+    'allianceauth.services.modules.smf',
+    'allianceauth.services.modules.phpbb3',
+    'allianceauth.services.modules.xenforo',
+    'allianceauth.services.modules.teamspeak3',
 ]
 
 #####################################################
@@ -84,11 +84,11 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(day_of_month='*/1'),
     },
     'run_model_update': {
-        'task': 'eveonline.tasks.run_model_update',
+        'task': 'allianceauth.eveonline.tasks.run_model_update',
         'schedule': crontab(minute=0, hour="*/6"),
     },
     'check_all_character_ownership': {
-        'task': 'authentication.tasks.check_all_character_ownership',
+        'task': 'allianceauth.authentication.tasks.check_all_character_ownership',
         'schedule': crontab(hour='*/4'),
     }
 }
@@ -137,9 +137,9 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-                'services.context_processors.auth_settings',
-                'notifications.context_processors.user_notification_count',
-                'groupmanagement.context_processors.can_manage_groups',
+                'allianceauth.services.context_processors.auth_settings',
+                'allianceauth.notifications.context_processors.user_notification_count',
+                'allianceauth.groupmanagement.context_processors.can_manage_groups',
             ],
         },
     },
@@ -166,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['authentication.backends.StateBackend', 'django.contrib.auth.backends.ModelBackend']
+AUTHENTICATION_BACKENDS = ['allianceauth.authentication.backends.StateBackend', 'django.contrib.auth.backends.ModelBackend']
 LOGIN_URL = 'auth_login_user'
 
 # Internationalization
@@ -188,10 +188,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "customization/static"),
-    os.path.join(BASE_DIR, "stock/static"),
-)
 
 # Bootstrap messaging css workaround
 MESSAGE_TAGS = {
@@ -522,28 +518,16 @@ LOGGING = {
         },
         'notifications': {           # creates notifications for users with logging_notifications permission
             'level': 'ERROR',        # edit this line to change logging level to notifications
-            'class': 'notifications.handlers.NotificationHandler',
+            'class': 'allianceauth.notifications.handlers.NotificationHandler',
             'formatter': 'verbose',
         },
     },
     'loggers': {
-        'authentication': {
+        'allianceauth': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
         'celerytask': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'eveonline': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'groupmanagement': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'hrapplications': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
@@ -552,38 +536,6 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'registration': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'services': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'srp': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'timerboard': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'sigtracker': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'optimer': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'corputils': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'fleetactivitytracking': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'ERROR',
-        },
-        'fleetup': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
