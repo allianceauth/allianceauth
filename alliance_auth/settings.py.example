@@ -106,7 +106,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-ROOT_URLCONF = 'alliance_auth.urls'
+ROOT_URLCONF = 'allianceauth.urls'
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale/'),
@@ -122,8 +122,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'customization/templates'),
-            os.path.join(BASE_DIR, 'stock/templates'),
+            os.path.join(BASE_DIR, 'allianceauth/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
