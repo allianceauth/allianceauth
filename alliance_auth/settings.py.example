@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'allianceauth.services.modules.mumble',
     'allianceauth.services.modules.discord',
     'allianceauth.services.modules.discourse',
-    'allianceauth.services.modules.ipboard',
     'allianceauth.services.modules.ips4',
     'allianceauth.services.modules.market',
     'allianceauth.services.modules.openfire',
@@ -307,17 +306,6 @@ MARKET_DB = {
     'HOST': '127.0.0.1',
     'PORT': '3306',
 }
-
-#####################
-# IPBoard3 Configuration
-#####################
-# IPBOARD_ENDPOINT - Api endpoint if using ipboard
-# IPBOARD_APIKEY - Api key to interact with ipboard
-# IPBOARD_APIMODULE - Module for alliance auth *leave alone*
-#####################
-IPBOARD_ENDPOINT = 'example.com/interface/board/index.php'
-IPBOARD_APIKEY = ''
-IPBOARD_APIMODULE = 'aa'
 
 ########################
 # XenForo Configuration

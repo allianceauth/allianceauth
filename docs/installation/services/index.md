@@ -7,7 +7,6 @@
     market
     discord
     discourse
-    ipboard3
     mumble
     openfire
     phpbb3

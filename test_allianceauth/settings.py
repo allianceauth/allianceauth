@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'allianceauth.services.modules.mumble',
     'allianceauth.services.modules.discord',
     'allianceauth.services.modules.discourse',
-    'allianceauth.services.modules.ipboard',
     'allianceauth.services.modules.ips4',
     'allianceauth.services.modules.market',
     'allianceauth.services.modules.openfire',
@@ -297,17 +296,6 @@ MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://yourdomain.com/market')
 #                  Should seriously replace with your own.
 #####################
 JACK_KNIFE_URL = os.environ.get('AA_JACK_KNIFE_URL', 'http://example.com/eveapi/audit.php')
-
-#####################
-# Forum Configuration
-#####################
-# IPBOARD_ENDPOINT - Api endpoint if using ipboard
-# IPBOARD_APIKEY - Api key to interact with ipboard
-# IPBOARD_APIMODULE - Module for alliance auth *leave alone*
-#####################
-IPBOARD_ENDPOINT = os.environ.get('AA_IPBOARD_ENDPOINT', 'example.com/interface/board/index.php')
-IPBOARD_APIKEY = os.environ.get('AA_IPBOARD_APIKEY', 'somekeyhere')
-IPBOARD_APIMODULE = 'aa'
 
 ########################
 # XenForo Configuration
