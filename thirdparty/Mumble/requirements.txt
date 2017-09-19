@@ -1,3 +1,0 @@
-bcrypt
-passlib
-zeroc-ice

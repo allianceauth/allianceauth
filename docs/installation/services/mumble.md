@@ -15,9 +15,9 @@ Now two packages need to be installed:
 
     sudo apt-get install python-software-properties mumble-server
     
-You will also need to install the python dependencies for the authenticator script:
-    
-    pip install -r thirdparty/Mumble/requirements.txt
+Download the appropriate authenticator release from https://github.com/allianceauth/mumble-authenticator and install the python dependencies for it:
+
+    pip install -r requirements.txt
 
 ## Configuring Mumble
 Mumble ships with a configuration file that needs customization. By default it’s located at /etc/mumble-server.ini. Open it with your favourite text editor:
@@ -55,7 +55,7 @@ That’s it! Your server is ready to be connected to at example.com:64738
 
 ## Configuring the Authenticator
 
-The ICE authenticator lives in `allianceauth/thirdparty/Mumble/`, cd to this directory.
+The ICE authenticator lives in the mumble-authenticator repository, cd to the directory where you cloned it.
 
 Make a copy of the default config:
 
