@@ -27,15 +27,17 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_celery_beat',
     'bootstrapform',
-    'allianceauth.thirdparty.navhelper',
     'bootstrap_pagination',
     'sortedm2m',
+    'esi',
+    'allianceauth',
     'allianceauth.authentication',
     'allianceauth.services',
     'allianceauth.eveonline',
     'allianceauth.groupmanagement',
     'allianceauth.notifications',
-    'esi',
+    'allianceauth.thirdparty.navhelper',
+    
 
     # Optional apps - remove if not desired
     'allianceauth.corputils',
@@ -121,9 +123,7 @@ LANGUAGES = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'allianceauth/templates'),
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
