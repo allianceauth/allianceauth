@@ -2,7 +2,6 @@
 # Any changes in these package requirements
 # should be reflected in setup.py as well.
 mysqlclient
-evelink
 dnspython
 passlib
 requests>=2.9.1
@@ -20,11 +19,10 @@ django-bootstrap-pagination
 django-registration
 django-sortedm2m
 django-redis-cache>=1.7.1
-django-recaptcha
 django-celery-beat
 
 # Openfire
 sleekxmpp
 openfire-restapi
 
-adarnauth-esi<2.0
+adarnauth-esi>=1.4,<2.0

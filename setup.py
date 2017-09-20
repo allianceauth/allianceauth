@@ -13,7 +13,6 @@ setup(
     # should be reflected in requirements.txt as well.
     install_requires=[
         'mysqlclient',
-        'evelink',
         'dnspython',
         'passlib',
         'requests>=2.9.1',
@@ -30,14 +29,13 @@ setup(
         'django-registration',
         'django-sortedm2m',
         'django-redis-cache>=1.7.1',
-        'django-recaptcha',
         'django-celery-beat',
 
         # Openfire
         'openfire-restapi',
         'sleekxmpp',
 
-        'adarnauth-esi',
+        'adarnauth-esi>=1.4,<2.0',
     ],
     license='GPLv2',
     packages=['allianceauth'],

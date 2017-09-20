@@ -1,6 +1,6 @@
 import logging
 
-from .providers import eve_adapter_factory
+from .providers import provider
 
 from .models import EveAllianceInfo
 from .models import EveCharacter
@@ -10,17 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class EveManager(object):
-    adapter = None
-
-    @classmethod
-    def get_adapter(cls):
-        if not cls.adapter:
-            cls.adapter = eve_adapter_factory()
-        return cls.adapter
-
     @classmethod
     def get_character(cls, character_id):
-        return cls.get_adapter().get_character(character_id)
+        return provider.get_character(character_id)
 
     @staticmethod
     def create_character(id):
@@ -56,7 +48,7 @@ class EveManager(object):
 
     @classmethod
     def get_alliance(cls, alliance_id):
-        return cls.get_adapter().get_alliance(alliance_id)
+        return provider.get_alliance(alliance_id)
 
     @staticmethod
     def create_alliance(id):
@@ -95,7 +87,7 @@ class EveManager(object):
 
     @classmethod
     def get_corporation(cls, corp_id):
-        return cls.get_adapter().get_corp(corp_id)
+        return provider.get_corp(corp_id)
 
     @staticmethod
     def create_corporation(id):
@@ -132,7 +124,7 @@ class EveManager(object):
 
     @classmethod
     def get_itemtype(cls, type_id):
-        return cls.get_adapter().get_itemtype(type_id)
+        return provider.get_itemtype(type_id)
 
     @staticmethod
     def check_if_character_exist(char_name):
