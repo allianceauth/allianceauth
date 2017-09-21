@@ -43,9 +43,9 @@ Now we need to make the requisite database.
 
     create database alliance_auth;
 
-Create a Python virtual environment and put it somewhere convenient (e.g. ~/venv/aauth/)
+Create a Python virtual environment and put it somewhere convenient (e.g. `~/venv/aauth/`)
 
-    python3 -m venv /path/to/new/virtual/environment
+    python3.6 -m venv /path/to/new/virtual/environment
 
 A virtual environment provides support for creating a lightweight "copy" of Python with their own site directories. Each virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories. You can read more about virtual environments on the [Python docs](https://docs.python.org/3/library/venv.html).
     
@@ -53,7 +53,7 @@ Activate the virtualenv using `source /path/to/new/virtual/environment/bin/activ
 
 Now you can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies.
 
-Ensure you are in the allianceserver home directory by issuing `cd allianceauth`.
+Ensure you are in the allianceserver home directory by issuing `cd ~`.
 
 Now you need to create the application that will run the Alliance Auth install.
 

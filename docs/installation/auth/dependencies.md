@@ -9,7 +9,7 @@ Required for base auth site
 
 #### Python
 
-    python3 python3-dev python3-mysqldb python3-setuptools python3-mysql.connector python3-pip
+    python3 python3-dev python3-setuptools python3-pip
 
 #### MySQL
 
@@ -21,9 +21,11 @@ Required for base auth site
 
 ## CentOS 7
 
-### Add The EPEL Repository
+Tested on CentOS 7
 
-    yum --enablerepo=extras install epel-release
+### Add The IUS Repository
+
+    sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
     yum update
 
 ### Core
@@ -31,7 +33,7 @@ Required for base auth site
 
 #### Python
 
-    python python-devel MySQL-python python-setuptools  mysql-connector-python python-pip bzip2-devel
+    python36u python36u-devel python36u-setuptools python36u-pip bzip2-devel
 
 #### MySQL
 
