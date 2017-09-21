@@ -64,9 +64,3 @@ class SeatTasks:
     @staticmethod
     def deactivate():
         SeatUser.objects.all().delete()
-
-    @staticmethod
-    @app.task
-    def run_api_sync():
-        logger.debug("Running EVE API synchronization with SeAT")
-        SeatManager.synchronize_eveapis()

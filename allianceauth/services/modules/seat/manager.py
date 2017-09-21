@@ -5,10 +5,6 @@ import string
 
 import requests
 from django.conf import settings
-from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
-
-from allianceauth.eveonline.managers import EveManager
 
 logger = logging.getLogger(__name__)
 
@@ -134,76 +130,6 @@ class SeatManager:
             except KeyError:
                 seat_keys[key["key_id"]] = None
         return seat_keys
-
-    @classmethod
-    def synchronize_eveapis(cls, user=None):
-
-        # Fetch all of the API keys stored in SeAT already
-        seat_all_keys = cls.get_all_seat_eveapis()
-
-        # retrieve only user-specific api keys if user is specified
-        if user:
-            keypairs = EveManager.get_api_key_pairs(user)
-        else:
-            # retrieve all api keys instead
-            keypairs = EveManager.get_all_api_key_pairs()
-
-        for keypair in keypairs:
-            # Transfer the key if it isn't already in SeAT
-            if keypair.api_id not in seat_all_keys.keys():
-                # Add new keys
-                logger.debug("Adding Api Key with ID %s" % keypair.api_id)
-                try:
-                    ret = cls.exec_request('key', 'post',
-                                           key_id=keypair.api_id,
-                                           v_code=keypair.api_key,
-                                           raise_for_status=True)
-                    logger.debug(ret)
-                except requests.HTTPError as e:
-                    if e.response.status_code == 400:
-                        logger.debug("API key already exists")
-                    else:
-                        logger.exception("API key sync failed")
-                        continue  # Skip the rest of the key processing
-            else:
-                # remove it from the list so it doesn't get deleted in the last step
-                seat_all_keys.pop(keypair.api_id)
-
-            # Attach API key to the users SeAT account, if possible
-            try:
-                userinfo = cache.get_or_set('seat_user_status_' + cls.username_hash(keypair.user.seat.username),
-                                            lambda: cls.check_user_status(keypair.user.seat.username),
-                                            300)  # Cache for 5 minutes
-
-                if not bool(userinfo):
-                    # No SeAT account, skip
-                    logger.debug("Could not find users SeAT id, cannot assign key to them")
-                    continue
-
-                # If the user has activated seat, assign the key to them
-                logger.debug("Transferring Api Key with ID %s to user %s with ID %s " % (
-                    keypair.api_id,
-                    keypair.user.seat.username,
-                    userinfo['id']))
-                ret = cls.exec_request('key/transfer/{}/{}'.format(keypair.api_id, userinfo['id']),
-                                       'get')
-                logger.debug(ret)
-            except ObjectDoesNotExist:
-                logger.debug("User does not have SeAT activated, could not assign key to user")
-
-        if bool(seat_all_keys) and not user and getattr(settings, 'SEAT_PURGE_DELETED', False):
-            # remove from SeAT keys that were removed from Auth
-            for key, key_user in seat_all_keys.items():
-                # Remove the key only if it is an account or character key
-                ret = cls.exec_request('key/{}'.format(key), 'get')
-                logger.debug(ret)
-                try:
-                    if (ret['info']['type'] == "Account") or (ret['info']['type'] == "Character"):
-                        logger.debug("Removing api key %s from SeAT database" % key)
-                        ret = cls.exec_request('key/{}'.format(key), 'delete')
-                        logger.debug(ret)
-                except KeyError:
-                    pass
 
     @classmethod
     def get_all_roles(cls):
