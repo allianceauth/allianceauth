@@ -1,6 +1,6 @@
 # phpBB3
 
-Add `services.modules.phpbb3` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+Add `allianceauth.services.modules.phpbb3` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
 
 ## Overview
 phpBB is a free php-based forum. It’s the default forum for AllianceAuth.

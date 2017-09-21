@@ -1,6 +1,6 @@
 # Discourse
 
-Add `services.modules.discourse` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+Add `allianceauth.services.modules.discourse` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
 
 ## Install Docker
 

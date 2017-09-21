@@ -161,49 +161,12 @@ The service should iterate through all of its recorded users and update their gr
 
 I'm really not sure when this is called, it may have been a hold over from before signals started to be used. Regardless, it can be useful to server admins who may call this from a Django shell to force a synchronisation of all user groups for a specific service.
 
-#### service_enabled_members
-`def service_enabled_members(self):`
-
-Is this service enabled for users with the `Member` state? It should return `True` if the service is enabled for Members, and `False` otherwise. The default is `False`.
-
-An implementation will usually look like:
-
-    def service_enabled_members(self):
-        return settings.ENABLE_AUTH_EXAMPLE or False
-        
-        
-```eval_rst
-.. note::
-    There has been discussion about moving services to permissions based access. You should review `Issue #663 <https://github.com/allianceauth/allianceauth/issues/663/>`_.
-```
-
-#### service_enabled_blues
-`def service_enabled_blues(self):`
-
-Is this service enabled for users with the `Blue` state? It should return `True` if the service is enabled for Blues, and `False` otherwise. The default is `False`.
-
-An implementation will usually look like:
-
-    def service_enabled_blues(self):
-        return settings.ENABLE_BLUE_EXAMPLE or False
-        
-        
-```eval_rst
-.. note::
-    There has been discussion about moving services to permissions based access. You should review `Issue #663 <https://github.com/allianceauth/allianceauth/issues/663/>`_.
-```
-
 #### service_active_for_user
 `def service_active_for_user(self, user):`
 
 Is this service active for the given user? The `user` parameter should be a Django User object.
 
 Usually you wont need to override this as it calls `service_enabled_members` or `service_enabled_blues` depending on the users state.
-
-```eval_rst
-.. note::
-    There has been discussion about moving services to permissions based access. You should review `Issue #663 <https://github.com/allianceauth/allianceauth/issues/663/>`_ as this function will likely need to be defined by each service to check its permission.
-```
 
 #### show_service_ctrl
 `def show_service_ctrl(self, user, state):`

@@ -1,6 +1,6 @@
 # Mumble
 
-Add `services.modules.mumble` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+Add `allianceauth.services.modules.mumble` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
 
 ## Overview
 Mumble is a free voice chat server. While not as flashy as teamspeak, it has all the functionality and is easier to customize. And is better. I may be slightly biased.
@@ -73,11 +73,7 @@ Test your configuration by starting it: `python authenticator.py`
 
 ## Running the Authenticator
 
-The authenticator needs to be running 24/7 to validate users on Mumble. The best way is to run it in a screen much like celery:
-
-    screen -dm bash -c 'python authenticator.py'
-
-Much like celery tasks, this process needs to be started every time the server reboots. It needs to be launched from this directory, so cd to this folder to launch.
+The authenticator needs to be running 24/7 to validate users on Mumble. You should check the [supervisor docs](../auth/supervisor.md) on how to achieve this.
 
 Note that groups will only be created on Mumble automatically when a user joins who is in the group.
 
