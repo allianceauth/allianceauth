@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from allianceauth.eveonline.managers import EveManager
+from allianceauth.eveonline.providers import provider
 from allianceauth.notifications import notify
 from .form import SrpFleetMainForm
 from .form import SrpFleetMainUpdateForm
@@ -200,7 +200,7 @@ def srp_request_view(request, fleet_srp):
                 return redirect("srp:management")
 
             if request.user.character_ownerships.filter(character__character_name=victim_name).exists():
-                srp_request.srp_ship_name = EveManager.get_itemtype(ship_type_id).name
+                srp_request.srp_ship_name = provider.get_itemtype(ship_type_id).name
                 srp_request.kb_total_loss = ship_value
                 srp_request.post_time = post_time
                 srp_request.save()

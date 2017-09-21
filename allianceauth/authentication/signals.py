@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.db.models.signals import post_save, pre_delete, m2m_changed, pre_save
 from django.dispatch import receiver, Signal
 from esi.models import Token
-from allianceauth.eveonline.managers import EveManager
 
 from allianceauth.eveonline.models import EveCharacter
 
@@ -81,7 +80,7 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
         CharacterOwnership.objects.filter(character__character_id=instance.character_id).exclude(query).delete()
         # create character if needed
         if EveCharacter.objects.filter(character_id=instance.character_id).exists() is False:
-            EveManager.create_character(instance.character_id)
+            EveCharacter.objects.create_character(instance.character_id)
         char = EveCharacter.objects.get(character_id=instance.character_id)
         # check if we need to create ownership
         if instance.user and not CharacterOwnership.objects.filter(character__character_id=instance.character_id).exists():

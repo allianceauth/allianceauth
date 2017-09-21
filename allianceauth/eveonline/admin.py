@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ObjectDoesNotExist
-from .managers import EveManager
 from .providers import ObjectNotFound
 
 from .models import EveAllianceInfo
@@ -9,32 +8,46 @@ from .models import EveCharacter
 from .models import EveCorporationInfo
 
 
+class EveEntityExistsError(forms.ValidationError):
+    def __init__(self, entity_type_name, id):
+        super(EveEntityExistsError, self).__init__(
+            message='{} with ID {} already exists.'.format(entity_type_name, id))
+
+
+class EveEntityNotFoundError(forms.ValidationError):
+    def __init__(self, entity_type_name, id):
+        super(EveEntityNotFoundError, self).__init__(
+            message='{} with ID {} not found.'.format(entity_type_name, id))
+
+
 class EveEntityForm(forms.ModelForm):
     id = forms.IntegerField(min_value=1)
-    entity_type_name = None  # override in subclass
     entity_model_class = None
 
     def clean_id(self):
-        try:
-            assert getattr(EveManager, 'get_%s' % self.entity_type_name)(self.cleaned_data['id'])
-        except (AssertionError, ObjectNotFound):
-            raise forms.ValidationError('%s with ID %s not found.' % (self.entity_type_name, self.cleaned_data['id']))
-        if self.entity_model_class.objects.filter(
-                **{'%s_id' % self.entity_type_name: self.cleaned_data['id']}).exists():
-            raise forms.ValidationError(
-                '%s with ID %s already exists.' % (self.entity_type_name, self.cleaned_data['id']))
-        return self.cleaned_data['id']
+        raise NotImplementedError()
 
     def save(self, commit=True):
-        return getattr(EveManager, 'create_%s' % self.entity_type_name)(self.cleaned_data['id'])
+        raise NotImplementedError()
 
     def save_m2m(self):
         pass
 
 
 class EveCharacterForm(EveEntityForm):
-    entity_model_class = EveCharacter
     entity_type_name = 'character'
+
+    def clean_id(self):
+        try:
+            assert self.Meta.model.provider.get_character(self.cleaned_data['id'])
+        except (AssertionError, ObjectNotFound):
+            raise EveEntityNotFoundError(self.entity_type_name, self.cleaned_data['id'])
+        if self.Meta.model.objects.filter(character_id=self.cleaned_data['id']).exists():
+            raise EveEntityExistsError(self.entity_type_name, self.cleaned_data['id'])
+        return self.cleaned_data['id']
+
+    def save(self, commit=True):
+        return self.Meta.model.objects.create_character(self.cleaned_data['id'])
 
     class Meta:
         fields = ['id']
@@ -42,8 +55,19 @@ class EveCharacterForm(EveEntityForm):
 
 
 class EveCorporationForm(EveEntityForm):
-    entity_model_class = EveCorporationInfo
     entity_type_name = 'corporation'
+
+    def clean_id(self):
+        try:
+            assert self.Meta.model.provider.get_corporation(self.cleaned_data['id'])
+        except (AssertionError, ObjectNotFound):
+            raise EveEntityNotFoundError(self.entity_type_name, self.cleaned_data['id'])
+        if self.Meta.model.objects.filter(corporation_id=self.cleaned_data['id']).exists():
+            raise EveEntityExistsError(self.entity_type_name, self.cleaned_data['id'])
+        return self.cleaned_data['id']
+
+    def save(self, commit=True):
+        return self.Meta.model.objects.create_corporation(self.cleaned_data['id'])
 
     class Meta:
         fields = ['id']
@@ -51,8 +75,19 @@ class EveCorporationForm(EveEntityForm):
 
 
 class EveAllianceForm(EveEntityForm):
-    entity_model_class = EveAllianceInfo
     entity_type_name = 'alliance'
+
+    def clean_id(self):
+        try:
+            assert self.Meta.model.provider.get_alliance(self.cleaned_data['id'])
+        except (AssertionError, ObjectNotFound):
+            raise EveEntityNotFoundError(self.entity_type_name, self.cleaned_data['id'])
+        if self.Meta.model.objects.filter(alliance_id=self.cleaned_data['id']).exists():
+            raise EveEntityExistsError(self.entity_type_name, self.cleaned_data['id'])
+        return self.cleaned_data['id']
+
+    def save(self, commit=True):
+        return self.Meta.model.objects.create_alliance(self.cleaned_data['id'])
 
     class Meta:
         fields = ['id']

@@ -16,7 +16,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from esi.decorators import token_required
-from allianceauth.eveonline.managers import EveManager
+from allianceauth.eveonline.providers import provider
 from .forms import FatlinkForm
 from .models import Fatlink, Fat
 from slugify import slugify
@@ -248,7 +248,7 @@ def click_fatlink_view(request, token, hash, fatname):
 
     if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
 
-        character = EveManager.get_character_by_id(token.character_id)
+        character = EveCharacter.objects.get_character_by_id(token.character_id)
 
         if character:
             # get data
@@ -267,7 +267,7 @@ def click_fatlink_view(request, token, hash, fatname):
                         'name']
             else:
                 location['station_name'] = "No Station"
-            ship['ship_type_name'] = EveManager.get_itemtype(ship['ship_type_id']).name
+            ship['ship_type_name'] = provider.get_itemtype(ship['ship_type_id']).name
 
             fat = Fat()
             fat.system = location['solar_system_name']

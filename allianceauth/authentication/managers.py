@@ -2,7 +2,6 @@ import logging
 
 from django.db import transaction
 from django.db.models import Manager, QuerySet, Q
-from allianceauth.eveonline.managers import EveManager
 
 from allianceauth.eveonline.models import EveCharacter
 
@@ -23,7 +22,7 @@ def available_states_query(character):
 class CharacterOwnershipManager(Manager):
     def create_by_token(self, token):
         if not EveCharacter.objects.filter(character_id=token.character_id).exists():
-            EveManager.create_character(token.character_id)
+            EveCharacter.objects.create_character(token.character_id)
         return self.create(character=EveCharacter.objects.get(character_id=token.character_id), user=token.user,
                            owner_hash=token.character_owner_hash)
 

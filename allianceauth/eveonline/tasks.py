@@ -1,7 +1,5 @@
 import logging
 
-from .managers import EveManager
-
 from allianceauth.celeryapp import app
 from .models import EveAllianceInfo
 from .models import EveCharacter
@@ -12,18 +10,17 @@ logger = logging.getLogger(__name__)
 
 @app.task
 def update_corp(corp_id):
-    EveManager.update_corporation(corp_id)
+    EveCorporationInfo.objects.update_corporation(corp_id)
 
 
 @app.task
 def update_alliance(alliance_id):
-    EveManager.update_alliance(alliance_id)
-    EveManager.populate_alliance(alliance_id)
+    EveAllianceInfo.objects.update_alliance(alliance_id).populate_alliance(alliance_id)
 
 
 @app.task
 def update_character(character_id):
-    EveManager.update_character(character_id)
+    EveCharacter.objects.update_character(character_id)
 
 
 @app.task

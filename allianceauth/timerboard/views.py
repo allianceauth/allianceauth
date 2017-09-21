@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from allianceauth.eveonline.managers import EveManager
+from allianceauth.eveonline.models import EveCorporationInfo
 
 from .form import TimerForm
 from .models import Timer
@@ -22,7 +22,7 @@ def timer_view(request):
     logger.debug("timer_view called by user %s" % request.user)
     char = request.user.profile.main_character
     if char:
-        corp = EveManager.get_corporation_info_by_id(char.corporation_id)
+        corp = EveCorporationInfo.get_corporation_info_by_id(char.corporation_id)
     else:
         corp = None
     if corp:
@@ -49,7 +49,7 @@ def add_timer_view(request):
         if form.is_valid():
             # Get character
             character = request.user.profile.main_character
-            corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
+            corporation = EveCorporationInfo.get_corporation_info_by_id(character.corporation_id)
             logger.debug(
                 "Determined timer add request on behalf of character %s corporation %s" % (character, corporation))
             # calculate future time
@@ -107,7 +107,7 @@ def edit_timer(request, timer_id):
         logger.debug("Received POST request containing updated timer form, is valid: %s" % form.is_valid())
         if form.is_valid():
             character = request.user.profile.main_character
-            corporation = EveManager.get_corporation_info_by_id(character.corporation_id)
+            corporation = EveCorporationInfo.get_corporation_info_by_id(character.corporation_id)
             logger.debug(
                 "Determined timer edit request on behalf of character %s corporation %s" % (character, corporation))
             # calculate future time

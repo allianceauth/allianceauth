@@ -8,7 +8,6 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from esi.decorators import token_required
-from allianceauth.eveonline.managers import EveManager
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 
 from .models import CorpStats
@@ -36,7 +35,7 @@ def corpstats_add(request, token):
         try:
             corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         except EveCorporationInfo.DoesNotExist:
-            corp = EveManager.create_corporation(corp_id)
+            corp = EveCorporationInfo.objects.create_corporation(corp_id)
         cs = CorpStats.objects.create(token=token, corp=corp)
         try:
             cs.update()
