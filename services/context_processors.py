@@ -15,6 +15,7 @@ def auth_settings(request):
         'IPS4_URL': settings.IPS4_URL,
         'SMF_URL': settings.SMF_URL,
         'MARKET_URL': settings.MARKET_URL,
+        'SEAT_URL': settings.SEAT_URL,
         'EXTERNAL_MEDIA_URL': settings.EXTERNAL_MEDIA_URL,
         'CURRENT_UTC_TIME': timezone.now(),
         'BLUE_API_MASK': settings.BLUE_API_MASK,

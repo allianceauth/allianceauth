@@ -4,6 +4,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>{{ SITE_NAME }}</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <style>
         html {
             background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
@@ -22,6 +23,7 @@
             margin-top: -100px;
             margin-left: -200px;
         }
+
         #logo {
             height: 200px;
             width: 900px;
@@ -31,8 +33,17 @@
             margin-top: -100px;
             margin-left: -450px;
         }
+
         img {
             border: 0;
+        }
+
+        a:link, a:hover, a:visited, a:active {
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+            font-size: 36px;
+            padding: 10px 20px 10px 20px;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -44,29 +55,31 @@
 </div>
 <div id="content">
     <p style="text-align:center">
-        <a href="/dashboard/">
-            <img src="{% static 'img/index_images/auth.png' %}" alt="Auth">
-        </a>
+        <a href="/dashboard/">auth</a>
     </p>
     {% if FORUM_URL %}
         <p style="text-align:center">
-            <a href="{{FORUM_URL}}">
-                <img src="{% static 'img/index_images/forums.png' %}" alt="Forums">
-            </a>
+            <a href="{{FORUM_URL}}">forum</a>
+        </p>
+    {% endif %}
+    {% if MARKET_URL %}
+        <p style="text-align:center">
+            <a href="{{MARKET_URL}}">market</a>
+        </p>
+    {% endif %}
+    {% if SEAT_URL %}
+        <p style="text-align:center">
+            <a href="{{SEAT_URL}}">seat</a>
         </p>
     {% endif %}
     {% if KILLBOARD_URL %}
         <p style="text-align:center">
-            <a href="{{KILLBOARD_URL}}">
-                <img src="{% static 'img/index_images/killboard.png' %}" alt="Killboard">
-            </a>
+            <a href="{{KILLBOARD_URL}}">killboard</a>
         </p>
     {% endif %}
     {% if EXTERNAL_MEDIA_URL %}
         <p style="text-align:center">
-            <a href="{{EXTERNAL_MEDIA_URL}}">
-                <img src="{% static 'img/index_images/media.png' %}" alt="External Media">
-            </a>
+            <a href="{{EXTERNAL_MEDIA_URL}}">media</a>
         </p>
     {% endif %}
 </div>
