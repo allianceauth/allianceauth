@@ -4,12 +4,12 @@ from . import views
 
 module_urls = [
     # SMF Service Control
-    url(r'^activate/$', views.activate_smf, name='auth_activate_smf'),
-    url(r'^deactivate/$', views.deactivate_smf, name='auth_deactivate_smf'),
-    url(r'^reset_password/$', views.reset_smf_password, name='auth_reset_smf_password'),
-    url(r'^set_password/$', views.set_smf_password, name='auth_set_smf_password'),
+    url(r'^activate/$', views.activate_smf, name='activate'),
+    url(r'^deactivate/$', views.deactivate_smf, name='deactivate'),
+    url(r'^reset_password/$', views.reset_smf_password, name='reset_password'),
+    url(r'^set_password/$', views.set_smf_password, name='set_password'),
 ]
 
 urlpatterns = [
-    url(r'^smf/', include(module_urls)),
+    url(r'^smf/', include(module_urls, namespace='smf')),
 ]

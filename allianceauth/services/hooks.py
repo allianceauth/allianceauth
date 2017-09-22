@@ -14,7 +14,7 @@ class ServicesHook:
     def __init__(self):
         self.name = 'Undefined'
         self.urlpatterns = []
-        self.service_ctrl_template = 'registered/services_ctrl.html'
+        self.service_ctrl_template = 'services/services_ctrl.html'
         self.access_perm = None
 
     @property

@@ -1,4 +1,4 @@
-{% extends "registered/base.html" %}
+{% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 
@@ -18,9 +18,9 @@
                                 <li><a data-toggle="pill" href="#read">{% trans "Read" %} <b>({{ read|length }})</b></a>
                                 </li>
                                 <div class="pull-right">
-                                    <a href="{% url 'auth_mark_all_notifications_read' %}"
+                                    <a href="{% url 'notifications:mark_all_read' %}"
                                        class="btn btn-primary">{% trans "Mark All Read" %}</a>
-                                    <a href="{% url 'auth_delete_all_read_notifications' %}"
+                                    <a href="{% url 'notifications:delete_all_read' %}"
                                        class="btn btn-danger">{% trans "Delete All Read" %}</a>
                                 </div>
                             </ul>
@@ -41,11 +41,11 @@
                                                         <td class="text-center">{{ notif.timestamp }}</td>
                                                         <td class="text-center">{{ notif.title }}</td>
                                                         <td class="text-center">
-                                                            <a href="{% url 'auth_notification_view' notif.id %}"
+                                                            <a href="{% url 'notifications:view' notif.id %}"
                                                                class="btn btn-success" title="View">
                                                                 <span class="glyphicon glyphicon-eye-open"></span>
                                                             </a>
-                                                            <a href="{% url 'auth_remove_notification' notif.id %}"
+                                                            <a href="{% url 'notifications:remove' notif.id %}"
                                                                class="btn btn-danger" title="Remove">
                                                                 <span class="glyphicon glyphicon-remove"></span>
                                                             </a>
@@ -73,11 +73,11 @@
                                                             <td class="text-center">{{ notif.timestamp }}</td>
                                                             <td class="text-center">{{ notif.title }}</td>
                                                             <td class="text-center">
-                                                                <a href="{% url 'auth_notification_view' notif.id %}"
+                                                                <a href="{% url 'notifications:view' notif.id %}"
                                                                    class="btn btn-success" title="View">
                                                                     <span class="glyphicon glyphicon-eye-open"></span>
                                                                 </a>
-                                                                <a href="{% url 'auth_remove_notification' notif.id %}"
+                                                                <a href="{% url 'notifications:remove' notif.id %}"
                                                                    class="btn btn-danger" title="remove">
                                                                     <span class="glyphicon glyphicon-remove"></span>
                                                                 </a>

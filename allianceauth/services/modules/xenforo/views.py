@@ -30,13 +30,13 @@ def activate_xenforo_forum(request):
             'username': result['username'],
             'password': result['password'],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'XenForo'})
 
     else:
         logger.error("Unsuccessful attempt to activate xenforo for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your XenForo account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -48,7 +48,7 @@ def deactivate_xenforo_forum(request):
         messages.success(request, 'Deactivated XenForo account.')
     else:
         messages.error(request, 'An error occurred while processing your XenForo account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -65,11 +65,11 @@ def reset_xenforo_password(request):
                 'username': request.user.xenforo.username,
                 'password': result['password'],
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'XenForo'})
     logger.error("Unsuccessful attempt to reset XenForo password for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your XenForo account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -90,11 +90,11 @@ def set_xenforo_password(request):
             else:
                 logger.error("Failed to install custom XenForo password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your XenForo account.')
-            return redirect('auth_services')
+            return redirect('services:services')
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'Forum'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)

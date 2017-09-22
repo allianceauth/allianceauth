@@ -37,10 +37,10 @@ class MarketService(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_market'
-        urls.auth_deactivate = 'auth_deactivate_market'
-        urls.auth_reset_password = 'auth_reset_market_password'
-        urls.auth_set_password = 'auth_set_market_password'
+        urls.auth_activate = 'evernusmarket:activate'
+        urls.auth_deactivate = 'evernusmarket:deactivate'
+        urls.auth_reset_password = 'evernusmarket:reset_password'
+        urls.auth_set_password = 'evernusmarket:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

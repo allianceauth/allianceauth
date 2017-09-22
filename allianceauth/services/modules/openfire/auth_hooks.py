@@ -53,10 +53,10 @@ class OpenfireService(ServicesHook):
         :return:
         """
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_openfire'
-        urls.auth_deactivate = 'auth_deactivate_openfire'
-        urls.auth_set_password = 'auth_set_openfire_password'
-        urls.auth_reset_password = 'auth_reset_openfire_password'
+        urls.auth_activate = 'openfire:activate'
+        urls.auth_deactivate = 'openfire:deactivate'
+        urls.auth_set_password = 'openfire:set_password'
+        urls.auth_reset_password = 'openfire:reset_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,
@@ -75,7 +75,7 @@ class JabberBroadcast(MenuItemHook):
         MenuItemHook.__init__(self,
                               'Jabber Broadcast',
                               'fa fa-lock fa-fw fa-bullhorn grayiconecolor',
-                              'auth_jabber_broadcast_view')
+                              'openfire:broadcast')
 
     def render(self, request):
         if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):
@@ -88,7 +88,7 @@ class FleetBroadcastFormatter(MenuItemHook):
         MenuItemHook.__init__(self,
                               'Fleet Broadcast Formatter',
                               'fa fa-lock fa-fw fa-space-shuttle grayiconecolor',
-                              'auth_fleet_format_tool_view')
+                              'services:fleet_format_tool')
 
     def render(self, request):
         if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):

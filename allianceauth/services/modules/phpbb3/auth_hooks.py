@@ -46,10 +46,10 @@ class Phpbb3Service(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_phpbb3'
-        urls.auth_deactivate = 'auth_deactivate_phpbb3'
-        urls.auth_reset_password = 'auth_reset_phpbb3_password'
-        urls.auth_set_password = 'auth_set_phpbb3_password'
+        urls.auth_activate = 'phpbb3:activate'
+        urls.auth_deactivate = 'phpbb3:deactivate'
+        urls.auth_reset_password = 'phpbb3:reset_password'
+        urls.auth_set_password = 'phpbb3:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

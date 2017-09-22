@@ -1,4 +1,4 @@
-{% extends "registered/base.html" %}
+{% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 
@@ -10,7 +10,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include 'registered/groupmanagementmenu.html' %}
+        {% include 'groupmanagement/menu.html' %}
         <h3>{{ group.name }} {% trans 'Members' %}</h3>
         <div id="list" class="">
             {% if group.user_set %}
@@ -29,7 +29,7 @@
                         <td class="text-center">{{ member.main_char.corporation_name }}</td>
                         <td class="text-center">{{ member.main_char.alliance_name }}</td>
                         <td class="text-center">
-                            <a href="{% url 'auth_group_membership_remove' group.id member.user.id %}" class="btn btn-danger"
+                            <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger"
                                 title="{% trans "Remove from group" %}">
                                     <i class="glyphicon glyphicon-remove"></i>
                             </a>

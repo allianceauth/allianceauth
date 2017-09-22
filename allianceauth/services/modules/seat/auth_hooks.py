@@ -46,10 +46,10 @@ class SeatService(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_seat'
-        urls.auth_deactivate = 'auth_deactivate_seat'
-        urls.auth_reset_password = 'auth_reset_seat_password'
-        urls.auth_set_password = 'auth_set_seat_password'
+        urls.auth_activate = 'seat:activate'
+        urls.auth_deactivate = 'seat:deactivate'
+        urls.auth_reset_password = 'seat:reset_password'
+        urls.auth_set_password = 'seat:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

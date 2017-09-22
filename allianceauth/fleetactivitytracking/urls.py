@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from . import views
+app_name = 'fleetactivitytracking'
 
 urlpatterns = [
     # FleetActivityTracking (FAT)
@@ -30,4 +31,4 @@ urlpatterns = [
     url(r'^link/$', views.fatlink_view, name='click_fatlink'),
     url(r'^link/(?P<hash>[a-zA-Z0-9]+)/(?P<fatname>[a-z0-9_-]+)/$',
         views.click_fatlink_view),
-    ]
+]

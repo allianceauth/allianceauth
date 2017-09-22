@@ -15,7 +15,7 @@ class DiscordService(ServicesHook):
         ServicesHook.__init__(self)
         self.urlpatterns = urlpatterns
         self.name = 'discord'
-        self.service_ctrl_template = 'registered/discord_service_ctrl.html'
+        self.service_ctrl_template = 'services/discord/discord_service_ctrl.html'
         self.access_perm = 'discord.access_discord'
 
     def delete_user(self, user, notify_user=False):

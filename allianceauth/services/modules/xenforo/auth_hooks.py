@@ -35,10 +35,10 @@ class XenforoService(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_xenforo'
-        urls.auth_deactivate = 'auth_deactivate_xenforo'
-        urls.auth_reset_password = 'auth_reset_xenforo_password'
-        urls.auth_set_password = 'auth_set_xenforo_password'
+        urls.auth_activate = 'xenforo:activate'
+        urls.auth_deactivate = 'xenforo:deactivate'
+        urls.auth_reset_password = 'xenforo:reset_password'
+        urls.auth_set_password = 'xenforo:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

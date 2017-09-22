@@ -36,7 +36,7 @@ def fleet_formatter_view(request):
 
     context = {'form': form, 'generated': generated}
 
-    return render(request, 'registered/fleetformattertool.html', context=context)
+    return render(request, 'services/fleetformattertool.html', context=context)
 
 
 @login_required
@@ -50,7 +50,7 @@ def services_view(request):
         if svc.show_service_ctrl(request.user):
             context['service_ctrls'].append(svc.render_services_ctrl(request))
 
-    return render(request, 'registered/services.html', context=context)
+    return render(request, 'services/services.html', context=context)
 
 
 def superuser_test(user):

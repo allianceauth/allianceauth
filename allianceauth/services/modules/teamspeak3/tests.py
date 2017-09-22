@@ -115,20 +115,20 @@ class Teamspeak3HooksTestCase(TestCase):
     def test_render_services_ctrl(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        request = RequestFactory().get('/en/services/')
+        request = RequestFactory().get('/services/')
         request.user = member
 
         response = service.render_services_ctrl(request)
         self.assertTemplateUsed(service.service_ctrl_template)
-        self.assertIn(urls.reverse('auth_deactivate_teamspeak3'), response)
-        self.assertIn(urls.reverse('auth_reset_teamspeak3_perm'), response)
+        self.assertIn(urls.reverse('teamspeak3:deactivate'), response)
+        self.assertIn(urls.reverse('teamspeak3:reset_perm'), response)
 
         # Test register becomes available
         member.teamspeak3.delete()
         member = User.objects.get(username=self.member)
         request.user = member
         response = service.render_services_ctrl(request)
-        self.assertIn(urls.reverse('auth_activate_teamspeak3'), response)
+        self.assertIn(urls.reverse('teamspeak3:activate'), response)
 
 
 class Teamspeak3ViewsTestCase(TestCase):
@@ -160,13 +160,13 @@ class Teamspeak3ViewsTestCase(TestCase):
         instance = manager.return_value.__enter__.return_value
         instance.add_user.return_value = (expected_username, 'abc123')
 
-        response = self.client.get(urls.reverse('auth_activate_teamspeak3'))
+        response = self.client.get(urls.reverse('teamspeak3:activate'))
 
         self.assertTrue(instance.add_user.called)
         teamspeak3_user = Teamspeak3User.objects.get(user=self.member)
         self.assertTrue(teamspeak3_user.uid)
         self.assertTrue(teamspeak3_user.perm_key)
-        self.assertRedirects(response, urls.reverse('auth_verify_teamspeak3'), target_status_code=200)
+        self.assertRedirects(response, urls.reverse('teamspeak3:verify'), target_status_code=200)
 
     @mock.patch(MODULE_PATH + '.forms.Teamspeak3Manager')
     @mock.patch(MODULE_PATH + '.tasks.Teamspeak3Manager')
@@ -180,9 +180,9 @@ class Teamspeak3ViewsTestCase(TestCase):
         Teamspeak3User.objects.update_or_create(user=self.member, defaults={'uid': '1234', 'perm_key': '5678'})
         data = {'username': 'auth_member'}
 
-        response = self.client.post(urls.reverse('auth_verify_teamspeak3'), data)
+        response = self.client.post(urls.reverse('teamspeak3:verify'), data)
 
-        self.assertRedirects(response, urls.reverse('auth_services'), target_status_code=200)
+        self.assertRedirects(response, urls.reverse('services:services'), target_status_code=200)
         self.assertTrue(manager.return_value.__enter__.return_value.update_groups.called)
 
     @mock.patch(MODULE_PATH + '.tasks.Teamspeak3Manager')
@@ -190,10 +190,10 @@ class Teamspeak3ViewsTestCase(TestCase):
         self.login()
         Teamspeak3User.objects.create(user=self.member, uid='some member')
 
-        response = self.client.get(urls.reverse('auth_deactivate_teamspeak3'))
+        response = self.client.get(urls.reverse('teamspeak3:deactivate'))
 
         self.assertTrue(manager.return_value.__enter__.return_value.delete_user.called)
-        self.assertRedirects(response, expected_url=urls.reverse('auth_services'), target_status_code=200)
+        self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
         with self.assertRaises(ObjectDoesNotExist):
             teamspeak3_user = User.objects.get(pk=self.member.pk).teamspeak3
 
@@ -205,9 +205,9 @@ class Teamspeak3ViewsTestCase(TestCase):
 
         manager.return_value.__enter__.return_value.generate_new_permissionkey.return_value = "valid_member", "123abc"
 
-        response = self.client.get(urls.reverse('auth_reset_teamspeak3_perm'))
+        response = self.client.get(urls.reverse('teamspeak3:reset_perm'))
 
-        self.assertRedirects(response, urls.reverse('auth_services'), target_status_code=200)
+        self.assertRedirects(response, urls.reverse('services:services'), target_status_code=200)
         ts3_user = Teamspeak3User.objects.get(uid='valid_member')
         self.assertEqual(ts3_user.uid, 'valid_member')
         self.assertEqual(ts3_user.perm_key, '123abc')

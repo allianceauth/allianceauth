@@ -42,7 +42,7 @@ def group_management(request):
 
     render_items = {'acceptrequests': acceptrequests, 'leaverequests': leaverequests}
 
-    return render(request, 'registered/groupmanagement.html', context=render_items)
+    return render(request, 'groupmanagement/index.html', context=render_items)
 
 
 @login_required
@@ -61,7 +61,7 @@ def group_membership(request):
 
     render_items = {'groups': groups}
 
-    return render(request, 'registered/groupmembership.html', context=render_items)
+    return render(request, 'groupmanagement/groupmembership.html', context=render_items)
 
 
 @login_required
@@ -92,7 +92,7 @@ def group_membership_list(request, group_id):
 
     render_items = {'group': group, 'members': members}
 
-    return render(request, 'registered/groupmembers.html', context=render_items)
+    return render(request, 'groupmanagement/groupmembers.html', context=render_items)
 
 
 @login_required
@@ -121,7 +121,7 @@ def group_membership_remove(request, group_id, user_id):
     except ObjectDoesNotExist:
         messages.warning(request, _("Group does not exist"))
 
-    return redirect('auth_group_membership_list', group_id)
+    return redirect('groupmanagement:membership_list', group_id)
 
 
 @login_required
@@ -156,7 +156,7 @@ def group_accept_request(request, group_request_id):
             request.user, group_request_id))
         pass
 
-    return redirect("auth_group_management")
+    return redirect("groupmanagement:management")
 
 
 @login_required
@@ -187,7 +187,7 @@ def group_reject_request(request, group_request_id):
             request.user, group_request_id))
         pass
 
-    return redirect("auth_group_management")
+    return redirect("groupmanagement:management")
 
 
 @login_required
@@ -221,7 +221,7 @@ def group_leave_accept_request(request, group_request_id):
             request.user, group_request_id))
         pass
 
-    return redirect("auth_group_management")
+    return redirect("groupmanagement:management")
 
 
 @login_required
@@ -253,7 +253,7 @@ def group_leave_reject_request(request, group_request_id):
             request.user, group_request_id))
         pass
 
-    return redirect("auth_group_management")
+    return redirect("groupmanagement:management")
 
 
 @login_required
@@ -276,7 +276,7 @@ def groups_view(request):
             groups.append({'group': group, 'request': group_request[0] if group_request else None})
 
     render_items = {'groups': groups}
-    return render(request, 'registered/groups.html', context=render_items)
+    return render(request, 'groupmanagement/groups.html', context=render_items)
 
 
 @login_required
@@ -287,17 +287,17 @@ def group_request_add(request, group_id):
         logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, _("You cannot join that group"))
-        return redirect('auth_groups')
+        return redirect('groupmanagement:groups')
     if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
         # Does not have the required permission, trying to join a non-public group
         logger.warning("User %s attempted to join group id %s but it is not a public group" %
                        (request.user, group_id))
         messages.warning(request, "You cannot join that group")
-        return redirect('auth_groups')
+        return redirect('groupmanagement:groups')
     if group.authgroup.open:
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
-        return redirect("auth_groups")
+        return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
@@ -307,7 +307,7 @@ def group_request_add(request, group_id):
     grouprequest.save()
     logger.info("Created group request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
     messages.success(request, _('Applied to group %(group)s.') % {"group": group})
-    return redirect("auth_groups")
+    return redirect("groupmanagement:groups")
 
 
 @login_required
@@ -318,16 +318,16 @@ def group_request_leave(request, group_id):
         logger.warning("User %s attempted to leave group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, _("You cannot leave that group"))
-        return redirect('auth_groups')
+        return redirect('groupmanagement:groups')
     if group not in request.user.groups.all():
         logger.debug("User %s attempted to leave group id %s but they are not a member" %
                      (request.user, group_id))
         messages.warning(request, _("You are not a member of that group"))
-        return redirect('auth_groups')
+        return redirect('groupmanagement:groups')
     if group.authgroup.open:
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
-        return redirect("auth_groups")
+        return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
@@ -337,4 +337,4 @@ def group_request_leave(request, group_id):
     grouprequest.save()
     logger.info("Created group leave request for user %s to group %s" % (request.user, Group.objects.get(id=group_id)))
     messages.success(request, _('Applied to leave group %(group)s.') % {"group": group})
-    return redirect("auth_groups")
+    return redirect("groupmanagement:groups")

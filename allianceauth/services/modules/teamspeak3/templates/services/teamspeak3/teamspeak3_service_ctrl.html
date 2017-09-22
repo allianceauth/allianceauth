@@ -6,17 +6,17 @@
     <td class="text-center"><a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}">{{ TEAMSPEAK3_PUBLIC_URL }}</a></td>
     <td class="text-center">
         {% ifequal authinfo.teamspeak3_uid "" %}
-            <a href="{% url 'auth_activate_teamspeak3' %}" title="Activate" class="btn btn-warning">
+            <a href="{% url 'teamspeak3:activate' %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
         {% else %}
-            <a href="{% url 'auth_verify_teamspeak3' %}" title="Verify Client ID" class="btn btn-success" title="Verify">
+            <a href="{% url 'teamspeak3:verify' %}" title="Verify Client ID" class="btn btn-success" title="Verify">
                 <span class="glyphicon glyphicon-log-in"></span>
             </a>
-            <a href="{% url 'auth_reset_teamspeak3_perm' %}" title="Refresh Token" class="btn btn-primary">
+            <a href="{% url 'teamspeak3:reset_perm' %}" title="Refresh Token" class="btn btn-primary">
                 <span class="glyphicon glyphicon-refresh"></span>
             </a>
-            <a href="{% url 'auth_deactivate_teamspeak3' %}" title="Deactivate" class="btn btn-danger">
+            <a href="{% url 'teamspeak3:deactivate' %}" title="Deactivate" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
             <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?nickname={{ authinfo.teamspeak3_uid }}" title="Connect" class="btn btn-success">

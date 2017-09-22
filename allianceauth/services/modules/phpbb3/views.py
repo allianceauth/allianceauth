@@ -34,12 +34,12 @@ def activate_forum(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'Forum'})
     else:
         logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your forum account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -53,7 +53,7 @@ def deactivate_forum(request):
     else:
         logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your forum account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -71,12 +71,12 @@ def reset_forum_password(request):
                 'username': request.user.phpbb3.username,
                 'password': result,
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'Forum'})
 
     logger.error("Unsuccessful attempt to reset forum password for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your forum account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -99,11 +99,11 @@ def set_forum_password(request):
             else:
                 logger.error("Failed to install custom forum password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your forum account.')
-            return redirect("auth_services")
+            return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'Forum'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)

@@ -18,7 +18,7 @@ def notification_list(request):
         'read': old_notifs,
         'unread': new_notifs,
     }
-    return render(request, 'registered/notification_list.html', context)
+    return render(request, 'notifications/list.html', context)
 
 
 @login_required
@@ -29,12 +29,12 @@ def notification_view(request, notif_id):
         logger.debug("Providing notification for user %s" % request.user)
         context = {'notif': notif}
         notif.view()
-        return render(request, 'registered/notification_view.html', context)
+        return render(request, 'notifications/view.html', context)
     else:
         logger.warn(
             "User %s not authorized to view notif_id %s belonging to user %s" % (request.user, notif_id, notif.user))
         messages.error(request, _('You are not authorized to view that notification.'))
-        return redirect('auth_notification_list')
+        return redirect('notifications:list')
 
 
 @login_required
@@ -50,7 +50,7 @@ def remove_notification(request, notif_id):
         logger.error(
             "Unable to delete notif id %s for user %s - notif matching id not found." % (notif_id, request.user))
         messages.error(request, _('Failed to locate notification.'))
-    return redirect('auth_notification_list')
+    return redirect('notifications:list')
 
 
 @login_required
@@ -58,7 +58,7 @@ def mark_all_read(request):
     logger.debug('mark all notifications read called by user %s' % request.user)
     Notification.objects.filter(user=request.user).update(viewed=True)
     messages.success(request, _('Marked all notifications as read.'))
-    return redirect('auth_notification_list')
+    return redirect('notifications:list')
 
 
 @login_required
@@ -66,4 +66,4 @@ def delete_all_read(request):
     logger.debug('delete all read notifications called by user %s' % request.user)
     Notification.objects.filter(user=request.user).filter(viewed=True).delete()
     messages.success(request, _('Deleted all read notifications.'))
-    return redirect('auth_notification_list')
+    return redirect('notifications:list')

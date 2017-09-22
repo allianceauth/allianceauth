@@ -20,7 +20,7 @@ class MumbleService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.MUMBLE_URL
         self.access_perm = 'mumble.access_mumble'
-        self.service_ctrl_template = 'registered/mumble_service_ctrl.html'
+        self.service_ctrl_template = 'services/mumble/mumble_service_ctrl.html'
 
     def delete_user(self, user, notify_user=False):
         logging.debug("Deleting user %s %s account" % (user, self.name))
@@ -48,10 +48,10 @@ class MumbleService(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_mumble'
-        urls.auth_deactivate = 'auth_deactivate_mumble'
-        urls.auth_reset_password = 'auth_reset_mumble_password'
-        urls.auth_set_password = 'auth_set_mumble_password'
+        urls.auth_activate = 'mumble:activate'
+        urls.auth_deactivate = 'mumble:deactivate'
+        urls.auth_reset_password = 'mumble:reset_password'
+        urls.auth_set_password = 'mumble:set_password'
 
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,

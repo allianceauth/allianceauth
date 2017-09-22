@@ -4,12 +4,12 @@ from . import views
 
 module_urls = [
     # SeAT Service Control
-    url(r'^activate/$', views.activate_seat, name='auth_activate_seat'),
-    url(r'^deactivate/$', views.deactivate_seat, name='auth_deactivate_seat'),
-    url(r'^reset_password/$', views.reset_seat_password, name='auth_reset_seat_password'),
-    url(r'^set_password/$', views.set_seat_password, name='auth_set_seat_password'),
+    url(r'^activate/$', views.activate_seat, name='activate'),
+    url(r'^deactivate/$', views.deactivate_seat, name='deactivate'),
+    url(r'^reset_password/$', views.reset_seat_password, name='reset_password'),
+    url(r'^set_password/$', views.set_seat_password, name='set_password'),
 ]
 
 urlpatterns = [
-    url(r'^seat/', include(module_urls)),
+    url(r'^seat/', include(module_urls, namespace='seat')),
 ]

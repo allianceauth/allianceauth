@@ -29,4 +29,4 @@ urlpatterns = [
         name='request_reject'),
     url(r'^request/(\w+)/update', views.srp_request_update_amount,
         name="request_update_amount"),
-    ]
+]

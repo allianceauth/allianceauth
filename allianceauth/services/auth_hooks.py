@@ -8,7 +8,7 @@ class Services(MenuItemHook):
         MenuItemHook.__init__(self,
                               'Services',
                               'fa fa-cogs fa-fw grayiconecolor',
-                              'auth_services', 100)
+                              'services:services', 100)
 
     def render(self, request):
         for svc in ServicesHook.get_services():

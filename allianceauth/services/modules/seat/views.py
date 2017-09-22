@@ -44,13 +44,13 @@ def activate_seat(request):
             'username': request.user.seat.username,
             'password': result[1],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'SeAT'})
     messages.add_message(request, messages.ERROR,
                          _('Failed to activate your %(service)s account, please contact your administrator.') %
                          SERVICE_NAME)
     logger.error("Unsuccessful attempt to activate seat for user %s" % request.user)
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -62,14 +62,14 @@ def deactivate_seat(request):
         messages.add_message(request, messages.SUCCESS,
                              _('Successfully deactivated your %(service)s account.') % SERVICE_NAME)
         logger.info("Successfully deactivated SeAT for user %s" % request.user)
-        return redirect("auth_services")
+        return redirect("services:services")
     else:
         logging.error("User does not have a SeAT account")
     messages.add_message(request, messages.ERROR,
                          _('Failed to deactivate your %(service)s account, please contact your administrator.') %
                          SERVICE_NAME)
     logger.error("Unsuccessful attempt to activate SeAT for user %s" % request.user)
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -87,13 +87,13 @@ def reset_seat_password(request):
             messages.add_message(request, messages.SUCCESS,
                                  _('Successfully reset your %(service)s password.') % {'service': 'SeAT'})
             logger.info("Succesfully reset SeAT password for user %s" % request.user)
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'SeAT'})
     logger.error("Unsuccessful attempt to reset SeAT password for user %s" % request.user)
     messages.add_message(request, messages.ERROR,
                          _('Failed to reset your %(service)s password, please contact your administrator.') %
                          {'service': 'SeAT'})
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -114,7 +114,7 @@ def set_seat_password(request):
                 messages.add_message(request, messages.SUCCESS,
                                      _('Successfully set your %(service)s password.') % SERVICE_NAME)
                 logger.info("Succesfully reset SeAT password for user %s" % request.user)
-                return redirect("auth_services")
+                return redirect("services:services")
             else:
                 messages.add_message(request, messages.ERROR,
                                      _('Failed to set your %(service)s password, please contact your administrator.') %
@@ -128,4 +128,4 @@ def set_seat_password(request):
         form = ServicePasswordForm()
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'SeAT'}
-    return render(request, 'registered/service_password.html', context)
+    return render(request, 'services/service_password.html', context)

@@ -33,11 +33,11 @@ def activate_market(request):
                 'username': result[0],
                 'password': result[1],
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'Alliance Market'})
     logger.error("Unsuccessful attempt to activate market for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your Alliance Market account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -51,7 +51,7 @@ def deactivate_market(request):
     else:
         logger.error("Unsuccessful attempt to activate market for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your Alliance Market account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -68,12 +68,12 @@ def reset_market_password(request):
                 'username': request.user.market.username,
                 'password': result,
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'Alliance Market'})
 
     logger.error("Unsuccessful attempt to reset market password for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your Alliance Market account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -94,11 +94,11 @@ def set_market_password(request):
             else:
                 logger.error("Failed to install custom market password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your Alliance Market account.')
-            return redirect("auth_services")
+            return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'Market'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)

@@ -35,12 +35,12 @@ def activate_jabber(request):
             'username': info[0],
             'password': info[1],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'Jabber'})
     else:
         logger.error("Unsuccessful attempt to activate jabber for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your jabber account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -53,7 +53,7 @@ def deactivate_jabber(request):
     else:
         logger.error("Unsuccessful attempt to deactivate jabber for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your jabber account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -70,11 +70,11 @@ def reset_jabber_password(request):
                 'username': request.user.openfire.username,
                 'password': result,
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'Jabber'})
     logger.error("Unsuccessful attempt to reset jabber for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your jabber account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -126,7 +126,7 @@ def jabber_broadcast_view(request):
             request.user, len(form.fields['group'].choices)))
 
     context = {'form': form}
-    return render(request, 'registered/jabberbroadcast.html', context=context)
+    return render(request, 'services/openfire/broadcast.html', context=context)
 
 
 @login_required
@@ -147,11 +147,11 @@ def set_jabber_password(request):
             else:
                 logger.error("Failed to install custom jabber password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your jabber account.')
-            return redirect("auth_services")
+            return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'Jabber'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)

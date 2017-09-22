@@ -1,4 +1,4 @@
-{% extends "registered/base.html" %}
+{% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 
@@ -6,7 +6,7 @@
 
 {% block page_title %}{% trans "Available" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
-
+url
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">{% trans "Available Groups" %}</h1>
@@ -25,7 +25,7 @@
                     <td class="text-center">
                         {% if g.group in user.groups.all %}
                             {% if not g.request %}
-                                <a href="{% url 'auth_group_request_leave' g.group.id %}" class="btn btn-danger">
+                                <a href="{% url 'groupmanagement:request_leave' g.group.id %}" class="btn btn-danger">
                                     {% trans "Leave" %}
                                 </a>
                             {% else %}
@@ -34,7 +34,7 @@
                                 </button>
                             {% endif %}
                         {% elif not g.request %}
-                            <a href="{% url 'auth_group_request_add' g.group.id %}" class="btn btn-success">
+                            <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
                                 {% trans "Request" %}
                             </a>
                         {% else %}

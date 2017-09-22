@@ -15,7 +15,7 @@ class DiscourseService(ServicesHook):
         ServicesHook.__init__(self)
         self.urlpatterns = urlpatterns
         self.name = 'discourse'
-        self.service_ctrl_template = 'registered/discourse_service_ctrl.html'
+        self.service_ctrl_template = 'services/discourse/discourse_service_ctrl.html'
         self.access_perm = 'discourse.access_discourse'
 
     def delete_user(self, user, notify_user=False):

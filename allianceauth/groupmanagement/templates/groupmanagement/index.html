@@ -1,4 +1,4 @@
-{% extends "registered/base.html" %}
+{% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 
@@ -10,7 +10,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include 'registered/groupmanagementmenu.html' %}
+        {% include 'groupmanagement/menu.html' %}
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#add">{% trans "Group Add Requests" %}</a></li>
             <li><a data-toggle="tab" href="#leave">{% trans "Group Leave Requests" %}</a></li>
@@ -32,10 +32,10 @@
                                 <td class="text-center">{{ acceptrequest.main_char.character_name }}</td>
                                 <td class="text-center">{{ acceptrequest.group.name }}</td>
                                 <td class="text-center">
-                                    <a href="{% url 'auth_group_accept_request' acceptrequest.id %}" class="btn btn-success">
+                                    <a href="{% url 'groupmanagement:accept_request' acceptrequest.id %}" class="btn btn-success">
                                         {% trans "Accept" %}
                                     </a>
-                                    <a href="{% url 'auth_group_reject_request' acceptrequest.id %}" class="btn btn-danger">
+                                    <a href="{% url 'groupmanagement:reject_request' acceptrequest.id %}" class="btn btn-danger">
                                         {% trans "Reject" %}
                                     </a>
                                 </td>
@@ -63,10 +63,10 @@
                                 <td class="text-center">{{ leaverequest.main_char.character_name }}</td>
                                 <td class="text-center">{{ leaverequest.group.name }}</td>
                                 <td class="text-center">
-                                    <a href="{% url 'auth_group_leave_accept_request' leaverequest.id %}" class="btn btn-success">
+                                    <a href="{% url 'groupmanagement:leave_accept_request' leaverequest.id %}" class="btn btn-success">
                                         {% trans "Accept" %}
                                     </a>
-                                    <a href="{% url 'auth_group_leave_reject_request' leaverequest.id %}" class="btn btn-danger">
+                                    <a href="{% url 'groupmanagement:leave_reject_request' leaverequest.id %}" class="btn btn-danger">
                                         {% trans "Reject" %}
                                     </a>
                                 </td>

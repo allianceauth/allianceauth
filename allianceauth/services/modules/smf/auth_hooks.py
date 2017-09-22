@@ -46,10 +46,10 @@ class SmfService(ServicesHook):
 
     def render_services_ctrl(self, request):
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_smf'
-        urls.auth_deactivate = 'auth_deactivate_smf'
-        urls.auth_reset_password = 'auth_reset_smf_password'
-        urls.auth_set_password = 'auth_set_smf_password'
+        urls.auth_activate = 'smf:activate'
+        urls.auth_deactivate = 'smf:deactivate'
+        urls.auth_reset_password = 'smf:reset_password'
+        urls.auth_set_password = 'smf:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

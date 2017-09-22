@@ -5,5 +5,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^example/', include(module_urls)),
+    url(r'^example/', include(module_urls, namespace='example')),
 ]

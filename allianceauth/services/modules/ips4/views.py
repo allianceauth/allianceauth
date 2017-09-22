@@ -32,12 +32,12 @@ def activate_ips4(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'IPSuite4'})
     else:
         logger.error("Unsuccessful attempt to activate IPS4 for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your IPSuite4 account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -54,12 +54,12 @@ def reset_ips4_password(request):
                 'username': request.user.ips4.username,
                 'password': result,
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'IPSuite4'})
 
     logger.error("Unsuccessful attempt to reset IPS4 password for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your IPSuite4 account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -80,14 +80,14 @@ def set_ips4_password(request):
             else:
                 logger.error("Failed to install custom IPS4 password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your IPSuite4 account.')
-            return redirect('auth_services')
+            return redirect('services:services')
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'IPS4'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)
 
 
 @login_required
@@ -100,5 +100,5 @@ def deactivate_ips4(request):
     else:
         logger.error("Unsuccessful attempt to deactivate IPS4 for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your IPSuite4 account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 

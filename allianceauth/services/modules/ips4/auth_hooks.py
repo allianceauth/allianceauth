@@ -31,10 +31,10 @@ class Ips4Service(ServicesHook):
         :return:
         """
         urls = self.Urls()
-        urls.auth_activate = 'auth_activate_ips4'
-        urls.auth_deactivate = 'auth_deactivate_ips4'
-        urls.auth_reset_password = 'auth_reset_ips4_password'
-        urls.auth_set_password = 'auth_set_ips4_password'
+        urls.auth_activate = 'ips4:activate'
+        urls.auth_deactivate = 'ips4:deactivate'
+        urls.auth_reset_password = 'ips4:reset_password'
+        urls.auth_set_password = 'ips4:set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,

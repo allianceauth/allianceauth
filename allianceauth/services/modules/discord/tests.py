@@ -120,7 +120,7 @@ class DiscordHooksTestCase(TestCase):
     def test_render_services_ctrl(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        request = RequestFactory().get('/en/services/')
+        request = RequestFactory().get('/services/')
         request.user = member
 
         response = service.render_services_ctrl(request)
@@ -166,7 +166,7 @@ class DiscordViewsTestCase(TestCase):
         self.assertTrue(manager.add_user.called)
         self.assertEqual(manager.update_nickname.called, settings.DISCORD_SYNC_NAMES)
         self.assertEqual(self.member.discord.uid, '1234')
-        self.assertRedirects(response, expected_url='/en/services/', target_status_code=200)
+        self.assertRedirects(response, expected_url='/services/', target_status_code=200)
 
     @mock.patch(MODULE_PATH + '.tasks.DiscordOAuthManager')
     def test_reset(self, manager):
@@ -187,7 +187,7 @@ class DiscordViewsTestCase(TestCase):
         response = self.client.get('/discord/deactivate/')
 
         self.assertTrue(manager.delete_user.called)
-        self.assertRedirects(response, expected_url='/en/services/', target_status_code=200)
+        self.assertRedirects(response, expected_url='/services/', target_status_code=200)
         with self.assertRaises(ObjectDoesNotExist):
             discord_user = User.objects.get(pk=self.member.pk).discord
 

@@ -33,12 +33,12 @@ def activate_smf(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'registered/service_credentials.html',
+        return render(request, 'services/service_credentials.html',
                       context={'credentials': credentials, 'service': 'SMF'})
     else:
         logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your SMF account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -53,7 +53,7 @@ def deactivate_smf(request):
     else:
         logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your SMF account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -71,11 +71,11 @@ def reset_smf_password(request):
                 'username': request.user.smf.username,
                 'password': result,
             }
-            return render(request, 'registered/service_credentials.html',
+            return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'SMF'})
     logger.error("Unsuccessful attempt to reset smf password for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your SMF account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -98,11 +98,11 @@ def set_smf_password(request):
             else:
                 logger.error("Failed to install custom smf password for user %s" % request.user)
                 messages.error(request, 'An error occurred while processing your SMF account.')
-            return redirect("auth_services")
+            return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()
 
     logger.debug("Rendering form for user %s" % request.user)
     context = {'form': form, 'service': 'SMF'}
-    return render(request, 'registered/service_password.html', context=context)
+    return render(request, 'services/service_password.html', context=context)

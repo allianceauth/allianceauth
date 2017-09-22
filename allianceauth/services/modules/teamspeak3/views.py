@@ -31,10 +31,10 @@ def activate_teamspeak3(request):
         logger.debug("Updated authserviceinfo for user %s with TS3 credentials. Updating groups." % request.user)
         logger.info("Successfully activated TS3 for user %s" % request.user)
         messages.success(request, 'Activated TeamSpeak3 account.')
-        return redirect("auth_verify_teamspeak3")
+        return redirect("teamspeak3:verify")
     logger.error("Unsuccessful attempt to activate TS3 for user %s" % request.user)
     messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -43,13 +43,13 @@ def verify_teamspeak3(request):
     logger.debug("verify_teamspeak3 called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
         logger.warn("Unable to validate user %s teamspeak: no teamspeak data" % request.user)
-        return redirect("auth_services")
+        return redirect("services:services")
     if request.method == "POST":
         form = TeamspeakJoinForm(request.POST)
         if form.is_valid():
             Teamspeak3Tasks.update_groups.delay(request.user.pk)
             logger.debug("Validated user %s joined TS server" % request.user)
-            return redirect("auth_services")
+            return redirect("services:services")
     else:
         form = TeamspeakJoinForm(initial={'username': request.user.teamspeak3.uid})
     context = {
@@ -57,7 +57,7 @@ def verify_teamspeak3(request):
         'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid,
                      'teamspeak3_perm_key': request.user.teamspeak3.perm_key},
     }
-    return render(request, 'registered/teamspeakjoin.html', context=context)
+    return render(request, 'services/teamspeak3/teamspeakjoin.html', context=context)
 
 
 @login_required
@@ -70,7 +70,7 @@ def deactivate_teamspeak3(request):
     else:
         logger.error("Unsuccessful attempt to deactivate TS3 for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
-    return redirect("auth_services")
+    return redirect("services:services")
 
 
 @login_required
@@ -78,7 +78,7 @@ def deactivate_teamspeak3(request):
 def reset_teamspeak3_perm(request):
     logger.debug("reset_teamspeak3_perm called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
-        return redirect("auth_services")
+        return redirect("services:services")
     character = request.user.profile.main_character
     logger.debug("Deleting TS3 user for user %s" % request.user)
     with Teamspeak3Manager() as ts3man:
@@ -98,4 +98,4 @@ def reset_teamspeak3_perm(request):
     else:
         logger.error("Unsuccessful attempt to reset TS3 permission key for user %s" % request.user)
         messages.error(request, 'An error occurred while processing your TeamSpeak3 account.')
-    return redirect("auth_services")
+    return redirect("services:services")

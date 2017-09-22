@@ -99,21 +99,21 @@ class MumbleHooksTestCase(TestCase):
     def test_render_services_ctrl(self):
         service = self.service()
         member = User.objects.get(username=self.member)
-        request = RequestFactory().get('/en/services/')
+        request = RequestFactory().get('/services/')
         request.user = member
 
         response = service.render_services_ctrl(request)
         self.assertTemplateUsed(service.service_ctrl_template)
-        self.assertIn(urls.reverse('auth_deactivate_mumble'), response)
-        self.assertIn(urls.reverse('auth_reset_mumble_password'), response)
-        self.assertIn(urls.reverse('auth_set_mumble_password'), response)
+        self.assertIn(urls.reverse('mumble:deactivate'), response)
+        self.assertIn(urls.reverse('mumble:reset_password'), response)
+        self.assertIn(urls.reverse('mumble:set_password'), response)
 
         # Test register becomes available
         member.mumble.delete()
         member = User.objects.get(username=self.member)
         request.user = member
         response = service.render_services_ctrl(request)
-        self.assertIn(urls.reverse('auth_activate_mumble'), response)
+        self.assertIn(urls.reverse('mumble:activate'), response)
 
 
 class MumbleViewsTestCase(TestCase):
@@ -132,7 +132,7 @@ class MumbleViewsTestCase(TestCase):
     def test_activate(self):
         self.login()
         expected_username = '[TESTR]auth_member'
-        response = self.client.get(urls.reverse('auth_activate_mumble'), follow=False)
+        response = self.client.get(urls.reverse('mumble:activate'), follow=False)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, expected_username)
         mumble_user = MumbleUser.objects.get(user=self.member)
@@ -144,9 +144,9 @@ class MumbleViewsTestCase(TestCase):
         self.login()
         MumbleUser.objects.create(user=self.member, username='some member')
 
-        response = self.client.get(urls.reverse('auth_deactivate_mumble'))
+        response = self.client.get(urls.reverse('mumble:deactivate'))
 
-        self.assertRedirects(response, expected_url=urls.reverse('auth_services'), target_status_code=200)
+        self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
         with self.assertRaises(ObjectDoesNotExist):
             mumble_user = User.objects.get(pk=self.member.pk).mumble
 
@@ -154,19 +154,19 @@ class MumbleViewsTestCase(TestCase):
         self.login()
         MumbleUser.objects.create(user=self.member, username='some member', pwhash='old')
 
-        response = self.client.post(urls.reverse('auth_set_mumble_password'), data={'password': '1234asdf'})
+        response = self.client.post(urls.reverse('mumble:set_password'), data={'password': '1234asdf'})
 
         self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, 'old')
-        self.assertRedirects(response, expected_url=urls.reverse('auth_services'), target_status_code=200)
+        self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
 
     def test_reset_password(self):
         self.login()
         MumbleUser.objects.create(user=self.member, username='some member', pwhash='old')
 
-        response = self.client.get(urls.reverse('auth_reset_mumble_password'))
+        response = self.client.get(urls.reverse('mumble:reset_password'))
 
         self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, 'old')
-        self.assertTemplateUsed(response, 'registered/service_credentials.html')
+        self.assertTemplateUsed(response, 'services/service_credentials.html')
         self.assertContains(response, 'some member')
 
 

@@ -1,4 +1,4 @@
-{% extends "registered/base.html" %}
+{% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 
@@ -10,7 +10,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include 'registered/groupmanagementmenu.html' %}
+        {% include 'groupmanagement/menu.html' %}
         <div>
             {% if groups %}
             <h3>Groups</h3>
@@ -39,7 +39,7 @@
                             {{ group.num_members }}
                         </td>
                         <td class="text-center">
-                            <a href="{% url 'auth_group_membership_list' group.id %}" class="btn btn-primary"
+                            <a href="{% url 'groupmanagement:membership_list' group.id %}" class="btn btn-primary"
                                 title="{% trans "View Members" %}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                             </a>

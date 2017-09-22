@@ -5,16 +5,16 @@ from . import views
 module_urls = [
     # Teamspeak3 service control
     url(r'^activate/$', views.activate_teamspeak3,
-        name='auth_activate_teamspeak3'),
+        name='activate'),
     url(r'^deactivate/$', views.deactivate_teamspeak3,
-        name='auth_deactivate_teamspeak3'),
+        name='deactivate'),
     url(r'reset_perm/$', views.reset_teamspeak3_perm,
-        name='auth_reset_teamspeak3_perm'),
+        name='reset_perm'),
 
     # Teamspeak Urls
-    url(r'verify/$', views.verify_teamspeak3, name='auth_verify_teamspeak3'),
+    url(r'verify/$', views.verify_teamspeak3, name='verify'),
 ]
 
 urlpatterns = [
-    url(r'^teamspeak3/', include(module_urls)),
+    url(r'^teamspeak3/', include(module_urls, namespace='teamspeak3')),
 ]
