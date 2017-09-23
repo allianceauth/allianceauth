@@ -10,14 +10,18 @@ install:
   - pip install -r requirements.txt
   - pip install -r testing-requirements.txt
 # command to run tests
-script: coverage run runtests.py
+script:
+  - django-admin version
+  - coverage run runtests.py
 cache: pip
 after_success:
   coveralls
 matrix:
   allow_failures:
   - python: "3.7-dev"
+  - DJANGO_VERSION: "2.0a1"
 env:
   - DJANGO_VERSION=1.10.8 # Remove in December 2017
   - DJANGO_VERSION=1.11.5
+  - DJANGO_VERSION=2.0a1
   # Add 2.0 when available and allow_failures (env: KEY=VALUE)
