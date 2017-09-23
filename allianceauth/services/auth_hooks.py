@@ -7,7 +7,7 @@ class Services(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               'Services',
-                              'fa fa-cogs fa-fw grayiconecolor',
+                              'fa fa-cogs fa-fw',
                               'services:services', 100)
 
     def render(self, request):

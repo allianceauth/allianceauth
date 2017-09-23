@@ -8,7 +8,7 @@ class ApplicationsMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               'Applications',
-                              'fa fa-file-o fa-fw grayiconecolor',
+                              'fa fa-file-o fa-fw',
                               'hrapplications:index',
                               navactive=['hrapplications:'])
 

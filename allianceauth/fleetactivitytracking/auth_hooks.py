@@ -6,7 +6,7 @@ from allianceauth.services.hooks import MenuItemHook, UrlHook
 
 @hooks.register('menu_item_hook')
 def register_menu():
-    return MenuItemHook('Fleet Activity Tracking', 'fa fa-users fa-lightbulb-o fa-fw grayiconecolor', 'fatlink:view',
+    return MenuItemHook('Fleet Activity Tracking', 'fa fa-users fa-lightbulb-o fa-fw', 'fatlink:view',
                         navactive=['fatlink:'])
 
 

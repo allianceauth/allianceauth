@@ -24,22 +24,51 @@
 
 <body>
 {% if user.is_authenticated %}
-    <div id="wrapper">
+    <div id="wrapper" class="container">
         <!-- Navigation -->
-
-        <nav class="navbar navbar-inverse navbar-static-top auth-navbar-top" role="navigation">
+        <nav class="navbar navbar-static-top navbar-inverse auth-navbar-top" role="navigation">
             <div class="container-fluid">
-                <a class="navbar-brand">
-                    {{ SITE_NAME }}
-                </a>
-                <!-- /.navbar-header -->
-
-                <ul class="nav navbar-top-links navbar-right">
-                    <li class="nav-link">
-                        <form id="f_lang_select" action="{% url 'set_language' %}" method="post">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
-                            <select onchange="this.form.submit()" class="form-control" id="lang_select" name="language">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".auth-menus-collapse">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand">
+                        {{ SITE_NAME }}
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse auth-menus-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if notifications %}
+                            <li>
+                                <a href="{% url 'notifications:list' %}">
+                                <span class="fa-stack">
+                                    <i class="fa fa-bell fa-stack-2x notification-bell-color"></i>
+                                    <i class="fa fa-inverse fa-stack-1x">{{ notifications }}</i>
+                                </span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li><a href="{% url 'notifications:list' %}">
+                                <i class="fa fa-bell-o"></i></a>
+                            </li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            {% if user.is_staff %}
+                                <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+                        {% else %}
+                            <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
+                        {% endif %}
+                    </ul>
+                    <form id="f-lang-select" class="navbar-form navbar-right" action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+                        <div class="form-group">
+                            <select onchange="this.form.submit()" class="form-control" id="lang-select" name="language">
                                 {% get_language_info_list for LANGUAGES as languages %}
                                 {% for language in languages %}
                                     <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
@@ -48,48 +77,24 @@
                                     </option>
                                 {% endfor %}
                             </select>
-                        </form>
-                    </li>
-                    {% if notifications %}
-                        <li class="nav-link active">
-                            <a href="{% url 'notifications:list' %}">
-                            <span class="fa-stack">
-                                <i class="fa fa-bell fa-stack-2x"></i>
-                                <i class="fa fa-inverse fa-stack-1x">{{ notifications }}</i>
-                            </span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="nav-link"><a href="{% url 'notifications:list' %}">
-                            <i class="fa fa-bell-o"></i></a>
-                        </li>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                        {% if user.is_staff %}
-                            <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
-                        {% endif %}
-                        <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                    {% else %}
-                        <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
-                    {% endif %}
-
-                </ul>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar auth-sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
+        </nav>
+        <div class="row" id="site-body-wrapper">
+            <div class="col-sm-2 auth-side-navbar" role="navigation">
+                <div class="collapse navbar-collapse auth-menus-collapse auth-side-navbar-collapse">
+                    <ul class="nav nav-pills nav-stacked gray-icon-color" id="side-menu">
                         <li>
                             <a class="{% navactive request 'authentication:dashboard' %}"
                                href="{% url 'authentication:dashboard' %}">
-                                <i class="fa fa-dashboard fa-fw grayiconecolor"></i>{% trans " Dashboard" %}
+                                <i class="fa fa-dashboard fa-fw"></i>{% trans " Dashboard" %}
                             </a>
                         </li>
                         <li>
                             <a class="{% navactive request 'groupmanagement:groups' %}" href="{% url 'groupmanagement:groups' %}">
-                                <i class="fa fa-cogs fa-fw fa-sitemap grayiconecolor"></i>{% trans " Groups" %}
+                                <i class="fa fa-cogs fa-fw fa-sitemap"></i>{% trans " Groups" %}
                             </a>
                         </li>
 
@@ -97,7 +102,7 @@
                             <li>
                                 <a class="{% navactive request 'groupmanagement:management groupmanagement:membership groupmanagement:membership_list' %}"
                                    href="{% url 'groupmanagement:management' %}">
-                                    <i class="fa fa-lock fa-sitemap fa-fw grayiconecolor"></i>{% trans " Group Management" %}
+                                    <i class="fa fa-lock fa-sitemap fa-fw"></i>{% trans " Group Management" %}
                                 </a>
                             </li>
                         {% endif %}
@@ -107,28 +112,26 @@
                         <li>
                             <a class="{% navactive request 'authentication:help' %}"
                                href="{% url 'authentication:help' %}">
-                                <i class="fa fa-question fa-fw grayiconecolor"></i>{% trans " Help" %}
+                                <i class="fa fa-question fa-fw"></i>{% trans " Help" %}
                             </a>
                         </li>
                     </ul>
-
                 </div>
-                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.navbar-static-side -->
-        </nav>
-
-        <div id="page-wrapper">
-            <div class="container">
+            <div class="col-sm-10">
                 {% if messages %}
                     <br>
                     {% for message in messages %}
                         <div class="alert alert-{{ message.level_tag }}">{{ message }}</div>
+                        {% if not forloop.last %}
+                            <br>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
-                {% block content %}
-                {% endblock content %}
+                    {% block content %}
+                    {% endblock content %}
             </div>
+        <div class="clearfix"></div>
         </div>
     </div>
 {% endif %}

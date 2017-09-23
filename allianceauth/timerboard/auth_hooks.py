@@ -7,7 +7,7 @@ from . import urls
 class TimerboardMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self, 'Structure Timers',
-                              'fa fa-clock-o fa-fw grayiconecolor',
+                              'fa fa-clock-o fa-fw',
                               'timerboard:view',
                               navactive=['timerboard:'])
 

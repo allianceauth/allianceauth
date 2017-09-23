@@ -7,7 +7,7 @@ from . import urls
 class OpTimerboardMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self, 'Fleet Operations',
-                              'fa fa-exclamation  fa-fw grayiconecolor',
+                              'fa fa-exclamation  fa-fw',
                               'optimer:view',
                               navactive=['optimer:'])
 

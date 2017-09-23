@@ -8,7 +8,7 @@ class PermissionsTool(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               'Permissions Audit',
-                              'fa fa-key fa-id-card grayiconecolor',
+                              'fa fa-key fa-id-card',
                               'permissions_tool:overview',
                               order=400,
                               navactive=['permissions_tool:'])

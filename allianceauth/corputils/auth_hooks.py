@@ -8,7 +8,7 @@ class CorpStats(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               'Corporation Stats',
-                              'fa fa-share-alt fa-fw grayiconecolor',
+                              'fa fa-share-alt fa-fw',
                               'corputils:view',
                               navactive=['corputils:'])
 

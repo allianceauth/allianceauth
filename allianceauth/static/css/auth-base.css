@@ -1,20 +1,29 @@
-.grayiconecolor {
+.gray-icon-color .fa {
     color: #505050;
 }
-#lang_select {
-    margin-right: 25px;
+
+.notification-bell-color {
+    color: #A88F1E;
 }
 
-#f_lang_select {
-    margin-right: 5px;
-}
 .navbar-brand {
     height: 58px;
     padding: 19px 19px;
 }
+
 .auth-navbar-top {
     margin-bottom: 0;
 }
-.auth-sidebar {
-    margin-top: 1px;
+
+.auth-side-navbar-collapse {
+    padding-left: 0;
+}
+
+#wrapper {
+    width: 100%;
+    padding: 0;
+}
+
+#site-body-wrapper {
+    margin-right:0;
 }

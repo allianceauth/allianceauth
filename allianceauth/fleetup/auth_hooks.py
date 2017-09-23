@@ -7,7 +7,7 @@ from . import urls
 class FleetUpMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self, 'Fleet-Up',
-                              'fa fa-arrow-up fa-fw grayiconecolor',
+                              'fa fa-arrow-up fa-fw',
                               'fleetup:view',
                               navactive=['fleetup:'])
 

@@ -44,7 +44,7 @@ class PermissionsToolViewsTestCase(TestCase):
         response_content = str(response.content, encoding='utf8')
 
         self.assertInHTML(
-            '<li><a class="active" href="/permissions/overview/"><i class="fa fa-key fa-id-card grayiconecolor"></i> Permissions Audit</a></li>',
+            '<li><a class="active" href="/permissions/overview/"><i class="fa fa-key fa-id-card"></i> Permissions Audit</a></li>',
             response_content)
 
     def test_permissions_overview(self):
