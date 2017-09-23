@@ -19,7 +19,7 @@ after_success:
 matrix:
   allow_failures:
   - python: "3.7-dev"
-  - DJANGO_VERSION: "2.0a1"
+  - env: DJANGO_VERSION=2.0a1
 env:
   - DJANGO_VERSION=1.10.8 # Remove in December 2017
   - DJANGO_VERSION=1.11.5
