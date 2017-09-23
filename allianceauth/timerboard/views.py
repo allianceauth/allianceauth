@@ -22,7 +22,7 @@ def timer_view(request):
     logger.debug("timer_view called by user %s" % request.user)
     char = request.user.profile.main_character
     if char:
-        corp = EveCorporationInfo.get_corporation_info_by_id(char.corporation_id)
+        corp = EveCorporationInfo.objects.get(corporation_id=char.corporation_id)
     else:
         corp = None
     if corp:
