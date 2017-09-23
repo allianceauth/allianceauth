@@ -1,6 +1,7 @@
 import logging
 
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
@@ -46,6 +47,7 @@ class DiscordService(ServicesHook):
     def render_services_ctrl(self, request):
         return render_to_string(self.service_ctrl_template, {
             'discord_uid': request.user.discord.uid if DiscordTasks.has_account(request.user) else None,
+            'DISCORD_SERVER_ID': getattr(settings, 'DISCORD_GUILD_ID', ''),
         }, request=request)
 
 

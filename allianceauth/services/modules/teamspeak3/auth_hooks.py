@@ -1,6 +1,7 @@
 import logging
 
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
@@ -46,7 +47,7 @@ class Teamspeak3Service(ServicesHook):
             authinfo['teamspeak3_perm_key'] = request.user.teamspeak3.perm_key
 
         return render_to_string(self.service_ctrl_template, {
-            'authinfo': authinfo,
+            'authinfo': authinfo, 'TEAMSPEAK3_PUBLIC_URL': getattr(settings, 'TEAMSPEAK3_PUBLIC_URL', ''),
         }, request=request)
 
 

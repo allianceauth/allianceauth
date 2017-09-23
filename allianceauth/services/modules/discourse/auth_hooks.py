@@ -1,6 +1,7 @@
 import logging
 
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
@@ -41,7 +42,8 @@ class DiscourseService(ServicesHook):
 
     def render_services_ctrl(self, request):
         return render_to_string(self.service_ctrl_template, {
-            'char': request.user.profile.main_character
+            'char': request.user.profile.main_character,
+            'DISCOURSE_URL': getattr(settings, 'DISCOURSE_URL', ''),
         }, request=request)
 
 
