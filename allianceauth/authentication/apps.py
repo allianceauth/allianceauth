@@ -8,5 +8,5 @@ class AuthenticationConfig(AppConfig):
 
     def ready(self):
         super(AuthenticationConfig, self).ready()
-        from allianceauth.authentication import checks
+        from allianceauth.authentication import checks, signals
         register(Tags.security)(checks.check_login_scopes_setting)
