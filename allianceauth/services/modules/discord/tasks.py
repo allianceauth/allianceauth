@@ -72,8 +72,8 @@ class DiscordTasks:
                 DiscordOAuthManager.update_groups(user.discord.uid, groups)
             except DiscordApiBackoff as bo:
                 logger.info("Discord group sync API back off for %s, "
-                            "retrying in %s seconds" % (user, bo.retry_after))
-                raise task_self.retry(countdown=bo.retry_after)
+                            "retrying in %s seconds" % (user, bo.retry_after_seconds))
+                raise task_self.retry(countdown=bo.retry_after_seconds)
             except Exception as e:
                 if task_self:
                     logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)

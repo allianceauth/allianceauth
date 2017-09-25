@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import math
 from django.conf import settings
 from requests_oauthlib import OAuth2Session
 from functools import wraps
@@ -49,12 +50,20 @@ class DiscordApiTooBusy(DiscordApiException):
 
 class DiscordApiBackoff(DiscordApiException):
     def __init__(self, retry_after, global_ratelimit):
+        """
+        :param retry_after: int time to retry after in milliseconds
+        :param global_ratelimit: bool Is the API under a global backoff
+        """
         super(DiscordApiException, self).__init__()
         self.retry_after = retry_after
         self.global_ratelimit = global_ratelimit
 
+    @property
+    def retry_after_seconds(self):
+        return math.ceil(self.retry_after / 1000)
 
-cache_time_format = '%Y-%m-%d %H:%M:%S'
+
+cache_time_format = '%Y-%m-%d %H:%M:%S.%f'
 
 
 def api_backoff(func):
@@ -137,7 +146,7 @@ def api_backoff(func):
                 # Sleep if we're blocking
                 if blocking:
                     logger.info("Blocking Back off from API calls for %s seconds" % bo.retry_after)
-                    time.sleep(10 if bo.retry_after > 10 else bo.retry_after)
+                    time.sleep((10 if bo.retry_after > 10 else bo.retry_after) / 1000)
                 else:
                     # Otherwise raise exception and let caller handle the backoff
                     raise DiscordApiBackoff(retry_after=bo.retry_after, global_ratelimit=bo.global_ratelimit)
