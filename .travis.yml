@@ -1,27 +1,24 @@
 language: python
-python:
-  - "3.5"
-  - "3.6"
-  - "3.7-dev"
-# command to install dependencies
+sudo: false
+cache: pip
+dist: trusty
 install:
-  - pip install requests
-  - pip install Django==$DJANGO_VERSION
-  - pip install -r requirements.txt
-  - pip install -r testing-requirements.txt
+  - pip install coveralls>=1.1 tox
 # command to run tests
 script:
-  - django-admin version
-  - coverage run runtests.py
-cache: pip
+  - tox
 after_success:
   coveralls
 matrix:
+  include:
+   - env: TOXENV=py35-dj111
+     python: '3.5'
+   - env: TOXENV=py36-dj111
+     python: '3.6'
+   - env: TOXENV=py37-dj111
+     python: '3.7-dev'
+   - env: TOXENV=py36-dj20
+     python: '3.6'
   allow_failures:
-  - python: "3.7-dev"
-  - env: DJANGO_VERSION=2.0a1
-env:
-  - DJANGO_VERSION=1.10.8 # Remove in December 2017
-  - DJANGO_VERSION=1.11.5
-  - DJANGO_VERSION=2.0a1
-  # Add 2.0 when available and allow_failures (env: KEY=VALUE)
+  - env: TOXENV=py37-dj111
+  - env: TOXENV=py36-dj20

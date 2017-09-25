@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(alliance_auth.__file_
 
 SECRET_KEY = 'testing only'
 
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -160,7 +160,7 @@ MESSAGE_TAGS = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
     }
 }
 
@@ -171,15 +171,6 @@ AUTHENTICATION_BACKENDS = ['allianceauth.authentication.backends.StateBackend', 
 ## Auth configuration starts here
 ##
 #####################################################
-
-###########################
-# ALLIANCE / CORP TOGGLE
-###########################
-# Specifies to run membership checks against corp or alliance
-# Set to FALSE for alliance
-# Set to TRUE for corp
-###########################
-IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
 
 #################
 # EMAIL SETTINGS
@@ -192,26 +183,12 @@ IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
 DOMAIN = os.environ.get('AA_DOMAIN', 'https://example.com')
+SITE_NAME = os.environ.get('AA_SITE_NAME', 'Test Alliance Auth')
 EMAIL_HOST = os.environ.get('AA_EMAIL_HOST', 'smtp.example.com')
 EMAIL_PORT = int(os.environ.get('AA_EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('AA_EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('AA_EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
-
-####################
-# Front Page Links
-####################
-# KILLBOARD_URL - URL for your killboard. Blank to hide link
-# MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
-# FORUM_URL - URL for your forums. Blank to hide link
-# SITE_NAME - Name of the auth site.
-####################
-KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
-EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
-FORUM_URL = os.environ.get('AA_FORUM_URL', '')
-SITE_NAME = os.environ.get('AA_SITE_NAME', 'Test Alliance Auth')
-
-PHPBB3_URL = FORUM_URL
 
 ###################
 # SSO Settings
@@ -225,49 +202,6 @@ PHPBB3_URL = FORUM_URL
 ESI_SSO_CLIENT_ID = os.environ.get('AA_ESI_SSO_CLIENT_ID', '')
 ESI_SSO_CLIENT_SECRET = os.environ.get('AA_ESI_SSO_CLIENT_SECRET', '')
 ESI_SSO_CALLBACK_URL = os.environ.get('AA_ESI_SSO_CALLBACK_URL', '')
-
-#########################
-# Corp Configuration
-#########################
-# If running in alliance mode, the following should be for the executor corp#
-# CORP_ID - Set this to your corp ID (get this from https://zkillboard.com/corporation/#######)
-# CORP_NAME - Set this to your Corporation Name
-# CORP_API_ID - Set this to the api id for the corp API key
-# CORP_API_VCODE - Set this to the api vcode for the corp API key
-########################
-CORP_ID = os.environ.get('AA_CORP_ID', '1234')
-CORP_NAME = os.environ.get('AA_CORP_NAME', 'Alliance Auth Test Corp')
-CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
-CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
-
-#########################
-# Alliance Configuration
-#########################
-# ALLIANCE_ID - Set this to your Alliance ID (get this from https://zkillboard.com/alliance/#######)
-# ALLIANCE_NAME - Set this to your Alliance Name
-########################
-ALLIANCE_ID = os.environ.get('AA_ALLIANCE_ID', '12345')
-ALLIANCE_NAME = os.environ.get('AA_ALLIANCE_NAME', 'Alliance Auth Test Alliance')
-
-########################
-# API Configuration
-########################
-# MEMBER_API_MASK - Numeric value of minimum API mask required for members
-# MEMBER_API_ACCOUNT - Require API to be for Account and not character restricted
-# BLUE_API_MASK - Numeric value of minimum API mask required for blues
-# BLUE_API_ACCOUNT - Require API to be for Account and not character restricted
-# REJECT_OLD_APIS - Require each submitted API be newer than the latest submitted API
-# REJECT_OLD_APIS_MARGIN - Margin from latest submitted API ID within which a newly submitted API is still accepted
-# API_SSO_VALIDATION - Require users to prove ownership of newly entered API keys via SSO
-#                      Requires SSO to be configured.
-#######################
-MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
-MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
-BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
-BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'True')
-REJECT_OLD_APIS = 'True' == os.environ.get('AA_REJECT_OLD_APIS', 'False')
-REJECT_OLD_APIS_MARGIN = os.environ.get('AA_REJECT_OLD_APIS_MARGIN', 50)
-API_SSO_VALIDATION = 'True' == os.environ.get('AA_API_SSO_VALIDATION', 'False')
 
 #######################
 # EVE Provider Settings
@@ -338,6 +272,7 @@ MUMBLE_SERVER_ID = int(os.environ.get('AA_MUMBLE_SERVER_ID', '1'))
 ######################################
 # PHPBB3 Configuration
 ######################################
+PHPBB3_URL = os.environ.get('AA_FORUM_URL', '')
 
 ######################################
 # Teamspeak3 Configuration
