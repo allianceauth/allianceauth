@@ -46,7 +46,9 @@ class EveAllianceManager(models.Manager):
     provider = EveAllianceProviderManager()
 
     def create_alliance(self, alliance_id):
-        return self.create_alliance_obj(self.provider.get_alliance(alliance_id))
+        obj = self.create_alliance_obj(self.provider.get_alliance(alliance_id))
+        obj.populate_alliance()
+        return obj
 
     def create_alliance_obj(self, alliance: providers.Alliance):
         return self.create(

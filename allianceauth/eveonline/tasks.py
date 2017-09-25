@@ -15,7 +15,7 @@ def update_corp(corp_id):
 
 @app.task
 def update_alliance(alliance_id):
-    EveAllianceInfo.objects.update_alliance(alliance_id).populate_alliance(alliance_id)
+    EveAllianceInfo.objects.update_alliance(alliance_id).populate_alliance()
 
 
 @app.task

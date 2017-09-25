@@ -43,14 +43,13 @@ class EveAllianceInfo(models.Model):
     objects = EveAllianceManager()
     provider = EveAllianceProviderManager()
 
-    def populate_alliance(self, alliance_id):
-        alliance_model = self.objects.get(alliance_id=alliance_id)
-        alliance = self.objects.get_alliance(alliance_id)
+    def populate_alliance(self):
+        alliance = self.provider.get_alliance(self.alliance_id)
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
                 EveCorporationInfo.objects.create_corporation(corp_id)
-        EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(alliance=alliance_model)
-        EveCorporationInfo.objects.filter(alliance=alliance_model).exclude(corporation_id__in=alliance.corp_ids).update(
+        EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(alliance=self)
+        EveCorporationInfo.objects.filter(alliance=self).exclude(corporation_id__in=alliance.corp_ids).update(
             alliance=None)
 
     def update_alliance(self, alliance: providers.Alliance = None):

@@ -106,8 +106,9 @@ class EveAllianceManagerTestCase(TestCase):
         def corp(self, id):
             return self._corps[id]
 
+    @mock.patch('allianceauth.eveonline.models.EveAllianceInfo.populate_alliance')
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
-    def test_create_alliance(self, provider):
+    def test_create_alliance(self, provider, populate_alliance):
         # Also covers create_alliance_obj
         expected = self.TestAlliance(id='3456', name='Test Alliance', ticker='TEST',
                                      corp_ids=['2345'], executor_corp_id='2345')
@@ -120,6 +121,7 @@ class EveAllianceManagerTestCase(TestCase):
         self.assertEqual(result.alliance_name, expected.name)
         self.assertEqual(result.alliance_ticker, expected.ticker)
         self.assertEqual(result.executor_corp_id, expected.executor_corp_id)
+        self.assertTrue(populate_alliance.called)
 
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_update_alliance(self, provider):
