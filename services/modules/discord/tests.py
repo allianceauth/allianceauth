@@ -402,7 +402,7 @@ class DiscordManagerTestCase(TestCase):
 
         m.patch(request_url,
                 request_headers=headers,
-                headers={'Retry-After': '200'},
+                headers={'Retry-After': '200000'},
                 status_code=429)
 
         # Act & Assert
@@ -410,7 +410,7 @@ class DiscordManagerTestCase(TestCase):
             try:
                 DiscordOAuthManager.update_groups(user_id, groups, blocking=False)
             except manager.DiscordApiBackoff as bo:
-                self.assertEqual(bo.retry_after, 200, 'Retry-After time must be equal to Retry-After set in header')
+                self.assertEqual(bo.retry_after, 200000, 'Retry-After time must be equal to Retry-After set in header')
                 self.assertFalse(bo.global_ratelimit, 'global_ratelimit must be False')
                 raise bo
 
@@ -437,7 +437,7 @@ class DiscordManagerTestCase(TestCase):
 
         m.patch(request_url,
                 request_headers=headers,
-                headers={'Retry-After': '200', 'X-RateLimit-Global': 'true'},
+                headers={'Retry-After': '200000', 'X-RateLimit-Global': 'true'},
                 status_code=429)
 
         # Act & Assert
@@ -445,7 +445,7 @@ class DiscordManagerTestCase(TestCase):
             try:
                 DiscordOAuthManager.update_groups(user_id, groups, blocking=False)
             except manager.DiscordApiBackoff as bo:
-                self.assertEqual(bo.retry_after, 200, 'Retry-After time must be equal to Retry-After set in header')
+                self.assertEqual(bo.retry_after, 200000, 'Retry-After time must be equal to Retry-After set in header')
                 self.assertTrue(bo.global_ratelimit, 'global_ratelimit must be True')
                 raise bo
 
