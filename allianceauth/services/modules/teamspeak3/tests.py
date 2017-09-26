@@ -136,7 +136,6 @@ class Teamspeak3ViewsTestCase(TestCase):
         # Inert signals before setup begins
         with mock.patch(MODULE_PATH + '.signals.trigger_all_ts_update') as trigger_all_ts_update:
             self.member = AuthUtils.create_member('auth_member')
-            self.member.set_password('password')
             self.member.email = 'auth_member@example.com'
             self.member.save()
             AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
@@ -150,7 +149,7 @@ class Teamspeak3ViewsTestCase(TestCase):
     def login(self, user=None, password=None):
         if user is None:
             user = self.member
-        self.client.login(username=user.username, password=password if password else 'password')
+        self.client.force_login(user)
 
     @mock.patch(MODULE_PATH + '.forms.Teamspeak3Manager')
     @mock.patch(MODULE_PATH + '.views.Teamspeak3Manager')

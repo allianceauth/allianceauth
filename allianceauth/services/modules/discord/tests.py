@@ -141,12 +141,10 @@ class DiscordHooksTestCase(TestCase):
 class DiscordViewsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
-        self.member.set_password('password')
-        self.member.save()
         add_permissions()
 
     def login(self):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
 
     @mock.patch(MODULE_PATH + '.views.DiscordOAuthManager')
     def test_activate(self, manager):

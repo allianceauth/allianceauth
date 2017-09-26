@@ -362,7 +362,7 @@ FLEETUP_API_ID = os.environ.get('AA_FLEETUP_API_ID', '')
 FLEETUP_GROUP_ID = os.environ.get('AA_FLEETUP_GROUP_ID', '')
 
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
 ]
 
 
