@@ -23,4 +23,4 @@ django-celery-beat
 # awating pyghassen/openfire-restapi #1 to fix installation issues
 git+https://github.com/adarnof/openfire-restapi
 
-git+https://github.com/adarnof/adarnauth-esi
+adarnauth-esi>=1.4.1,<2.0
