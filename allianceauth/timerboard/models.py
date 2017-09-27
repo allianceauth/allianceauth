@@ -22,4 +22,4 @@ class Timer(models.Model):
     user = models.ForeignKey(User)
 
     def __str__(self):
-        return str(self.system) + ' ' + str(self.objective)
+        return str(self.system) + ' ' + str(self.details)

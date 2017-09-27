@@ -33,6 +33,7 @@ testing_extras = [
     'coverage>=4.3.1',
     'requests-mock>=1.2.0',
     'django-nose',
+    'django-webtest',
 ]
 
 setup(
