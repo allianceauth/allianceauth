@@ -30,7 +30,7 @@ class TSgroup(models.Model):
 
 
 class AuthTS(models.Model):
-    auth_group = models.ForeignKey('auth.Group')
+    auth_group = models.ForeignKey('auth.Group', on_delete=models.CASCADE)
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
@@ -41,7 +41,7 @@ class AuthTS(models.Model):
 
 
 class UserTSgroup(models.Model):
-    user = models.ForeignKey('auth.User')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:

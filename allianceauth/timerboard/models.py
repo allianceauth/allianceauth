@@ -16,10 +16,10 @@ class Timer(models.Model):
     objective = models.CharField(max_length=254, default="")
     eve_time = models.DateTimeField()
     important = models.BooleanField(default=False)
-    eve_character = models.ForeignKey(EveCharacter)
-    eve_corp = models.ForeignKey(EveCorporationInfo)
+    eve_character = models.ForeignKey(EveCharacter, null=True, on_delete=models.SET_NULL)
+    eve_corp = models.ForeignKey(EveCorporationInfo, on_delete=models.CASCADE)
     corp_timer = models.BooleanField(default=False)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return str(self.system) + ' ' + str(self.details)

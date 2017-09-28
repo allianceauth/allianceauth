@@ -10,9 +10,16 @@ from allianceauth.eveonline.models import EveCharacter
 class GroupRequest(models.Model):
     status = models.CharField(max_length=254)
     leave_request = models.BooleanField(default=0)
-    user = models.ForeignKey(User)
-    group = models.ForeignKey(Group)
-    main_char = models.ForeignKey(EveCharacter)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    @property
+    def main_char(self):
+        """
+        Legacy property for main character
+        :return: self.users main character
+        """
+        return self.user.profile.main_character
 
     def __str__(self):
         return self.user.username + ":" + self.group.name

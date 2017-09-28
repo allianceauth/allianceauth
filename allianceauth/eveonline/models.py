@@ -41,7 +41,7 @@ class EveCorporationInfo(models.Model):
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
-    alliance = models.ForeignKey(EveAllianceInfo, blank=True, null=True)
+    alliance = models.ForeignKey(EveAllianceInfo, blank=True, null=True, on_delete=models.SET_NULL)
 
     objects = EveCorporationManager()
     provider = EveCorporationProviderManager()

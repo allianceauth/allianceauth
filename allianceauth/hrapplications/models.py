@@ -23,7 +23,7 @@ class ApplicationChoice(models.Model):
 
 class ApplicationForm(models.Model):
     questions = SortedManyToManyField(ApplicationQuestion)
-    corp = models.OneToOneField(EveCorporationInfo)
+    corp = models.OneToOneField(EveCorporationInfo, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.corp)
