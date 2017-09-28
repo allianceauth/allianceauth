@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_celery_beat',
     'bootstrapform',
-    'bootstrap_pagination',
     'sortedm2m',
     'esi',
     'allianceauth',

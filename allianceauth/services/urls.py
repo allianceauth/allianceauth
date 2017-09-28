@@ -5,11 +5,11 @@ from . import views
 
 urlpatterns = [
     # Services
-    url(r'^services/', include([
+    url(r'^services/', include(([
         url(r'^$', views.services_view, name='services'),
         # Tools
         url(r'^tool/fleet_formatter_tool/$', views.fleet_formatter_view, name='fleet_format_tool'),
-    ], namespace='services')),
+    ], 'services'), namespace='services')),
 ]
 
 # Append hooked service urls

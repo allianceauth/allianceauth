@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'xenforo'
+
 module_urls = [
     # XenForo service control
     url(r'^activate/$', views.activate_xenforo_forum, name='activate'),
@@ -11,5 +13,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^xenforo/', include(module_urls, namespace='xenforo')),
+    url(r'^xenforo/', include((module_urls, app_name), namespace=app_name)),
 ]

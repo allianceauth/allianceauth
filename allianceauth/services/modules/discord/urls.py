@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'discord'
+
 module_urls = [
     # Discord Service Control
     url(r'^activate/$', views.activate_discord, name='activate'),
@@ -12,5 +14,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^discord/', include(module_urls, namespace='discord'))
+    url(r'^discord/', include((module_urls, app_name), namespace=app_name))
 ]

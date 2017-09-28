@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'bootstrapform',
     'esi',
-    'bootstrap_pagination',
     'allianceauth',
     'allianceauth.authentication',
     'allianceauth.services',

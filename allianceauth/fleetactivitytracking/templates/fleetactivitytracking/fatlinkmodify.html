@@ -2,7 +2,6 @@
 {% load bootstrap %}
 {% load staticfiles %}
 {% load i18n %}
-{% load bootstrap_pagination %}
 {% block title %}Alliance Auth{% endblock %}
 {% block page_title %}{% trans "Fatlink view" %}{% endblock page_title %}
 
@@ -20,9 +19,6 @@
         <div class="panel panel-default">
             <div class="panel-heading">{% trans "Registered characters" %}</div>
             <div class="panel-body">
-                <div class="text-center">
-                    {% bootstrap_paginate registered_fats range=10 %}
-                </div>
                 <table class="table table-responsive table-hover">
                     <tr>
                         <th class="text-center">{% trans "User" %}</th>

@@ -29,19 +29,6 @@ SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sw
 
 logger = logging.getLogger(__name__)
 
-FATS_PER_PAGE = int(getattr(settings, 'FATS_PER_PAGE', 20))
-
-
-def get_page(model_list, page_num):
-    p = Paginator(model_list, FATS_PER_PAGE)
-    try:
-        fats = p.page(page_num)
-    except PageNotAnInteger:
-        fats = p.page(1)
-    except EmptyPage:
-        fats = p.page(p.num_pages)
-    return fats
-
 
 class CorpStat(object):
     def __init__(self, corp_id, start_of_month, start_of_next_month, corp=None):
@@ -359,8 +346,6 @@ def modify_fatlink_view(request, hash=""):
 
     registered_fats = Fat.objects.filter(fatlink=fatlink).order_by('character__character_name')
 
-    fat_page = get_page(registered_fats, request.GET.get('page', 1))
-
-    context = {'fatlink': fatlink, 'registered_fats': fat_page}
+    context = {'fatlink': fatlink, 'registered_fats': registered_fats}
 
     return render(request, 'fleetactivitytracking/fatlinkmodify.html', context=context)

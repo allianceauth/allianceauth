@@ -23,15 +23,15 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # Authentication
-    url(r'', include(allianceauth.authentication.urls, namespace='authentication')),
+    url(r'', include(allianceauth.authentication.urls)),
     url(r'^account/login/$', TemplateView.as_view(template_name='public/login.html'), name='auth_login_user'),
     url(r'account/', include(hmac_urls)),
 
     # Admin urls
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # SSO
-    url(r'^sso/', include(esi.urls, namespace='esi')),
+    url(r'^sso/', include((esi.urls, 'esi'), namespace='esi')),
     url(r'^sso/login$', allianceauth.authentication.views.sso_login, name='auth_sso_login'),
 
     # Notifications

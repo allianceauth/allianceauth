@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'ips4'
+
 module_urls = [
     # IPS4 Service Control
     url(r'^activate/$', views.activate_ips4, name='activate'),
@@ -11,5 +13,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^ips4/', include(module_urls, namespace='ips4'))
+    url(r'^ips4/', include((module_urls, app_name), namespace=app_name))
 ]

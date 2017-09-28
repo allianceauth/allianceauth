@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 from django.template import Library
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.conf import settings
 import re
 

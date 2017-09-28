@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'mumble'
+
 module_urls = [
     # Mumble service control
     url(r'^activate/$', views.activate_mumble, name='activate'),
@@ -12,5 +14,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^mumble/', include(module_urls, namespace='mumble'))
+    url(r'^mumble/', include((module_urls, app_name), namespace=app_name))
 ]

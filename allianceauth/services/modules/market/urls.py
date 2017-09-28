@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'evernusmarket'
+
 module_urls = [
     # Alliance Market Control
     url(r'^activate/$', views.activate_market, name='activate'),
@@ -11,5 +13,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^evernus-market/', include(module_urls, namespace='evernusmarket'))
+    url(r'^evernus-market/', include((module_urls, app_name), namespace=app_name))
 ]

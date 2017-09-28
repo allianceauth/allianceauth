@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('auth_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.Group')),
             ],
             options={
-                'db_table': 'services_authts',
+                'db_table': 'teamspeak3_authts',
                 'verbose_name': 'Auth / TS Group',
             },
         ),
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('ts_group_name', models.CharField(max_length=30)),
             ],
             options={
-                'db_table': 'services_tsgroup',
+                'db_table': 'teamspeak3_tsgroup',
                 'verbose_name': 'TS Group',
             },
         ),
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'services_usertsgroup',
+                'db_table': 'teamspeak3_usertsgroup',
                 'verbose_name': 'User TS Group',
             },
         ),

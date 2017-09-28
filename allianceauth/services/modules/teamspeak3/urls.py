@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'teamspeak3'
+
 module_urls = [
     # Teamspeak3 service control
     url(r'^activate/$', views.activate_teamspeak3,
@@ -16,5 +18,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^teamspeak3/', include(module_urls, namespace='teamspeak3')),
+    url(r'^teamspeak3/', include((module_urls, app_name), namespace=app_name)),
 ]
