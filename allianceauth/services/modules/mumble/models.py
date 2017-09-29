@@ -2,7 +2,7 @@ from django.db import models
 
 
 class MumbleUser(models.Model):
-    user = models.OneToOneField('auth.User', related_name='mumble', null=True)
+    user = models.OneToOneField('auth.User', related_name='mumble', null=True, on_delete=models.CASCADE)
     username = models.CharField(max_length=254, unique=True)
     pwhash = models.CharField(max_length=80)
     hashfn = models.CharField(max_length=20, default='sha1')

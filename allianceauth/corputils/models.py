@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class CorpStats(models.Model):
     token = models.ForeignKey(Token, on_delete=models.CASCADE)
-    corp = models.OneToOneField(EveCorporationInfo)
+    corp = models.OneToOneField(EveCorporationInfo, on_delete=models.CASCADE)
     last_update = models.DateTimeField(auto_now=True)
 
     class Meta:

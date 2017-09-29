@@ -16,7 +16,6 @@ install_requires = [
 
     'django>=1.11',
     'django-bootstrap-form',
-    'django-bootstrap-pagination',
     'django-registration',
     'django-sortedm2m',
     'django-redis-cache>=1.7.1',
@@ -33,6 +32,7 @@ testing_extras = [
     'coverage>=4.3.1',
     'requests-mock>=1.2.0',
     'django-nose',
+    'django-webtest',
 ]
 
 setup(

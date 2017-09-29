@@ -1,8 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User, Group
 
 
 class Teamspeak3User(models.Model):
-    user = models.OneToOneField('auth.User',
+    user = models.OneToOneField(User,
                                 primary_key=True,
                                 on_delete=models.CASCADE,
                                 related_name='teamspeak3')
@@ -30,7 +31,7 @@ class TSgroup(models.Model):
 
 
 class AuthTS(models.Model):
-    auth_group = models.ForeignKey('auth.Group')
+    auth_group = models.ForeignKey(Group, on_delete=models.CASCADE)
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:
@@ -41,7 +42,7 @@ class AuthTS(models.Model):
 
 
 class UserTSgroup(models.Model):
-    user = models.ForeignKey('auth.User')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     ts_group = models.ManyToManyField(TSgroup)
 
     class Meta:

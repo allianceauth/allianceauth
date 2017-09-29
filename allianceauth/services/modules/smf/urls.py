@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'smf'
+
 module_urls = [
     # SMF Service Control
     url(r'^activate/$', views.activate_smf, name='activate'),
@@ -11,5 +13,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^smf/', include(module_urls, namespace='smf')),
+    url(r'^smf/', include((module_urls, app_name), namespace=app_name)),
 ]

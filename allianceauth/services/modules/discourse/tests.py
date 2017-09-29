@@ -113,14 +113,12 @@ class DiscourseHooksTestCase(TestCase):
 class DiscourseViewsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
-        self.member.set_password('password')
-        self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
         add_permissions()
 
     @mock.patch(MODULE_PATH + '.tasks.DiscourseManager')
     def test_sso_member(self, manager):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
         data = {'sso': 'bm9uY2U9Y2I2ODI1MWVlZmI1MjExZTU4YzAwZmYxMzk1ZjBjMGI%3D%0A',
                 'sig': '2828aa29899722b35a2f191d34ef9b3ce695e0e6eeec47deb46d588d70c7cb56'}
         response = self.client.get('/discourse/sso', data=data, follow=False)

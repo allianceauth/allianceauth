@@ -123,14 +123,13 @@ class OpenfireHooksTestCase(TestCase):
 class OpenfireViewsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
-        self.member.set_password('password')
         self.member.email = 'auth_member@example.com'
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation')
         add_permissions()
 
     def login(self):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
 
     @mock.patch(MODULE_PATH + '.tasks.OpenfireManager')
     @mock.patch(MODULE_PATH + '.views.OpenfireManager')

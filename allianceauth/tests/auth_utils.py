@@ -142,7 +142,6 @@ class AuthUtils:
 class BaseViewTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
-        self.member.set_password('password')
         self.member.email = 'auth_member@example.com'
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',

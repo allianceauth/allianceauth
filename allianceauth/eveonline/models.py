@@ -1,37 +1,10 @@
 from django.db import models
+from typing import Union
 
 from .managers import EveCharacterManager, EveCharacterProviderManager
 from .managers import EveCorporationManager, EveCorporationProviderManager
 from .managers import EveAllianceManager, EveAllianceProviderManager
 from . import providers
-
-
-class EveCharacter(models.Model):
-    character_id = models.CharField(max_length=254, unique=True)
-    character_name = models.CharField(max_length=254, unique=True)
-    corporation_id = models.CharField(max_length=254)
-    corporation_name = models.CharField(max_length=254)
-    corporation_ticker = models.CharField(max_length=254)
-    alliance_id = models.CharField(max_length=254, blank=True, null=True, default='')
-    alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
-
-    objects = EveCharacterManager()
-    provider = EveCharacterProviderManager()
-
-    def update_character(self, character: providers.Character = None):
-        if character is None:
-            character = self.provider.get_character(self.character_id)
-        self.character_name = character.name
-        self.corporation_id = character.corp.id
-        self.corporation_name = character.corp.name
-        self.corporation_ticker = character.corp.ticker
-        self.alliance_id = character.alliance.id
-        self.alliance_name = character.alliance.name
-        self.save()
-        return self
-
-    def __str__(self):
-        return self.character_name
 
 
 class EveAllianceInfo(models.Model):
@@ -68,7 +41,7 @@ class EveCorporationInfo(models.Model):
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
-    alliance = models.ForeignKey(EveAllianceInfo, blank=True, null=True)
+    alliance = models.ForeignKey(EveAllianceInfo, blank=True, null=True, on_delete=models.SET_NULL)
 
     objects = EveCorporationManager()
     provider = EveCorporationProviderManager()
@@ -86,3 +59,51 @@ class EveCorporationInfo(models.Model):
 
     def __str__(self):
         return self.corporation_name
+
+
+class EveCharacter(models.Model):
+    character_id = models.CharField(max_length=254, unique=True)
+    character_name = models.CharField(max_length=254, unique=True)
+    corporation_id = models.CharField(max_length=254)
+    corporation_name = models.CharField(max_length=254)
+    corporation_ticker = models.CharField(max_length=254)
+    alliance_id = models.CharField(max_length=254, blank=True, null=True, default='')
+    alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
+
+    objects = EveCharacterManager()
+    provider = EveCharacterProviderManager()
+
+    @property
+    def alliance(self) -> Union[EveAllianceInfo, None]:
+        """
+        Pseudo foreign key from alliance_id to EveAllianceInfo
+        :raises: EveAllianceInfo.DoesNotExist
+        :return: EveAllianceInfo or None
+        """
+        if self.alliance_id is None:
+            return None
+        return EveAllianceInfo.objects.get(alliance_id=self.alliance_id)
+
+    @property
+    def corporation(self) -> EveCorporationInfo:
+        """
+        Pseudo foreign key from corporation_id to EveCorporationInfo
+        :raises: EveCorporationInfo.DoesNotExist
+        :return: EveCorporationInfo
+        """
+        return EveCorporationInfo.objects.get(corporation_id=self.corporation_id)
+
+    def update_character(self, character: providers.Character = None):
+        if character is None:
+            character = self.provider.get_character(self.character_id)
+        self.character_name = character.name
+        self.corporation_id = character.corp.id
+        self.corporation_name = character.corp.name
+        self.corporation_ticker = character.corp.ticker
+        self.alliance_id = character.alliance.id
+        self.alliance_name = character.alliance.name
+        self.save()
+        return self
+
+    def __str__(self):
+        return self.character_name

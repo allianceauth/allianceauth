@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name = 'openfire'
+
 module_urls = [
     # Jabber Service Control
     url(r'^activate/$', views.activate_jabber, name='activate'),
@@ -12,5 +14,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^openfire/', include(module_urls, namespace='openfire')),
+    url(r'^openfire/', include((module_urls, app_name), namespace=app_name)),
 ]

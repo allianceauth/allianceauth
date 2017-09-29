@@ -10,7 +10,7 @@ class SrpFleetMain(models.Model):
     fleet_time = models.DateTimeField()
     fleet_srp_code = models.CharField(max_length=254, default="")
     fleet_srp_status = models.CharField(max_length=254, default="")
-    fleet_commander = models.ForeignKey(EveCharacter)
+    fleet_commander = models.ForeignKey(EveCharacter, null=True, on_delete=models.SET_NULL)
     fleet_srp_aar_link = models.CharField(max_length=254, default="")
 
     def __str__(self):
@@ -40,8 +40,8 @@ class SrpUserRequest(models.Model):
     additional_info = models.CharField(max_length=254, default="")
     srp_status = models.CharField(max_length=8, default="Pending", choices=SRP_STATUS_CHOICES)
     srp_total_amount = models.BigIntegerField(default=0)
-    character = models.ForeignKey(EveCharacter)
-    srp_fleet_main = models.ForeignKey(SrpFleetMain)
+    character = models.ForeignKey(EveCharacter, null=True, on_delete=models.SET_NULL)
+    srp_fleet_main = models.ForeignKey(SrpFleetMain, on_delete=models.CASCADE)
     kb_total_loss = models.BigIntegerField(default=0)
     srp_ship_name = models.CharField(max_length=254, default="")
     post_time = models.DateTimeField(default=timezone.now)

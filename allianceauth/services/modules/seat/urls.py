@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 
 from . import views
 
+app_name='seat'
+
 module_urls = [
     # SeAT Service Control
     url(r'^activate/$', views.activate_seat, name='activate'),
@@ -11,5 +13,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^seat/', include(module_urls, namespace='seat')),
+    url(r'^seat/', include((module_urls, app_name), namespace=app_name)),
 ]

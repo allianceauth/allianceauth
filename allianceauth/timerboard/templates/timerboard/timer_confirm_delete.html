@@ -1,0 +1,26 @@
+{% extends "allianceauth/base.html" %}
+{% load i18n %}
+
+{% block page_title %}
+    Delete Timer
+{% endblock page_title %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">
+            {% trans "Delete Timer" %}
+            {% include 'timerboard/index_button.html' %}
+        </h1>
+        <div class="container-fluid">
+            <div class="col-md-2 col-md-offset-5">
+                <div class="row">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <p>{% blocktrans %}Are you sure you want to delete timer "{{ object }}"?{% endblocktrans %}</p>
+                        <input class="btn btn-danger btn-block" type="submit" value="Confirm" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

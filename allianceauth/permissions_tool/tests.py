@@ -10,7 +10,6 @@ from allianceauth.tests.auth_utils import AuthUtils
 class PermissionsToolViewsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
-        self.member.set_password('password')
         self.member.email = 'auth_member@example.com'
         self.member.save()
         self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)
@@ -18,7 +17,6 @@ class PermissionsToolViewsTestCase(TestCase):
         self.none_user3 = AuthUtils.create_user('none_user3', disconnect_signals=True)
 
         self.no_perm_user = AuthUtils.create_user('no_perm_user', disconnect_signals=True)
-        self.no_perm_user.set_password('password')
 
         AuthUtils.disconnect_signals()
         self.no_perm_group = Group.objects.create(name="No Permission Group")
@@ -38,17 +36,16 @@ class PermissionsToolViewsTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_menu_item(self):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
         response = self.client.get(urls.reverse('permissions_tool:overview'))
 
-        response_content = str(response.content, encoding='utf8')
+        response_content = response.content.decode('utf-8')
 
-        self.assertInHTML(
-            '<li><a class="active" href="/permissions/overview/"><i class="fa fa-key fa-id-card"></i> Permissions Audit</a></li>',
-            response_content)
+        self.assertInHTML('<li><a class="active" href="/permissions/overview/">'
+                          '<i class="fa fa-key fa-id-card"></i> Permissions Audit</a></li>', response_content)
 
     def test_permissions_overview(self):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
 
         response = self.client.get(urls.reverse('permissions_tool:overview'))
 
@@ -63,22 +60,25 @@ class PermissionsToolViewsTestCase(TestCase):
         for perm in response.context['permissions']:
             if perm['permission'] == self.permission:
                 tested_context = True
-                self.assertDictContainsSubset({'users': 1}, perm)
-                self.assertDictContainsSubset({'groups': 1}, perm)
-                self.assertDictContainsSubset({'group_users': 3}, perm)
+                self.assertIn('users', perm)
+                self.assertEqual(perm['users'], 1)
+                self.assertIn('groups', perm)
+                self.assertEqual(perm['groups'], 1)
+                self.assertIn('group_users', perm)
+                self.assertEqual(perm['group_users'], 3)
                 break
         self.assertTrue(tested_context)
 
     def test_permissions_overview_perms(self):
         # Ensure permission effectively denys access
-        self.client.login(username=self.no_perm_user.username, password='password')
+        self.client.force_login(self.no_perm_user)
 
         response = self.client.get(urls.reverse('permissions_tool:overview'))
 
         self.assertEqual(response.status_code, 302)
 
     def test_permissions_audit(self):
-        self.client.login(username=self.member.username, password='password')
+        self.client.force_login(self.member)
 
         response = self.client.get(urls.reverse('permissions_tool:audit',
                                                 kwargs={
@@ -99,7 +99,7 @@ class PermissionsToolViewsTestCase(TestCase):
 
     def test_permissions_audit_perms(self):
         # Ensure permission effectively denys access
-        self.client.login(username=self.no_perm_user.username, password='password')
+        self.client.force_login(self.no_perm_user)
 
         response = self.client.get(urls.reverse('permissions_tool:audit',
                                                 kwargs={

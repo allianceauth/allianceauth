@@ -17,7 +17,7 @@ class OpTimer(models.Model):
     operation_name = models.CharField(max_length=254, default="")
     fc = models.CharField(max_length=254, default="")
     post_time = models.DateTimeField(default=timezone.now)
-    eve_character = models.ForeignKey(EveCharacter)
+    eve_character = models.ForeignKey(EveCharacter, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.operation_name
