@@ -46,7 +46,9 @@ setup(
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
+        ':python_version=="3.4"': ['typing'],
     },
+    python_requires='~=3.4',
     license='GPLv2',
     packages=['allianceauth'],
     url='https://github.com/allianceauth/allianceauth',
