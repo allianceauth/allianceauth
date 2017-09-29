@@ -37,29 +37,6 @@ INSTALLED_APPS = [
     'allianceauth.groupmanagement',
     'allianceauth.notifications',
     'allianceauth.thirdparty.navhelper',
-
-    # Optional apps - remove if not desired
-#    'allianceauth.corputils',
-#    'allianceauth.hrapplications',
-#    'allianceauth.timerboard',
-#    'allianceauth.srp',
-#    'allianceauth.optimer',
-#    'allianceauth.fleetup',
-#    'allianceauth.fleetactivitytracking',
-#    'allianceauth.permissions_tool',
-
-    # Services - remove if not used
-#    'allianceauth.services.modules.mumble',
-#    'allianceauth.services.modules.discord',
-#    'allianceauth.services.modules.discourse',
-#    'allianceauth.services.modules.ips4',
-#    'allianceauth.services.modules.market',
-#    'allianceauth.services.modules.openfire',
-#    'allianceauth.services.modules.seat',
-#    'allianceauth.services.modules.smf',
-#    'allianceauth.services.modules.phpbb3',
-#    'allianceauth.services.modules.xenforo',
-#    'allianceauth.services.modules.teamspeak3',
 ]
 
 # Celery configuration
@@ -127,6 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'allianceauth.notifications.context_processors.user_notification_count',
                 'allianceauth.groupmanagement.context_processors.can_manage_groups',
+                'allianceauth.context_processors.auth_settings',
             ],
         },
     },
@@ -272,25 +250,20 @@ LOGGING = {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
-        'celerytask': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'portal': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'registration': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
-        'util': {
-            'handlers': ['log_file', 'console', 'notifications'],
-            'level': 'DEBUG',
-        },
         'django': {
             'handlers': ['log_file', 'console'],
             'level': 'ERROR',
         },
     }
 }
+
+
+def add_auth_apps(APPS):
+    """
+    Merges required auth apps with a list of custom user apps for project settings.
+    Leaves order of passed INSTALLED_APPS unchanged (passed apps come first) to allow overriding templates/static/etc
+    https://docs.djangoproject.com/en/2.0/ref/settings/#installed-apps
+    :param APPS: INSTALLED_APPS list
+    :return: Merged INSTALLED_APPS
+    """
+    APPS += [app for app in INSTALLED_APPS if app not in APPS]

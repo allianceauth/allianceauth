@@ -53,13 +53,8 @@ docs/_build/
 # PyBuilder
 target/
 
-.vagrant/
-alliance_auth/settings.py
 *Thumbs.db
 nginx_config.txt
-
-# custom staticfiles
-static/*
 
 #celerybeat
 *.pid
@@ -67,6 +62,3 @@ celerybeat-schedule
 
 #pycharm
 .idea/*
-
-#log folder
-log/*

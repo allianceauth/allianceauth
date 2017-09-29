@@ -195,7 +195,7 @@ class Phpbb3Manager:
         cursor = connections['phpbb3'].cursor()
 
         password = Phpbb3Manager.__gen_hash(Phpbb3Manager.__generate_random_pass())
-        revoke_email = "revoked@" + settings.DOMAIN
+        revoke_email = "revoked@localhost"
         try:
             pwhash = Phpbb3Manager.__gen_hash(password)
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [revoke_email, pwhash, username])
