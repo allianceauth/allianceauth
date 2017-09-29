@@ -21,7 +21,6 @@ install_requires = [
     'django-redis-cache>=1.7.1',
     'django-celery-beat',
 
-    # Openfire
     'openfire-restapi',
     'sleekxmpp',
 
@@ -41,8 +40,6 @@ setup(
     author='Alliance Auth',
     author_email='adarnof@gmail.com',
     description='Eve alliance auth for the 99 percent',
-    # Any changes in these package requirements
-    # should be reflected in requirements.txt as well.
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
