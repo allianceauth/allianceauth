@@ -21,5 +21,4 @@ class optimer(models.Model):
     eve_character = models.ForeignKey(EveCharacter)
 
     def __str__(self):
-        output = self.operation_name
-        return output.encode('utf-8')
+        return self.operation_name
