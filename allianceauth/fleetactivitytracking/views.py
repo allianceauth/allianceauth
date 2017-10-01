@@ -5,14 +5,12 @@ import random
 import string
 
 from allianceauth.authentication.models import CharacterOwnership
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from esi.decorators import token_required
@@ -83,9 +81,9 @@ def fatlink_view(request):
     user = request.user
     logger.debug("fatlink_view called by user %s" % request.user)
 
-    latest_fats = Fat.objects.filter(user=user).order_by('-id')[:5]
+    latest_fats = Fat.objects.select_related('character', 'fatlink').filter(user=user).order_by('-id')[:5]
     if user.has_perm('auth.fleetactivitytracking'):
-        latest_links = Fatlink.objects.all().order_by('-id')[:5]
+        latest_links = Fatlink.objects.select_related('creator').all().order_by('-id')[:5]
         context = {'user': user, 'fats': latest_fats, 'fatlinks': latest_links}
 
     else:
@@ -173,7 +171,7 @@ def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
     user = request.user
     logger.debug("fatlink_personal_statistics_view called by user %s" % request.user)
 
-    personal_fats = Fat.objects.filter(user=user).order_by('id')
+    personal_fats = Fat.objects.select_related('fatlink').filter(user=user).order_by('id')
 
     monthlystats = [0 for month in range(1, 13)]
 
@@ -207,8 +205,8 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
         user = request.user
     logger.debug("Personal monthly statistics view for user %s called by %s" % (user, request.user))
 
-    personal_fats = Fat.objects.filter(user=user).filter(fatlink__fatdatetime__gte=start_of_month).filter(
-        fatlink__fatdatetime__lt=start_of_next_month)
+    personal_fats = Fat.objects.filter(user=user)\
+        .filter(fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lt=start_of_next_month)
 
     ship_statistics = dict()
     n_fats = 0
@@ -330,7 +328,10 @@ def modify_fatlink_view(request, hash=""):
     if not hash:
         return redirect('fatlink:view')
 
-    fatlink = Fatlink.objects.filter(hash=hash)[0]
+    try:
+        fatlink = Fatlink.objects.get(hash=hash)
+    except Fatlink.DoesNotExist:
+        raise Http404
 
     if request.GET.get('removechar', None):
         character_id = request.GET.get('removechar')
@@ -344,7 +345,8 @@ def modify_fatlink_view(request, hash=""):
         fatlink.delete()
         return redirect('fatlink:view')
 
-    registered_fats = Fat.objects.filter(fatlink=fatlink).order_by('character__character_name')
+    registered_fats = Fat.objects.select_related('character', 'fatlink', 'user')\
+        .filter(fatlink=fatlink).order_by('character__character_name')
 
     context = {'fatlink': fatlink, 'registered_fats': registered_fats}
 

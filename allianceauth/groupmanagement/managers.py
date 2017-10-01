@@ -7,11 +7,11 @@ class GroupManager:
 
     @staticmethod
     def get_joinable_groups():
-        return Group.objects.exclude(authgroup__internal=True)
+        return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)
 
     @staticmethod
     def get_group_leaders_groups(user):
-        return Group.objects.filter(authgroup__group_leaders__in=[user])
+        return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user])
 
     @staticmethod
     def joinable_group(group):

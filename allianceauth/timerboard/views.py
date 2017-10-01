@@ -32,12 +32,12 @@ class TimerView(BaseTimerView):
             corp = char.corporation
         else:
             corp = None
-
+        base_query = Timer.objects.select_related('eve_character')
         render_items = {
-            'timers': Timer.objects.filter(corp_timer=False),
-            'corp_timers': Timer.objects.filter(corp_timer=True, eve_corp=corp),
-            'future_timers': Timer.objects.filter(corp_timer=False, eve_time__gte=timezone.now()),
-            'past_timers': Timer.objects.filter(corp_timer=False, eve_time__lt=timezone.now()),
+            'timers': base_query.filter(corp_timer=False),
+            'corp_timers': base_query.filter(corp_timer=True, eve_corp=corp),
+            'future_timers': base_query.filter(corp_timer=False, eve_time__gte=timezone.now()),
+            'past_timers': base_query.filter(corp_timer=False, eve_time__lt=timezone.now()),
         }
 
         return render(request, self.template_name, context=render_items)

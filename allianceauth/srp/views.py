@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.humanize.templatetags.humanize import intcomma
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Sum
 from allianceauth.eveonline.providers import provider
 from allianceauth.notifications import notify
 from .form import SrpFleetMainForm
@@ -31,31 +32,27 @@ def random_string(string_length=10):
 
 @login_required
 @permission_required('srp.access_srp')
-def srp_management(request):
+def srp_management(request, all=False):
     logger.debug("srp_management called by user %s" % request.user)
-    fleets = SrpFleetMain.objects.filter(fleet_srp_status="")
-    totalcost = sum([int(fleet.total_cost) for fleet in fleets])
+    fleets = SrpFleetMain.objects.select_related('fleet_commander').prefetch_related('srpuserrequest_set').all()
+    if not all:
+        fleets = fleets.filter(fleet_srp_status="")
+    else:
+        logger.debug("Returning all SRP requests")
+    totalcost = fleets.aggregate(total_cost=Sum('srpuserrequest__srp_total_amount')).get('total_cost', 0)
     context = {"srpfleets": fleets, "totalcost": totalcost}
     return render(request, 'srp/management.html', context=context)
-
-
-@login_required
-@permission_required('srp.access_srp')
-def srp_management_all(request):
-    logger.debug("srp_management_all called by user %s" % request.user)
-    fleets = SrpFleetMain.objects.all()
-    totalcost = sum([int(fleet.total_cost) for fleet in fleets])
-    context = {"srpfleets": SrpFleetMain.objects.all(), "totalcost": totalcost}
-    return render(request, 'srp/management.html', context=context)
-
 
 @login_required
 @permission_required('srp.access_srp')
 def srp_fleet_view(request, fleet_id):
     logger.debug("srp_fleet_view called by user %s for fleet id %s" % (request.user, fleet_id))
-    fleet_main = get_object_or_404(SrpFleetMain, id=fleet_id)
+    try:
+        fleet_main = SrpFleetMain.objects.get(id=fleet_id)
+    except SrpFleetMain.DoesNotExist:
+        raise Http404
     context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
-               "srpfleetrequests": fleet_main.srpuserrequest_set.order_by('srp_ship_name'),
+               "srpfleetrequests": fleet_main.srpuserrequest_set.select_related('character').order_by('srp_ship_name'),
                "totalcost": fleet_main.total_cost}
 
     return render(request, 'srp/data.html', context=context)

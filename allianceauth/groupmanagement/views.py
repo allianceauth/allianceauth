@@ -24,12 +24,13 @@ def group_management(request):
     acceptrequests = []
     leaverequests = []
 
+    base_group_query = GroupRequest.objects.select_related('user', 'group')
     if GroupManager.has_management_permission(request.user):
         # Full access
-        group_requests = GroupRequest.objects.all()
+        group_requests = base_group_query.all()
     else:
         # Group specific leader
-        group_requests = GroupRequest.objects.filter(group__authgroup__group_leaders__in=[request.user])
+        group_requests = base_group_query.filter(group__authgroup__group_leaders__in=[request.user])
 
     for grouprequest in group_requests:
         if grouprequest.leave_request:
@@ -83,7 +84,7 @@ def group_membership_list(request, group_id):
 
     members = list()
 
-    for member in group.user_set.all().order_by('username'):
+    for member in group.user_set.select_related('profile').all().order_by('username'):
 
         members.append({
             'user': member,
