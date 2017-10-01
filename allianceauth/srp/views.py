@@ -186,7 +186,7 @@ def srp_request_view(request, fleet_srp):
 
             try:
                 srp_kill_link = SRPManager.get_kill_id(srp_request.killboard_link)
-                (ship_type_id, ship_value, victim_name) = SRPManager.get_kill_data(srp_kill_link)
+                (ship_type_id, ship_value, victim_id) = SRPManager.get_kill_data(srp_kill_link)
             except ValueError:
                 logger.debug("User %s Submitted Invalid Killmail Link %s or server could not be reached" % (
                     request.user, srp_request.killboard_link))
@@ -196,7 +196,7 @@ def srp_request_view(request, fleet_srp):
                                    "Your SRP request Killmail link is invalid. Please make sure you are using zKillboard."))
                 return redirect("srp:management")
 
-            if request.user.character_ownerships.filter(character__character_name=victim_name).exists():
+            if request.user.character_ownerships.filter(character__character_id=str(victim_id)).exists():
                 srp_request.srp_ship_name = provider.get_itemtype(ship_type_id).name
                 srp_request.kb_total_loss = ship_value
                 srp_request.post_time = post_time
@@ -209,8 +209,8 @@ def srp_request_view(request, fleet_srp):
             else:
                 messages.error(request,
                                _(
-                                   "%(charname)s does not belong to your Auth account. Please add the API key for this character and try again")
-                               % {"charname": victim_name})
+                                   "Character %(charid)s does not belong to your Auth account. Please add the API key for this character and try again")
+                               % {"charid": victim_id})
             return redirect("srp:management")
     else:
         logger.debug("Returning blank SrpFleetUserRequestForm")
@@ -237,7 +237,7 @@ def srp_request_remove(request):
             srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
             stored_fleet_view = srpuserrequest.srp_fleet_main.id
             srpuserrequest.delete()
-            logger.info("Deleted SRP request id %s for user %s" % (srp_request_id, request.user))
+	            logger.info("Deleted SRP request id %s for user %s" % (srp_request_id, request.user))
     if stored_fleet_view is None:
         logger.error("Unable to delete srp requests for user %s - request matching id not found." % (request.user))
         messages.error(request, _('Unable to locate selected SRP request.'))
