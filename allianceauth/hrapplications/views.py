@@ -46,6 +46,7 @@ def hr_application_management_view(request):
     return render(request, 'hrapplications/management.html', context=context)
 
 
+
 @login_required
 @user_passes_test(create_application_test)
 def hr_application_create_view(request, form_id=None):
@@ -63,7 +64,7 @@ def hr_application_create_view(request, form_id=None):
                                                        "Failed to retrieve answer provided by applicant.")
                     response.save()
                 logger.info("%s created %s" % (request.user, application))
-            return redirect('auth_hrapplications_view')
+            return redirect('hrapplications:view')
         else:
             questions = app_form.questions.all()
             return render(request, 'hrapplications/create.html',
@@ -91,7 +92,7 @@ def hr_application_personal_view(request, app_id):
         return render(request, 'hrapplications/view.html', context=context)
     else:
         logger.warn("User %s not authorized to view %s" % (request.user, app))
-        return redirect('auth_hrapplications_view')
+        return redirect('hrapplications:view')
 
 
 @login_required
@@ -106,7 +107,7 @@ def hr_application_personal_removal(request, app_id):
             logger.warn("User %s attempting to delete reviewed app %s" % (request.user, app))
     else:
         logger.warn("User %s not authorized to delete %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -125,10 +126,10 @@ def hr_application_view(request, app_id):
                 comment.text = form.cleaned_data['comment']
                 comment.save()
                 logger.info("Saved comment by user %s to %s" % (request.user, app))
-                return redirect(hr_application_view, app_id)
+                return redirect('hrapplications:view', app_id)
         else:
             logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
-            return redirect(hr_application_view, app_id)
+            return redirect('hrapplications:view', app_id)
     else:
         logger.debug("Returning blank HRApplication comment form.")
         form = HRApplicationCommentForm()
@@ -151,7 +152,7 @@ def hr_application_remove(request, app_id):
     logger.info("User %s deleting %s" % (request.user, app))
     app.delete()
     notify(app.user, "Application Deleted", message="Your application to %s was deleted." % app.form.corp)
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -168,7 +169,7 @@ def hr_application_approve(request, app_id):
                level="success")
     else:
         logger.warn("User %s not authorized to approve %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -185,7 +186,7 @@ def hr_application_reject(request, app_id):
                level="danger")
     else:
         logger.warn("User %s not authorized to reject %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -239,7 +240,7 @@ def hr_application_search(request):
 
     else:
         logger.debug("Returning empty search form for user %s" % request.user)
-        return redirect("auth_hrapplications_view")
+        return redirect("hrapplications:view")
 
 
 @login_required
