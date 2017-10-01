@@ -224,7 +224,7 @@ def srp_request_view(request, fleet_srp):
 
             try:
                 srp_kill_link = srpManager.get_kill_id(srp_request.killboard_link)
-                (ship_type_id, ship_value, victim_name) = srpManager.get_kill_data(srp_kill_link)
+                (ship_type_id, ship_value, victim_id) = srpManager.get_kill_data(srp_kill_link)
             except ValueError:
                 logger.debug("User %s Submitted Invalid Killmail Link %s or server could not be reached" % (
                     request.user, srp_request.killboard_link))
@@ -235,7 +235,7 @@ def srp_request_view(request, fleet_srp):
 
             characters = EveManager.get_characters_by_owner_id(request.user.id)
             for character in characters:
-                if character.character_name == victim_name:
+                if character.character_id == str(victim_id):
                     srp_request.srp_ship_name = EveManager.get_itemtype(ship_type_id).name
                     srp_request.kb_total_loss = ship_value
                     srp_request.post_time = post_time
@@ -247,8 +247,8 @@ def srp_request_view(request, fleet_srp):
                 else:
                     continue
             messages.error(request,
-                           _("%(charname)s does not belong to your Auth account. Please add the API key for this character and try again") 
-                                % {"charname": victim_name})
+                           _("Character ID %(charid)s does not belong to your Auth account. Please add the API key for this character and try again")
+                                % {"charid": victim_id})
             return redirect("auth_srp_management_view")
     else:
         logger.debug("Returning blank SrpFleetUserRequestForm")
