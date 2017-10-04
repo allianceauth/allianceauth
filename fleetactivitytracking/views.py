@@ -52,8 +52,12 @@ class CorpStat(object):
             fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
         self.blue = self.corp.is_blue
 
+    @property
     def avg_fat(self):
-        return "%.2f" % (float(self.n_fats) / float(self.corp.member_count))
+        try:
+            return "%.2f" % (float(self.n_fats) / float(self.corp.member_count))
+        except ZeroDivisionError:
+            return "%.2f" % 0
 
 
 class MemberStat(object):
@@ -69,9 +73,13 @@ class MemberStat(object):
         self.n_chars = nchars
         self.n_fats = Fat.objects.filter(user_id=member['user_id']).filter(
             fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lte=start_of_next_month).count()
-        
+
+    @property
     def avg_fat(self):
-        return "%.2f" % (float(self.n_fats) / float(self.n_chars))
+        try:
+            return "%.2f" % (float(self.n_fats) / float(self.n_chars))
+        except ZeroDivisionError:
+            return "%.2f" % 0
 
 
 def first_day_of_next_month(year, month):
@@ -132,7 +140,7 @@ def fatlink_statistics_corp_view(request, corpid, year=None, month=None):
     # collect and sort stats
     stat_list = [fat_stats[x] for x in fat_stats]
     stat_list.sort(key=lambda stat: stat.mainchar.character_name)
-    stat_list.sort(key=lambda stat: (stat.n_fats, stat.n_fats / stat.n_chars), reverse=True)
+    stat_list.sort(key=lambda stat: (stat.n_fats, stat.avg_fat), reverse=True)
     
     context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year,
            'previous_month': start_of_previous_month, 'corpid': corpid}
@@ -170,7 +178,7 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
     # collect and sort stats
     stat_list = [fat_stats[x] for x in fat_stats]
     stat_list.sort(key=lambda stat: stat.corp.corporation_name)
-    stat_list.sort(key=lambda stat: (stat.n_fats, stat.n_fats / stat.corp.member_count), reverse=True)
+    stat_list.sort(key=lambda stat: (stat.n_fats, stat.avg_fat), reverse=True)
 
     context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year,
            'previous_month': start_of_previous_month}
