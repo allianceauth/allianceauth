@@ -7,6 +7,8 @@
 
 ## Dependencies
 
+Alliance Auth can be installed on any operating system. Dependencies are provided below for two of the most popular server platforms, Ubuntu and CentOS. To install on your favourite flavour of linux, identify and install equivalent packages to the ones listed here.
+
 ```eval_rst
 .. hint::
    CentOS: A few packages are included in a non-default repository. Add it and update the package lists. ::
@@ -21,15 +23,15 @@ Alliance Auth requires python3.4 or higher. Ensure it is installed on your serve
 
 Ubuntu:
 
-    apt-get install python3 python3-dev python3-setuptools python3-pip
+    apt-get install python3 python3-dev python3-venv python3-setuptools python3-pip
 
 CentOS:
 
-    yum install python36u python36u-devel python36u-setuptools python36u-pip bzip2-devel
+    yum install python36u python36u-devel python36u-setuptools python36u-pip
 
 ### Database
 
-It's recommended to use a database service instead of sqlite. Many options are available, but this guide will use MariaDB. Ensure it's installed on your server before proceeding. It can be installed with:
+It's recommended to use a database service instead of sqlite. Many options are available, but this guide will use MariaDB.
 
 Ubuntu:
 
@@ -49,26 +51,25 @@ Ubuntu:
 
 CentOS:
 
-    yum install gcc gcc-c++ unzip git redis curl
+    yum install gcc gcc-c++ unzip git redis curl bzip2-devel
 
 ```eval_rst
 .. important::
-   CentOS: Make sure redis is running before continuing: ::
-
+   CentOS: Make sure redis is running before continuing. ::
+   
       systemctl enable redis.service
       systemctl start redis.service
 ```
 
 ## Database Setup
 
-Alliance Auth needs a MySQL user account and database. Create one as follows, replacing `PASSWORD` with an actual secure password:
+Alliance Auth needs a MySQL user account and database. Open an SQL shell with `mysql -u root -p` and create them as follows, replacing `PASSWORD` with an actual secure password:
 
-    mysql -u root -p
     CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'PASSWORD';
     CREATE DATABASE alliance_auth;
     GRANT ALL PRIVILEGES ON alliance_auth . * TO 'allianceserver'@'localhost';
 
-Secure your MySQL / MariaDB server by typing `mysql_secure_installation`
+Close the SQL shell and secure your database server with the `mysql_secure_installation` command.
 
 ## Auth Install
 
@@ -105,11 +106,11 @@ Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activat
 
 ### Alliance Auth Project
 
-Now you can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies.
+You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies.
 
 Now you need to create the application that will run the Alliance Auth install. Ensure you are in the allianceserver home directory by issuing `cd /home/allianceserver`.
 
-Issue `allianceauth start myauth` to bootstrap the Django application that will run Alliance Auth. You can rename it from `myauth` to anything you'd like: this name is shown by default as the site name but that can be changed later.
+The `allianceauth start myauth` command will bootstrap a Django project which will run Alliance Auth. You can rename it from `myauth` to anything you'd like: this name is shown by default as the site name but that can be changed later.
 
 The settings file needs configuring. Edit the template at `myauth/myauth/settings/local.py`. Be sure to configure the EVE SSO and Email settings.
 
@@ -145,3 +146,12 @@ Before proceeding it is essential to create a superuser account. This account wi
 ## Webserver
 
 Once installed, move onto the [Gunicorn Guide](gunicorn.md) and decide on whether you're going to use [NGINX](nginx.md) or [Apache](apache.md). You will also need to install [supervisor](supervisor.md) to run the background tasks.
+
+
+## Updating
+
+Periodically [new releases](https://github.com/allianceauth/allianceauth/releases/) are issued with bug fixes and new features. To update your install, simply activate your virtual environment and update with `pip install --upgrade allianceauth`. Be sure to read the release notes which will highlight changes.
+
+Some releases come with changes to settings: update your project's settings with `allianceauth update /home/allianceserver/myauth`.
+ 
+Always restart celery and gunicorn after updating.
