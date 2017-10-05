@@ -235,7 +235,7 @@ class SmfManager:
         cursor = connections['smf'].cursor()
 
         password = cls.generate_random_pass()
-        revoke_email = "revoked@" + settings.DOMAIN
+        revoke_email = "revoked@localhost"
         try:
             pwhash = cls.gen_hash(username, password)
             cursor.execute(cls.SQL_DIS_USER, [revoke_email, pwhash, username])

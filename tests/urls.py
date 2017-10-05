@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 import allianceauth.urls
 from . import views
 
