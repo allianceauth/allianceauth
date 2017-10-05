@@ -1,0 +1,31 @@
+// Shared variables between flatly and darkly themes
+
+// Fade down table row colors to prevent them looking like a bag of skittles
+@table-bg-fade-percent: 20%;
+
+.table-row-variant(active; fade(@table-bg-active, @table-bg-fade-percent));
+.table-row-variant(success; fade(@state-success-bg, @table-bg-fade-percent));
+.table-row-variant(info; fade(@state-info-bg, @table-bg-fade-percent));
+.table-row-variant(warning; fade(@state-warning-bg, @table-bg-fade-percent));
+.table-row-variant(danger; fade(@state-danger-bg, @table-bg-fade-percent));
+
+
+// From bootswatch Superhero
+@brand-success:         #5cb85c;
+@brand-warning:         #f0ad4e;
+@brand-danger:          #d9534f;
+
+
+// Bootstrap extension, allow vertical columns to be same height
+.row.vertical-flexbox-row {
+  display:  -webkit-box;
+  display: -webkit-flex;
+  display:  -ms-flexbox;
+  display:         flex;
+  flex-wrap: wrap;
+}
+
+.row.vertical-flexbox-row > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}

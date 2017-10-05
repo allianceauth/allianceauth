@@ -1,0 +1,35 @@
+// Alliance Auth customisations of the bootswatch Flatly theme
+// To build a new CSS file you need to `npm install -g less less-plugin-clean-css`
+// Then `lessc --clean-css flatly.less flatly.min.css`
+
+@import "https://raw.githubusercontent.com/thomaspark/bootswatch/gh-pages/bower_components/bootstrap/less/bootstrap.less";
+@import "https://raw.githubusercontent.com/thomaspark/bootswatch/gh-pages/flatly/variables.less";
+@import "https://raw.githubusercontent.com/thomaspark/bootswatch/gh-pages/flatly/bootswatch.less";
+@import "../bootstrap-locals.less";
+@import "../flatly-shared.less";
+
+.nav-tabs > li > a,
+.nav-pills > li > a {
+  color: #000;
+}
+
+// From bootswatch Superhero
+@brand-info:            #5bc0de;
+
+@table-bg-fade-percent: 40%;
+
+// Fixup table colors to match fade
+.table {
+  .active,
+  .success,
+  .info,
+  .warning,
+  .danger {
+    color: @gray-darker;
+    > td {
+      > a:not(.btn) {
+        color: @link-color;
+      }
+    }
+  }
+}
