@@ -51,4 +51,8 @@ setup(
     url='https://github.com/allianceauth/allianceauth',
     zip_safe=False,
     include_package_data=True,
+    entry_points="""
+            [console_scripts]
+            allianceauth=allianceauth.bin.allianceauth:main
+    """,
 )
