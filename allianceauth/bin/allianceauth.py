@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 from optparse import OptionParser
-
 from django.core.management import ManagementUtility
 
 
@@ -52,14 +51,51 @@ def create_project(parser, options, args):
     print("Success! %(project_name)s has been created" % {'project_name': project_name})  # noqa
 
 
+def update_settings(parser, options, args):
+    if len(args) < 2:
+        parser.error("Please specify the path to your Alliance Auth installation")
+    elif len(args) > 2:
+        parser.error("Too many arguments")
+
+    project_path = args[1]
+
+    # find the target settings/base.py file, handing both the project and app as valid paths
+    try:
+        # given path is to the app
+        settings_path = os.path.join(project_path, 'settings/base.py')
+        assert os.path.exists(settings_path)
+    except AssertionError:
+        try:
+            # given path is to the project, so find the app within it
+            dirname = os.path.split(project_path)[-1]
+            settings_path = os.path.join(project_path, dirname, 'settings/base.py')
+            assert os.path.exists(settings_path)
+        except AssertionError:
+            parser.error("Unable to locate the Alliance Auth project at %s" % project_path)
+
+    # first find the path to the Alliance Auth template settings
+    import allianceauth
+    allianceauth_path = os.path.dirname(allianceauth.__file__)
+    template_path = os.path.join(allianceauth_path, 'project_template')
+    template_settings_path = os.path.join(template_path, 'project_name/settings/base.py')
+
+    # overwrite the local project's base settings
+    print("Updating the settings at %s with the template at %s" % (settings_path, template_settings_path))
+    with open(template_settings_path, 'r') as template, open(settings_path, 'w') as target:
+        target.write(template.read())
+
+    print("Successfully updated Alliance Auth settings.")
+
+
 COMMANDS = {
     'start': create_project,
+    'update': update_settings,
 }
 
 
 def main():
     # Parse options
-    parser = OptionParser(usage="Usage: %prog start project_name [directory]")
+    parser = OptionParser(usage="Usage: %prog [start|update] project_name [directory]")
     (options, args) = parser.parse_args()
 
     # Find command
