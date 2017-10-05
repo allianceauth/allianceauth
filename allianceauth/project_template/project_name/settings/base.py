@@ -61,7 +61,8 @@ CELERYBEAT_SCHEDULE = {
 }
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -172,7 +173,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(os.path.join(BASE_DIR, 'alliance_auth.sqlite')),
+        'NAME': str(os.path.join(PROJECT_DIR, 'alliance_auth.sqlite3')),
     },
 }
 
@@ -228,7 +229,7 @@ LOGGING = {
         'log_file': {
             'level': 'INFO',  # edit this line to change logging level to file
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'log/allianceauth.log'),
+            'filename': os.path.join(PROJECT_DIR, 'log/allianceauth.log'),
             'formatter': 'verbose',
             'maxBytes': 1024 * 1024 * 5,  # edit this line to change max log file size
             'backupCount': 5,  # edit this line to change number of log backups
@@ -255,14 +256,3 @@ LOGGING = {
         },
     }
 }
-
-
-def add_auth_apps(APPS):
-    """
-    Merges required auth apps with a list of custom user apps for project settings.
-    Leaves order of passed INSTALLED_APPS unchanged (passed apps come first) to allow overriding templates/static/etc
-    https://docs.djangoproject.com/en/2.0/ref/settings/#installed-apps
-    :param APPS: INSTALLED_APPS list
-    :return: Merged INSTALLED_APPS
-    """
-    APPS += [app for app in INSTALLED_APPS if app not in APPS]
