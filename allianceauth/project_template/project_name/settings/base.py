@@ -172,7 +172,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(os.path.join(PROJECT_DIR, 'alliance_auth.sqlite3')),
+        'NAME': str(os.path.join(BASE_DIR, 'alliance_auth.sqlite3')),
     },
 }
 
@@ -228,7 +228,7 @@ LOGGING = {
         'log_file': {
             'level': 'INFO',  # edit this line to change logging level to file
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(PROJECT_DIR, 'log/allianceauth.log'),
+            'filename': os.path.join(BASE_DIR, 'log/allianceauth.log'),
             'formatter': 'verbose',
             'maxBytes': 1024 * 1024 * 5,  # edit this line to change max log file size
             'backupCount': 5,  # edit this line to change number of log backups
