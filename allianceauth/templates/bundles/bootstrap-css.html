@@ -1,7 +1,20 @@
 {% load staticfiles %}
-<!-- Bootstrap Core CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<!-- Extra Bootstrap CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/3.3.7+1/css/sb-admin-2.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+{% if NIGHT_MODE %}
+    {% if debug %}
+        <!-- In template debug, loading less file instead of CSS -->
+        <link rel="stylesheet/less" type="text/css" href="{% static 'css/themes/darkly/darkly.less' %}" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/themes/darkly/darkly.min.css' %}" />
+    {% endif %}
+{% else %}
+    {% if debug %}
+        <!-- In template debug, loading less file instead of CSS -->
+        <link rel="stylesheet/less" type="text/css" href="{% static 'css/themes/flatly/flatly.less' %}" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/themes/flatly/flatly.min.css' %}" />
+    {% endif %}
+{% endif %}
 <!-- End Bootstrap CSS -->

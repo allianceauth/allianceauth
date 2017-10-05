@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load navactive %}
+<nav class="navbar navbar-default navbar-static-top auth-navbar-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".auth-menus-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">
+                {{ SITE_NAME }}
+            </a>
+        </div>
+        <div class="collapse navbar-collapse auth-menus-collapse">
+            <ul class="nav navbar-nav navbar-right navbar-pills">
+                    <li>
+                        {% include 'allianceauth/night-toggle.html' %}
+                    </li>
+                {% if notifications %}
+                    <li class="{% navactive request 'notifications:' %}">
+                        <a href="{% url 'notifications:list' %}">Notifications
+                            <span class="badge">{{ notifications }}</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'notifications:list' %}">
+                        <i class="fa fa-bell-o"></i></a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                    <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
+                {% endif %}
+            </ul>
+            <form id="f-lang-select" class="navbar-form navbar-right" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+                <div class="form-group">
+                    <select onchange="this.form.submit()" class="form-control" id="lang-select" name="language">
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
+                                    selected="selected"{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>

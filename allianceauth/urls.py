@@ -10,6 +10,7 @@ import allianceauth.notifications.urls
 import allianceauth.groupmanagement.urls
 import allianceauth.services.urls
 from allianceauth import NAME
+from allianceauth import views
 
 from allianceauth.authentication import hmac_urls
 from allianceauth.hooks import get_hooks
@@ -42,6 +43,9 @@ urlpatterns = [
 
     # Services
     url(r'', include(allianceauth.services.urls)),
+
+    # Night mode
+    url(r'^night/', views.NightModeRedirectView.as_view(), name='nightmode')
 ]
 
 # Append app urls

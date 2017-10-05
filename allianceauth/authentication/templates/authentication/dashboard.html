@@ -7,9 +7,9 @@
 {% block content %}
     <h1 class="page-header text-center">{% trans "Dashboard" %}</h1>
     <div class="col-sm-12">
-        <div class="row">
+        <div class="row vertical-flexbox-row">
             <div class="col-sm-6 text-center">
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" style="height:100%">
                     <div class="panel-heading"><h3 class="panel-title">{% trans "Main Character" %}</h3></div>
                     <div class="panel-body">
                         {% if request.user.profile.main_character %}
@@ -69,10 +69,10 @@
                 </div>
             </div>
             <div class="col-sm-6 text-center">
-                <div class="panel panel-success">
+                <div class="panel panel-success" style="height:100%">
                     <div class="panel-heading"><h3 class="panel-title">{% trans "Groups" %}</h3></div>
                     <div class="panel-body">
-                        <div style="height: 236px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
+                        <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                             <table class="table table-striped">
                                 {% for group in user.groups.all %}
                                 <tr>
