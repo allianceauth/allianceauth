@@ -7,7 +7,7 @@ app_name = 'srp'
 urlpatterns = [
     # SRP URLS
     url(r'^$', views.srp_management, name='management'),
-    url(r'^all/$', views.srp_management_all, name='all'),
+    url(r'^all/$', views.srp_management, {'all': True}, name='all'),
     url(r'^(\w+)/view$', views.srp_fleet_view, name='fleet'),
     url(r'^add/$', views.srp_fleet_add_view, name='add'),
     url(r'^(\w+)/edit$', views.srp_fleet_edit_view, name='edit'),

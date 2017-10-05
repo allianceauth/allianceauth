@@ -1,13 +1,11 @@
-from unittest import mock
-
-from django.test import TestCase
+from django_webtest import WebTest
 from django import urls
 from django.contrib.auth.models import Group, Permission
 
 from allianceauth.tests.auth_utils import AuthUtils
 
 
-class PermissionsToolViewsTestCase(TestCase):
+class PermissionsToolViewsTestCase(WebTest):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
         self.member.email = 'auth_member@example.com'
@@ -36,8 +34,8 @@ class PermissionsToolViewsTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_menu_item(self):
-        self.client.force_login(self.member)
-        response = self.client.get(urls.reverse('permissions_tool:overview'))
+        self.app.set_user(self.member)
+        response = self.app.get(urls.reverse('permissions_tool:overview'))
 
         response_content = response.content.decode('utf-8')
 
@@ -45,9 +43,9 @@ class PermissionsToolViewsTestCase(TestCase):
                           '<i class="fa fa-key fa-id-card"></i> Permissions Audit</a></li>', response_content)
 
     def test_permissions_overview(self):
-        self.client.force_login(self.member)
+        self.app.set_user(self.member)
 
-        response = self.client.get(urls.reverse('permissions_tool:overview'))
+        response = self.app.get(urls.reverse('permissions_tool:overview'))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('permissions_tool/overview.html')
@@ -71,9 +69,9 @@ class PermissionsToolViewsTestCase(TestCase):
 
     def test_permissions_overview_perms(self):
         # Ensure permission effectively denys access
-        self.client.force_login(self.no_perm_user)
+        self.app.set_user(self.no_perm_user)
 
-        response = self.client.get(urls.reverse('permissions_tool:overview'))
+        response = self.app.get(urls.reverse('permissions_tool:overview'))
 
         self.assertEqual(response.status_code, 302)
 
@@ -99,9 +97,9 @@ class PermissionsToolViewsTestCase(TestCase):
 
     def test_permissions_audit_perms(self):
         # Ensure permission effectively denys access
-        self.client.force_login(self.no_perm_user)
+        self.app.set_user(self.no_perm_user)
 
-        response = self.client.get(urls.reverse('permissions_tool:audit',
+        response = self.app.get(urls.reverse('permissions_tool:audit',
                                                 kwargs={
                                                     'app_label': self.permission.content_type.app_label,
                                                     'model': self.permission.content_type.model,

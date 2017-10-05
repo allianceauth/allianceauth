@@ -3,7 +3,8 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, Http404
+from django.db.models import Q
 from .models import Application
 from .models import ApplicationComment
 from .models import ApplicationForm
@@ -26,14 +27,16 @@ def hr_application_management_view(request):
     corp_applications = []
     finished_corp_applications = []
     main_char = request.user.profile.main_character
+
+    base_app_query = Application.objects.select_related('user', 'form', 'form__corp')
     if request.user.is_superuser:
-        corp_applications = Application.objects.filter(approved=None)
-        finished_corp_applications = Application.objects.exclude(approved=None)
+        corp_applications = base_app_query.filter(approved=None)
+        finished_corp_applications = base_app_query.exclude(approved=None)
     elif request.user.has_perm('auth.human_resources') and main_char:
         if ApplicationForm.objects.filter(corp__corporation_id=main_char.corporation_id).exists():
             app_form = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id)
-            corp_applications = Application.objects.filter(form=app_form).filter(approved=None)
-            finished_corp_applications = Application.objects.filter(form=app_form).filter(approved__in=[True, False])
+            corp_applications = base_app_query.filter(form=app_form).filter(approved=None)
+            finished_corp_applications = base_app_query.filter(form=app_form).filter(approved__in=[True, False])
     logger.debug("Retrieved %s personal, %s corp applications for %s" % (
         len(request.user.applications.all()), len(corp_applications), request.user))
     context = {
@@ -63,7 +66,7 @@ def hr_application_create_view(request, form_id=None):
                                                        "Failed to retrieve answer provided by applicant.")
                     response.save()
                 logger.info("%s created %s" % (request.user, application))
-            return redirect('auth_hrapplications_view')
+            return redirect('hrapplications:view')
         else:
             questions = app_form.questions.all()
             return render(request, 'hrapplications/create.html',
@@ -91,7 +94,7 @@ def hr_application_personal_view(request, app_id):
         return render(request, 'hrapplications/view.html', context=context)
     else:
         logger.warn("User %s not authorized to view %s" % (request.user, app))
-        return redirect('auth_hrapplications_view')
+        return redirect('hrapplications:view')
 
 
 @login_required
@@ -106,14 +109,17 @@ def hr_application_personal_removal(request, app_id):
             logger.warn("User %s attempting to delete reviewed app %s" % (request.user, app))
     else:
         logger.warn("User %s not authorized to delete %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
 @permission_required('auth.human_resources')
 def hr_application_view(request, app_id):
     logger.debug("hr_application_view called by user %s for app id %s" % (request.user, app_id))
-    app = get_object_or_404(Application, pk=app_id)
+    try:
+        app = Application.objects.prefetch_related('responses', 'comments', 'comments__user').get(pk=app_id)
+    except Application.DoesNotExist:
+        raise Http404
     if request.method == 'POST':
         if request.user.has_perm('hrapplications.add_applicationcomment'):
             form = HRApplicationCommentForm(request.POST)
@@ -125,18 +131,18 @@ def hr_application_view(request, app_id):
                 comment.text = form.cleaned_data['comment']
                 comment.save()
                 logger.info("Saved comment by user %s to %s" % (request.user, app))
-                return redirect(hr_application_view, app_id)
+                return redirect('hrapplications:view', app_id)
         else:
             logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
-            return redirect(hr_application_view, app_id)
+            return redirect('hrapplications:view', app_id)
     else:
         logger.debug("Returning blank HRApplication comment form.")
         form = HRApplicationCommentForm()
     context = {
         'app': app,
-        'responses': ApplicationResponse.objects.filter(application=app),
+        'responses': app.responses.all(),
         'buttons': True,
-        'comments': ApplicationComment.objects.filter(application=app),
+        'comments': app.comments.all(),
         'comment_form': form,
     }
     return render(request, 'hrapplications/view.html', context=context)
@@ -151,7 +157,7 @@ def hr_application_remove(request, app_id):
     logger.info("User %s deleting %s" % (request.user, app))
     app.delete()
     notify(app.user, "Application Deleted", message="Your application to %s was deleted." % app.form.corp)
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -168,7 +174,7 @@ def hr_application_approve(request, app_id):
                level="success")
     else:
         logger.warn("User %s not authorized to approve %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -185,7 +191,7 @@ def hr_application_reject(request, app_id):
                level="danger")
     else:
         logger.warn("User %s not authorized to reject %s" % (request.user, app))
-    return redirect('auth_hrapplications_view')
+    return redirect('hrapplications:view')
 
 
 @login_required
@@ -199,35 +205,24 @@ def hr_application_search(request):
             searchstring = form.cleaned_data['search_string'].lower()
             applications = set([])
             logger.debug("Searching for application with character name %s for user %s" % (searchstring, request.user))
-            app_list = []
-            if request.user.is_superuser:
-                app_list = Application.objects.all()
-            else:
+            app_list = Application.objects.all()
+            if not request.user.is_superuser:
                 try:
-                    app_list = Application.objects.filter(form__corp__corporation_id=request.user.profile.main_character.corporation_id)
+                    app_list = app_list.filter(
+                        form__corp__corporation_id=request.user.profile.main_character.corporation_id)
                 except AttributeError:
                     logger.warn(
                         "User %s missing main character model: unable to filter applications to search" % request.user)
-            for application in app_list:
-                if application.main_character:
-                    if searchstring in application.main_character.character_name.lower():
-                        applications.add(application)
-                    if searchstring in application.main_character.corporation_name.lower():
-                        applications.add(application)
-                    if application.main_character.alliance_name \
-                            and searchstring in application.main_character.alliance_name.lower():
-                        applications.add(application)
-                for character in application.characters:
-                    if searchstring in character.character_name.lower():
-                        applications.add(application)
-                    if searchstring in character.corporation_name.lower():
-                        applications.add(application)
-                    if character.alliance_name and searchstring in character.alliance_name.lower():
-                        applications.add(application)
-                if searchstring in application.user.username.lower():
-                    applications.add(application)
-            logger.info("Found %s Applications for user %s matching search string %s" % (
-                len(applications), request.user, searchstring))
+
+            applications = app_list.filter(
+                Q(user__profile__main_character__character_name__icontains=searchstring) |
+                Q(user__profile__main_character__corporation_name__icontains=searchstring) |
+                Q(user__profile__main_character__alliance_name__icontains=searchstring) |
+                Q(user__character_ownerships__character__character_name__icontains=searchstring) |
+                Q(user__character_ownerships__character__corporation_name__icontains=searchstring) |
+                Q(user__character_ownerships__character__alliance_name__icontains=searchstring) |
+                Q(user__username__icontains=searchstring)
+            )
 
             context = {'applications': applications, 'search_form': HRApplicationSearchForm()}
 
@@ -239,7 +234,7 @@ def hr_application_search(request):
 
     else:
         logger.debug("Returning empty search form for user %s" % request.user)
-        return redirect("auth_hrapplications_view")
+        return redirect("hrapplications:view")
 
 
 @login_required

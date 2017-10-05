@@ -1,3 +1,8 @@
+import json
+import urllib
+import datetime
+import requests_mock
+from django_webtest import WebTest
 from unittest import mock
 
 from django.test import TestCase, RequestFactory
@@ -10,9 +15,8 @@ from .auth_hooks import DiscordService
 from .models import DiscordUser
 from .tasks import DiscordTasks
 from .manager import DiscordOAuthManager
+from . import manager
 
-import requests_mock
-import datetime
 
 MODULE_PATH = 'allianceauth.services.modules.discord'
 DEFAULT_AUTH_GROUP = 'Member'
@@ -138,26 +142,26 @@ class DiscordHooksTestCase(TestCase):
     # TODO: Test update nicknames
 
 
-class DiscordViewsTestCase(TestCase):
+class DiscordViewsTestCase(WebTest):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
         add_permissions()
 
     def login(self):
-        self.client.force_login(self.member)
+        self.app.set_user(self.member)
 
     @mock.patch(MODULE_PATH + '.views.DiscordOAuthManager')
     def test_activate(self, manager):
         self.login()
         manager.generate_oauth_redirect_url.return_value = '/example.com/oauth/'
-        response = self.client.get('/discord/activate/', follow=False)
+        response = self.app.get('/discord/activate/', auto_follow=False)
         self.assertRedirects(response, expected_url='/example.com/oauth/', target_status_code=404)
 
     @mock.patch(MODULE_PATH + '.tasks.DiscordOAuthManager')
     def test_callback(self, manager):
         self.login()
         manager.add_user.return_value = '1234'
-        response = self.client.get('/discord/callback/', data={'code': '1234'})
+        response = self.app.get('/discord/callback/', params={'code': '1234'})
 
         self.member = User.objects.get(pk=self.member.pk)
 
@@ -172,7 +176,7 @@ class DiscordViewsTestCase(TestCase):
         DiscordUser.objects.create(user=self.member, uid='12345')
         manager.delete_user.return_value = True
 
-        response = self.client.get('/discord/reset/')
+        response = self.app.get('/discord/reset/')
 
         self.assertRedirects(response, expected_url='/discord/activate/', target_status_code=302)
 
@@ -182,7 +186,7 @@ class DiscordViewsTestCase(TestCase):
         DiscordUser.objects.create(user=self.member, uid='12345')
         manager.delete_user.return_value = True
 
-        response = self.client.get('/discord/deactivate/')
+        response = self.app.get('/discord/deactivate/')
 
         self.assertTrue(manager.delete_user.called)
         self.assertRedirects(response, expected_url='/services/', target_status_code=200)
@@ -201,7 +205,6 @@ class DiscordManagerTestCase(TestCase):
         self.assertEqual(group_name, 'GroupName_Test')
 
     def test_generate_Bot_add_url(self):
-        from . import manager
         bot_add_url = DiscordOAuthManager.generate_bot_add_url()
 
         auth_url = manager.AUTH_URL
@@ -209,23 +212,15 @@ class DiscordManagerTestCase(TestCase):
         self.assertEqual(bot_add_url, real_bot_add_url)
 
     def test_generate_oauth_redirect_url(self):
-        from . import manager
-        import urllib
-        import sys
         oauth_url = DiscordOAuthManager.generate_oauth_redirect_url()
 
         self.assertIn(manager.AUTH_URL, oauth_url)
         self.assertIn('+'.join(manager.SCOPES), oauth_url)
         self.assertIn(settings.DISCORD_APP_ID, oauth_url)
-        if sys.version_info[0] < 3:
-            # Py2
-            self.assertIn(urllib.quote_plus(settings.DISCORD_CALLBACK_URL), oauth_url)
-        else: # Py3
-            self.assertIn(urllib.parse.quote_plus(settings.DISCORD_CALLBACK_URL), oauth_url)
+        self.assertIn(urllib.parse.quote_plus(settings.DISCORD_CALLBACK_URL), oauth_url)
 
     @mock.patch(MODULE_PATH + '.manager.OAuth2Session')
     def test__process_callback_code(self, oauth):
-        from . import manager
         instance = oauth.return_value
         instance.fetch_token.return_value = {'access_token': 'mywonderfultoken'}
 
@@ -245,9 +240,6 @@ class DiscordManagerTestCase(TestCase):
     @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._process_callback_code')
     @requests_mock.Mocker()
     def test_add_user(self, oauth_token, m):
-        from . import manager
-        import json
-
         # Arrange
         oauth_token.return_value = {'access_token': 'accesstoken'}
 
@@ -272,9 +264,6 @@ class DiscordManagerTestCase(TestCase):
 
     @requests_mock.Mocker()
     def test_delete_user(self, m):
-        from . import manager
-        import json
-
         # Arrange
         headers = {'accept': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
 
@@ -321,7 +310,6 @@ class DiscordManagerTestCase(TestCase):
 
     @requests_mock.Mocker()
     def test_update_nickname(self, m):
-        from . import manager
         # Arrange
         headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
 
@@ -339,9 +327,6 @@ class DiscordManagerTestCase(TestCase):
     @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
     @requests_mock.Mocker()
     def test_update_groups(self, group_cache, m):
-        from . import manager
-        import json
-
         # Arrange
         groups = ['Member', 'Blue', 'Special Group']
 
@@ -373,8 +358,6 @@ class DiscordManagerTestCase(TestCase):
     @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
     @requests_mock.Mocker()
     def test_update_groups_backoff(self, group_cache, djcache, m):
-        from . import manager
-
         # Arrange
         groups = ['Member']
         group_cache.return_value = [{'id': 111, 'name': 'Member'}]
@@ -408,8 +391,6 @@ class DiscordManagerTestCase(TestCase):
     @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
     @requests_mock.Mocker()
     def test_update_groups_global_backoff(self, group_cache, djcache, m):
-        from . import manager
-
         # Arrange
         groups = ['Member']
         group_cache.return_value = [{'id': 111, 'name': 'Member'}]
