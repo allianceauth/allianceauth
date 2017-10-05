@@ -65,6 +65,11 @@ Now build:
     sudo ./launcher bootstrap app
     sudo ./launcher start app
 
+#### Errors:
+in case you run into not enough RAM for the docker bootstraping you might want to consider using `./discourse-setup` command. It will start bootstraping and is going to create the `/containers/app.yml` which you can edit.
+Note: every time you change something in the `app.yml` you must bootstrap again which will take between *2-8 minutes* and is accomplished by `./launcher rebuild app`.
+
+***
 ## Apache config
 
 Discourse must run on its own subdomain - it can't handle routing behind an alias like '/forums'. To do so, make a new apache config:
@@ -81,8 +86,58 @@ And enter the following, changing the port if you used a different number:
 
 Now enable proxies and restart apache:
 
+    sudo a2ensite discourse
     sudo a2enmod proxy_http
     sudo service apache2 reload
+
+### Setting up SSL
+
+It is 2017 and there is no reason why you should not setup a SSL certificate and enforce https. You may want to consider certbot with Let's encrypt: https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04
+
+    sudo certbot --apache -d example.com
+
+now adapt the apache configuration:
+
+    sudo nano /etc/apache2/sites-enabled/discourse.conf
+
+and adapt it followlingly:
+
+    <VirtualHost *:80>
+        ServerName discourse.example.com
+        RewriteEngine on
+        RewriteCond %{SERVER_NAME} =discourse.example.com
+        RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+    </VirtualHost>
+
+Then adapt change the ssl-config file:
+
+    sudo nano /etc/apache2/sites-enabled/discourse-le-ssl.conf
+
+and adapt it followlingly:
+
+    <IfModule mod_ssl.c>
+    <VirtualHost *:443>
+      ServerName discourse.example.com
+      ProxyPass / http://127.0.0.1:7890/
+      ProxyPassReverse / http://127.0.0.1:7890/
+      ProxyPreserveHost On
+      RequestHeader set X-FORWARDED-PROTOCOL https
+      RequestHeader set X-FORWARDED-SSL on
+      SSLCertificateFile /etc/letsencrypt/live/discourse.example.com/fullchain.pem
+      SSLCertificateKeyFile /etc/letsencrypt/live/discourse.example.com/privkey.pem
+      Include /etc/letsencrypt/options-ssl-apache.conf
+    </VirtualHost>
+    </IfModule>
+
+make sure that `a2enmod headers` is enabled and run:
+
+      sudo service apache2 restart
+
+Now you are all set-up and can even enforce https in discourse settings.
+
+
+
+
 
 ## Configure API
 
@@ -108,6 +163,7 @@ Scroll down to the Discourse section and set the following:
  - `DISCOURSE_API_USERNAME`: the username of the admin account you generated the API key with
  - `DISCOURSE_API_KEY`: the key you just generated
 
+***
 ### Configure SSO
 
 Navigate to `discourse.example.com` and log in. Back to the admin site, scroll down to find SSO settings and set the following:
@@ -120,6 +176,7 @@ Save, now change settings.py and add the following:
 
 ### Enable for your members
 
-Set either or both of `ENABLE_AUTH_DISCOURSE` and `ENABLE_BLUE_DISCOURSE` in settings.py for your members to gain access. Save and exit with control+o, enter, control+x.
+Assign discourse permissions for each auth-group that should have access to discourse.
+You might want to setup Read/Write/Delete rights per Auth group in discourse as you can limit which categories shall be accessablie per auth-group.
 
 ## Done
