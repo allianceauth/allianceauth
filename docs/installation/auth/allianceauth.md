@@ -153,5 +153,7 @@ Once installed, move onto the [Gunicorn Guide](gunicorn.md) and decide on whethe
 Periodically [new releases](https://github.com/allianceauth/allianceauth/releases/) are issued with bug fixes and new features. To update your install, simply activate your virtual environment and update with `pip install --upgrade allianceauth`. Be sure to read the release notes which will highlight changes.
 
 Some releases come with changes to settings: update your project's settings with `allianceauth update /home/allianceserver/myauth`.
+
+Some releases come with new or changed models. Update your database to reflect this with `python /home/allianceserver/myauth/manage.py migrate`.
  
 Always restart celery and gunicorn after updating.
