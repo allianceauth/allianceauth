@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from allianceauth.notifications import notify
 from .manager import Phpbb3Manager
 from .models import Phpbb3User

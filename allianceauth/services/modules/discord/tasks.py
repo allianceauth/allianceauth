@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from allianceauth.notifications import notify
 
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from .manager import DiscordOAuthManager, DiscordApiBackoff
 from .models import DiscordUser
 

@@ -6,6 +6,8 @@ source =
 omit =
     */migrations/*
     */example/*
+    */project_template/*
+    */bin/*
 
 [report]
 exclude_lines =

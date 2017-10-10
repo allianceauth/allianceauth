@@ -1,6 +1,6 @@
 import logging
 
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from .models import EveAllianceInfo
 from .models import EveCharacter
 from .models import EveCorporationInfo

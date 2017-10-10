@@ -2,7 +2,7 @@ import logging
 
 import redis
 
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from .hooks import ServicesHook
 
 REDIS_CLIENT = redis.Redis()

@@ -3,14 +3,8 @@
 ```eval_rst
 .. toctree::
 
-    dependencies
-    ubuntu
-    centos
-    settings
+    allianceauth
+    gunicorn
     nginx
     apache
-    gunicorn
-    cloudflare
-    supervisor
-    quickstart
 ```

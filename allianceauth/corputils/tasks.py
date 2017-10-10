@@ -1,4 +1,4 @@
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from allianceauth.corputils import CorpStats
 
 

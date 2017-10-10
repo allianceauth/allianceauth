@@ -61,7 +61,8 @@ CELERYBEAT_SCHEDULE = {
 }
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -149,7 +150,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Bootstrap messaging css workaround
 MESSAGE_TAGS = {
@@ -172,7 +172,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(os.path.join(BASE_DIR, 'alliance_auth.sqlite')),
+        'NAME': str(os.path.join(BASE_DIR, 'alliance_auth.sqlite3')),
     },
 }
 
@@ -255,14 +255,3 @@ LOGGING = {
         },
     }
 }
-
-
-def add_auth_apps(APPS):
-    """
-    Merges required auth apps with a list of custom user apps for project settings.
-    Leaves order of passed INSTALLED_APPS unchanged (passed apps come first) to allow overriding templates/static/etc
-    https://docs.djangoproject.com/en/2.0/ref/settings/#installed-apps
-    :param APPS: INSTALLED_APPS list
-    :return: Merged INSTALLED_APPS
-    """
-    APPS += [app for app in INSTALLED_APPS if app not in APPS]

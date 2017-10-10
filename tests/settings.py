@@ -2,7 +2,7 @@
 Alliance Auth Test Suite Django settings.
 """
 
-from allianceauth.settings.base import *
+from allianceauth.project_template.project_name.settings.base import *
 
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -16,7 +16,7 @@ NOSE_ARGS = [
 # Celery configuration
 CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
-INSTALLED_APPS = [
+INSTALLED_APPS += [
     'allianceauth.hrapplications',
     'allianceauth.timerboard',
     'allianceauth.srp',
@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'allianceauth.services.modules.teamspeak3',
     'django_nose',
 ]
-
-add_auth_apps(INSTALLED_APPS)
 
 ROOT_URLCONF = 'tests.urls'
 
