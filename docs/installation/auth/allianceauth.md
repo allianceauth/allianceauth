@@ -1,7 +1,7 @@
 # Alliance Auth Installation
 
 ```eval_rst
-.. important::
+.. tip::
    Installation is easiest as the root user. Log in as root or a user with sudo powers.
 ```
 
@@ -132,9 +132,49 @@ And finally ensure the allianceserver user has read/write permissions to this di
 
     chown -R allianceserver:allianceserver /home/allianceserver/myauth
 
+## Background Tasks
+
+### Gunicorn
+
+To run the auth website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. Installation is simple: `pip install gunicorn`. It can be manually called with `gunicorn myauth.wsgi` or automatically run using supervisor.
+
+Additional information is available in the [gunicorn](gunicorn.md) doc.
+
+### Supervisor
+
+[Supervisor](http://supervisord.org/) is a process watchdog service: it makes sure other processes are started automatically and kept running. It can be used to automatically start the WSGI server and celery workers for background tasks. Installation varies by OS:
+
+Ubuntu:
+
+    apt-get install supervisor
+
+CentOS:
+
+    yum install supervisor
+    systemctl enable supervisord.service
+    systemctl start supervisord.service
+
+Once installed it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the celery workers, celery task scheduler and gunicorn are all running.
+
+    ln /home/allianceserver/myauth/supervisor.conf /etc/supervisor/conf.d/myauth.conf
+    supervisorctl reload
+
+You can check the status of the processes with `supervisorctl status`. Logs from these processes are available in `/home/allianceserver/myauth/log` named by process.
+
+```eval_rst
+.. note::
+   Any time the code or your settings change you'll need to restart gunicorn and celery. ::
+   
+       supervisorctl restart myauth:
+```
+
+## Webserver
+
+Once installed, decide on whether you're going to use [NGINX](nginx.md) or [Apache](apache.md) and follow the respective guide.
+
 ## Superuser
 
-Before proceeding it is essential to create a superuser account. This account will have all permissions in Alliance Auth. It's OK to use this as your personal auth account.
+Before using your auth site it is essential to create a superuser account. This account will have all permissions in Alliance Auth. It's OK to use this as your personal auth account.
 
     python /home/allianceserver/myauth/manage.py createsuperuser
 
@@ -142,11 +182,6 @@ Before proceeding it is essential to create a superuser account. This account wi
 .. important::
    Be sure to add a main character to this account before attempting to activate services with it.
 ```
-
-## Webserver
-
-Once installed, move onto the [Gunicorn Guide](gunicorn.md) and decide on whether you're going to use [NGINX](nginx.md) or [Apache](apache.md). You will also need to install [supervisor](supervisor.md) to run the background tasks.
-
 
 ## Updating
 

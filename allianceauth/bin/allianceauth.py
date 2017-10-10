@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 from optparse import OptionParser
 from django.core.management import ManagementUtility
 
@@ -40,6 +41,8 @@ def create_project(parser, options, args):
     utility_args = ['django-admin.py',
                     'startproject',
                     '--template=' + template_path,
+                    '--pythonpath=' + '/'.join(sys.executable.split('/')[:-1]),
+                    '--ext=conf',
                     project_name]
 
     if dest_dir:

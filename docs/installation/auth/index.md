@@ -7,5 +7,4 @@
     gunicorn
     nginx
     apache
-    supervisor
 ```
