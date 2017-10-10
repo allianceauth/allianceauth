@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from allianceauth.notifications import notify
 
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 from allianceauth.services.modules.openfire.manager import OpenfireManager
 from .models import OpenfireUser
 

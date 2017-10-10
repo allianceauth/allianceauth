@@ -4,7 +4,7 @@ from esi.errors import TokenExpiredError, TokenInvalidError
 from esi.models import Token
 
 from allianceauth.authentication.models import CharacterOwnership
-from allianceauth.celeryapp import app
+from allianceauth.celery import app
 
 logger = logging.getLogger(__name__)
 
