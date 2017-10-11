@@ -18,6 +18,7 @@ class DiscourseService(ServicesHook):
         self.name = 'discourse'
         self.service_ctrl_template = 'services/discourse/discourse_service_ctrl.html'
         self.access_perm = 'discourse.access_discourse'
+        self.name_format = '{character_name}'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))

@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.celery import app
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import SmfManager
 from .models import SmfUser
 
@@ -64,3 +65,8 @@ class SmfTasks:
         logger.debug("Updating ALL smf groups")
         for user in SmfUser.objects.exclude(username__exact=''):
             SmfTasks.update_groups.delay(user.user_id)
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import SmfService
+        return NameFormatter(SmfService(), user).format_name()

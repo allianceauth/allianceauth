@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.celery import app
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import SeatManager
 from .models import SeatUser
 
@@ -64,3 +65,8 @@ class SeatTasks:
     @staticmethod
     def deactivate():
         SeatUser.objects.all().delete()
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import SeatService
+        return NameFormatter(SeatService(), user).format_name()

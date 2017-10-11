@@ -18,6 +18,7 @@ class Teamspeak3Service(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_ctrl_template = 'services/teamspeak3/teamspeak3_service_ctrl.html'
         self.access_perm = 'teamspeak3.access_teamspeak3'
+        self.name_format = '[{corp_ticker}]{character_name}'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))

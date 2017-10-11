@@ -50,11 +50,6 @@ class Teamspeak3Manager:
         sanatized = sanatized.replace("'", "-")
         return sanatized
 
-    @staticmethod
-    def __generate_username(username, corp_ticker):
-        sanatized = "[" + corp_ticker + "]" + username
-        return sanatized[:30]
-
     def _get_userid(self, uid):
         logger.debug("Looking for uid %s on TS3 server." % uid)
         try:
@@ -184,8 +179,8 @@ class Teamspeak3Manager:
         except:
             logger.exception("An unhandled exception has occured while syncing TS groups.")
 
-    def add_user(self, username, corp_ticker):
-        username_clean = self.__santatize_username(self.__generate_username(username, corp_ticker))
+    def add_user(self, username):
+        username_clean = self.__santatize_username(username[:30])
         logger.debug("Adding user to TS3 server with cleaned username %s" % username_clean)
         server_groups = self._group_list()
 

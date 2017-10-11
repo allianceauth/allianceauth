@@ -26,25 +26,14 @@ class MumbleManager:
     def __generate_random_pass():
         return ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
 
-    @staticmethod
-    def __generate_username(username, corp_ticker):
-        return "[" + corp_ticker + "]" + username
-
-    @staticmethod
-    def __generate_username_blue(username, corp_ticker):
-        return "[BLUE][" + corp_ticker + "]" + username
-
     @classmethod
     def _gen_pwhash(cls, password):
         return bcrypt_sha256.encrypt(password.encode('utf-8'))
 
     @classmethod
-    def create_user(cls, user, corp_ticker, username, blue=False):
-        logger.debug("Creating%s mumble user with username %s and ticker %s" % (' blue' if blue else '',
-                                                                                username, corp_ticker))
-        username_clean = cls.__santatize_username(
-            cls.__generate_username_blue(username, corp_ticker) if blue else
-            cls.__generate_username(username, corp_ticker))
+    def create_user(cls, user, username):
+        logger.debug("Creating mumble user with username %s" % (username))
+        username_clean = cls.__santatize_username(username)
         password = cls.__generate_random_pass()
         pwhash = cls._gen_pwhash(password)
         logger.debug("Proceeding with mumble user creation: clean username %s, pwhash starts with %s" % (

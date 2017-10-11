@@ -23,7 +23,7 @@ def activate_jabber(request):
     logger.debug("activate_jabber called by user %s" % request.user)
     character = request.user.profile.main_character
     logger.debug("Adding jabber user for user %s with main character %s" % (request.user, character))
-    info = OpenfireManager.add_user(character.character_name)
+    info = OpenfireManager.add_user(OpenfireTasks.get_username(request.user))
     # If our username is blank means we already had a user
     if info[0] is not "":
         OpenfireUser.objects.update_or_create(user=request.user, defaults={'username': info[0]})

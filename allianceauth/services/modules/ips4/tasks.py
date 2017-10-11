@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
+from allianceauth.services.hooks import NameFormatter
 from .manager import Ips4Manager
 from .models import Ips4User
 
@@ -33,3 +34,8 @@ class Ips4Tasks:
     def disable():
         logging.debug("Deleting all IPS4 users")
         Ips4User.objects.all().delete()
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import Ips4Service
+        return NameFormatter(Ips4Service(), user).format_name()

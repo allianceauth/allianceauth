@@ -9,4 +9,5 @@
     corpstats
     groups
     permissions_tool
+    nameformats
 ```

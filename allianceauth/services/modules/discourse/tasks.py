@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.celery import app
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import DiscourseManager
 from .models import DiscourseUser
 
@@ -56,3 +57,8 @@ class DiscourseTasks:
         logger.debug("Updating ALL discourse groups")
         for discourse_user in DiscourseUser.objects.filter(enabled=True):
             DiscourseTasks.update_groups.delay(discourse_user.user.pk)
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import DiscourseService
+        return NameFormatter(DiscourseService(), user).format_name()

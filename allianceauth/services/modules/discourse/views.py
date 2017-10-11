@@ -71,7 +71,7 @@ def discourse_sso(request):
 
     ## Build the return payload
 
-    username = DiscourseManager._sanitize_username(main_char.character_name)
+    username = DiscourseManager._sanitize_username(DiscourseTasks.get_username(request.user))
 
     qs = parse_qs(decoded)
     params = {

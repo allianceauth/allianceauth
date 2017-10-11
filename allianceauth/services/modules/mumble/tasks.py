@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from allianceauth.services.hooks import NameFormatter
 
 from allianceauth.celery import app
 from .manager import MumbleManager
@@ -25,6 +26,11 @@ class MumbleTasks:
     def disable_mumble():
         logger.info("Deleting all MumbleUser models")
         MumbleUser.objects.all().delete()
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import MumbleService
+        return NameFormatter(MumbleService(), user).format_name()
 
     @staticmethod
     @app.task(bind=True, name="mumble.update_groups")

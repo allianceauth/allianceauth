@@ -18,6 +18,7 @@ class DiscordService(ServicesHook):
         self.name = 'discord'
         self.service_ctrl_template = 'services/discord/discord_service_ctrl.html'
         self.access_perm = 'discord.access_discord'
+        self.name_format = '{character_name}'
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))

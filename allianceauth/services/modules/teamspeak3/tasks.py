@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.celery import app
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import Teamspeak3Manager
 from .models import AuthTS, TSgroup, UserTSgroup, Teamspeak3User
 from .util.ts3 import TeamspeakError
@@ -85,3 +86,8 @@ class Teamspeak3Tasks:
         logger.debug("Updating ALL teamspeak3 groups")
         for user in Teamspeak3User.objects.exclude(uid__exact=''):
             Teamspeak3Tasks.update_groups.delay(user.user_id)
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import Teamspeak3Service
+        return NameFormatter(Teamspeak3Service(), user).format_name()

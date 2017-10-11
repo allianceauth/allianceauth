@@ -16,6 +16,7 @@ class XenforoService(ServicesHook):
         self.name = 'xenforo'
         self.urlpatterns = urlpatterns
         self.access_perm = 'xenforo.access_xenforo'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

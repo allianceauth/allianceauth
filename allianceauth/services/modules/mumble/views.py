@@ -18,10 +18,9 @@ ACCESS_PERM = 'mumble.access_mumble'
 def activate_mumble(request):
     logger.debug("activate_mumble called by user %s" % request.user)
     character = request.user.profile.main_character
-    ticker = character.corporation_ticker
 
     logger.debug("Adding mumble user for %s with main character %s" % (request.user, character))
-    result = MumbleManager.create_user(request.user, ticker, character.character_name)
+    result = MumbleManager.create_user(request.user, MumbleTasks.get_username(request.user))
 
     if result:
         logger.debug("Updated authserviceinfo for user %s with mumble credentials. Updating groups." % request.user)

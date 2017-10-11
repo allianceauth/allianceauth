@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.celery import app
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import Phpbb3Manager
 from .models import Phpbb3User
 
@@ -64,3 +65,8 @@ class Phpbb3Tasks:
     @staticmethod
     def disable():
         Phpbb3User.objects.all().delete()
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import Phpbb3Service
+        return NameFormatter(Phpbb3Service(), user).format_name()

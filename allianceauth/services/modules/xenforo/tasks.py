@@ -3,6 +3,7 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 
 from allianceauth.notifications import notify
+from allianceauth.services.hooks import NameFormatter
 from .manager import XenForoManager
 from .models import XenforoUser
 
@@ -35,3 +36,8 @@ class XenforoTasks:
     def disable(cls):
         logger.debug("Deleting ALL XenForo users")
         XenforoUser.objects.all().delete()
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import XenforoService
+        return NameFormatter(XenforoService(), user).format_name()

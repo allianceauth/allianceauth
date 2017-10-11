@@ -20,7 +20,7 @@ def activate_xenforo_forum(request):
     logger.debug("activate_xenforo_forum called by user %s" % request.user)
     character = request.user.profile.main_character
     logger.debug("Adding XenForo user for user %s with main character %s" % (request.user, character))
-    result = XenForoManager.add_user(character.character_name, request.user.email)
+    result = XenForoManager.add_user(XenforoTasks.get_username(request.user), request.user.email)
     # Based on XenAPI's response codes
     if result['response']['status_code'] == 200:
         XenforoUser.objects.update_or_create(user=request.user, defaults={'username': result['username']})

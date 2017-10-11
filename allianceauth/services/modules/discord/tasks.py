@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from allianceauth.notifications import notify
 
 from allianceauth.celery import app
+from allianceauth.services.hooks import NameFormatter
 from .manager import DiscordOAuthManager, DiscordApiBackoff
 from .models import DiscordUser
 
@@ -102,7 +103,7 @@ class DiscordTasks:
                 character = user.profile.main_character
                 logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
                 try:
-                    DiscordOAuthManager.update_nickname(user.discord.uid, character.character_name)
+                    DiscordOAuthManager.update_nickname(user.discord.uid, DiscordTasks.get_nickname(user))
                 except Exception as e:
                     if self:
                         logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
@@ -126,3 +127,8 @@ class DiscordTasks:
     @classmethod
     def disable(cls):
         DiscordUser.objects.all().delete()
+
+    @staticmethod
+    def get_nickname(user):
+        from .auth_hooks import DiscordService
+        return NameFormatter(DiscordService(), user).format_name()

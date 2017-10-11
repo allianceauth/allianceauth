@@ -25,7 +25,7 @@ def activate_seat(request):
     stat = SeatManager.check_user_status(character.character_name)
     if stat == {}:
         logger.debug("User not found, adding SeAT user for user %s with main character %s" % (request.user, character))
-        result = SeatManager.add_user(character.character_name, request.user.email)
+        result = SeatManager.add_user(SeatTasks.get_username(request.user), request.user.email)
     else:
         logger.debug("User found, resetting password")
         username = SeatManager.enable_user(stat["name"])

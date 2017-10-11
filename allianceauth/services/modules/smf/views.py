@@ -21,7 +21,8 @@ def activate_smf(request):
     # Valid now we get the main characters
     character = request.user.profile.main_character
     logger.debug("Adding smf user for user %s with main character %s" % (request.user, character))
-    result = SmfManager.add_user(character.character_name, request.user.email, ['Member'], character.character_id)
+    result = SmfManager.add_user(SmfTasks.get_username(request.user), request.user.email, ['Member'],
+                                 character.character_id)
     # if empty we failed
     if result[0] != "":
         SmfUser.objects.update_or_create(user=request.user, defaults={'username': result[0]})

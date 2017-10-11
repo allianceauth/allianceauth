@@ -21,6 +21,7 @@ class MumbleService(ServicesHook):
         self.service_url = settings.MUMBLE_URL
         self.access_perm = 'mumble.access_mumble'
         self.service_ctrl_template = 'services/mumble/mumble_service_ctrl.html'
+        self.name_format = '[{corp_ticker}]{character_name}'
 
     def delete_user(self, user, notify_user=False):
         logging.debug("Deleting user %s %s account" % (user, self.name))

@@ -23,7 +23,7 @@ def activate_teamspeak3(request):
     ticker = character.corporation_ticker
     with Teamspeak3Manager() as ts3man:
         logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
-        result = ts3man.add_user(character.character_name, ticker)
+        result = ts3man.add_user(Teamspeak3Tasks.get_username(request.user))
 
     # if its empty we failed
     if result[0] is not "":

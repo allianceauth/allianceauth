@@ -18,6 +18,7 @@ class Phpbb3Service(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.PHPBB3_URL
         self.access_perm = 'phpbb3.access_phpbb3'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

@@ -20,7 +20,7 @@ def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     character = request.user.profile.main_character
     logger.debug("Adding IPS4 user for user %s with main character %s" % (request.user, character))
-    result = Ips4Manager.add_user(character.character_name, request.user.email)
+    result = Ips4Manager.add_user(Ips4Tasks.get_username(request.user), request.user.email)
     # if empty we failed
     if result[0] != "" and not Ips4Tasks.has_account(request.user):
         ips_user = Ips4User.objects.create(user=request.user, id=result[2], username=result[0])

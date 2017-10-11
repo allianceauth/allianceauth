@@ -6,6 +6,7 @@ from allianceauth.notifications import notify
 
 from allianceauth.celery import app
 from allianceauth.services.modules.openfire.manager import OpenfireManager
+from allianceauth.services.hooks import NameFormatter
 from .models import OpenfireUser
 
 logger = logging.getLogger(__name__)
@@ -65,3 +66,8 @@ class OpenfireTasks:
         logger.debug("Updating ALL jabber groups")
         for openfire_user in OpenfireUser.objects.exclude(username__exact=''):
             OpenfireTasks.update_groups.delay(openfire_user.user.pk)
+
+    @staticmethod
+    def get_username(user):
+        from .auth_hooks import OpenfireService
+        return NameFormatter(OpenfireService(), user).format_name()

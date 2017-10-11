@@ -18,6 +18,7 @@ class SmfService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.SMF_URL
         self.access_perm = 'smf.access_smf'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

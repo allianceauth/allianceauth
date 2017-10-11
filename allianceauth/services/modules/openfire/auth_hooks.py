@@ -18,6 +18,7 @@ class OpenfireService(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.JABBER_URL
         self.access_perm = 'openfire.access_openfire'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

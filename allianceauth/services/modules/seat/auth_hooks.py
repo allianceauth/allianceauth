@@ -18,6 +18,7 @@ class SeatService(ServicesHook):
         self.name = 'seat'
         self.service_url = settings.SEAT_URL
         self.access_perm = 'seat.access_seat'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

@@ -14,6 +14,7 @@ class Ips4Service(ServicesHook):
         self.urlpatterns = urlpatterns
         self.service_url = settings.IPS4_URL
         self.access_perm = 'ips4.access_ips4'
+        self.name_format = '{character_name}'
 
     @property
     def title(self):

@@ -10,6 +10,7 @@ class ExampleService(ServicesHook):
         ServicesHook.__init__(self)
         self.urlpatterns = urlpatterns
         self.service_url = 'http://exampleservice.example.com'
+        self.name = 'example'
 
     """
     Overload base methods here to implement functionality
