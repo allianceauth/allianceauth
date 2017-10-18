@@ -27,3 +27,18 @@
 #site-body-wrapper {
     margin-right:0;
 }
+
+/* Horizontal list group */
+ul.list-group.list-group-horizontal {
+    display: table;
+    width: 100%;
+}
+
+ul.list-group.list-group-horizontal > li.list-group-item {
+    display: table-cell;
+    max-width: 0;
+}
+
+.flex-center-horizontal {
+    justify-content: center;
+}

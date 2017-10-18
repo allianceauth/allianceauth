@@ -6,6 +6,9 @@
 
 {% block content %}
     <h1 class="page-header text-center">{% trans "Dashboard" %}</h1>
+    {% if user.is_staff %}
+        {% include 'allianceauth/admin-status/include.html' %}
+    {% endif %}
     <div class="col-sm-12">
         <div class="row vertical-flexbox-row">
             <div class="col-sm-6 text-center">

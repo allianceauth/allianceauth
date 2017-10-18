@@ -1,0 +1,100 @@
+{% load i18n %}
+<div class="col-sm-12">
+    <div class="row vertical-flexbox-row">
+        <div class="col-sm-6">
+            <div class="panel panel-primary" style="height:100%;position:relative;">
+                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Alliance Auth Notifications" %}</h3></div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        {% for notif in notifications %}
+                        <li class="list-group-item">
+                            {% if notif.state == 'open' %}
+                                <span class="label label-success">{% trans "Open" %}</span>
+                            {% else %}
+                                <span class="label label-danger">{% trans "Closed" %}</span>
+                            {% endif %}
+                            <a href="{{ notif.html_url }}" target="_blank">#{{ notif.number }} {{ notif.title }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="text-right" style="position:absolute;bottom:5px;right:5px;">
+                    <a href="https://github.com/allianceauth/allianceauth/issues"><span class="label label-default">
+                        <i class="fa fa-github" aria-hidden="true"></i> Powered by Github</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-primary" style="height:50%;">
+                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Software Version" %}</h3></div>
+                <div class="panel-body flex-center-horizontal">
+                    <ul class="list-group list-group-horizontal" style="margin-bottom: 0;">
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">{% trans "Current" %}</h4>
+                            <p class="list-group-item-text">
+                                {{ current_version }}
+                            </p>
+                        </li>
+                        <li class="list-group-item list-group-item-{% if latest_major %}success{% else %}warning{% endif %}">
+                            <h4 class="list-group-item-heading">{% trans "Latest Major" %}</h4>
+                            <p class="list-group-item-text">
+                                <a href="{{ latest_major_url }}" style="color:#000"><i class="fa fa-github" aria-hidden="true"></i>
+                                    {{ latest_major_version }}
+                                </a>
+                                {% if not latest_major %}<br>{% trans "Update available" %}{% endif %}
+                            </p>
+                        </li>
+                        <li class="list-group-item list-group-item-{% if latest_minor %}success{% else %}warning{% endif %}">
+                            <h4 class="list-group-item-heading">{% trans "Latest Minor" %}</h4>
+                            <p class="list-group-item-text">
+                                <a href="{{ latest_minor_url }}" style="color:#000"><i class="fa fa-github" aria-hidden="true"></i>
+                                    {{ latest_minor_version }}
+                                </a>
+                                {% if not latest_minor %}<br>{% trans "Update available" %}{% endif %}
+                            </p>
+                        </li>
+                        <li class="list-group-item list-group-item-{% if latest_patch %}success{% else %}danger{% endif %}">
+                            <h4 class="list-group-item-heading">{% trans "Latest Patch" %}</h4>
+                            <p class="list-group-item-text">
+                                <a href="{{ latest_patch_url }}" style="color:#000"><i class="fa fa-github" aria-hidden="true"></i>
+                                    {{ latest_patch_version }}
+                                </a>
+                                {% if not latest_patch %}<br>{% trans "Update available" %}{% endif %}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-primary" style="height:50%;">
+                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Task Queue" %}</h3></div>
+                <div class="panel-body flex-center-horizontal">
+                    <div class="progress" style="height: 21px;">
+                        <div class="progress-bar
+                            {% if task_queue_length > 500 %}
+                                progress-bar-danger
+                            {% elif task_queue_length > 100 %}
+                                progress-bar-warning
+                            {% else %}
+                                progress-bar-success
+                            {% endif %}
+                            " role="progressbar" aria-valuenow="{% widthratio task_queue_length 500 100 %}"
+                             aria-valuemin="0" aria-valuemax="100"
+                             style="width: {% widthratio task_queue_length 500 100 %}%;">
+                        </div>
+                    </div>
+                    {% if task_queue_length < 0 %}
+                        {% trans "Error retrieving task queue length" %}
+                    {% else %}
+                        {% blocktrans count tasks=task_queue_length %}
+                        {{ tasks }} task
+                        {% plural %}
+                        {{ tasks }} tasks
+                        {% endblocktrans %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
