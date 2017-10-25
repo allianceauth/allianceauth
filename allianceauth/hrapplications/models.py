@@ -9,6 +9,7 @@ from allianceauth.eveonline.models import EveCorporationInfo
 class ApplicationQuestion(models.Model):
     title = models.CharField(max_length=254, verbose_name='Question')
     help_text = models.CharField(max_length=254, blank=True, null=True)
+    multi_select = models.BooleanField(default=False)
 
     def __str__(self):
         return "Question: " + self.title

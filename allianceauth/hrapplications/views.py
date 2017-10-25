@@ -62,8 +62,8 @@ def hr_application_create_view(request, form_id=None):
                 application.save()
                 for question in app_form.questions.all():
                     response = ApplicationResponse(question=question, application=application)
-                    response.answer = request.POST.get(str(question.pk),
-                                                       "Failed to retrieve answer provided by applicant.")
+                    response.answer = "\n".join(request.POST.getlist(str(question.pk),
+                                                       ""))
                     response.save()
                 logger.info("%s created %s" % (request.user, application))
             return redirect('hrapplications:view')
