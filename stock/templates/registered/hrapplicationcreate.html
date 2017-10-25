@@ -20,7 +20,7 @@
                                 <div cass="text-center">{{ question.help_text }}</div>
                             {% endif %}
                             {% for choice in question.choices.all %}
-                                <input type="radio" name="{{ question.pk }}" id="id_{{ question.pk }}" value="{{ choice.choice_text }}" />
+                                <input type={% if question.multi_select == False %}"radio"{% else %}"checkbox"{% endif %} name="{{ question.pk }}" id="id_{{ question.pk }}" value="{{ choice.choice_text }}" />
                                 <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
                             {% empty %}
                                 <textarea class="form-control" cols="30" id="id_{{ question.pk }}" name="{{ question.pk }}" rows="4"></textarea>
