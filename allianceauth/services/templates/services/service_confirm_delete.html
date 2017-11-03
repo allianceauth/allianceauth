@@ -1,0 +1,31 @@
+{% extends "allianceauth/base.html" %}
+{% load i18n %}
+
+
+
+{% block page_title %}
+    {% blocktrans with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktrans %}
+{% endblock page_title %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">
+            {% blocktrans with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktrans %}
+        </h1>
+        <div class="container-fluid">
+            <div class="col-md-2 col-md-offset-5">
+                <div class="row">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <p>
+                            {% blocktrans trimmed %}
+                            Are you sure you want to delete your {{ view.service_name }} account {{ object }}?
+                            {% endblocktrans %}
+                        </p>
+                        <input class="btn btn-danger btn-block" type="submit" value="Confirm" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

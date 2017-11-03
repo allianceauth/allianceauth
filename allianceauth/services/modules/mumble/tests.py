@@ -25,7 +25,7 @@ class MumbleHooksTestCase(TestCase):
     def setUp(self):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
-        MumbleUser.objects.create(user=member, username=self.member, pwhash='password', groups='Member')
+        MumbleUser.objects.create(user=member)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = MumbleService
@@ -45,13 +45,13 @@ class MumbleHooksTestCase(TestCase):
         self.assertTrue(service.service_active_for_user(member))
         self.assertFalse(service.service_active_for_user(none_user))
 
-    @mock.patch(MODULE_PATH + '.tasks.MumbleManager')
-    def test_update_all_groups(self, manager):
+    @mock.patch(MODULE_PATH + '.tasks.User.mumble')
+    def test_update_all_groups(self, mumble):
         service = self.service()
         service.update_all_groups()
         # Check member and blue user have groups updated
-        self.assertTrue(manager.update_groups.called)
-        self.assertEqual(manager.update_groups.call_count, 1)
+        self.assertTrue(mumble.update_groups.called)
+        self.assertEqual(mumble.update_groups.call_count, 1)
 
     def test_update_groups(self):
         # Check member has Member group updated
@@ -66,11 +66,10 @@ class MumbleHooksTestCase(TestCase):
         self.assertIn(DEFAULT_AUTH_GROUP, mumble_user.groups)
 
         # Check none user does not have groups updated
-        with mock.patch(MODULE_PATH + '.tasks.MumbleManager') as manager:
-            service = self.service()
-            none_user = User.objects.get(username=self.none_user)
-            service.update_groups(none_user)
-            self.assertFalse(manager.update_groups.called)
+        service = self.service()
+        none_user = User.objects.get(username=self.none_user)
+        result = service.update_groups(none_user)
+        self.assertFalse(result)
 
     def test_validate_user(self):
         service = self.service()
@@ -81,7 +80,7 @@ class MumbleHooksTestCase(TestCase):
 
         # Test none user is deleted
         none_user = User.objects.get(username=self.none_user)
-        MumbleUser.objects.create(user=none_user, username='mr no-name', pwhash='password', groups='Blue,Orange')
+        MumbleUser.objects.create(user=none_user)
         service.validate_user(none_user)
         with self.assertRaises(ObjectDoesNotExist):
             none_mumble = User.objects.get(username=self.none_user).mumble
@@ -139,11 +138,11 @@ class MumbleViewsTestCase(TestCase):
         self.assertTrue(mumble_user.pwhash)
         self.assertEqual('Member', mumble_user.groups)
 
-    def test_deactivate(self):
+    def test_deactivate_post(self):
         self.login()
-        MumbleUser.objects.create(user=self.member, username='some member')
+        MumbleUser.objects.create(user=self.member)
 
-        response = self.client.get(urls.reverse('mumble:deactivate'))
+        response = self.client.post(urls.reverse('mumble:deactivate'))
 
         self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
         with self.assertRaises(ObjectDoesNotExist):
@@ -151,37 +150,39 @@ class MumbleViewsTestCase(TestCase):
 
     def test_set_password(self):
         self.login()
-        MumbleUser.objects.create(user=self.member, username='some member', pwhash='old')
+        created = MumbleUser.objects.create(user=self.member)
+        old_pwd = created.credentials.get('password')
 
         response = self.client.post(urls.reverse('mumble:set_password'), data={'password': '1234asdf'})
 
-        self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, 'old')
+        self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, old_pwd)
         self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
 
     def test_reset_password(self):
         self.login()
-        MumbleUser.objects.create(user=self.member, username='some member', pwhash='old')
+        created = MumbleUser.objects.create(user=self.member)
+        old_pwd = created.credentials.get('password')
 
         response = self.client.get(urls.reverse('mumble:reset_password'))
 
-        self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, 'old')
+        self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, old_pwd)
         self.assertTemplateUsed(response, 'services/service_credentials.html')
-        self.assertContains(response, 'some member')
+        self.assertContains(response, 'auth_member')
 
 
 class MumbleManagerTestCase(TestCase):
     def setUp(self):
-        from .manager import MumbleManager
+        from .models import MumbleManager
         self.manager = MumbleManager
 
     def test_generate_random_password(self):
-        password = self.manager._MumbleManager__generate_random_pass()
+        password = self.manager.generate_random_pass()
 
         self.assertEqual(len(password), 16)
         self.assertIsInstance(password, type(''))
 
     def test_gen_pwhash(self):
-        pwhash = self.manager._gen_pwhash('test')
+        pwhash = self.manager.gen_pwhash('test')
 
         self.assertEqual(pwhash[:15], '$bcrypt-sha256$')
         self.assertEqual(len(pwhash), 75)
