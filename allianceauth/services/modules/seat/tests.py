@@ -85,10 +85,10 @@ class SeatHooksTestCase(TestCase):
 
         # Test none user is deleted
         none_user = User.objects.get(username=self.none_user)
-        manager.delete_user.return_value = 'abc123'
+        manager.disable_user.return_value = 'abc123'
         SeatUser.objects.create(user=none_user, username='abc123')
         service.validate_user(none_user)
-        self.assertTrue(manager.delete_user.called)
+        self.assertTrue(manager.disable_user.called)
         with self.assertRaises(ObjectDoesNotExist):
             none_seat = User.objects.get(username=self.none_user).seat
 
@@ -100,7 +100,7 @@ class SeatHooksTestCase(TestCase):
         result = service.delete_user(member)
 
         self.assertTrue(result)
-        self.assertTrue(manager.delete_user.called)
+        self.assertTrue(manager.disable_user.called)
         with self.assertRaises(ObjectDoesNotExist):
             seat_user = User.objects.get(username=self.member).seat
 
@@ -161,8 +161,9 @@ class SeatViewsTestCase(TestCase):
 
         response = self.client.get(urls.reverse('seat:deactivate'))
 
-        self.assertTrue(manager.delete_user.called)
+        self.assertTrue(manager.disable_user.called)
         self.assertRedirects(response, expected_url=urls.reverse('services:services'), target_status_code=200)
+
         with self.assertRaises(ObjectDoesNotExist):
             seat_user = User.objects.get(pk=self.member.pk).seat
 

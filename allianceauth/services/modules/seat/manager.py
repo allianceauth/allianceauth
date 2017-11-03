@@ -72,12 +72,24 @@ class SeatManager:
     @classmethod
     def enable_user(cls, username):
         """ Enable user """
-        ret = cls.exec_request('user/{}'.format(username), 'put', active=1)
+        ret = cls.exec_request('user/{}'.format(username), 'put', account_status=1)
         logger.debug(ret)
         if cls._response_ok(ret):
             logger.info("Enabled SeAT user with username %s" % username)
             return username
         logger.info("Failed to enabled SeAT user with username %s" % username)
+        return None
+
+    @classmethod
+    def disable_user(cls, username):
+        """ Disable user """
+        cls.update_roles(username, [])
+        ret = cls.exec_request('user/{}'.format(username), 'put', account_status=0)
+        logger.debug(ret)
+        if cls._response_ok(ret):
+            logger.info("Disabled SeAT user with username %s" % username)
+            return username
+        logger.info("Failed to disable SeAT user with username %s" % username)
         return None
 
     @classmethod
