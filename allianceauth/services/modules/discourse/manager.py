@@ -213,7 +213,7 @@ class DiscourseManager:
         def get_or_create_group():
             groups = DiscourseManager._get_groups()
             for g in groups:
-                if g['name'] == name:
+                if g['name'].lower() == name.lower():
                     return g['id']
             return DiscourseManager._create_group(name)['id']
 
