@@ -237,7 +237,7 @@ def srp_request_remove(request):
             srpuserrequest = SrpUserRequest.objects.get(id=srp_request_id)
             stored_fleet_view = srpuserrequest.srp_fleet_main.id
             srpuserrequest.delete()
-	            logger.info("Deleted SRP request id %s for user %s" % (srp_request_id, request.user))
+            logger.info("Deleted SRP request id %s for user %s" % (srp_request_id, request.user))
     if stored_fleet_view is None:
         logger.error("Unable to delete srp requests for user %s - request matching id not found." % (request.user))
         messages.error(request, _('Unable to locate selected SRP request.'))

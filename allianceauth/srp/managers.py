@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class srpManager:
+class SRPManager:
     def __init__(self):
         pass
 
