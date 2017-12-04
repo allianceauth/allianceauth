@@ -17,6 +17,7 @@ NOSE_ARGS = [
 CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
 INSTALLED_APPS += [
+    'allianceauth.eveonline.autogroups',
     'allianceauth.hrapplications',
     'allianceauth.timerboard',
     'allianceauth.srp',

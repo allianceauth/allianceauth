@@ -8,6 +8,7 @@
     hrapplications
     corpstats
     groups
+    autogroups
     permissions_tool
     nameformats
 ```
