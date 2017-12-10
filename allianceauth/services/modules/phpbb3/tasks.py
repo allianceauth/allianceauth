@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import Phpbb3Manager
@@ -35,7 +35,7 @@ class Phpbb3Tasks:
             return False
 
     @staticmethod
-    @app.task(bind=True, name="phpbb3.update_groups")
+    @shared_task(bind=True, name="phpbb3.update_groups")
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating phpbb3 groups for user %s" % user)
@@ -56,7 +56,7 @@ class Phpbb3Tasks:
             logger.debug("User does not have a Phpbb3 account")
 
     @staticmethod
-    @app.task(name="phpbb3.update_all_groups")
+    @shared_task(name="phpbb3.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL phpbb3 groups")
         for user in Phpbb3User.objects.exclude(username__exact=''):

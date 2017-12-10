@@ -1,6 +1,6 @@
 import logging
 
-from allianceauth.celery import app
+from celery import shared_task
 from .models import EveAllianceInfo
 from .models import EveCharacter
 from .models import EveCorporationInfo
@@ -8,22 +8,22 @@ from .models import EveCorporationInfo
 logger = logging.getLogger(__name__)
 
 
-@app.task
+@shared_task
 def update_corp(corp_id):
     EveCorporationInfo.objects.update_corporation(corp_id)
 
 
-@app.task
+@shared_task
 def update_alliance(alliance_id):
     EveAllianceInfo.objects.update_alliance(alliance_id).populate_alliance()
 
 
-@app.task
+@shared_task
 def update_character(character_id):
     EveCharacter.objects.update_character(character_id)
 
 
-@app.task
+@shared_task
 def run_model_update():
     # update existing corp models
     for corp in EveCorporationInfo.objects.all().values('corporation_id'):

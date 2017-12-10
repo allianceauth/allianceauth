@@ -2,14 +2,14 @@ import logging
 
 from esi.errors import TokenExpiredError, TokenInvalidError
 from esi.models import Token
+from celery import shared_task
 
 from allianceauth.authentication.models import CharacterOwnership
-from allianceauth.celery import app
 
 logger = logging.getLogger(__name__)
 
 
-@app.task
+@shared_task
 def check_character_ownership(owner_hash):
     tokens = Token.objects.filter(character_owner_hash=owner_hash)
     if tokens:
@@ -31,7 +31,7 @@ def check_character_ownership(owner_hash):
         CharacterOwnership.objects.filter(owner_hash=owner_hash).delete()
 
 
-@app.task
+@shared_task
 def check_all_character_ownership():
     for c in CharacterOwnership.objects.all().only('owner_hash'):
         check_character_ownership.delay(c.owner_hash)

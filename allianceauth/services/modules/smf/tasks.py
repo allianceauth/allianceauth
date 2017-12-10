@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import SmfManager
@@ -39,7 +39,7 @@ class SmfTasks:
         SmfUser.objects.all().delete()
 
     @staticmethod
-    @app.task(bind=True, name="smf.update_groups")
+    @shared_task(bind=True, name="smf.update_groups")
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating smf groups for user %s" % user)
@@ -60,7 +60,7 @@ class SmfTasks:
             logger.debug("User does not have an smf account")
 
     @staticmethod
-    @app.task(name="smf.update_all_groups")
+    @shared_task(name="smf.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL smf groups")
         for user in SmfUser.objects.exclude(username__exact=''):

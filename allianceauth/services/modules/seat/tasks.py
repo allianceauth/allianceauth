@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import SeatManager
@@ -34,7 +34,7 @@ class SeatTasks:
         return False
 
     @staticmethod
-    @app.task(bind=True)
+    @shared_task(bind=True)
     def update_roles(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating SeAT roles for user %s" % user)
@@ -56,7 +56,7 @@ class SeatTasks:
             logger.debug("User %s does not have a SeAT account")
 
     @staticmethod
-    @app.task
+    @shared_task
     def update_all_roles():
         logger.debug("Updating ALL SeAT roles")
         for user in SeatUser.objects.all():

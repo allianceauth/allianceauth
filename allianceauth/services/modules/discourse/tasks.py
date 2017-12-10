@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import DiscourseManager
@@ -40,7 +40,7 @@ class DiscourseTasks:
             return False
 
     @staticmethod
-    @app.task(bind=True, name='discourse.update_groups')
+    @shared_task(bind=True, name='discourse.update_groups')
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discourse groups for user %s" % user)
@@ -52,7 +52,7 @@ class DiscourseTasks:
         logger.debug("Updated user %s discourse groups." % user)
 
     @staticmethod
-    @app.task(name='discourse.update_all_groups')
+    @shared_task(name='discourse.update_all_groups')
     def update_all_groups():
         logger.debug("Updating ALL discourse groups")
         for discourse_user in DiscourseUser.objects.filter(enabled=True):

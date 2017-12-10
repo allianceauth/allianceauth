@@ -1,8 +1,8 @@
 import logging
 
 import redis
+from celery import shared_task
 
-from allianceauth.celery import app
 from .hooks import ServicesHook
 
 REDIS_CLIENT = redis.Redis()
@@ -37,7 +37,7 @@ def only_one(function=None, key="", timeout=None):
     return _dec(function) if function is not None else _dec
 
 
-@app.task(bind=True)
+@shared_task(bind=True)
 def validate_services(self, user):
     logger.debug('Ensuring user {} has permissions for active services'.format(user))
     # Iterate through services hooks and have them check the validity of the user

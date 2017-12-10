@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from .models import MumbleUser
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class MumbleTasks:
         MumbleUser.objects.all().delete()
 
     @staticmethod
-    @app.task(bind=True, name="mumble.update_groups")
+    @shared_task(bind=True, name="mumble.update_groups")
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating mumble groups for user %s" % user)
@@ -46,7 +46,7 @@ class MumbleTasks:
         return False
 
     @staticmethod
-    @app.task(name="mumble.update_all_groups")
+    @shared_task(name="mumble.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL mumble groups")
         for mumble_user in MumbleUser.objects.exclude(username__exact=''):

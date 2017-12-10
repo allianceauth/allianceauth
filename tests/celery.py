@@ -1,12 +1,12 @@
-import os
+import os, sys
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'allianceauth.project_template.project_name.settings.base')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
 from django.conf import settings  # noqa
 
-app = Celery('alliance_auth')
+app = Celery('devauth')
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.

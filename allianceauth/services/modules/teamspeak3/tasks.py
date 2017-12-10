@@ -2,8 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from celery import shared_task
 
-from allianceauth.celery import app
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import Teamspeak3Manager
@@ -37,7 +37,7 @@ class Teamspeak3Tasks:
             return False
 
     @staticmethod
-    @app.task()
+    @shared_task
     def run_ts3_group_update():
         logger.debug("TS3 installed. Syncing local group objects.")
         with Teamspeak3Manager() as ts3man:
@@ -56,7 +56,7 @@ class Teamspeak3Tasks:
         logger.info("Teamspeak3 disabled")
 
     @staticmethod
-    @app.task(bind=True, name="teamspeak3.update_groups")
+    @shared_task(bind=True, name="teamspeak3.update_groups")
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating user %s teamspeak3 groups" % user)
@@ -81,7 +81,7 @@ class Teamspeak3Tasks:
             logger.debug("User does not have a teamspeak3 account")
 
     @staticmethod
-    @app.task(name="teamspeak3.update_all_groups")
+    @shared_task(name="teamspeak3.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL teamspeak3 groups")
         for user in Teamspeak3User.objects.exclude(uid__exact=''):
