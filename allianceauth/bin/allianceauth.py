@@ -3,7 +3,15 @@ import os
 import shutil
 from optparse import OptionParser
 from django.core.management import call_command
-from django.core.management.commands.startproject import Command as StartProject
+from django.core.management.commands.startproject import Command as BaseStartProject
+
+
+class StartProject(BaseStartProject):
+    def add_arguments(self, parser):
+        super().add_arguments(parser)
+        parser.add_argument('--python', help='The path to the python executable.')
+        parser.add_argument('--celery', help='The path to the celery executable.')
+        parser.add_argument('--gunicorn', help='The path to the gunicorn executable.')
 
 
 def create_project(parser, options, args):
