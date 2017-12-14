@@ -112,6 +112,13 @@ Now you need to create the application that will run the Alliance Auth install. 
 
 The `allianceauth start myauth` command will bootstrap a Django project which will run Alliance Auth. You can rename it from `myauth` to anything you'd like: this name is shown by default as the site name but that can be changed later.
 
+```eval_rst
+.. tip::
+   If you plan to use gunicorn as your WSGI server (recommended), ensure it is installed before starting your auth project to have an entry automatically created in the project's supervisor config file. ::
+   
+      pip install gunicorn
+```
+
 The settings file needs configuring. Edit the template at `myauth/myauth/settings/local.py`. Be sure to configure the EVE SSO and Email settings.
 
 Django needs to install models to the database before it can start.
@@ -120,7 +127,7 @@ Django needs to install models to the database before it can start.
 
 Now we need to round up all the static files required to render templates. Make a directory to serve them from and populate it.
     
-    mkdir /var/www/myauth/static
+    mkdir -p /var/www/myauth/static
     python /home/allianceserver/myauth/manage.py collectstatic
     chown -R www-data:www-data /var/www/myauth/static
 
