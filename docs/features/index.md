@@ -11,4 +11,9 @@
     autogroups
     permissions_tool
     nameformats
+    fleetup
+    fleetactivitytracking
+    optimer
+    srp
+    timerboard
 ```

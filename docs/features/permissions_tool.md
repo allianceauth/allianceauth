@@ -7,6 +7,14 @@
 
 Access to most of Alliance Auth's features are controlled by Django's permissions system. In order to help you secure your services, Alliance Auth provides a permissions auditing tool.
 
+## Installation
+
+Add `allianceauth.permissions_tool` to your `INSTALLED_APPS` setting. In `myauth/settings/local.py`:
+
+    INSTALLED_APPS += ['allianceauth.permissions_tool']
+
+## Usage
+
 ### Access
 
 In order to grant users access to the permissions auditing tool they will need to be granted the `permissions_tool.audit_permissions` permission or be a superuser.

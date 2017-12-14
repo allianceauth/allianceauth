@@ -2,6 +2,14 @@
 
 This module is used to check the registration status of corp members and to determine character relationships, being mains or alts.
 
+## Installation
+
+Add `allianceauth.corputils` to your `INSTALLED_APPS` setting and run migrations. In `myauth/settings/local.py`:
+
+    INSTALLED_APPS += ['allianceauth.corputils']
+
+Run migrations to complete installation.
+
 ## Creating a Corp Stats
 
 Upon initial install, nothing will be visible. For every corp, a model will have to be created before data can be viewed.
