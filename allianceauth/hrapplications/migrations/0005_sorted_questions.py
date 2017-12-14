@@ -10,7 +10,7 @@ from sortedm2m.operations import AlterSortedManyToManyField
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hrapplications', '0003_make_strings_more_stringy'),
+        ('hrapplications', '0004_make_strings_more_stringy'),
     ]
 
     operations = [

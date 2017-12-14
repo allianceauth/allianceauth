@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hrapplications', '0002_choices_for_questions'),
+        ('hrapplications', '0003_applicationquestion_multi_select'),
     ]
 
     operations = [

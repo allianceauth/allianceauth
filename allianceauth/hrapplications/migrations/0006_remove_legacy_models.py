@@ -18,7 +18,7 @@ def delete_permissions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hrapplications', '0004_sorted_questions'),
+        ('hrapplications', '0005_sorted_questions'),
     ]
 
     operations = [
