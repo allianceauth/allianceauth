@@ -88,4 +88,4 @@ class EveCorporationManager(models.Manager):
         )
 
     def update_corporation(self, corp_id):
-        return self.get(corporation_id=corp_id).update_corporation(self.provider.get_corporation(id))
+        return self.get(corporation_id=corp_id).update_corporation(self.provider.get_corporation(corp_id))
