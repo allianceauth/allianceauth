@@ -32,7 +32,7 @@ def create_project(parser, options, args):
         'python': shutil.which('python'),
         'gunicorn': shutil.which('gunicorn'),
         'celery': shutil.which('celery'),
-        'extensions': ['py', 'conf'],
+        'extensions': ['py', 'conf', 'json'],
     }
 
     # Strip 'start' out of the arguments, leaving project name (and optionally destination dir)
