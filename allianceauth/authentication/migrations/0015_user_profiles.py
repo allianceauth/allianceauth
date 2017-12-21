@@ -103,7 +103,7 @@ def populate_ownerships(apps, schema_editor):
 
     unique_character_owners = [t['character_id'] for t in
                                Token.objects.all().values('character_id').annotate(n=models.Count('user')) if
-                               t['n'] == 1 and EveCharacter.objects.filter(character_id=t['character_id'].exists())]
+                               t['n'] == 1 and EveCharacter.objects.filter(character_id=t['character_id']).exists()]
 
     tokens = Token.objects.filter(character_id__in=unique_character_owners)
     for c_id in unique_character_owners:
