@@ -109,7 +109,7 @@ def populate_ownerships(apps, schema_editor):
     for c_id in unique_character_owners:
         ts = tokens.filter(character_id=c_id).order_by('created')
         for t in ts:
-            if t.can_refresh:
+            if t.refresh_token:
                 # find newest refreshable token and use it as basis for CharacterOwnership
                 CharacterOwnership.objecs.create_by_token(t)
                 break
