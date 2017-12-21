@@ -111,7 +111,7 @@ def populate_ownerships(apps, schema_editor):
         for t in ts:
             if t.refresh_token:
                 # find newest refreshable token and use it as basis for CharacterOwnership
-                CharacterOwnership.objecs.create_by_token(t)
+                CharacterOwnership.objects.create_by_token(t)
                 break
 
 
