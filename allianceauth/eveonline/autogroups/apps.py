@@ -6,4 +6,4 @@ class EveAutogroupsConfig(AppConfig):
     label = 'eve_autogroups'
 
     def ready(self):
-        import .signals
+        import allianceauth.eveonline.autogroups.signals
