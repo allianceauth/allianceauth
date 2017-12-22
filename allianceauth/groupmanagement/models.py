@@ -4,8 +4,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from allianceauth.eveonline.models import EveCharacter
-
 
 class GroupRequest(models.Model):
     status = models.CharField(max_length=254)
