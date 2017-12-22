@@ -107,12 +107,11 @@ def populate_ownerships(apps, schema_editor):
 
     tokens = Token.objects.filter(character_id__in=unique_character_owners)
     for c_id in unique_character_owners:
-        ts = tokens.filter(character_id=c_id).order_by('created')
-        for t in ts:
-            if t.refresh_token:
-                # find newest refreshable token and use it as basis for CharacterOwnership
-                CharacterOwnership.objects.create_by_token(t)
-                break
+        # find newest refreshable token and use it as basis for CharacterOwnership
+        ts = tokens.filter(character_id=c_id).exclude(refresh_token__isnull=True).order_by('created')
+        if ts.exists():
+            token = ts[0]
+            CharacterOwnership.objects.create(user_id=token.user_id, character_id=token.character_id, owner_hash=token.character_owner_hash)
 
 
 def create_profiles(apps, schema_editor):

@@ -20,8 +20,6 @@ def available_states_query(character):
 
 
 class CharacterOwnershipManager(Manager):
-    use_in_migrations = True
-    
     def create_by_token(self, token):
         if not EveCharacter.objects.filter(character_id=token.character_id).exists():
             EveCharacter.objects.create_character(token.character_id)
