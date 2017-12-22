@@ -39,6 +39,7 @@ class StateBackend(ModelBackend):
                 # insecure legacy main check for pre-sso registration auth installs
                 profile = UserProfile.objects.get(main_character__character_id=token.character_id)
                 # attach an ownership
+                token.user = profile.user
                 CharacterOwnership.objects.create_by_token(token)
                 return profile.user
             except UserProfile.DoesNotExist:
