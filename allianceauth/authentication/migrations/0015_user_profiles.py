@@ -111,7 +111,8 @@ def populate_ownerships(apps, schema_editor):
         ts = tokens.filter(character_id=c_id).exclude(refresh_token__isnull=True).order_by('created')
         if ts.exists():
             token = ts[0]
-            CharacterOwnership.objects.create(user_id=token.user_id, character_id=token.character_id, owner_hash=token.character_owner_hash)
+            char = EveCharacter.objects.get(character_id=token.character_id)
+            CharacterOwnership.objects.create(user_id=token.user_id, character_id=char.id, owner_hash=token.character_owner_hash)
 
 
 def create_profiles(apps, schema_editor):
