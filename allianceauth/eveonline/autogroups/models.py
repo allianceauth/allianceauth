@@ -110,11 +110,12 @@ class AutogroupsConfig(models.Model):
         group = None
         try:
             if not self.alliance_groups or not self.user_entitled_to_groups(user):
-                logger.debug('User {} does not have required state'.format(user))
+                logger.debug('User {} does not have required state for alliance group membership'.format(user))
                 return
             else:
                 alliance = user.profile.main_character.alliance
                 if alliance is None:
+                    logger.debug('User {} alliance is None, cannot update group membership'.format(user))
                     return
                 group = self.get_alliance_group(alliance)
         except EveAllianceInfo.DoesNotExist:
@@ -123,8 +124,9 @@ class AutogroupsConfig(models.Model):
         except AttributeError:
             logger.warning('User {} does not have a main character. Group membership not updated'.format(user))
         finally:
-            self.remove_user_from_corp_groups(user, except_group=group)
+            self.remove_user_from_alliance_groups(user, except_group=group)
             if group is not None:
+                logger.debug('Adding user {} to alliance group {}'.format(user, group))
                 user.groups.add(group)
 
     @transaction.atomic
@@ -132,7 +134,7 @@ class AutogroupsConfig(models.Model):
         group = None
         try:
             if not self.corp_groups or not self.user_entitled_to_groups(user):
-                logger.debug('User {} does not have required state'.format(user))
+                logger.debug('User {} does not have required state for corp group membership'.format(user))
             else:
                 corp = user.profile.main_character.corporation
                 group = self.get_corp_group(corp)
@@ -144,6 +146,7 @@ class AutogroupsConfig(models.Model):
         finally:
             self.remove_user_from_corp_groups(user, except_group=group)
             if group is not None:
+                logger.debug('Adding user {} to corp group {}'.format(user, group))
                 user.groups.add(group)
 
     @transaction.atomic
