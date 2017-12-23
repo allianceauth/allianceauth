@@ -82,7 +82,7 @@ def get_version_info():
     }
     try:
         tags = cache.get_or_set('github_release_tags', get_github_tags, TAG_CACHE_TIME)
-        current_ver = semver.Version(__version__, partial=True)
+        current_ver = semver.Version.coerce(__version__)
 
         # Set them all to the current version to start
         # If the server has only earlier or the same version
@@ -103,7 +103,7 @@ def get_version_info():
                 # Strip 'v' off front of verison if it exists
                 tag_name = tag_name[1:]
             try:
-                tag_ver = semver.Version(tag_name, partial=True)
+                tag_ver = semver.Version.coerce(tag_name)
             except ValueError:
                 tag_ver = semver.Version('0.0.0', partial=True)
             if tag_ver > current_ver:
