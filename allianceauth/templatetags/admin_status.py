@@ -102,7 +102,10 @@ def get_version_info():
             if tag_name[0] == 'v':
                 # Strip 'v' off front of verison if it exists
                 tag_name = tag_name[1:]
-            tag_ver = semver.Version(tag_name, partial=True)
+            try:
+                tag_ver = semver.Version(tag_name, partial=True)
+            except ValueError:
+                tag_ver = semver.Version('0.0.0', partial=True)
             if tag_ver > current_ver:
                 if latest_major is None or tag_ver > latest_major:
                     latest_major = tag_ver
