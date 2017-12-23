@@ -187,13 +187,15 @@ class AutogroupsConfig(models.Model):
         """
         Deletes ALL managed alliance groups
         """
-        self.alliance_managed_groups.all().delete()
+        for g in self.alliance_managed_groups.all():
+            g.delete()
 
     def delete_corp_managed_groups(self):
         """
         Deletes ALL managed corp groups
         """
-        self.corp_managed_groups.all().delete()
+        for g in self.corp_managed_groups.all():
+            g.delete()
 
     def get_alliance_group_name(self, alliance: EveAllianceInfo) -> str:
         if self.alliance_name_source == self.OPT_TICKER:
@@ -227,6 +229,9 @@ class AutogroupsConfig(models.Model):
 class ManagedGroup(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     config = models.ForeignKey(AutogroupsConfig, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
 
 
 class ManagedCorpGroup(ManagedGroup):

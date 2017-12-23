@@ -82,6 +82,7 @@ class AutogroupsConfigTestCase(TestCase):
 
         # Act
         obj.update_alliance_group_membership(self.member)
+        obj.update_corp_group_membership(self.member)  # check for no side effects
 
         group = obj.create_alliance_group(self.alliance)
         group_qs = Group.objects.filter(pk=group.pk)
