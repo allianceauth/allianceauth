@@ -9,7 +9,9 @@ class NameFormatConfigForm(forms.ModelForm):
         super(NameFormatConfigForm, self).__init__(*args, **kwargs)
         SERVICE_CHOICES = [(s.name, s.name) for h in hooks.get_hooks('services_hook') for s in [h()]]
         if self.instance.id:
-            SERVICE_CHOICES.append((self.instance.field, self.instance.field))
+            current_choice = (self.instance.service_name, self.instance.service_name)
+            if current_choice not in SERVICE_CHOICES:
+                SERVICE_CHOICES.append(current_choice)
         self.fields['service_name'] = forms.ChoiceField(choices=SERVICE_CHOICES)
 
 
