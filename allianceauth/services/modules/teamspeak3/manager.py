@@ -244,10 +244,10 @@ class Teamspeak3Manager:
 
         return False
 
-    def generate_new_permissionkey(self, uid, username, corpticker):
+    def generate_new_permissionkey(self, uid, username):
         logger.debug("Re-issuing permission key for user id %s" % uid)
         self.delete_user(uid)
-        return self.add_user(username, corpticker)
+        return self.add_user(username)
 
     def update_groups(self, uid, ts_groups):
         logger.debug("Updating uid %s TS3 groups %s" % (uid, ts_groups))
