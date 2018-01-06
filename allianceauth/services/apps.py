@@ -6,4 +6,4 @@ class ServicesConfig(AppConfig):
     label = 'services'
 
     def ready(self):
-        pass
+        from . import signals
