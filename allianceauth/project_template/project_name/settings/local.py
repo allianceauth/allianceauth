@@ -56,12 +56,15 @@ ESI_SSO_CALLBACK_URL = ''
 # It's recommended to use a free service
 # like SparkPost or Mailgun to send email.
 # https://www.sparkpost.com/docs/integrations/django/
+# Set the default from email to something like
+# 'noreply@example.com'
 #################
 EMAIL_HOST = ''
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = ''
 
 ######################################
 # Add any custom settings below here #
