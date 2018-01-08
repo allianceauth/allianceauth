@@ -2,7 +2,7 @@
 
 ```eval_rst
 .. tip::
-   Installation is easiest as the root user. Log in as root or a user with sudo powers.
+   If you are uncomfortable with linux permissions follow the steps below as the root user. Some commands do not behave the same when run with sudo. 
 ```
 
 ## Dependencies
@@ -92,6 +92,11 @@ Create a Python virtual environment and put it somewhere convenient (e.g. `/home
     python3 -m venv /home/allianceserver/venv/auth/
 
 ```eval_rst
+.. warning::
+   The python3 command may not be available on all installations. Try a specific version such as python3.6 if this is the case.
+```
+
+```eval_rst
 .. tip::
    A virtual environment provides support for creating a lightweight "copy" of Python with their own site directories. Each virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories. You can read more about virtual environments on the Python_ docs.
 .. _Python: https://docs.python.org/3/library/venv.html
@@ -106,18 +111,11 @@ Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activat
 
 ### Alliance Auth Project
 
-You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies.
+You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies. You should also install gunicorn with `pip install gunicorn` before proceeding.
 
 Now you need to create the application that will run the Alliance Auth install. Ensure you are in the allianceserver home directory by issuing `cd /home/allianceserver`.
 
-The `allianceauth start myauth` command will bootstrap a Django project which will run Alliance Auth. You can rename it from `myauth` to anything you'd like: this name is shown by default as the site name but that can be changed later.
-
-```eval_rst
-.. tip::
-   If you plan to use gunicorn as your WSGI server (recommended), ensure it is installed before starting your auth project to have an entry automatically created in the project's supervisor config file. ::
-   
-      pip install gunicorn
-```
+The `allianceauth start myauth` command bootstraps a Django project which will run Alliance Auth. You can rename it from `myauth` to anything you'd like: this name is shown by default as the site name but that can be changed later.
 
 The settings file needs configuring. Edit the template at `myauth/myauth/settings/local.py`. Be sure to configure the EVE SSO and Email settings.
 
@@ -143,9 +141,9 @@ And finally ensure the allianceserver user has read/write permissions to this di
 
 ### Gunicorn
 
-To run the auth website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. Installation is simple: `pip install gunicorn`. It can be manually called with `gunicorn myauth.wsgi` or automatically run using supervisor.
+To run the auth website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. It can be manually run with `gunicorn myauth.wsgi` or automatically run using supervisor.
 
-Additional information is available in the [gunicorn](gunicorn.md) doc.
+The default configuration is good enough for most installations. Additional information is available in the [gunicorn](gunicorn.md) doc.
 
 ### Supervisor
 
@@ -163,8 +161,15 @@ CentOS:
 
 Once installed it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the celery workers, celery task scheduler and gunicorn are all running.
 
+Ubuntu:
+
     ln /home/allianceserver/myauth/supervisor.conf /etc/supervisor/conf.d/myauth.conf
-    supervisorctl reload
+
+CentOS:
+
+    ln /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
+
+And activate it with `supervisorctl reload`.
 
 You can check the status of the processes with `supervisorctl status`. Logs from these processes are available in `/home/allianceserver/myauth/log` named by process.
 
