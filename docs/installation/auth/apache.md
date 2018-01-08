@@ -1,108 +1,69 @@
 # Apache Setup
-### Overview
 
-AllianceAuth gets served using a Web Server Gateway Interface (WSGI) script. This script passes web requests to AllianceAuth which generates the content to be displayed and returns it. This means very little has to be configured in Apache to host AllianceAuth.
+## Overview
 
-In the interest of ~~laziness~~ time-efficiency, scroll down for example configs. Use these, changing the ServerName to your domain name.
+Alliance Auth gets served using a Web Server Gateway Interface (WSGI) script. This script passes web requests to Alliance Auth which generates the content to be displayed and returns it. This means very little has to be configured in Apache to host Alliance Auth.
 
-If you're using a small VPS to host services with very limited memory resources, consider using NGINX with [Gunicorn](gunicorn.md). Even if you would like to use Apache, Gunicorn may give you lower memory usage over mod_wsgi.
+If you're using a small VPS to host services with very limited memory, consider using [NGINX](nginx.md).
 
-### Required Parameters for AllianceAuth Core
+## Installation
 
-The AllianceAuth core requires the following parameters to be set:
+Ubuntu:
 
-    WSGIDaemonProcess
-    WSGIProcessGroup
-    WSGIScriptAlias
+    apt-get install apache2
 
-The following aliases are required:
+CentOS:
 
-    Alias /static/ to point at the static folder
-    Alias /templates/ to point at the templates folder
+    yum install httpd
+    systemctl enable httpd
+    systemctl start httpd
 
-## Description of Parameters
+## Configuration
 
- - `WSGIDaemonProcess` is the name of the process/application. It also needs to be passed the python-path parameter directing python to search the AllianceAuth directory for modules to load.
- - `WSGIProcessGroup` is the group to run the process under. Typically the same as the name of the process/application.
- - `WSGIScriptAlias` points to the WSGI script.
+Apache serves sites through defined virtual hosts. These are located in `/etc/apache2/sites-available/` on Ubuntu and `/etc/httpd/conf.d/httpd.conf` on CentOS.
 
-## Additional Parameters for Full Setup
+A virtual host for auth need only proxy requests to your WSGI server (gunicorn if you followed the install guide) and serve static files. Examples can be found below. Create your config in its own file eg `myauth.conf`.
 
-To pass additional services the following aliases and directories are required:
+### Ubuntu
 
- - `Alias /forums` to point at the forums folder
- - `Alias /killboard` to point at the killboard
+To proxy and modify headers a few mods need to be enabled.
 
-Each of these require directory permissions allowing all connections.
+    a2enmod proxy
+    a2enmod proxy_http
+    a2enmod headers
 
-For Apache 2.4 or greater:
+Create a new config file for auth eg `/etc/apache2/sites-available/myauth.conf` and fill out the virtual host configuration. To enable your config use `a2ensite myauth.conf` and then reload apache with `service apache2 reload`.
 
-    <Directory "/path/to/alias/folder">
-        Require all granted
-    </Directory>
+### CentOS
 
-For Apache 2.3 or older:
+Place your virtual host configuration in the appropriate section within `/etc/httpd/conf.d/httpd.conf` and restart the httpd service with `systemctl restart httpd`.
 
-    <Directory "/path/to/alias/folder">
-        Order Deny,Allow
-        Allow from all
-    </Directory>
-
-## SSL
-
-You can supply your own SSL certificates if you so desire. The alternative is running behind cloudflare for free SSL.
-
-## Sample Config Files
-
-### Minimally functional config
+## Sample Config File
 
 ```
 <VirtualHost *:80>
-        ServerName example.com
-        ServerAdmin webmaster@localhost
- 
-        DocumentRoot /var/www
- 
-        WSGIDaemonProcess allianceauth python-path=/home/allianceserver/allianceauth
-        WSGIProcessGroup allianceauth
-        WSGIScriptAlias / /home/allianceserver/allianceauth/alliance_auth/wsgi.py
- 
-        Alias /static/ /home/allianceserver/allianceauth/static/
- 
-        <Directory /home/allianceserver/allianceauth/>
-                Require all granted
+        ServerName auth.example.com
+
+        ProxyPassMatch ^/static !
+        ProxyPass / http://127.0.0.1:8000/
+        ProxyPassReverse / http://127.0.0.1:8000/
+        ProxyPreserveHost On
+
+        Alias "/static" "/var/www/myauth/static"
+        <Directory "/var/www/myauth/static">
+            Require all granted
         </Directory>
 
-        <Directory /var/www/>
-                Require all granted
-        </Directory>        
 </VirtualHost>
 ```
 
-### Own SSL Cert
- - Apache 2.4 or newer:
-   - [000-default.conf](http://pastebin.com/3LLzyNmV)
-   - [default-ssl.conf](http://pastebin.com/HUPPEp0R)
- - Apache 2.3 or older:
-   - [000-default](http://pastebin.com/HfyKpQNu)
-   - [default-ssl](http://pastebin.com/2WCS5jnb)
+If you use SSL, add the following lines inside the `VirtualHost` block:
 
-### No SSL Cloudflare, or LetsEncrypt
- - Apache 2.4 or newer:
-   - [000-default.conf](http://pastebin.com/j1Ps3ZK6)
- - Apache 2.3 or older:
-   - [000-default](http://pastebin.com/BHQzf2pj)
+```
+        RequestHeader set X-FORWARDED-PROTOCOL https
+        RequestHeader set X-FORWARDED-SSL On
+```
 
-To have LetsEncrypt automatically install SSL certs, comment out the three lines starting with `WSGI`, install certificates, then uncomment them in `000-default-ls-ssl.conf`
+## SSL
 
-## Enabling and Disabling Sites
-
-To instruct apache to serve traffic from a virtual host, enable it:
-
-    sudo a2ensite NAME
-where NAME is the name of the configuration file (eg 000-default.conf)
-
-To disable traffic from a site, disable the virtual host:
-
-    sudo a2dissite NAME
-where NAME is the name of the configuration file (eg 000-default.conf)
+It's 2018 - there's no reason to run a site without SSL. The EFF provides free, renewable SSL certificates with an automated installer. Visit their [website](https://certbot.eff.org/) for information.
