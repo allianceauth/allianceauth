@@ -1,5 +1,6 @@
 import requests
 import logging
+import amqp.exceptions
 import semantic_version as semver
 from django import template
 from django.conf import settings
@@ -54,6 +55,9 @@ def get_celery_queue_length():
         with app.connection_or_acquire() as conn:
             return conn.default_channel.queue_declare(
                 queue=getattr(settings, 'CELERY_DEFAULT_QUEUE', 'celery'), passive=True).message_count
+    except amqp.exceptions.ChannelError:
+        # Queue doesn't exist, probably empty
+        return 0
     except Exception:
         logger.exception("Failed to get celery queue length")
     return -1
