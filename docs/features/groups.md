@@ -1,33 +1,9 @@
 # Groups
 Group Management is one of the core tasks of Alliance Auth. Many of Alliance Auth's services allow for synchronising of group membership, allowing you to grant permissions or roles in services to access certain aspects of them.
 
-## Automatic Groups
-When a member registers in Alliance Auth and selects a main character, Auth will assign them some groups automatically based on some factors.
-
-```eval_rst
-.. important::
-    The ``Corp_`` and ``Alliance_`` group name prefixes are reserved for Alliance Auth internal group management. If you prefix a group with these you will find Alliance Auth automatically removes users from the group.
-```
-
-```eval_rst
-+------------------------------+-----------------------------------------------------------------------------------+
-| Group                        | Condition                                                                         |
-+------------------------------+-----------------------------------------------------------------------------------+
-| ``Corp_<corp_name>``         | Users Main Character belongs to the Corporation                                   |
-+------------------------------+-----------------------------------------------------------------------------------+
-| ``Alliance_<alliance_name>`` | Users Main Character belongs to the Alliance                                      |
-+------------------------------+-----------------------------------------------------------------------------------+
-| ``Member``                   | User is a member of one of the tenant Corps or Alliances                          |
-+------------------------------+-----------------------------------------------------------------------------------+
-| ``Blue``                     | User is a member of a blue Corp or Alliance, be it via standings or static config |
-+------------------------------+-----------------------------------------------------------------------------------+
-```
-
-When the user no longer has the condition required to be a member of that group they are automatically removed by Auth.
-
 ## User Organised Groups
 
-Along with the automated groups, administrators can create custom groups for users to join. Examples might be groups like `Leadership`, `CEO` or `Scouts`.
+Administrators can create custom groups for users to join. Examples might be groups like `Leadership`, `CEO` or `Scouts`.
 
 When you create a Django `Group`, Auth automatically creates a corresponding `AuthGroup` model. The admin page looks like this:
 
