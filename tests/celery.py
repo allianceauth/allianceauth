@@ -10,7 +10,7 @@ app = Celery('devauth')
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.
-app.config_from_object('django.conf:settings')
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

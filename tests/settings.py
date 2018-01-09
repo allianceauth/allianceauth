@@ -14,7 +14,7 @@ NOSE_ARGS = [
 ]
 
 # Celery configuration
-CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
+CELERY_TASK_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
 INSTALLED_APPS += [
     'allianceauth.eveonline.autogroups',
