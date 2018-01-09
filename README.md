@@ -24,6 +24,7 @@ Active Developers:
 Beta Testers / Bug Fixers:
 
  - [ghoti](https://github.com/ghoti)
+ - [mmolitor87](https://github.com/mmolitor87)
 
 
 Past Beta Testers / Bug Fixers:
