@@ -67,7 +67,7 @@ def hr_application_create_view(request, form_id=None):
                                                        ""))
                     response.save()
                 logger.info("%s created %s" % (request.user, application))
-            return redirect('hrapplications:view')
+            return redirect('hrapplications:personal_view', application.id)
         else:
             questions = app_form.questions.all()
             return render(request, 'hrapplications/create.html',
@@ -95,7 +95,7 @@ def hr_application_personal_view(request, app_id):
         return render(request, 'hrapplications/view.html', context=context)
     else:
         logger.warn("User %s not authorized to view %s" % (request.user, app))
-        return redirect('hrapplications:view')
+        return redirect('hrapplications:personal_view')
 
 
 @login_required
@@ -110,7 +110,7 @@ def hr_application_personal_removal(request, app_id):
             logger.warn("User %s attempting to delete reviewed app %s" % (request.user, app))
     else:
         logger.warn("User %s not authorized to delete %s" % (request.user, app))
-    return redirect('hrapplications:view')
+    return redirect('hrapplications:index')
 
 
 @login_required
@@ -158,7 +158,7 @@ def hr_application_remove(request, app_id):
     logger.info("User %s deleting %s" % (request.user, app))
     app.delete()
     notify(app.user, "Application Deleted", message="Your application to %s was deleted." % app.form.corp)
-    return redirect('hrapplications:view')
+    return redirect('hrapplications:index')
 
 
 @login_required
@@ -175,7 +175,7 @@ def hr_application_approve(request, app_id):
                level="success")
     else:
         logger.warn("User %s not authorized to approve %s" % (request.user, app))
-    return redirect('hrapplications:view')
+    return redirect('hrapplications:index')
 
 
 @login_required
@@ -192,7 +192,7 @@ def hr_application_reject(request, app_id):
                level="danger")
     else:
         logger.warn("User %s not authorized to reject %s" % (request.user, app))
-    return redirect('hrapplications:view')
+    return redirect('hrapplications:index')
 
 
 @login_required
