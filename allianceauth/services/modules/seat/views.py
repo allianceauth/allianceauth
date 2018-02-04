@@ -39,7 +39,6 @@ def activate_seat(request):
         logger.info("Successfully activated SeAT for user %s" % request.user)
         messages.add_message(request, messages.SUCCESS, _('Successfully activated your %(service)s account.') %
                              SERVICE_NAME)
-        SeatManager.synchronize_eveapis(request.user)
         credentials = {
             'username': request.user.seat.username,
             'password': result[1],
