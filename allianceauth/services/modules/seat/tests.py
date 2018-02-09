@@ -152,7 +152,6 @@ class SeatViewsTestCase(TestCase):
         self.assertContains(response, expected_username)
         seat_user = SeatUser.objects.get(user=self.member)
         self.assertEqual(seat_user.username, expected_username)
-        self.assertTrue(manager.synchronize_eveapis.called)
 
     @mock.patch(MODULE_PATH + '.tasks.SeatManager')
     def test_deactivate(self, manager):
