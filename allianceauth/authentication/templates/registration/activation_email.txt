@@ -2,7 +2,7 @@ You're receiving this email because someone has entered this email address while
 
 If this was you, please go to the following URL to confirm your email address:
 
-{{ url }}
+{{ scheme }}://{{ url }}
 
 This link will expire in {{ expiration_days }} day(s).
 
