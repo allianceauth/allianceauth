@@ -109,7 +109,7 @@ def api_backoff(func):
                         backoff_timer = datetime.datetime.strptime(existing_backoff, cache_time_format)
                         if backoff_timer > datetime.datetime.utcnow():
                             backoff_seconds = (backoff_timer - datetime.datetime.utcnow()).total_seconds()
-                            logger.debug("Still under backoff for {} seconds, backing off" % backoff_seconds)
+                            logger.debug("Still under backoff for %s seconds, backing off" % backoff_seconds)
                             # Still under backoff
                             raise PerformBackoff(
                                 retry_after=backoff_seconds,
