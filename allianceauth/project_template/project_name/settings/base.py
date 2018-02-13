@@ -39,7 +39,7 @@ INSTALLED_APPS = [
 ]
 
 # Celery configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+BROKER_URL = 'redis://localhost:6379/0'
 CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERYBEAT_SCHEDULE = {
     'esi_cleanup_callbackredirect': {
