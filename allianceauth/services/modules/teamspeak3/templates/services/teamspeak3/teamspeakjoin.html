@@ -11,7 +11,7 @@
         <h1 class="page-header text-center">{% trans "Verify Teamspeak Identity" %}</h1>
         <div class="container-fluid">
             <div class="col-md-4 col-md-offset-4">
-                <a href="ts3server://{{ TEAMSPEAK3_PUBLIC_URL }}?token={{ authinfo.teamspeak3_perm_key }}&nickname={{ authinfo.teamspeak3_uid }}" class="btn btn-primary btn-block btn-lg" title="Join">{% trans "Join Server" %}</a>
+                <a href="ts3server://{{ public_url }}?token={{ authinfo.teamspeak3_perm_key }}&nickname={{ authinfo.teamspeak3_uid }}" class="btn btn-primary btn-block btn-lg" title="Join">{% trans "Join Server" %}</a>
                 <br/>
                 <form class="form-signin" role="form" action="{% url 'teamspeak3:verify' %}" method="POST">
                     {% csrf_token %}

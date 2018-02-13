@@ -3,7 +3,7 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
-
+from django.conf import settings
 from .manager import Teamspeak3Manager
 from .forms import TeamspeakJoinForm
 from .models import Teamspeak3User
@@ -20,7 +20,6 @@ def activate_teamspeak3(request):
     logger.debug("activate_teamspeak3 called by user %s" % request.user)
 
     character = request.user.profile.main_character
-    ticker = character.corporation_ticker
     with Teamspeak3Manager() as ts3man:
         logger.debug("Adding TS3 user for user %s with main character %s" % (request.user, character))
         result = ts3man.add_user(Teamspeak3Tasks.get_username(request.user))
@@ -56,6 +55,7 @@ def verify_teamspeak3(request):
         'form': form,
         'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid,
                      'teamspeak3_perm_key': request.user.teamspeak3.perm_key},
+        'public_url': settings.TEAMSPEAK3_PUBLIC_URL,
     }
     return render(request, 'services/teamspeak3/teamspeakjoin.html', context=context)
 
