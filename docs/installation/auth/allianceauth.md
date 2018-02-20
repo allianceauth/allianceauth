@@ -163,11 +163,11 @@ Once installed it needs a configuration file to know which processes to watch. Y
 
 Ubuntu:
 
-    ln /home/allianceserver/myauth/supervisor.conf /etc/supervisor/conf.d/myauth.conf
+    ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisor/conf.d/myauth.conf
 
 CentOS:
 
-    ln /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
+    ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
 
 And activate it with `supervisorctl reload`.
 
