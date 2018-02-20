@@ -190,7 +190,9 @@ Before using your auth site it is essential to create a superuser account. This 
 
     python /home/allianceserver/myauth/manage.py createsuperuser
 
-The superuser account is accessed by logging in via the admin page at `https://example.com/admin`. If you intend to use this account as your personal auth account you need to add a main character through the dashboard before attempting to activate services. Once a main character has been added it is possible to use SSO to login to this account.
+The superuser account is accessed by logging in via the admin site at `https://example.com/admin`.
+
+If you intend to use this account as your personal auth account you need to add a main character. Navigate to the normal user dashboard (at `https://example.com`) after logging in via the admin site and select `Change Main`. Once a main character has been added it is possible to use SSO to login to this account.
 
 ## Updating
 
