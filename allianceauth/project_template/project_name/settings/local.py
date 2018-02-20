@@ -64,6 +64,7 @@ DATABASES['default'] = {
 # Be sure to set the callback URL to
 # https://example.com/sso/callback
 # substituting your domain for example.com
+# Select all available esi- scopes.
 #######################################
 ESI_SSO_CLIENT_ID = ''
 ESI_SSO_CLIENT_SECRET = ''
