@@ -57,13 +57,13 @@ Place your virtual host configuration in the appropriate section within `/etc/ht
 </VirtualHost>
 ```
 
-If you use SSL, add the following lines inside the `VirtualHost` block:
+## SSL
+
+It's 2018 - there's no reason to run a site without SSL. The EFF provides free, renewable SSL certificates with an automated installer. Visit their [website](https://certbot.eff.org/) for information.
+
+After acquiring SSL the config file needs to be adjusted. Add the following lines inside the `<VirtualHost>` block:
 
 ```
         RequestHeader set X-FORWARDED-PROTOCOL https
         RequestHeader set X-FORWARDED-SSL On
 ```
-
-## SSL
-
-It's 2018 - there's no reason to run a site without SSL. The EFF provides free, renewable SSL certificates with an automated installer. Visit their [website](https://certbot.eff.org/) for information.
