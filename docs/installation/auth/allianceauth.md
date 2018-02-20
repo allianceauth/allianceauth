@@ -75,7 +75,7 @@ Close the SQL shell and secure your database server with the `mysql_secure_insta
 
 ### User Account
 
-For security and permissions, it’s highly recommended you create a separate user to install under.
+For security and permissions, it’s highly recommended you create a separate user to install auth under. Do not log in as this account.
 
 Ubuntu:
 
