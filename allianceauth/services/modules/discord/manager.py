@@ -210,6 +210,7 @@ class DiscordOAuthManager:
             return None
 
     @staticmethod
+    @api_backoff
     def update_nickname(user_id, nickname):
         try:
             nickname = DiscordOAuthManager._sanitize_name(nickname)

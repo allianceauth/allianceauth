@@ -92,7 +92,7 @@ class DiscordTasks:
 
     @staticmethod
     @shared_task(bind=True, name='discord.update_nickname')
-    def update_nickname(self, pk):
+    def update_nickname(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord nickname for user %s" % user)
         if DiscordTasks.has_account(user):
@@ -101,10 +101,14 @@ class DiscordTasks:
                 logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
                 try:
                     DiscordOAuthManager.update_nickname(user.discord.uid, DiscordTasks.get_nickname(user))
+                except DiscordApiBackoff as bo:
+                    logger.info("Discord nickname update API back off for %s, "
+                                "retrying in %s seconds" % (user, bo.retry_after_seconds))
+                    raise task_self.retry(countdown=bo.retry_after_seconds)
                 except Exception as e:
-                    if self:
+                    if task_self:
                         logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
-                        raise self.retry(countdown=60 * 10)
+                        raise task_self.retry(countdown=60 * 10)
                     else:
                         # Rethrow
                         raise e
