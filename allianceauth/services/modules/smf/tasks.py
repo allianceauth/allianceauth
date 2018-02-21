@@ -44,11 +44,9 @@ class SmfTasks:
         user = User.objects.get(pk=pk)
         logger.debug("Updating smf groups for user %s" % user)
         if SmfTasks.has_account(user):
-            groups = []
+            groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            if len(groups) == 0:
-                groups.append('empty')
             logger.debug("Updating user %s smf groups to %s" % (user, groups))
             try:
                 SmfManager.update_groups(user.smf.username, groups)

@@ -82,11 +82,9 @@ class MumbleUser(AbstractServiceModel):
     def update_groups(self, groups: Group=None):
         if groups is None:
             groups = self.user.groups.all()
-        groups_str = []
+        groups_str = [self.user.profile.state.name]
         for group in groups:
             groups_str.append(str(group.name))
-        if len(groups) == 0:
-            groups_str.append('empty')
         safe_groups = ','.join(set([g.replace(' ', '-') for g in groups_str]))
         logger.info("Updating mumble user {} groups to {}".format(self.user, safe_groups))
         self.groups = safe_groups

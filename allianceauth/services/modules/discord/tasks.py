@@ -62,12 +62,9 @@ class DiscordTasks:
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)
         if DiscordTasks.has_account(user):
-            groups = []
+            groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            if len(groups) == 0:
-                logger.debug("No syncgroups found for user. Adding empty group.")
-                groups.append('empty')
             logger.debug("Updating user %s discord groups to %s" % (user, groups))
             try:
                 DiscordOAuthManager.update_groups(user.discord.uid, groups)

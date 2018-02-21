@@ -345,7 +345,7 @@ class DiscourseManager:
 
     @staticmethod
     def update_groups(user):
-        groups = []
+        groups = [DiscourseManager._sanitize_groupname(user.profile.state.name)]
         for g in user.groups.all():
             groups.append(DiscourseManager._sanitize_groupname(str(g)))
         logger.debug("Updating discourse user %s groups to %s" % (user, groups))

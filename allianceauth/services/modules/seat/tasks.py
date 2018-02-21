@@ -38,13 +38,10 @@ class SeatTasks:
     def update_roles(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating SeAT roles for user %s" % user)
-        groups = []
         if SeatTasks.has_account(user):
+            groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            if len(groups) == 0:
-                logger.debug("No syncgroups found for user. Adding empty group.")
-                groups.append('empty')
             logger.debug("Updating user %s SeAT roles to %s" % (user, groups))
             try:
                 SeatManager.update_roles(user.seat.username, groups)
