@@ -32,14 +32,26 @@ class TimerForm(forms.ModelForm):
             kwargs.update({'initial': initial})
         super(TimerForm, self).__init__(*args, **kwargs)
 
-    structure_choices = [('POCO', 'POCO'), ('I-HUB', 'I-HUB'), ('POS[S]', 'POS[S]'),
-                         ('POS[M]', 'POS[M]'), ('POS[L]', 'POS[L]'), ('Citadel[M]', 'Citadel[M]'),
-                         ('Citadel[L]', 'Citadel[L]'), ('Citadel[XL]', 'Citadel[XL]'),
+    structure_choices = [('POCO', 'POCO'),
+                         ('I-HUB', 'I-HUB'),
+                         ('POS[S]', 'POS[S]'),
+                         ('POS[M]', 'POS[M]'),
+                         ('POS[L]', 'POS[L]'),
+                         ('Citadel[M]', 'Citadel[M]'),
+                         ('Citadel[L]', 'Citadel[L]'),
+                         ('Citadel[XL]', 'Citadel[XL]'),
                          ('Engineering Complex[M]', 'Engineering Complex[M]'),
                          ('Engineering Complex[L]', 'Engineering Complex[L]'),
                          ('Engineering Complex[XL]', 'Engineering Complex[XL]'),
-                         ('Station', 'Station'), ('TCU', 'TCU'), (_('Other'), _('Other'))]
-    objective_choices = [('Friendly', _('Friendly')), ('Hostile', _('Hostile')), ('Neutral', _('Neutral'))]
+                         ('Refinery[M]', 'Refinery[M]'),
+                         ('Refinery[L]', 'Refinery[L]'),
+                         ('Station', 'Station'),
+                         ('TCU', 'TCU'),
+                         ('Moon Mining Cycle', 'Moon Mining Cycle'),
+                         (_('Other'), _('Other'))]
+    objective_choices = [('Friendly', _('Friendly')),
+                         ('Hostile', _('Hostile')),
+                         ('Neutral', _('Neutral'))]
 
     details = forms.CharField(max_length=254, required=True, label=_('Details'))
     system = forms.CharField(max_length=254, required=True, label=_("System"))
