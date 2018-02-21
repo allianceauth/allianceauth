@@ -163,12 +163,11 @@ class DiscordOAuthManager:
 
     @staticmethod
     def _sanitize_name(name):
-        return re.sub('[^\w.-]', '', name)[:32]
+        return name[:32]
 
     @staticmethod
-    def _sanitize_groupname(name):
-        name = name.strip(' _')
-        return DiscordOAuthManager._sanitize_name(name)
+    def _sanitize_group_name(name):
+        return name[:100]
 
     @staticmethod
     def generate_bot_add_url():
@@ -260,7 +259,7 @@ class DiscordOAuthManager:
 
     @staticmethod
     def _group_name_to_id(name):
-        name = DiscordOAuthManager._sanitize_groupname(name)
+        name = DiscordOAuthManager._sanitize_group_name(name)
 
         def get_or_make_role():
             groups = DiscordOAuthManager._get_groups()
@@ -303,10 +302,9 @@ class DiscordOAuthManager:
     @api_backoff
     def update_groups(user_id, groups):
         custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
-        group_ids = [DiscordOAuthManager._group_name_to_id(DiscordOAuthManager._sanitize_groupname(g)) for g in groups]
+        group_ids = [DiscordOAuthManager._group_name_to_id(DiscordOAuthManager._sanitize_group_name(g)) for g in groups]
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
         data = {'roles': group_ids}
         r = requests.patch(path, headers=custom_headers, json=data)
         logger.debug("Received status code %s after setting user roles" % r.status_code)
         r.raise_for_status()
-
