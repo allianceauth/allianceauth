@@ -6,7 +6,7 @@ from alliance_auth.celeryapp import app
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-
+from requests.exceptions import HTTPError
 from eveonline.managers import EveManager
 from notifications import notify
 from services.modules.discord.manager import DiscordOAuthManager, DiscordApiBackoff
@@ -77,6 +77,15 @@ class DiscordTasks:
                 logger.info("Discord group sync API back off for %s, "
                             "retrying in %s seconds" % (user, bo.retry_after_seconds))
                 raise task_self.retry(countdown=bo.retry_after_seconds)
+            except HTTPError as e:
+                if e.response.status_code == 404:
+                    try:
+                        if e.response.json()['code'] == 10007:
+                            # user has left the server
+                            DiscordTasks.delete_user(user)
+                            return
+                    finally:
+                        raise e
             except Exception as e:
                 if task_self:
                     logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)
