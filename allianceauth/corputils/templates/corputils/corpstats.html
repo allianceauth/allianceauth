@@ -77,10 +77,10 @@
                                                                         </tr>
                                                                     {% endif %}
                                                                     <tr>
-                                                                        <td class="text-center">{{ alt.character_name }}</td>
-                                                                        <td class="text-center">{{ alt.corporation_name }}</td>
-                                                                        <td class="text-center">{{ alt.alliance_name }}</td>
-                                                                        <td class="text-center">
+                                                                        <td class="text-center" style="width:30%">{{ alt.character_name }}</td>
+                                                                        <td class="text-center" style="width:30%">{{ alt.corporation_name }}</td>
+                                                                        <td class="text-center" style="width:30%">{{ alt.alliance_name }}</td>
+                                                                        <td class="text-center" style="width:10%">
                                                                             <a href="https://zkillboard.com/character/{{ alt.character_id }}/"
                                                                                class="label label-danger" target="_blank">
                                                                                 {% trans "Killboard" %}
@@ -175,9 +175,25 @@
 {% endblock %}
 {% block extra_script %}
     $(document).ready(function(){
-        $('#table-mains').DataTable();
-        $('#table-members').DataTable();
-        $('#table-unregistered').DataTable();
+        $('#table-mains').DataTable({
+            "columnDefs": [
+                { "sortable": false, "targets": [1] },
+            ],
+        });
+        $('#table-members').DataTable({
+            "columnDefs": [
+                { "searchable": false, "targets": [0, 2] },
+                { "sortable": false, "targets": [0, 2] },
+            ],
+            "order": [[ 1, "asc" ]],
+        });
+        $('#table-unregistered').DataTable({
+            "columnDefs": [
+                { "searchable": false, "targets": [0, 2] },
+                { "sortable": false, "targets": [0, 2] },
+            ],
+            "order": [[ 1, "asc" ]],
+        });
 
     });
 {% endblock %}
