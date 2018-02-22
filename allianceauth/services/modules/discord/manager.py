@@ -117,8 +117,7 @@ def api_backoff(func):
                                 global_ratelimit=bool(existing_global_backoff)
                             )
                     logger.debug("Calling API calling function")
-                    func(*args, **kwargs)
-                    break
+                    return func(*args, **kwargs)
                 except requests.HTTPError as e:
                     if e.response.status_code == 429:
                         try:
