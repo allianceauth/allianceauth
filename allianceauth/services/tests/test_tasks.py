@@ -18,7 +18,7 @@ class ServicesTasksTestCase(TestCase):
 
         services_hook.get_services.return_value = [svc]
 
-        validate_services.delay(user=self.member)
+        validate_services.delay(self.member.pk)
 
         self.assertTrue(services_hook.get_services.called)
         self.assertTrue(svc.validate_user.called)

@@ -9,5 +9,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for u in User.objects.all():
-            validate_services(u)
+            validate_services(u.pk)
         self.stdout.write(self.style.SUCCESS('Verified all user service accounts.'))

@@ -2,7 +2,7 @@ import logging
 
 import redis
 from celery import shared_task
-
+from django.contrib.auth.models import User
 from .hooks import ServicesHook
 
 REDIS_CLIENT = redis.Redis()
@@ -38,7 +38,8 @@ def only_one(function=None, key="", timeout=None):
 
 
 @shared_task(bind=True)
-def validate_services(self, user):
+def validate_services(self, pk):
+    user = User.objects.get(pk=pk)
     logger.debug('Ensuring user {} has permissions for active services'.format(user))
     # Iterate through services hooks and have them check the validity of the user
     for svc in ServicesHook.get_services():
