@@ -1,6 +1,4 @@
 import requests
-import json
-import re
 import math
 from django.conf import settings
 from requests_oauthlib import OAuth2Session
@@ -270,33 +268,28 @@ class DiscordOAuthManager:
         return cache.get_or_set(DiscordOAuthManager._generate_cache_role_key(name), get_or_make_role, GROUP_CACHE_MAX_AGE)
 
     @staticmethod
-    def __generate_role():
+    def __generate_role(name, **kwargs):
         custom_headers = {'accept': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/roles"
-        r = requests.post(path, headers=custom_headers)
+        data = {'name': name}
+        data.update(kwargs)
+        r = requests.post(path, headers=custom_headers, json=data)
         logger.debug("Received status code %s after generating new role." % r.status_code)
         r.raise_for_status()
         return r.json()
 
     @staticmethod
-    def __edit_role(role_id, name, color=0, hoist=False, permissions=36785152):
+    def __edit_role(role_id, **kwargs):
         custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
-        data = {
-            'color': color,
-            'hoist': hoist,
-            'name': name,
-            'permissions': permissions,
-        }
         path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/roles/" + str(role_id)
-        r = requests.patch(path, headers=custom_headers, data=json.dumps(data))
+        r = requests.patch(path, headers=custom_headers, json=kwargs)
         logger.debug("Received status code %s after editing role id %s" % (r.status_code, role_id))
         r.raise_for_status()
         return r.json()
 
     @staticmethod
     def _create_group(name):
-        role = DiscordOAuthManager.__generate_role()
-        return DiscordOAuthManager.__edit_role(role['id'], name)
+        return DiscordOAuthManager.__generate_role(name)
 
     @staticmethod
     @api_backoff
