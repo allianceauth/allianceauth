@@ -43,9 +43,7 @@ On the right of this bar is a search field. Press enter to search. It checks all
 
 ![last update and update button](/_static/images/features/corpstats/last_update.png)
 
-Corp Stats automatically update every 6 hours. An update can be performed immediately by pressing thi update button.
-
-Only superusers and the creator of the Corp Stat can trigger an immediate update.
+An update can be performed immediately by pressing the update button. Anyone who can view the Corp Stats can update it. 
 
 ### Character Lists
 
@@ -113,6 +111,16 @@ To use this feature, users will require some of the following:
 ```
 
 Users who add a Corp Stats with their token will be granted permissions to view it regardless of the above permissions. View permissions are interpreted in the "OR" sense: a user can view their corp's Corp Stats without the `view_corp_corpstats` permission if they have the `view_alliance_corpstats` permission, same idea for their state. Note that these evaluate against the user's main character.
+
+## Automatic Updating
+By default Corp Stats are only updated on demand. If you want to automatically refresh on a schedule, add an entry to your project's settings file:
+
+    CELERYBEAT_SCHEDULE['update_all_corpstats'] = {
+        'task': 'allianceauth.corputils.tasks.update_all_corpstats',
+        'schedule': crontab(minute=0, hour="*/6"),
+    },
+
+Adjust the crontab as desired.
 
 ## Troubleshooting
 
