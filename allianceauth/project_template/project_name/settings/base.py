@@ -178,8 +178,10 @@ DATABASES = {
 
 SITE_NAME = 'Alliance Auth'
 
-LOGIN_URL = 'auth_login_user'  # default destination when logging in if no redirect specified
-LOGIN_REDIRECT_URL = 'authentication:dashboard'  # destination after logging out
+LOGIN_URL = 'auth_login_user'  # view that handles login logic
+
+LOGIN_REDIRECT_URL = 'authentication:dashboard'  # default destination when logging in if no redirect specified
+LOGOUT_REDIRECT_URL = 'authentication:dashboard'  # destination after logging out
 # Both of these redirects accept values as per the django redirect shortcut
 # https://docs.djangoproject.com/en/1.11/topics/http/shortcuts/#redirect
 # - url names eg 'authentication:dashboard'
