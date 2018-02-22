@@ -1,9 +1,18 @@
 # XenForo
 
-Add `allianceauth.services.modules.xenforo` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+## Overview
+[XenForo](https://xenforo.com/) is a popular paid forum. This guide will assume that you already have XenForo installed with a valid license (please keep in mind that XenForo is not free nor open-source, therefore you need to purchase a license first). If you come across any problems related with the installation of XenForo please contact their support service.
 
-In this chapter we will explore how to setup AllianceAuth to work with [XenForo](https://xenforo.com/). At this point we will assume that you already have XenForo installed with a valid license (please keep in mind that XenForo is not free nor open-source, therefore you need to purchase a license first). If you come across any problems related with the installation of XenForo please contact their support service.
+## Prepare Your Settings
+In your auth project's settings file, do the following:
+ - Add `'allianceauth.services.modules.xenforo',` to your `INSTALLED_APPS` list
+ - Append the following to your local.py settings file:
 
+
+    # XenForo Configuration
+    XENFORO_ENDPOINT = 'example.com/api.php'
+    XENFORO_DEFAULT_GROUP = 0
+    XENFORO_APIKEY   = 'yourapikey'
 
 ## XenAPI
 
@@ -20,14 +29,12 @@ $restAPI = new RestAPI('REPLACE_THIS_WITH_AN_API_KEY');
 
 ## Configuration
 
-AllianceAuth only needs to know 3 things about XenForo.
+The settings you created earlier now need to be filled out.
 
-+ The API Endpoint
-+ The API Key
-+ The default group
+`XENFORO_ENDPOINT` is the address to the API you added. No leading `http://`, but be sure to include the `/api.php` at the end.
 
-The first two should be self explanatory. The default group is where AllianceAuth will add the user once his account is created. Unfortunately XenAPI **cannot create new groups**, therefore you have to create a group manually and then get its ID.
+`XENFORO_DEFAULT_GROUP` is the ID of the group in XenForo auth users will be added to. Unfortunately XenAPI **cannot create new groups**, therefore you have to create a group manually and then get its ID.
 
-When you have a forum section which should be accessible ONLY by the auth'd users the access settings must be set to the default group.
+`XENFORO_API_KEY` is the API key value you set earlier.
 
-In the future we will have different groups for blues and alliance/corp members.
+Once these are entered, run migrations and restart gunicorn and celery.

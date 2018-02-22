@@ -4,10 +4,23 @@ Discord is a web-based instant messaging client with voice. Kind of like teamspe
 
 ## Setup
 
-Add `allianceauth.services.modules.discord` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+### Prepare Your Settings File
+In your auth project's settings file, do the following:
+ - Add `'allianceauth.services.modules.discord',` to your `INSTALLED_APPS` list
+ - Append the following to the bottom of the settings file:
+
+
+    # Discord Configuration
+    DISCORD_GUILD_ID = ''
+    DISCORD_INVITE_CODE = ''
+    DISCORD_CALLBACK_URL = ''
+    DISCORD_APP_ID = ''
+    DISCORD_APP_SECRET = ''
+    DISCORD_BOT_TOKEN = ''
+    DISCORD_SYNC_NAMES = False
 
 ### Creating a Server
-*If you already have a Discord server, skip the creation step, but be sure to retrieve the server ID and enter it in settings.py*
+*If you already have a Discord server, skip the creation step, but be sure to retrieve the server ID*
 
 Navigate to the [Discord site](https://discordapp.com/) and register an account, or log in if you have one already.
 
@@ -19,14 +32,14 @@ Now retrieve the server ID from the URL of the page you’re on. The ID is the f
 
 with a server ID of `120631096835571712`
 
-Update settings.py, inputting the server ID as `DISCORD_GUILD_ID`
+Update your auth project's settings file, inputting the server ID as `DISCORD_GUILD_ID`
 
 ### Generating an Invite
 Still on the Discord site, in your new server, an invite needs to be generated for users to join. If you with for users to  initially join a different channel than `#general`, create it and follow the steps below, substituting this channel for `#general`.
 
 On the left bar under the Text Channels heading, hover over `#general` on the right site. There are two icons, a box with an arrow and a gear. Press the box, then on the bottom left select Advanced Settings. Set the expiration to never, and no limit on uses. Press generate.
 
-This returns a code that looks like `https://discord.gg/0fmA8MyXV6qt7XAZ`. The part after the last slash, `0fmA8MyXV6qt7XAZ`, is the invite code. Update settings.py, inputting this invite code as `DISCORD_INVITE_CODE`
+This returns a code that looks like `https://discord.gg/0fmA8MyXV6qt7XAZ`. The part after the last slash, `0fmA8MyXV6qt7XAZ`, is the invite code. Update your auth project's settings file, inputting this invite code as `DISCORD_INVITE_CODE`
 
 ### Registering an Application
 
@@ -34,14 +47,17 @@ Navigate to the [Discord Developers site.](https://discordapp.com/developers/app
 
 Give it a name and description relating to your auth site. Add a redirect to `https://example.com/discord/callback/`, substituting your domain. Press Create Application.
 
-Update settings.py, inputting this redirect address as `DISCORD_CALLBACK_URL`
+Update your auth project's settings file, inputting this redirect address as `DISCORD_CALLBACK_URL`
 
 On the application summary page, press Create a Bot User.
 
-Update settings.py with these pieces of information from the summary page:
+Update your auth project's settings file with these pieces of information from the summary page:
  - From the App Details panel, `DISCORD_APP_ID` is the Client/Application ID
  - From the App Details panel, `DISCORD_APP_SECRET` is the Secret
  - From the App Bot Users panel, `DISCORD_BOT_TOKEN` is the Token
+
+### Preparing Auth
+Before continuing it is essential to run migrations and restart gunicorn and celery.
 
 ### Adding a Bot to the Server
 Once created, navigate to the services page of your AllianceAuth install as the superuser account. At the top there is a big green button labelled Link Discord Server. Click it, then from the drop down select the server you created, and then Authorize.
@@ -52,6 +68,9 @@ To manage roles, this bot role must be at the top of the hierarchy. Edit your Di
 
 ### Linking Accounts
 Instead of the usual account creation procedure, for Discord to work we need to link accounts to AllianceAuth. When attempting to enable the Discord service, users are redirected to the official Discord site to authenticate. They will need to create an account if they don't have one prior to continuing. Upon authorization, users are redirected back to AllianceAuth with an OAuth code which is used to join the Discord server.
+
+### Syncing Nicknames
+If you want users to have their Discord nickname changed to their in-game character name, set `DISCORD_SYNC_NAMES` to `True`
 
 ## Managing Roles
 Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to Groups on every other service. The default permissions should be enough for members to chat and use comms. Add more permissions to the roles as desired through the server management window.

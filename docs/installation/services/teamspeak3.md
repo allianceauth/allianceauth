@@ -1,30 +1,42 @@
 # Teamspeak 3
 
-Add `allianceauth.services.modules.teamspeak3` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
-
 ## Overview
 Teamspeak3 is the most popular VOIP program for gamers.
 
 But have you considered using Mumble? Not only is it free, but it has features and performance far superior to Teamspeak3.
 
-## Dependencies
-All dependencies should have been taken care of during the AllianceAuth install.
-
 ## Setup
-Sticking with it? Alright, I tried.
+Sticking with TS3? Alright, I tried.
+
+### Prepare Your Settings
+In your auth project's settings file, do the following:
+ - Add `'allianceauth.services.modules.teamspeak3',` to your `INSTALLED_APPS` list
+ - Append the following to the bottom of the settings file:
+ 
+
+    # Teamspeak3 Configuration
+    TEAMSPEAK3_SERVER_IP = '127.0.0.1'
+    TEAMSPEAK3_SERVER_PORT = 10011
+    TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
+    TEAMSPEAK3_SERVERQUERY_PASSWORD = ''
+    TEAMSPEAK3_VIRTUAL_SERVER = 1
+    TEAMSPEAK3_PUBLIC_URL = ''
+    
+    CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
+        'task': 'services.modules.teamspeak3.tasks.run_ts3_group_update',
+        'schedule': crontab(minute='*/30'),
+    }
 
 ### Download Installer
 To install we need a copy of the server. You can find the latest version from [this dl server](http://dl.4players.de/ts/releases/) (I’d recommed getting the latest stable version – find this version number from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the linux version.
 
-From the console, ensure you’re in the user’s home directory: `cd ~`
+Download the server, replacing the link with the link you got earlier.
 
-And now download the server, replacing the link with the link you got earlier.
-
-    http://dl.4players.de/ts/releases/3.0.13.6/teamspeak3-server_linux_amd64-3.0.13.6.tar.bz2
+    http://dl.4players.de/ts/releases/3.1.0/teamspeak3-server_linux_amd64-3.1.0.tar.bz2
 
 Now we need to extract the file.
 
-    tar -xf teamspeak3-server_linux_amd64-3.0.13.6.tar.bz2
+    tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
 
 ### Create User
 Teamspeak needs its own user.
@@ -48,17 +60,17 @@ Finally we start the server.
     sudo service teamspeak start
 
 ### Update Settings
-The console will spit out a block of text. **SAVE THIS**.
-
-Update the AllianceAuth settings file with the following from that block of text:
- - `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` (usually `serveradmin`)
- - `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password`
-
-Save and reload apache. Restart celery workers as well.
-
-    sudo service apache2 reload
+The console will spit out a block of text. If it does not appear, it can be found with `sudo service teamspeak status`. **SAVE THIS**.
 
 If you plan on claiming the ServerAdmin token, do so with a different TeamSpeak client profile than the one used for your auth account, or you will lose your admin status.
+
+Edit the settings you added to your auth project's settings file earlier, entering the following:
+ - `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from that block of text it just spat out (usually `serveradmin`)
+ - `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` from that block of text it just spat out
+ - `TEAMSPEAK_VIRTUAL_SERVER` is the virtual server ID of the server to be managed - it will only ever not be 1 if your server is hosted by a professional company
+ - `TEAMSPEAK3_PUBLIC_URL` is the public address of your teamspeak server. Do not include any leading http:// or teamspeak://
+
+Once settings are entered, run migrations and restart gunicorn and celery.
 
 ### Generate User Account
 And now we can generate ourselves a user account. Navigate to the services in AllianceAuth for your user account and press the checkmark for TeamSpeak 3.
@@ -82,13 +94,14 @@ Using the advanced permissions editor, ensure the `Guest` group has the permissi
 To enable advanced permissions, on your client go to the `Tools` menu, `Application`, and under the `Misc` section, tick `Advanced permission system`
 
 ### TS group models not populating on admin site
-The method which populates these runs every 30 minutes. To populate manually, start a celery shell:
+The method which populates these runs every 30 minutes. To populate manually, start a django shell:
 
-    celery -A alliance_auth shell
+    python manage.py shell
 
 And execute the update:
 
-    run_ts3_group_update()
+    from services.modules.teamspeak3.tasks import Teamspeak3Tasks
+    Teamspeak3Tasks.run_ts3_group_update()
 
 Ensure that command does not return an error.
 
@@ -110,7 +123,7 @@ If you have SSH access to the server hosting it, you need to locate the teamspea
 
 ### `520 invalid loginname or password`
 
-The serverquery account login specified in settings.py is incorrect. Please verify `TEAMSPEAK3_SERVERQUERY_USER` and `TEAMSPEAK3_SERVERQUERY_PASSWORD`. The [installation section](#update-settings) describes where to get them.
+The serverquery account login specified in local.py is incorrect. Please verify `TEAMSPEAK3_SERVERQUERY_USER` and `TEAMSPEAK3_SERVERQUERY_PASSWORD`. The [installation section](#update-settings) describes where to get them.
 
 ### `2568 insufficient client permissions`
 

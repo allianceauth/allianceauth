@@ -1,6 +1,13 @@
 # Mumble
 
-Add `allianceauth.services.modules.mumble` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+## Prepare Your Settings
+In your auth project's settings file, do the following:
+ - Add `'allianceauth.services.modules.mumble',` to your `INSTALLED_APPS` list
+ - Append the following to your local.py settings file:
+ 
+
+    # Mumble Configuration
+    MUMBLE_URL = ""
 
 ## Overview
 Mumble is a free voice chat server. While not as flashy as teamspeak, it has all the functionality and is easier to customize. And is better. I may be slightly biased.
@@ -14,7 +21,7 @@ The mumble server package can be retrieved from a repository we need to add, mum
 Now two packages need to be installed:
 
     sudo apt-get install python-software-properties mumble-server
-    
+
 Download the appropriate authenticator release from https://github.com/allianceauth/mumble-authenticator and install the python dependencies for it:
 
     pip install -r requirements.txt
@@ -80,5 +87,7 @@ Note that groups will only be created on Mumble automatically when a user joins 
 ## Making and Managing Channels
 ACL is really above the scope of this guide. Once AllianceAuth creates your groups, go ahead and follow one of the wonderful web guides available on how to set up channel ACL properly.
 
-## Setup Complete
-You’ve finished the steps required to make AllianceAuth work with Mumble. Play around with it and make it your own.
+## Prepare Auth
+In your project's settings file, set `MUMBLE_URL` to the public address of your mumble server. Do not include any leading `http://` or `mumble://`.
+
+Run migrations and restart gunicorn and celery to complete setup.

@@ -1,11 +1,31 @@
 # Alliance Market
 
-Add `allianceauth.services.modules.market` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+## Dependencies
+Alliance Market requires php installed in your web server. Apache has `mod_php`, NGINX requires `php-fpm`.
 
+## Prepare Your Settings
+In your auth project's settings file, do the following:
+ - Add `'allianceauth.services.modules.market',` to your `INSTALLED_APPS` list
+ - Append the following to the bottom of the settings file
+
+
+    # Alliance Market
+    MARKET_URL = ''
+    DATABASES['market'] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_market',
+        'USER': 'allianceserver-market',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+
+## Setup Alliance Market
 Alliance Market needs a database. Create one in mysql. Default name is `alliance_market`:
 
     mysql -u root -p
     create database alliance_market;
+    grant all privileges on alliance_market . * to 'allianceserver'@'localhost';
     exit;
 
 To clone the repo, install packages:
@@ -79,23 +99,37 @@ Install SDE:
 
     sudo php app/console evernus:update:sde
 
-Edit your apache config. Add the following:
+Configure your web server to serve alliance market.
 
-    Alias /market /var/www/evernus-alliance-market/web/
+A minimal apache config might look like:
 
-    <Directory "/var/www/evernus-alliance-market/web/">
-        DirectoryIndex app.php
-        Require all granted
-        AllowOverride all
-    </Directory>
+    <VirtualHost *:80>
+        ServerName market.example.com
+        DocumentRoot /var/www/evernus-alliance-market/web
+        <Directory "/var/www/evernus-alliance-market/web/">
+            DirectoryIndex app.php
+            Require all granted
+            AllowOverride all
+        </Directory>
+    </VirtualHost>
 
-Enable rewriting
+A minimal nginx config might look like:
 
-    sudo a2enmod rewrite
-
-Restart apache
-
-    sudo service apache2 reload
+    server {
+        listen 80;
+        server_name  market.example.com;
+        root   /var/www/evernus-alliance-market/web;
+        index  app.php;
+        access_log  /var/logs/market.access.log;
+    
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_pass   unix:/tmp/php.socket;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include fastcgi_params;
+        }
+    }
 
 Once again, set cache permissions:
 
@@ -104,3 +138,7 @@ Once again, set cache permissions:
 Add a user account through auth, then make it a superuser:
 
     sudo php app/console fos:user:promote your_username --super
+
+Now edit your auth project's settings file and fill in the web URL to your market as well as the database details.
+
+Finally run migrations and restart gunicorn and celery.
