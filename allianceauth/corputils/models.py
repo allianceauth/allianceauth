@@ -122,10 +122,10 @@ class CorpStats(models.Model):
                                                m.character_id)])
 
     def visible_to(self, user):
-        return self.objects.filter(pk=self.pk).visible_to(user).exists()
+        return CorpStats.objects.filter(pk=self.pk).visible_to(user).exists()
 
     def can_update(self, user):
-        return self.visible_to(user)
+        return self.token.user == user or self.visible_to(user)
 
     def corp_logo(self, size=128):
         return "https://image.eveonline.com/Corporation/%s_%s.png" % (self.corp.corporation_id, size)
