@@ -279,7 +279,7 @@ class DiscordOAuthManager:
         return r.json()
 
     @staticmethod
-    def __edit_role(role_id, name, color=0, hoist=True, permissions=36785152):
+    def __edit_role(role_id, name, color=0, hoist=False, permissions=36785152):
         custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         data = {
             'color': color,
