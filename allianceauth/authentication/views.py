@@ -71,17 +71,19 @@ have the email address embedded much like the username. Key creation and decodin
 @token_required(new=True, scopes=settings.LOGIN_TOKEN_SCOPES)
 def sso_login(request, token):
     user = authenticate(token=token)
-    if user and user.is_active:
-        login(request, user)
-        return redirect(request.POST.get('next', request.GET.get('next', 'authentication:dashboard')))
-    elif user and not user.email:
-        # Store the new user PK in the session to enable us to identify the registering user in Step 2
-        request.session['registration_uid'] = user.pk
-        # Go to Step 2
-        return redirect('registration_register')
-    else:
-        messages.error(request, _('Unable to authenticate as the selected character.'))
-        return redirect(settings.LOGIN_URL)
+    if user:
+        token.user = user
+        token.save()
+        if user.is_active:
+            login(request, user)
+            return redirect(request.POST.get('next', request.GET.get('next', 'authentication:dashboard')))
+        elif not user.email:
+            # Store the new user PK in the session to enable us to identify the registering user in Step 2
+            request.session['registration_uid'] = user.pk
+            # Go to Step 2
+            return redirect('registration_register')
+    messages.error(request, _('Unable to authenticate as the selected character.'))
+    return redirect(settings.LOGIN_URL)
 
 
 # Step 2
