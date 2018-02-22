@@ -245,18 +245,20 @@ class DiscordManagerTestCase(TestCase):
 
         headers = {'accept': 'application/json', 'authorization': 'Bearer accesstoken'}
 
-        m.register_uri('POST',
-                       manager.DISCORD_URL + '/invites/' + str(settings.DISCORD_INVITE_CODE),
-                       request_headers=headers,
-                       text='{}')
-
         m.register_uri('GET',
                        manager.DISCORD_URL + "/users/@me",
                        request_headers=headers,
                        text=json.dumps({'id': "123456"}))
 
+        headers = {'accept': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
+
+        m.register_uri('PUT',
+                       manager.DISCORD_URL + '/guilds/' + str(settings.DISCORD_GUILD_ID) + '/members/123456',
+                       request_headers=headers,
+                       text='{}')
+
         # Act
-        return_value = DiscordOAuthManager.add_user('abcdef')
+        return_value = DiscordOAuthManager.add_user('abcdef', [])
 
         # Assert
         self.assertEqual(return_value, '123456')

@@ -19,15 +19,16 @@ class DiscordTasks:
 
     @classmethod
     def add_user(cls, user, code):
-        user_id = DiscordOAuthManager.add_user(code)
+        groups = DiscordTasks.get_groups(user)
+        nickname = None
+        if settings.DISCORD_SYNC_NAMES:
+            nickname = DiscordTasks.get_nickname(user)
+        user_id = DiscordOAuthManager.add_user(code, groups, nickname=nickname)
         if user_id:
             discord_user = DiscordUser()
             discord_user.user = user
             discord_user.uid = user_id
             discord_user.save()
-            if settings.DISCORD_SYNC_NAMES:
-                cls.update_nickname.delay(user.pk)
-            cls.update_groups.delay(user.pk)
             return True
         return False
 
@@ -62,9 +63,7 @@ class DiscordTasks:
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)
         if DiscordTasks.has_account(user):
-            groups = [user.profile.state.name]
-            for group in user.groups.all():
-                groups.append(str(group.name))
+            groups = DiscordTasks.get_groups(user)
             logger.debug("Updating user %s discord groups to %s" % (user, groups))
             try:
                 DiscordOAuthManager.update_groups(user.discord.uid, groups)
@@ -142,3 +141,7 @@ class DiscordTasks:
     def get_nickname(user):
         from .auth_hooks import DiscordService
         return NameFormatter(DiscordService(), user).format_name()
+
+    @staticmethod
+    def get_groups(user):
+        return [g.name for g in user.groups.all()] + [user.profile.state.name]

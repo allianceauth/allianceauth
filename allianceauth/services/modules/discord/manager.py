@@ -22,8 +22,8 @@ Previously all we asked for was permission to kick members, manage roles, and ma
 Users have reported weird unauthorized errors we don't understand. So now we ask for full server admin.
 It's almost fixed the problem.
 """
-# kick members, manage roles, manage nicknames
-# BOT_PERMISSIONS = 0x00000002 + 0x10000000 + 0x08000000
+# kick members, manage roles, manage nicknames, create instant invite
+# BOT_PERMISSIONS = 0x00000002 + 0x10000000 + 0x08000000 + 0x00000001
 BOT_PERMISSIONS = 0x00000008
 
 # get user ID, accept invite
@@ -183,23 +183,33 @@ class DiscordOAuthManager:
         return token
 
     @staticmethod
-    def add_user(code):
+    def add_user(code, groups, nickname=None):
         try:
             token = DiscordOAuthManager._process_callback_code(code)['access_token']
             logger.debug("Received token from OAuth")
 
             custom_headers = {'accept': 'application/json', 'authorization': 'Bearer ' + token}
-            path = DISCORD_URL + "/invites/" + str(settings.DISCORD_INVITE_CODE)
-            r = requests.post(path, headers=custom_headers)
-            logger.debug("Got status code %s after accepting Discord invite" % r.status_code)
-            r.raise_for_status()
-
             path = DISCORD_URL + "/users/@me"
             r = requests.get(path, headers=custom_headers)
             logger.debug("Got status code %s after retrieving Discord profile" % r.status_code)
             r.raise_for_status()
 
             user_id = r.json()['id']
+
+            path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
+            group_ids = [DiscordOAuthManager._group_name_to_id(DiscordOAuthManager._sanitize_group_name(g)) for g in
+                         groups]
+            data = {
+                'roles': group_ids,
+                'access_token': token,
+            }
+            if nickname:
+                data['nick'] = nickname
+            custom_headers['authorization'] = 'Bot ' + settings.DISCORD_BOT_TOKEN
+            r = requests.put(path, headers=custom_headers, json=data)
+            logger.debug("Got status code %s after joining Discord server" % r.status_code)
+            r.raise_for_status()
+
             logger.info("Added Discord user ID %s to server." % user_id)
             return user_id
         except:
