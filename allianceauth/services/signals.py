@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from .hooks import ServicesHook
 from .tasks import disable_user
 from allianceauth.authentication.admin import User as AdminUser
+from allianceauth.groupmanagement.admin import Group as AdminGroup
 
 from allianceauth.authentication.models import State, UserProfile
 from allianceauth.authentication.signals import state_changed
@@ -56,7 +57,6 @@ def m2m_changed_user_permissions(sender, instance, action, *args, **kwargs):
         transaction.on_commit(lambda: validate_all_services())
 
 
-@receiver(m2m_changed, sender=Group.permissions.through)
 def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwargs):
     logger.debug("Received m2m_changed from group %s permissions with action %s" % (instance, action))
     if instance.pk and (action == "post_remove" or action == "post_clear"):
@@ -87,6 +87,10 @@ def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwa
                     break  # Found service, break out of services iteration and go back to permission iteration
         if not got_change:
             logger.debug("Permission change for group {} was not service permission, ignoring".format(instance))
+
+
+m2m_changed.connect(m2m_changed_group_permissions, sender=Group.permissions.through)
+m2m_changed.connect(m2m_changed_group_permissions, sender=AdminGroup.permissions.through)
 
 
 @receiver(m2m_changed, sender=State.permissions.through)
