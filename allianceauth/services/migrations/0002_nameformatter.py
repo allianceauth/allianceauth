@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('services', '0001_squashed_0003_delete_groupcache'),
+        ('authentication', '0015_user_profiles'),
     ]
 
     operations = [

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User as BaseUser, Permission as BasePermission
 from django.utils.text import slugify
 from allianceauth.services.hooks import ServicesHook
 
@@ -120,7 +120,7 @@ class CharacterOwnershipAdmin(admin.ModelAdmin):
 
 class PermissionAdmin(admin.ModelAdmin):
     actions = None
-    readonly_fields = [field.name for field in Permission._meta.fields]
+    readonly_fields = [field.name for field in BasePermission._meta.fields]
     list_display = ('admin_name', 'name', 'codename', 'content_type')
     list_filter = ('content_type__app_label',)
 
@@ -136,21 +136,22 @@ class PermissionAdmin(admin.ModelAdmin):
 
 
 # Hack to allow registration of django.contrib.auth models in our authentication app
-class ProxyUser(User):
+class User(BaseUser):
     class Meta:
         proxy = True
-        verbose_name = User._meta.verbose_name
-        verbose_name_plural = User._meta.verbose_name_plural
+        verbose_name = BaseUser._meta.verbose_name
+        verbose_name_plural = BaseUser._meta.verbose_name_plural
 
 
-class ProxyPermission(Permission):
+class Permission(BasePermission):
     class Meta:
         proxy = True
-        verbose_name = Permission._meta.verbose_name
-        verbose_name_plural = Permission._meta.verbose_name_plural
+        verbose_name = BasePermission._meta.verbose_name
+        verbose_name_plural = BasePermission._meta.verbose_name_plural
+
 
 try:
-    admin.site.unregister(User)
+    admin.site.unregister(BaseUser)
 finally:
-    admin.site.register(ProxyUser, UserAdmin)
-    admin.site.register(ProxyPermission, PermissionAdmin)
+    admin.site.register(User, UserAdmin)
+    admin.site.register(Permission, PermissionAdmin)

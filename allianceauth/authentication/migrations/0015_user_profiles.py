@@ -145,7 +145,7 @@ def recreate_authservicesinfo(apps, schema_editor):
     User = apps.get_model('auth', 'User')
 
     # recreate all missing AuthServicesInfo models
-    AuthServicesInfo.objects.bulk_create([AuthServicesInfo(user=u.pk) for u in User.objects.all()])
+    AuthServicesInfo.objects.bulk_create([AuthServicesInfo(user_id=u.pk) for u in User.objects.all()])
 
     # repopulate main characters
     for profile in UserProfile.objects.exclude(main_character__isnull=True).select_related('user', 'main_character'):
@@ -233,7 +233,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(disable_passwords, migrations.RunPython.noop),
         migrations.CreateModel(
-            name='ProxyPermission',
+            name='Permission',
             fields=[
             ],
             options={
@@ -247,7 +247,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ProxyUser',
+            name='User',
             fields=[
             ],
             options={

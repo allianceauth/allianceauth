@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ProxyGroup',
+            name='Group',
             fields=[
             ],
             options={

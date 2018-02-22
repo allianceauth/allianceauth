@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group as BaseGroup
+from django.db.models.signals import post_save
 
-from .models import AuthGroup
+from .models import AuthGroup, save_auth_group, create_auth_group
 from .models import GroupRequest
 
 
@@ -12,17 +13,21 @@ class AuthGroupAdmin(admin.ModelAdmin):
     filter_horizontal = ('group_leaders',)
 
 
-class ProxyGroup(Group):
+class Group(BaseGroup):
     class Meta:
         proxy = True
-        verbose_name = Group._meta.verbose_name
-        verbose_name_plural = Group._meta.verbose_name_plural
+        verbose_name = BaseGroup._meta.verbose_name
+        verbose_name_plural = BaseGroup._meta.verbose_name_plural
 
 try:
-    admin.site.unregister(Group)
+    admin.site.unregister(BaseGroup)
 finally:
-    admin.site.register(ProxyGroup)
+    admin.site.register(Group)
 
 
 admin.site.register(GroupRequest)
 admin.site.register(AuthGroup, AuthGroupAdmin)
+
+
+post_save.connect(create_auth_group, sender=Group)
+post_save.connect(save_auth_group, sender=Group)

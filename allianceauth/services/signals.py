@@ -8,6 +8,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from .hooks import ServicesHook
 from .tasks import disable_user
+from allianceauth.authentication.admin import User as AdminUser
 
 from allianceauth.authentication.models import State, UserProfile
 from allianceauth.authentication.signals import state_changed
@@ -140,7 +141,6 @@ def pre_delete_user(sender, instance, *args, **kwargs):
     disable_user(instance)
 
 
-@receiver(pre_save, sender=User)
 def pre_save_user(sender, instance, *args, **kwargs):
     logger.debug("Received pre_save from %s" % instance)
     # check if user is being marked active/inactive
@@ -154,3 +154,7 @@ def pre_save_user(sender, instance, *args, **kwargs):
             disable_user(instance)
     except User.DoesNotExist:
         pass
+
+
+pre_save.connect(pre_save_user, sender=User)
+pre_save.connect(pre_save_user, sender=AdminUser)
