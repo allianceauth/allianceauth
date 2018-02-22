@@ -136,7 +136,9 @@ class MumbleViewsTestCase(TestCase):
         mumble_user = MumbleUser.objects.get(user=self.member)
         self.assertEqual(mumble_user.username, expected_username)
         self.assertTrue(mumble_user.pwhash)
-        self.assertEqual('Guest,Member', mumble_user.groups)
+        self.assertIn('Guest', mumble_user.groups)
+        self.assertIn('Member', mumble_user.groups)
+        self.assertIn(',', mumble_user.groups)
 
     def test_deactivate_post(self):
         self.login()
