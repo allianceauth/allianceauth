@@ -21,13 +21,6 @@ with a server ID of `120631096835571712`
 
 Update settings.py, inputting the server ID as `DISCORD_GUILD_ID`
 
-### Generating an Invite
-Still on the Discord site, in your new server, an invite needs to be generated for users to join. If you with for users to  initially join a different channel than `#general`, create it and follow the steps below, substituting this channel for `#general`.
-
-On the left bar under the Text Channels heading, hover over `#general` on the right site. There are two icons, a box with an arrow and a gear. Press the box, then on the bottom left select Advanced Settings. Set the expiration to never, and no limit on uses. Press generate.
-
-This returns a code that looks like `https://discord.gg/0fmA8MyXV6qt7XAZ`. The part after the last slash, `0fmA8MyXV6qt7XAZ`, is the invite code. Update settings.py, inputting this invite code as `DISCORD_INVITE_CODE`
-
 ### Registering an Application
 
 Navigate to the [Discord Developers site.](https://discordapp.com/developers/applications/me) Press the plus sign to create a new application.
