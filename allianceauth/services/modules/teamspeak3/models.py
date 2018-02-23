@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from allianceauth.authentication.models import State
 
 
 class Teamspeak3User(models.Model):
@@ -50,3 +51,8 @@ class UserTSgroup(models.Model):
 
     def __str__(self):
         return self.user.name
+
+
+class StateGroup(models.Model):
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    ts_group = models.ForeignKey(TSgroup, on_delete=models.CASCADE)

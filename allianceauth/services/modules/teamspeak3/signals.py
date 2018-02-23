@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .tasks import Teamspeak3Tasks
-from .models import AuthTS
+from .models import AuthTS, StateGroup
 
 logger = logging.getLogger(__name__)
 
@@ -34,3 +34,8 @@ def post_save_authts(sender, instance, *args, **kwargs):
 def post_delete_authts(sender, instance, *args, **kwargs):
     logger.debug("Received post_delete signal from %s" % instance)
     transaction.on_commit(trigger_all_ts_update)
+
+
+# it's literally the same logic so just recycle the receiver
+post_save.connect(post_save_authts, sender=StateGroup)
+post_delete.connect(post_delete_authts, sender=StateGroup)

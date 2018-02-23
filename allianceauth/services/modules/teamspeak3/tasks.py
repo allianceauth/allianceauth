@@ -69,6 +69,8 @@ class Teamspeak3Tasks:
                     for filtered_group in filtered_groups:
                         for ts_group in filtered_group.ts_group.all():
                             groups[ts_group.ts_group_name] = ts_group.ts_group_id
+            for stategroup in user.profile.state.stategroup_set.all():
+                groups[stategroup.ts_group.ts_group_name] = stategroup.ts_group.ts_group_id
             logger.debug("Updating user %s teamspeak3 groups to %s" % (user, groups))
             try:
                 with Teamspeak3Manager() as ts3man:

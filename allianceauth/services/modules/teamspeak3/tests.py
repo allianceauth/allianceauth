@@ -7,9 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
 
 from allianceauth.tests.auth_utils import AuthUtils
-
 from .auth_hooks import Teamspeak3Service
-from .models import Teamspeak3User, AuthTS, TSgroup
+from .models import Teamspeak3User, AuthTS, TSgroup, StateGroup
 from .tasks import Teamspeak3Tasks
 from .signals import m2m_changed_authts_group, post_save_authts, post_delete_authts
 
@@ -31,13 +30,14 @@ class Teamspeak3HooksTestCase(TestCase):
             member = AuthUtils.create_member(self.member)
             Teamspeak3User.objects.create(user=member, uid=self.member, perm_key='123ABC')
             self.none_user = 'none_user'
-            none_user = AuthUtils.create_user(self.none_user)
-
+            AuthUtils.create_user(self.none_user)
+            state = member.profile.state
             ts_member_group = TSgroup.objects.create(ts_group_id=1, ts_group_name='Member')
-            ts_blue_group = TSgroup.objects.create(ts_group_id=2, ts_group_name='Blue')
+            ts_state_group = TSgroup.objects.create(ts_group_id=2, ts_group_name='State')
             m2m_member_group = AuthTS.objects.create(auth_group=member.groups.all()[0])
             m2m_member_group.ts_group.add(ts_member_group)
             m2m_member_group.save()
+            StateGroup.objects.create(state=state, ts_group=ts_state_group)
             self.service = Teamspeak3Service
             add_permissions()
 
@@ -60,7 +60,7 @@ class Teamspeak3HooksTestCase(TestCase):
         instance = manager.return_value.__enter__.return_value
         service = self.service()
         service.update_all_groups()
-        # Check member and blue user have groups updated
+        # Check user has groups updated
         self.assertTrue(instance.update_groups.called)
         self.assertEqual(instance.update_groups.call_count, 1)
 
@@ -74,7 +74,7 @@ class Teamspeak3HooksTestCase(TestCase):
             self.assertTrue(instance.update_groups.called)
             args, kwargs = instance.update_groups.call_args
             # update_groups(user.teamspeak3.uid, groups)
-            self.assertEqual({'Member': 1}, args[1])  # Check groups
+            self.assertEqual({'Member': 1, 'State': 2}, args[1])  # Check groups
             self.assertEqual(self.member, args[0])  # Check uid
 
         # Check none user does not have groups updated
