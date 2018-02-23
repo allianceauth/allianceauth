@@ -278,3 +278,15 @@ class Teamspeak3SignalsTestCase(TestCase):
         self.m2m_member.delete()  # Trigger delete signal
 
         self.assertTrue(trigger_all_ts_update.called)
+
+    @mock.patch(MODULE_PATH + '.signals.transaction')
+    @mock.patch(MODULE_PATH + '.signals.Teamspeak3Tasks.update_groups.delay')
+    def test_state_changed(self, update_groups, transaction):
+        # Overload transaction.on_commit so everything happens synchronously
+        transaction.on_commit = lambda fn: fn()
+
+        state = AuthUtils.create_state('test', 1000, disconnect_signals=True)
+        self.member.profile.state = state
+        self.member.profile.save()
+
+        self.assertTrue(update_groups.called)
