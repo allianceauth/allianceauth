@@ -9,9 +9,9 @@
                     <tr>
                         <td class="text-center col-lg-6
                                 {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}"><img
-                                class="ra-avatar" src="{{ corpstats.corp_logo }}"></td>
+                                class="ra-avatar" src="{{ corpstats.corp.logo_url_128 }}"></td>
                         {% if corpstats.corp.alliance %}
-                            <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance_logo }}">
+                            <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance.logo_url_128 }}">
                             </td>
                         {% endif %}
                     </tr>
@@ -70,6 +70,7 @@
                                                                 {% for alt in main.alts %}
                                                                     {% if forloop.first %}
                                                                         <tr>
+                                                                            <th></th>
                                                                             <th class="text-center">{% trans "Character" %}</th>
                                                                             <th class="text-center">{% trans "Corporation" %}</th>
                                                                             <th class="text-center">{% trans "Alliance" %}</th>
@@ -77,10 +78,15 @@
                                                                         </tr>
                                                                     {% endif %}
                                                                     <tr>
+                                                                        <td class="text-center" style="width:5%">
+                                                                            <div class="thumbnail" style="border: 0 none; box-shadow: none; background: transparent;">
+                                                                                <img src="https://image.eveonline.com/Character/{{ alt.character_id }}_32.jpg" class="img-circle">
+                                                                            </div>
+                                                                        </td>
                                                                         <td class="text-center" style="width:30%">{{ alt.character_name }}</td>
                                                                         <td class="text-center" style="width:30%">{{ alt.corporation_name }}</td>
                                                                         <td class="text-center" style="width:30%">{{ alt.alliance_name }}</td>
-                                                                        <td class="text-center" style="width:10%">
+                                                                        <td class="text-center" style="width:5%">
                                                                             <a href="https://zkillboard.com/character/{{ alt.character_id }}/"
                                                                                class="label label-danger" target="_blank">
                                                                                 {% trans "Killboard" %}

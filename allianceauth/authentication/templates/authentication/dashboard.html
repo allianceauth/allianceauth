@@ -21,7 +21,7 @@
                             <table class="table">
                                 <tr>
                                     <td class="text-center"><img class="ra-avatar"
-                                                                 src="https://image.eveonline.com/Character/{{ main.character_id }}_128.jpg">
+                                                                 src="{{ main.portrait_url_128 }}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -102,8 +102,7 @@
                     {% for ownership in request.user.character_ownerships.all %}
                     {% with ownership.character as char %}
                     <tr>
-                        <td class="text-center"><img class="ra-avatar img-circle"
-                                                     src="https://image.eveonline.com/Character/{{ char.character_id }}_32.jpg">
+                        <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
                         </td>
                         <td class="text-center">{{ char.character_name }}</td>
                         <td class="text-center">{{ char.corporation_name }}</td>

@@ -182,4 +182,4 @@ class CorpMember(models.Model):
         if item.startswith('portrait_url_'):
             size = item.strip('portrait_url_')
             return self.portrait_url(size)
-        return super(CorpMember, self).__getattr__(item)
+        return self.__getattribute__(item)

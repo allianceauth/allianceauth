@@ -35,6 +35,15 @@ class EveAllianceInfo(models.Model):
     def __str__(self):
         return self.alliance_name
 
+    def logo_url(self, size=32):
+        return "https://image.eveonline.com/Alliance/%s_%s.png" % (self.alliance_id, size)
+
+    def __getattr__(self, item):
+        if item.startswith('logo_url_'):
+            size = item.strip('logo_url_')
+            return self.logo_url(size)
+        return self.__getattribute__(item)
+
 
 class EveCorporationInfo(models.Model):
     corporation_id = models.CharField(max_length=254, unique=True)
@@ -59,6 +68,15 @@ class EveCorporationInfo(models.Model):
 
     def __str__(self):
         return self.corporation_name
+
+    def logo_url(self, size=32):
+        return "https://image.eveonline.com/Corporation/%s_%s.png" % (self.corporation_id, size)
+
+    def __getattr__(self, item):
+        if item.startswith('logo_url_'):
+            size = item.strip('logo_url_')
+            return self.logo_url(size)
+        return self.__getattribute__(item)
 
 
 class EveCharacter(models.Model):
@@ -107,3 +125,12 @@ class EveCharacter(models.Model):
 
     def __str__(self):
         return self.character_name
+
+    def portrait_url(self, size=32):
+        return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
+
+    def __getattr__(self, item):
+        if item.startswith('portrait_url_'):
+            size = item.strip('portrait_url_')
+            return self.portrait_url(size)
+        return self.__getattribute__(item)
