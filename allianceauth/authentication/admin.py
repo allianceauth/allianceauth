@@ -3,7 +3,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User as BaseUser, Permission as BasePermission
 from django.utils.text import slugify
 from allianceauth.services.hooks import ServicesHook
-
+from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
+from django.dispatch import receiver
 from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
 from allianceauth.hooks import get_hooks
 
@@ -155,3 +156,33 @@ try:
 finally:
     admin.site.register(User, UserAdmin)
     admin.site.register(Permission, PermissionAdmin)
+
+
+@receiver(pre_save, sender=User)
+def redirect_pre_save(sender, signal=None, *args, **kwargs):
+    pre_save.send(BaseUser, *args, **kwargs)
+
+
+@receiver(post_save, sender=User)
+def redirect_post_save(sender, signal=None, *args, **kwargs):
+    post_save.send(BaseUser, *args, **kwargs)
+
+
+@receiver(pre_delete, sender=User)
+def redirect_pre_delete(sender, signal=None, *args, **kwargs):
+    pre_delete.send(BaseUser, *args, **kwargs)
+
+
+@receiver(post_delete, sender=User)
+def redirect_post_delete(sender, signal=None, *args, **kwargs):
+    post_delete.send(BaseUser, *args, **kwargs)
+
+
+@receiver(m2m_changed, sender=User.groups.through)
+def redirect_m2m_changed_groups(sender, signal=None, *args, **kwargs):
+    m2m_changed.send(BaseUser, *args, **kwargs)
+
+
+@receiver(m2m_changed, sender=User.user_permissions.through)
+def redirect_m2m_changed_permissions(sender, signal=None, *args, **kwargs):
+    m2m_changed.send(BaseUser, *args, **kwargs)

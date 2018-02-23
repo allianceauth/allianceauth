@@ -3,10 +3,9 @@ import logging
 from .models import CharacterOwnership, UserProfile, get_guest_state, State
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.db.models.signals import post_save, pre_delete, m2m_changed, pre_save
+from django.db.models.signals import pre_save, post_save, pre_delete, m2m_changed
 from django.dispatch import receiver, Signal
 from esi.models import Token
-from allianceauth.authentication.admin import User as AdminUser
 
 from allianceauth.eveonline.models import EveCharacter
 
@@ -67,15 +66,12 @@ def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
             instance.assign_state()
 
 
+@receiver(post_save, sender=User)
 def create_required_models(sender, instance, created, *args, **kwargs):
     # ensure all users have a model
     if created:
         logger.debug('User {} created. Creating default UserProfile.'.format(instance))
         UserProfile.objects.get_or_create(user=instance)
-
-
-post_save.connect(create_required_models, sender=User)
-post_save.connect(create_required_models, sender=AdminUser)
 
 
 @receiver(post_save, sender=Token)
@@ -132,6 +128,7 @@ def validate_main_character_token(sender, instance, *args, **kwargs):
             profile.save()
 
 
+@receiver(pre_save, sender=User)
 def assign_state_on_active_change(sender, instance, *args, **kwargs):
     # set to guest state if inactive, assign proper state if reactivated
     if instance.pk:
@@ -145,10 +142,6 @@ def assign_state_on_active_change(sender, instance, *args, **kwargs):
                     "User {0} has been deactivated. Revoking state and assigning to guest state.".format(instance))
                 instance.profile.state = get_guest_state()
                 instance.profile.save(update_fields=['state'])
-
-
-pre_save.connect(assign_state_on_active_change, sender=User)
-pre_save.connect(assign_state_on_active_change, sender=AdminUser)
 
 
 @receiver(post_save, sender=EveCharacter)
