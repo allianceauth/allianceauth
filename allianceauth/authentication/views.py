@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from esi.decorators import token_required
+from esi.models import Token
 from registration.backends.hmac.views import RegistrationView as BaseRegistrationView, \
     ActivationView as BaseActivationView, REGISTRATION_SALT
 from registration.signals import user_registered
@@ -73,7 +74,10 @@ def sso_login(request, token):
     user = authenticate(token=token)
     if user:
         token.user = user
-        token.save()
+        if Token.objects.exclude(pk=token.pk).equivalent_to(token).require_valid().exists():
+            token.delete()
+        else:
+            token.save()
         if user.is_active:
             login(request, user)
             return redirect(request.POST.get('next', request.GET.get('next', 'authentication:dashboard')))
