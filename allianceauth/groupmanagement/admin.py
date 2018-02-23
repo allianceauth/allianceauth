@@ -6,11 +6,24 @@ from .models import AuthGroup
 from .models import GroupRequest
 
 
-class AuthGroupAdmin(admin.ModelAdmin):
-    """
-    Admin model for AuthGroup
-    """
+class AuthGroupInlineAdmin(admin.StackedInline):
+    model = AuthGroup
     filter_horizontal = ('group_leaders',)
+    fields = ('description', 'group_leaders', 'internal', 'hidden', 'open', 'public')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.has_perm('auth.change_group')
+
+
+class GroupAdmin(admin.ModelAdmin):
+    filter_horizontal = ('permissions',)
+    inlines = (AuthGroupInlineAdmin,)
 
 
 class Group(BaseGroup):
@@ -22,11 +35,10 @@ class Group(BaseGroup):
 try:
     admin.site.unregister(BaseGroup)
 finally:
-    admin.site.register(Group)
+    admin.site.register(Group, GroupAdmin)
 
 
 admin.site.register(GroupRequest)
-admin.site.register(AuthGroup, AuthGroupAdmin)
 
 
 @receiver(pre_save, sender=Group)
