@@ -2,11 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User as BaseUser, Permission as BasePermission
 from django.utils.text import slugify
+from django.db.models import Q
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 from django.dispatch import receiver
 from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
 from allianceauth.hooks import get_hooks
+from allianceauth.eveonline.models import EveCharacter
+from django.forms import ModelForm
 
 
 def make_service_hooks_update_groups_action(service):
@@ -39,6 +42,45 @@ def make_service_hooks_sync_nickname_action(service):
     return sync_nickname
 
 
+class QuerysetModelForm(ModelForm):
+    # allows specifying FK querysets through kwarg
+    def __init__(self, querysets=None, *args, **kwargs):
+        querysets = querysets or {}
+        super().__init__(*args, **kwargs)
+        for field, qs in querysets.items():
+            self.fields[field].queryset = qs
+
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    readonly_fields = ('state',)
+    form = QuerysetModelForm
+
+    def get_formset(self, request, obj=None, **kwargs):
+        # main_character field can only show current value or unclaimed alts
+        # if superuser, allow selecting from any unclaimed main
+        query = Q()
+        if obj and obj.profile.main_character:
+            query |= Q(pk=obj.profile.main_character_id)
+            if request.user.is_superuser:
+                query |= Q(userprofile__isnull=True)
+            else:
+                query |= Q(character_ownership__user=obj)
+        qs = EveCharacter.objects.filter(query)
+        formset = super().get_formset(request, obj=obj, **kwargs)
+
+        def get_kwargs(self, index):
+            return {'querysets': {'main_character': EveCharacter.objects.filter(query)}}
+        formset.get_form_kwargs = get_kwargs
+        return formset
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class UserAdmin(BaseUserAdmin):
     """
     Extending Django's UserAdmin model
@@ -63,6 +105,21 @@ class UserAdmin(BaseUserAdmin):
 
         return actions
     list_filter = BaseUserAdmin.list_filter + ('profile__state',)
+    inlines = BaseUserAdmin.inlines + [UserProfileInline]
+    list_display = BaseUserAdmin.list_display + ('get_main_character',)
+
+    def get_main_character(self, obj):
+        return obj.profile.main_character
+    get_main_character.short_description = "Main Character"
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.has_perm('auth.change_user')
+
+    def has_add_permission(self, request, obj=None):
+        return request.user.has_perm('auth.add_user')
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.has_perm('auth.delete_user')
 
 
 @admin.register(State)
@@ -97,21 +154,6 @@ class StateAdmin(admin.ModelAdmin):
         return obj.userprofile_set.all().count()
 
 
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    readonly_fields = ('user', 'state')
-    search_fields = ('user__username', 'main_character__character_name')
-    list_filter = ('state',)
-    list_display = ('user', 'main_character')
-    actions = None
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-
 @admin.register(CharacterOwnership)
 class CharacterOwnershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'character')
@@ -134,6 +176,13 @@ class PermissionAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def has_module_permission(self, request):
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        # can see list but not edit it
+        return not obj
 
 
 # Hack to allow registration of django.contrib.auth models in our authentication app
