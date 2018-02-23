@@ -208,11 +208,11 @@ class DiscordManagerTestCase(TestCase):
     def setUp(self):
         pass
 
-    def test__sanitize_groupname(self):
-        test_group_name = ' Group Name_Test_'
-        group_name = DiscordOAuthManager._sanitize_groupname(test_group_name)
+    def test__sanitize_group_name(self):
+        test_group_name = str(10**103)
+        group_name = DiscordOAuthManager._sanitize_group_name(test_group_name)
 
-        self.assertEqual(group_name, 'GroupName_Test')
+        self.assertEqual(group_name, test_group_name[:100])
 
     def test_generate_Bot_add_url(self):
         from . import manager
@@ -358,7 +358,7 @@ class DiscordManagerTestCase(TestCase):
         import json
 
         # Arrange
-        groups = ['Member', 'Blue', 'Special Group']
+        groups = ['Member', 'Blue', 'SpecialGroup']
 
         group_cache.return_value = [{'id': 111, 'name': 'Member'},
                                     {'id': 222, 'name': 'Blue'},
