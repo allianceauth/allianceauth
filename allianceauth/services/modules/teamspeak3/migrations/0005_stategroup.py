@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0016_auto_20180223_0613'),
+        ('authentication', '0015_user_profiles'),
         ('teamspeak3', '0004_service_permissions'),
     ]
 
