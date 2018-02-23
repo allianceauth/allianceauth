@@ -17,7 +17,7 @@ install_requires = [
 
     'django>=1.11',
     'django-bootstrap-form',
-    'django-registration>=2.4,<3.0',
+    'django-registration==2.4',
     'django-sortedm2m',
     'django-redis-cache>=1.7.1',
     'django-celery-beat',
