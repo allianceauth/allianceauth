@@ -10,6 +10,8 @@ class AuthGroupInlineAdmin(admin.StackedInline):
     model = AuthGroup
     filter_horizontal = ('group_leaders',)
     fields = ('description', 'group_leaders', 'internal', 'hidden', 'open', 'public')
+    verbose_name_plural = 'Auth Settings'
+    verbose_name = ''
 
     def has_add_permission(self, request):
         return False

@@ -55,6 +55,8 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     readonly_fields = ('state',)
     form = QuerysetModelForm
+    verbose_name = ''
+    verbose_name_plural = 'Profile'
 
     def get_formset(self, request, obj=None, **kwargs):
         # main_character field can only show current value or unclaimed alts

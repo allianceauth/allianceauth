@@ -17,6 +17,11 @@ class NameFormatConfigForm(forms.ModelForm):
 
 class NameFormatConfigAdmin(admin.ModelAdmin):
     form = NameFormatConfigForm
+    list_display = ('service_name', 'get_state_display_string')
+
+    def get_state_display_string(self, obj):
+        return ', '.join([state.name for state in obj.states.all()])
+    get_state_display_string.short_description = 'States'
 
 
 admin.site.register(NameFormatConfig, NameFormatConfigAdmin)
