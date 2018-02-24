@@ -57,7 +57,7 @@ Enter the folder by issuing `cd allianceauth`
 
 Ensure you're on the latest version with the following:
 
-    git tag | sort -n | tail -1 | xargs git checkout
+    git checkout v1.15.7
 
 Python package dependencies can be installed from the requirements file:
 
