@@ -5,6 +5,7 @@
     :maxdepth: 1
     :caption: Features Contents
 
+    states
     hrapplications
     corpstats
     groups

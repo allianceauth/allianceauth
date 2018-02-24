@@ -203,7 +203,6 @@ class Migration(migrations.Migration):
                 ('permissions', models.ManyToManyField(blank=True, to='auth.Permission')),
             ],
             options={
-                'default_permissions': ('change',),
                 'ordering': ['-priority'],
             },
         ),
