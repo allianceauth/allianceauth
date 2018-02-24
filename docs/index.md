@@ -1,7 +1,7 @@
 
 # Alliance Auth
 
-Alliance service auth to help large scale alliances manage services. Built for "The 99 Percent" open for anyone to use
+An auth system for EVE Online to help in-game organizations manage online service access. 
 
 # Installing
 
