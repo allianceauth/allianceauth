@@ -5,7 +5,7 @@ Group Management is one of the core tasks of Alliance Auth. Many of Alliance Aut
 
 Administrators can create custom groups for users to join. Examples might be groups like `Leadership`, `CEO` or `Scouts`.
 
-When you create a Django `Group`, Auth automatically creates a corresponding `AuthGroup` model. The admin page looks like this:
+When you create a `Group` additional settings are available beyond the normal Django group model. The admin page looks like this:
 
 ![AuthGroup Admin page](/_static/images/features/group-admin.png)
 
