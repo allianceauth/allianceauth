@@ -118,7 +118,6 @@
                             Engineering Complex [XL]
                         </div>
                     {% endifequal %}
-
                     {% ifequal timer.structure "Station" %}
                         <div class="label label-danger">
                             Station
@@ -129,8 +128,23 @@
                             TCU
                         </div>
                     {% endifequal %}
-                    {% ifequal timer.structure "Other" %}
-                        <div class="label label-default">
+                    {% ifequal timer.structure "Refinery[M]" %}
+                        <div class="label label-warning">
+                            Refinery [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Refinery[L]" %}
+                        <div class="label label-warning">
+                            Refinery [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Moon Mining Cycle" %}
+                        <div class="label label-success">
+                            Moon Mining Cycle
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Other
+                        <div class="label label-default
                             Other
                         </div>
                     {% endifequal %}
@@ -261,6 +275,21 @@
                 {% ifequal timer.structure "TCU" %}
                     <div class="label label-danger">
                         TCU
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Refinery[M]" %}
+                    <div class="label label-warning">
+                        Refinery [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Refinery[L]" %}
+                    <div class="label label-warning">
+                        Refinery [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Moon Mining Cycle" %}
+                    <div class="label label-success">
+                        Moon Mining Cycle
                     </div>
                 {% endifequal %}
                 {% ifequal timer.structure "Other" %}
@@ -397,6 +426,21 @@
                 {% ifequal timer.structure "TCU" %}
                     <div class="label label-danger">
                         TCU
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Refinery[M]" %}
+                    <div class="label label-warning">
+                        Refinery [M]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Refinery[L]" %}
+                    <div class="label label-warning">
+                        Refinery [L]
+                    </div>
+                {% endifequal %}
+                {% ifequal timer.structure "Moon Mining Cycle" %}
+                    <div class="label label-success">
+                        Moon Mining Cycle
                     </div>
                 {% endifequal %}
                 {% ifequal timer.structure "Other" %}
