@@ -6,10 +6,10 @@
     :caption: Features Contents
 
     states
-    hrapplications
-    corpstats
     groups
     autogroups
+    hrapplications
+    corpstats
     permissions_tool
     nameformats
     fleetup
