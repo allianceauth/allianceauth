@@ -7,8 +7,7 @@ Alliance Auth
 [![Coverage Status](https://coveralls.io/repos/github/allianceauth/allianceauth/badge.svg?branch=master)](https://coveralls.io/github/allianceauth/allianceauth?branch=master)
 
 
-EVE service auth to help corps, alliances, and coalitions manage services.
-Built for "The 99 Percent" open for anyone to use.
+An auth system for EVE Online to help in-game organizations manage online service access.
 
 [Read the docs here.](http://allianceauth.rtfd.io)
 
@@ -17,22 +16,18 @@ Built for "The 99 Percent" open for anyone to use.
 
 Active Developers:
 
- - [Adarnof](https://github.com/Adarnof)
- - [Basraah](https://github.com/basraah)
-
+ - [Adarnof](https://github.com/adarnof/)
+ - [Basraah](https://github.com/basraah/)
 
 Beta Testers / Bug Fixers:
 
- - [ghoti](https://github.com/ghoti)
- - [mmolitor87](https://github.com/mmolitor87)
+ - [ghoti](https://github.com/ghoti/)
+ - [mmolitor87](https://github.com/mmolitor87/)
+ - [kaezon](https://github.com/kaezon/)
+ - [orbitroom](https://github.com/orbitroom/)
+ - [tehfiend](https://github.com/tehfiend/)
 
+Special thanks to [Nikdoof](https://github.com/nikdoof/), as his [auth](https://github.com/nikdoof/test-auth) was the foundation for the original work on this project.
 
-Past Beta Testers / Bug Fixers:
-
-- TrentBartlem (Testing and Bug Fixes)
-- IskFiend (Bug Fixes and Server Configuration)
-- Mr McClain (Bug Fixes and server configuration)
-
-Special Thanks:
-
-- Thanks to Nikdoof, without his old auth implementation this project wouldn't be as far as it is now.
+### Contributing
+Make sure you have signed the [License Agreement](https://developers.eveonline.com/resource/license-agreement) by logging in at [https://developers.eveonline.com](https://developers.eveonline.com) before submitting any pull requests.
