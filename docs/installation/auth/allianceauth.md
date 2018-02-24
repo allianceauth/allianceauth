@@ -109,6 +109,8 @@ Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activat
    Each time you come to do maintenance on your Alliance Auth installation, you should activate your virtual environment first. When finished, deactivate it with the 'deactivate' command.
 ```
 
+Ensure wheel is available with `pip install wheel` before continuing.
+
 ### Alliance Auth Project
 
 You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies. You should also install gunicorn with `pip install gunicorn` before proceeding.
