@@ -108,11 +108,15 @@ class UserAdmin(BaseUserAdmin):
         return actions
     list_filter = BaseUserAdmin.list_filter + ('profile__state',)
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
-    list_display = BaseUserAdmin.list_display + ('get_main_character',)
+    list_display = ('username', 'email', 'get_main_character', 'get_state', 'is_active')
 
     def get_main_character(self, obj):
         return obj.profile.main_character
     get_main_character.short_description = "Main Character"
+
+    def get_state(self, obj):
+        return obj.profile.state
+    get_state.short_description = "State"
 
     def has_change_permission(self, request, obj=None):
         return request.user.has_perm('auth.change_user')
@@ -161,6 +165,9 @@ class CharacterOwnershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'character')
     search_fields = ('user__username', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
     readonly_fields = ('owner_hash', 'character')
+
+    def has_add_permission(self, request):
+        return False
 
 
 class PermissionAdmin(admin.ModelAdmin):
