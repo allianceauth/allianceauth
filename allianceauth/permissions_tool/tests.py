@@ -8,6 +8,7 @@ from allianceauth.tests.auth_utils import AuthUtils
 class PermissionsToolViewsTestCase(WebTest):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
+        AuthUtils.add_main_character(self.member, 'test character', '1234', '2345', 'test corp', 'testc')
         self.member.email = 'auth_member@example.com'
         self.member.save()
         self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)

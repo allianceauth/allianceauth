@@ -145,6 +145,7 @@ class DiscordHooksTestCase(TestCase):
 class DiscordViewsTestCase(WebTest):
     def setUp(self):
         self.member = AuthUtils.create_member('auth_member')
+        AuthUtils.add_main_character(self.member, 'test character', '1234', '2345', 'test corp', 'testc')
         add_permissions()
 
     def login(self):

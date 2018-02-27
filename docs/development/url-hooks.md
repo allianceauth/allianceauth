@@ -2,7 +2,7 @@
 
 ```eval_rst
 .. note::
-    Currently most URL patterns are statically defined in the project's core urls.py file. Ideally this behaviour will change over time with each module of Alliance Auth providing all of its menu items via the hook. New modules should aim to use the hook over statically adding URL patterns to the project's patterns.
+    URLs added through URL Hooks are protected by a decorator which ensures the requesting user is logged in and has a main character set.
 ```
 
 The URL hooks allow you to dynamically specify URL patterns from your plugin app or service. To achieve this you should subclass or instantiate the `services.hooks.UrlHook` class and then register the URL patterns with the hook.
