@@ -66,7 +66,7 @@ CentOS:
 Alliance Auth needs a MySQL user account and database. Open an SQL shell with `mysql -u root -p` and create them as follows, replacing `PASSWORD` with an actual secure password:
 
     CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'PASSWORD';
-    CREATE DATABASE alliance_auth;
+    CREATE DATABASE alliance_auth CHARACTER SET utf8;
     GRANT ALL PRIVILEGES ON alliance_auth . * TO 'allianceserver'@'localhost';
 
 Close the SQL shell and secure your database server with the `mysql_secure_installation` command.

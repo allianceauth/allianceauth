@@ -22,9 +22,7 @@ INSTALLED_APPS += [
     
 ]
 
-# Uncomment by removing the """ and change the database name and
-# credentials to use MySQL/MariaDB. Leave commented to use sqlite3
-"""
+# Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'alliance_auth',
@@ -33,7 +31,6 @@ DATABASES['default'] = {
     'HOST': '127.0.0.1',
     'PORT': '3306',
 }
-"""
 
 # Register an application at https://developers.eveonline.com for Authentication
 # & API Access and fill out these settings. Be sure to set the callback URL
