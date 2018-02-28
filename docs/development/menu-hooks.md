@@ -1,10 +1,5 @@
 # Menu Hooks
 
-```eval_rst
-.. note::
-    Currently most menu items are statically defined in the `base.html` template. Ideally this behaviour will change over time with each module of Alliance Auth providing all of its menu items via the hook. New modules should aim to use the hook over statically adding menu items to the base template.
-```
-
 The menu hooks allow you to dynamically specify menu items from your plugin app or service. To achieve this you should subclass or instantiate the `services.hooks.MenuItemHook` class and then register the menu item with one of the hooks.
 
 To register a MenuItemHook class you would do the following:
