@@ -115,6 +115,8 @@ Under Database Settings, set the following:
  - Database Username is your auth MySQL user, usually `allianceserver`
  - Database Password is this user’s password
 
+If you use a table prefix other than the standard `phpbb_` you need to add an additional setting to your auth project's settings file, `PHPBB3_TABLE_PREFIX = ''`, and enter the prefix.
+
 You should see `Succesful Connection` and proceed.
 
 Enter administrator credentials on the next page.

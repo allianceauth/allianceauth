@@ -104,4 +104,6 @@ Under Database Settings, set the following:
  - Database Username is your auth MySQL user, usually `allianceserver`
  - Database Password is this user’s password
 
+If you use a table prefix other than the standard `smf_` you need to add an additional setting to your auth project's settings file, `SMF_TABLE_PREFIX = ''`, and enter the prefix.
+
 Follow the directions in the installer.

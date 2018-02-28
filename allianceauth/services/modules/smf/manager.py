@@ -12,35 +12,38 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
+TABLE_PREFIX = getattr(settings, 'SMF_TABLE_PREFIX', 'smf_')
+
+
 class SmfManager:
     def __init__(self):
         pass
 
-    SQL_ADD_USER = r"INSERT INTO smf_members (member_name, passwd, email_address, date_registered, real_name," \
+    SQL_ADD_USER = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
                    r" buddy_list, message_labels, openid_uri, signature, ignore_boards) " \
-                   r"VALUES (%s, %s, %s, %s, %s, 0, 0, 0, 0, 0)"
+                   r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0, 0, 0)" % TABLE_PREFIX
 
-    SQL_DEL_USER = r"DELETE FROM smf_members where member_name = %s"
+    SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
 
-    SQL_DIS_USER = r"UPDATE smf_members SET email_address = %s, passwd = %s WHERE member_name = %s"
+    SQL_DIS_USER = r"UPDATE %smembers SET email_address = %%s, passwd = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
-    SQL_USER_ID_FROM_USERNAME = r"SELECT id_member from smf_members WHERE member_name = %s"
+    SQL_USER_ID_FROM_USERNAME = r"SELECT id_member from %smembers WHERE member_name = %%s" % TABLE_PREFIX
 
-    SQL_ADD_USER_GROUP = r"UPDATE smf_members SET additional_groups = %s WHERE id_member = %s"
+    SQL_ADD_USER_GROUP = r"UPDATE %smembers SET additional_groups = %%s WHERE id_member = %%s" % TABLE_PREFIX
 
-    SQL_GET_GROUP_ID = r"SELECT id_group from smf_membergroups WHERE group_name = %s"
+    SQL_GET_GROUP_ID = r"SELECT id_group from %smembergroups WHERE group_name = %%s" % TABLE_PREFIX
 
-    SQL_ADD_GROUP = r"INSERT INTO smf_membergroups (group_name,description) VALUES (%s,%s)"
+    SQL_ADD_GROUP = r"INSERT INTO %smembergroups (group_name,description) VALUES (%%s,%%s)" % TABLE_PREFIX
 
-    SQL_UPDATE_USER_PASSWORD = r"UPDATE smf_members SET passwd = %s WHERE member_name = %s"
+    SQL_UPDATE_USER_PASSWORD = r"UPDATE %smembers SET passwd = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
-    SQL_REMOVE_USER_GROUP = r"UPDATE smf_members SET additional_groups = %s WHERE id_member = %s"
+    SQL_REMOVE_USER_GROUP = r"UPDATE %smembers SET additional_groups = %%s WHERE id_member = %%s" % TABLE_PREFIX
 
-    SQL_GET_ALL_GROUPS = r"SELECT id_group, group_name FROM smf_membergroups"
+    SQL_GET_ALL_GROUPS = r"SELECT id_group, group_name FROM %smembergroups" % TABLE_PREFIX
 
-    SQL_GET_USER_GROUPS = r"SELECT additional_groups FROM smf_members WHERE id_member = %s"
+    SQL_GET_USER_GROUPS = r"SELECT additional_groups FROM %smembers WHERE id_member = %%s" % TABLE_PREFIX
 
-    SQL_ADD_USER_AVATAR = r"UPDATE smf_members SET avatar = %s WHERE id_member = %s"
+    SQL_ADD_USER_AVATAR = r"UPDATE %smembers SET avatar = %%s WHERE id_member = %%s" % TABLE_PREFIX
 
     @staticmethod
     def _sanitize_groupname(name):

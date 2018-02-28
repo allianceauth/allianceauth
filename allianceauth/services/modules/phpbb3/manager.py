@@ -14,40 +14,43 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
+TABLE_PREFIX = getattr(settings, 'PHPBB3_TABLE_PREFIX', 'phpbb_')
+
+
 class Phpbb3Manager:
-    SQL_ADD_USER = r"INSERT INTO phpbb_users (username, username_clean, " \
+    SQL_ADD_USER = r"INSERT INTO %susers (username, username_clean, " \
                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
-                   r"user_sig, user_lang) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'en')"
+                   r"user_sig, user_lang) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, 'en')" % TABLE_PREFIX
 
-    SQL_DEL_USER = r"DELETE FROM phpbb_users where username = %s"
+    SQL_DEL_USER = r"DELETE FROM %susers where username = %%s" % TABLE_PREFIX
 
-    SQL_DIS_USER = r"UPDATE phpbb_users SET user_email= %s, user_password=%s WHERE username = %s"
+    SQL_DIS_USER = r"UPDATE %susers SET user_email= %%s, user_password=%%s WHERE username = %%s" % TABLE_PREFIX
 
-    SQL_USER_ID_FROM_USERNAME = r"SELECT user_id from phpbb_users WHERE username = %s"
+    SQL_USER_ID_FROM_USERNAME = r"SELECT user_id from %susers WHERE username = %%s" % TABLE_PREFIX
 
-    SQL_ADD_USER_GROUP = r"INSERT INTO phpbb_user_group (group_id, user_id, user_pending) VALUES (%s, %s, %s)"
+    SQL_ADD_USER_GROUP = r"INSERT INTO %suser_group (group_id, user_id, user_pending) VALUES (%%s, %%s, %%s)" % TABLE_PREFIX
 
-    SQL_GET_GROUP_ID = r"SELECT group_id from phpbb_groups WHERE group_name = %s"
+    SQL_GET_GROUP_ID = r"SELECT group_id from %sgroups WHERE group_name = %%s" % TABLE_PREFIX
 
-    SQL_ADD_GROUP = r"INSERT INTO phpbb_groups (group_name,group_desc,group_legend) VALUES (%s,%s,0)"
+    SQL_ADD_GROUP = r"INSERT INTO %sgroups (group_name,group_desc,group_legend) VALUES (%%s,%%s,0)" % TABLE_PREFIX
 
-    SQL_UPDATE_USER_PASSWORD = r"UPDATE phpbb_users SET user_password = %s WHERE username = %s"
+    SQL_UPDATE_USER_PASSWORD = r"UPDATE %susers SET user_password = %%s WHERE username = %%s" % TABLE_PREFIX
 
-    SQL_REMOVE_USER_GROUP = r"DELETE FROM phpbb_user_group WHERE user_id=%s AND group_id=%s "
+    SQL_REMOVE_USER_GROUP = r"DELETE FROM %suser_group WHERE user_id=%%s AND group_id=%%s " % TABLE_PREFIX
 
-    SQL_GET_ALL_GROUPS = r"SELECT group_id, group_name FROM phpbb_groups"
+    SQL_GET_ALL_GROUPS = r"SELECT group_id, group_name FROM %sgroups" % TABLE_PREFIX
 
-    SQL_GET_USER_GROUPS = r"SELECT phpbb_groups.group_name FROM phpbb_groups , phpbb_user_group WHERE " \
-                          r"phpbb_user_group.group_id = phpbb_groups.group_id AND user_id=%s"
+    SQL_GET_USER_GROUPS = r"SELECT %(prefix)sgroups.group_name FROM %(prefix)sgroups , %(prefix)suser_group WHERE " \
+                          r"%(prefix)suser_group.group_id = %(prefix)sgroups.group_id AND user_id=%%s" % {'prefix': TABLE_PREFIX}
 
-    SQL_ADD_USER_AVATAR = r"UPDATE phpbb_users SET user_avatar_type=2, user_avatar_width=64, user_avatar_height=64, " \
-                          "user_avatar=%s WHERE user_id = %s"
+    SQL_ADD_USER_AVATAR = r"UPDATE %susers SET user_avatar_type=2, user_avatar_width=64, user_avatar_height=64, " \
+                          "user_avatar=%%s WHERE user_id = %%s" % TABLE_PREFIX
 
-    SQL_CLEAR_USER_PERMISSIONS = r"UPDATE phpbb_users SET user_permissions = '' WHERE user_Id = %s"
+    SQL_CLEAR_USER_PERMISSIONS = r"UPDATE %susers SET user_permissions = '' WHERE user_id = %%s" % TABLE_PREFIX
 
-    SQL_DEL_SESSION = r"DELETE FROM phpbb_sessions where session_user_id = %s"
+    SQL_DEL_SESSION = r"DELETE FROM %ssessions where session_user_id = %%s" % TABLE_PREFIX
 
-    SQL_DEL_AUTOLOGIN = r"DELETE FROM phpbb_sessions_keys where user_id = %s"
+    SQL_DEL_AUTOLOGIN = r"DELETE FROM %ssessions_keys where user_id = %%s" % TABLE_PREFIX
 
     def __init__(self):
         pass
