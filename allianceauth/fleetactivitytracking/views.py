@@ -1,8 +1,6 @@
 import datetime
 import logging
 import os
-import random
-import string
 
 from allianceauth.authentication.models import CharacterOwnership
 from django.contrib import messages
@@ -17,7 +15,7 @@ from esi.decorators import token_required
 from allianceauth.eveonline.providers import provider
 from .forms import FatlinkForm
 from .models import Fatlink, Fat
-from slugify import slugify
+from django.utils.crypto import get_random_string
 
 from allianceauth.eveonline.models import EveAllianceInfo
 from allianceauth.eveonline.models import EveCharacter
@@ -181,7 +179,7 @@ def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
 
     personal_fats = Fat.objects.select_related('fatlink').filter(user=user).order_by('id')
 
-    monthlystats = [0 for month in range(1, 13)]
+    monthlystats = [0 for i in range(1, 13)]
 
     for fat in personal_fats:
         fatdate = fat.fatlink.fatdatetime
@@ -236,8 +234,8 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
 @login_required
 @token_required(
     scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-universe.read_structures.v1'])
-def click_fatlink_view(request, token, hash, fatname):
-    fatlink = get_object_or_404(Fatlink, hash=hash, name=fatname)
+def click_fatlink_view(request, token, fat_hash=None):
+    fatlink = get_object_or_404(Fatlink, hash=fat_hash)
 
     if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
 
@@ -298,12 +296,11 @@ def create_fatlink_view(request):
             logger.debug("Submitting fleetactivitytracking by user %s" % request.user)
             if form.is_valid():
                 fatlink = Fatlink()
-                fatlink.name = slugify(form.cleaned_data["fatname"])
                 fatlink.fleet = form.cleaned_data["fleet"]
                 fatlink.duration = form.cleaned_data["duration"]
                 fatlink.fatdatetime = timezone.now()
                 fatlink.creator = request.user
-                fatlink.hash = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(10))
+                fatlink.hash = get_random_string(length=15)
                 try:
                     fatlink.full_clean()
                     fatlink.save()
@@ -331,25 +328,19 @@ def create_fatlink_view(request):
 
 @login_required
 @permission_required('auth.fleetactivitytracking')
-def modify_fatlink_view(request, hash=""):
+def modify_fatlink_view(request, fat_hash=None):
     logger.debug("modify_fatlink_view called by user %s" % request.user)
-    if not hash:
-        return redirect('fatlink:view')
-
-    try:
-        fatlink = Fatlink.objects.get(hash=hash)
-    except Fatlink.DoesNotExist:
-        raise Http404
+    fatlink = get_object_or_404(Fatlink, hash=fat_hash)
 
     if request.GET.get('removechar', None):
         character_id = request.GET.get('removechar')
         character = EveCharacter.objects.get(character_id=character_id)
-        logger.debug("Removing character %s from fleetactivitytracking  %s" % (character.character_name, fatlink.name))
+        logger.debug("Removing character %s from fleetactivitytracking  %s" % (character.character_name, fatlink))
 
         Fat.objects.filter(fatlink=fatlink).filter(character=character).delete()
 
     if request.GET.get('deletefat', None):
-        logger.debug("Removing fleetactivitytracking  %s" % fatlink.name)
+        logger.debug("Removing fleetactivitytracking  %s" % fatlink)
         fatlink.delete()
         return redirect('fatlink:view')
 

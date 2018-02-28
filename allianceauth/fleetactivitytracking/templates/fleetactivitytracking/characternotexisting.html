@@ -16,7 +16,7 @@
                         </div>
                         <div class="col-lg-10 col-sm-2">
                             <div class="alert alert-danger" role="alert">{% trans "Character not registered!" %}</div>
-                            {% trans "This character is not part of any registered API-key. You must go to" %} <a href=" {% url 'auth_api_key_management' %}">{% trans "API key management</a> and add an API with the character on before being able to click fleet attendance links." %}
+                            {% trans "This character is not associated with an auth account." %} <a href=" {% url 'authentication:add_character' %}">{% trans "Add it here" %}</a> {% trans "before attempting to click fleet attendance links." %}
                         </div>
                     </div>
                 </div>

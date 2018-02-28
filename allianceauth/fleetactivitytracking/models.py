@@ -12,13 +12,12 @@ def get_sentinel_user():
 class Fatlink(models.Model):
     fatdatetime = models.DateTimeField(default=timezone.now)
     duration = models.PositiveIntegerField()
-    fleet = models.CharField(max_length=254, default="")
-    name = models.CharField(max_length=254)
+    fleet = models.CharField(max_length=254)
     hash = models.CharField(max_length=254, unique=True)
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
 
     def __str__(self):
-        return self.name
+        return self.fleet
 
 
 class Fat(models.Model):

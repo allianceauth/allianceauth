@@ -24,7 +24,7 @@
         {% if fats %}
         <table class="table table-responsive">
             <tr>
-                <th class="text-center">{% trans "fatname" %}</th>
+                <th class="text-center">{% trans "Fleet" %}</th>
                 <th class="text-center">{% trans "Character" %}</th>
                 <th class="text-center">{% trans "System" %}</th>
                 <th class="text-center">{% trans "Ship" %}</th>
@@ -32,7 +32,7 @@
             </tr>
             {% for fat in fats %}
             <tr>
-                <td class="text-center">{{ fat.fatlink.name }}</td>
+                <td class="text-center">{{ fat.fatlink.fleet }}</td>
                 <td class="text-center">{{ fat.character.character_name }}</td>
                 {%  if fat.station != "No Station" %}
                 <td class="text-center">{% blocktrans %}Docked in {% endblocktrans %}{{ fat.system }}</td>
@@ -79,13 +79,13 @@
             </tr>
             {% for link in fatlinks %}
             <tr>
-                <td class="text-center"><a href="{%  url 'fatlink:click_fatlink' %}{{ link.hash }}/{{ link.name }}">{{ link.name }}</a></td>
+                <td class="text-center"><a href="{%  url 'fatlink:click' link.hash %}" class="label label-primary">{{ link.fleet }}</a></td>
                 <td class="text-center">{{ link.creator.username }}</td>
                 <td class="text-center">{{ link.fleet }}</td>
                 <td class="text-center">{{ link.fatdatetime }}</td>
                 <td class="text-center">{{ link.duration }}</td>
                 <td class="text-center">
-                    <a href="{%  url 'fatlink:modify' %}{{ link.hash }}/{{ link.name }}" class="btn btn-info">
+                    <a href="{%  url 'fatlink:modify' link.hash %}" class="btn btn-info">
                         <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>

@@ -25,10 +25,6 @@ urlpatterns = [
         views.fatlink_monthly_personal_statistics_view,
         name='user_statistics_month'),
     url(r'^create/$', views.create_fatlink_view, name='create'),
-    url(r'^modify/$', views.modify_fatlink_view, name='modify'),
-    url(r'^modify/(?P<hash>[a-zA-Z0-9_-]+)/([a-z0-9_-]+)$',
-        views.modify_fatlink_view),
-    url(r'^link/$', views.fatlink_view, name='click_fatlink'),
-    url(r'^link/(?P<hash>[a-zA-Z0-9]+)/(?P<fatname>[a-z0-9_-]+)/$',
-        views.click_fatlink_view),
+    url(r'^modify/(?P<fat_hash>[a-zA-Z0-9_-]+)/$', views.modify_fatlink_view, name='modify'),
+    url(r'^link/(?P<fat_hash>[a-zA-Z0-9]+)/$', views.click_fatlink_view, name='click'),
 ]

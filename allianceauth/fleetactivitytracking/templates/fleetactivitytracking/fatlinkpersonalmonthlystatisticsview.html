@@ -10,12 +10,12 @@
         <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ month }}, {{ year }}{% endblocktrans %}
             {% if char_id %}
             <div class="text-right">
-                <a href="{% url 'fatlink:user_statistics_month' char_id previous_month|date:"Y" previous_month|date:"m" %}" class="btn btn-info">{% trans "Previous month" %}</a>
-                <a href="{% url 'fatlink:user_statistics_month' char_id next_month|date:"Y" next_month|date:"m"  %}" class="btn btn-info">{% trans "Next month" %}</a>
+                <a href="{% url 'fatlink:user_statistics_month' char_id previous_month|date:'Y' previous_month|date:'m' %}" class="btn btn-info">{% trans "Previous month" %}</a>
+                <a href="{% url 'fatlink:user_statistics_month' char_id next_month|date:'Y' next_month|date:'m'  %}" class="btn btn-info">{% trans "Next month" %}</a>
             </div>
             {% endif %}
         </h1>
-        <h2>{% blocktrans %}{{ user }} has collected {{ n_fats }} links this month.{% endblocktrans %}</h2>
+        <h2>{% blocktrans %}{{ user }} has collected {{ n_fats }} link{{ n_fats|pluralize }} this month.{% endblocktrans %}</h2>
         <table class="table table-responsive">
             <tr>
                 <th class="col-md-2 text-center">{% trans "Ship" %}</th>
@@ -29,26 +29,24 @@
             {% endfor %}
         </table>
         {%  if created_fats %}
-         <h2>{% blocktrans %}{{ user }} has created {{ n_created_fats }} links this month.{% endblocktrans %}</h2>
+         <h2>{% blocktrans %}{{ user }} has created {{ n_created_fats }} link{{ n_created_fats|pluralize }} this month.{% endblocktrans %}</h2>
         {% if created_fats %}
         <table class="table">
             <tr>
-                <th class="text-center">{% trans "Name" %}</th>
-                <th class="text-center">{% trans "Creator" %}</th>
                 <th class="text-center">{% trans "Fleet" %}</th>
+                <th class="text-center">{% trans "Creator" %}</th>
                 <th class="text-center">{% trans "Eve Time" %}</th>
                 <th class="text-center">{% trans "Duration" %}</th>
                 <th class="text-center">{% trans "Edit" %}</th>
             </tr>
             {% for link in created_fats %}
             <tr>
-                <td class="text-center"><a href="{%  url 'auth_click_fatlink_view' %}{{ link.hash }}/{{ link.name }}">{{ link.name }}</a></td>
+                <td class="text-center"><a href="{%  url 'fatlink:click' link.hash %}" class="label label-primary">{{ link.fleet }}</a></td>
                 <td class="text-center">{{ link.creator.username }}</td>
-                <td class="text-center">{{ link.fleet }}</td>
                 <td class="text-center">{{ link.fatdatetime }}</td>
                 <td class="text-center">{{ link.duration }}</td>
                 <td class="text-center">
-                    <a href="{%  url 'auth_modify_fatlink_view' %}{{ link.hash }}/{{ link.name }}">
+                    <a href="{%  url 'fatlink:modify' link.hash %}">
                         <button type="button" class="btn btn-info"><span
                                 class="glyphicon glyphicon-edit"></span></button>
                     </a>
