@@ -43,11 +43,11 @@ In the console, navigate to your user’s home directory: `cd ~`
 
 Now download using wget, replacing the url with the url for the package you just retrieved
 
-    wget https://www.phpbb.com/files/release/phpBB-3.2.0.zip
+    wget https://www.phpbb.com/files/release/phpBB-3.2.2.zip
 
 This needs to be unpackaged. Unzip it, replacing the file name with that of the file you just downloaded
 
-    unzip phpBB-3.2.0.zip
+    unzip phpBB-3.2.2.zip
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
 
