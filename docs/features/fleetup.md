@@ -2,9 +2,7 @@
 
 ## Installation
 
-Add `allianceauth.fleetup` to your auth project's `INSTALLED_APPS` setting.
-
-    INSTALLED_APPS += ['allianceauth.fleetup']
+Add `'allianceauth.fleetup',` to your auth project's `INSTALLED_APPS` list.
 
 Additional settings are required. Append the following settings to the end of your auth project's settings file and fill them out.
 

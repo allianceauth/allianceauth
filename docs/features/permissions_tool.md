@@ -9,9 +9,7 @@ Access to most of Alliance Auth's features are controlled by Django's permission
 
 ## Installation
 
-Add `allianceauth.permissions_tool` to your `INSTALLED_APPS` setting. In `myauth/settings/local.py`:
-
-    INSTALLED_APPS += ['allianceauth.permissions_tool']
+Add `'allianceauth.permissions_tool',` to your `INSTALLED_APPS` list in your auth project's settings file.
 
 ## Usage
 

@@ -1,4 +1,4 @@
-# Apache Setup
+# Apache
 
 ## Overview
 

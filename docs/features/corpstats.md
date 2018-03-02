@@ -4,11 +4,9 @@ This module is used to check the registration status of corp members and to dete
 
 ## Installation
 
-Add `allianceauth.corputils` to your `INSTALLED_APPS` setting and run migrations. In `myauth/settings/local.py`:
+Corp Stats requires access to the `esi-corporations.read_corporation_membership.v1` SSO scope. Update your application on the [EVE Developers site](https://developers.eveonline.com) to ensure it is available.
 
-    INSTALLED_APPS += ['allianceauth.corputils']
-
-Run migrations to complete installation.
+Add `'allianceauth.corputils',` to your `INSTALLED_APPS` list in your auth project's settings file. Run migrations to complete installation.
 
 ## Creating a Corp Stats
 

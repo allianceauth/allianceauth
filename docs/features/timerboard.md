@@ -2,8 +2,4 @@
 
 ## Installation
 
-Add `allianceauth.timerboard` to your `INSTALLED_APPS` setting. In `myauth/settings/local.py`:
-
-    INSTALLED_APPS += ['allianceauth.timerboard']
-
-Run migrations to complete installation.
+Add `'allianceauth.timerboard',` to your `INSTALLED_APPS` list in your auth project's settings file. Run migrations to complete installation.

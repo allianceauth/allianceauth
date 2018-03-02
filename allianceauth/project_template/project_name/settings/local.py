@@ -35,7 +35,8 @@ DATABASES['default'] = {
 # Register an application at https://developers.eveonline.com for Authentication
 # & API Access and fill out these settings. Be sure to set the callback URL
 # to https://example.com/sso/callback substituting your domain for example.com
-# Select publicData and all available scopes starting with esi-
+# Logging in to auth requires the publicData scope (can be overridden through the
+# LOGIN_TOKEN_SCOPES setting). Other apps may require more (see their docs).
 ESI_SSO_CLIENT_ID = ''
 ESI_SSO_CLIENT_SECRET = ''
 ESI_SSO_CALLBACK_URL = ''

@@ -10,7 +10,7 @@ Auto groups allows you to automatically place users of certain states into Corp 
 
 ## Installation
 
-Add `allianceauth.eveonline.autogroups` to your `INSTALLED_APPS` and run migrations. All other settings are controlled via the admin panel under the `Eve_Autogroups` section.
+Add `'allianceauth.eveonline.autogroups',` to your `INSTALLED_APPS` list and run migrations. All other settings are controlled via the admin panel under the `Eve_Autogroups` section.
 
 
 ## Configuring a group

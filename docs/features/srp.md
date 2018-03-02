@@ -2,8 +2,4 @@
 
 ## Installation
 
-Add `allianceauth.srp` to your `INSTALLED_APPS` setting. In `myauth/settings/local.py`:
-
-    INSTALLED_APPS += ['allianceauth.srp']
-
-Run migrations to complete installation.
+Add `'allianceauth.srp',` to your `INSTALLED_APPS` list in your auth project's settings file. Run migrations to complete installation.
