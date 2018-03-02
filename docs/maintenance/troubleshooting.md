@@ -2,44 +2,41 @@
 
 ## Something broken? Stuck on an issue? Can't get it set up?
 
-Start here:
- - check the [issues](https://github.com/allianceauth/allianceauth/issues?utf8=%E2%9C%93&q=is%3Aissue) - especially closed ones
- - check the [forums](https://forums.eveonline.com/default.aspx?g=posts&t=383030)
+Start by checking the [issues](https://github.com/allianceauth/allianceauth/issues?utf8=%E2%9C%93&q=is%3Aissue) - especially closed ones.
 
 No answer?
  - open an [issue](https://github.com/allianceauth/allianceauth/issues)
  - harass us on [gitter](https://gitter.im/R4stl1n/allianceauth)
- - post to the [forums](https://forums.eveonline.com/default.aspx?g=posts&t=383030)
 
 ## Common Problems
 
 ### `pip install -r requirements.txt` is failing
 
-Either you need to `sudo` that command, or it's a missing dependency. Check [the list](../installation/auth/dependencies.md), reinstall, and try again.
+It's probably a permissions issue. Ensure your current user can write to the virtual environment folder. That, or you're missing a dependency of some kind which will be indicated in the error message.
 
 ### I'm getting an error 500 trying to connect to the website on a new install
 
-Read the apache error log: `sudo less /var/log/apache2/error.log`. Press Shift+G to go to the end of the file.
-
-If it talks about failing to import something, google its name and install it.
-
-If it whines about being unable to configure logger, see below. 
+*Great.* Error 500 is the generic message given by your web server when *anything* breaks. The actual error message is hidden in one of your auth project's log files. Read them to identify it.
 
 ### Failed to configure log handler
 
-Make sure the log directory is write-able: `chmod -R 777 /home/allianceserver/allianceauth/log`, then reload apache/celery/supervisor/etc.
+Make sure the log directory is write-able by the allianceserver user: `chmown -R allianceserver:allianceserver /path/to/myauth/log/`, then restart the auth supervisor processes.
 
 ### Groups aren't syncing to services
 
-Make sure the background processes are running: `ps aux | grep celery` should return more than 1 line. More lines if you have more cores on your server's processor. If there are more than two lines starting with `SCREEN`, kill all of them with `kill #` where `#` is the process ID (second column), then restart with [these background process commands](../installation/auth/quickstart.md) from the allianceauth directory. You can't start these commands as root.
+Make sure the background processes are running: `supervisorctl status myauth:`. If `myauth:worker` or `myauth:beat` do not show `RUNNING` read their log files to identify why.
 
-If that doesn't do it, try clearing the worker queue. First kill all celery processes as described above, then do the following:
+### Task queue is way too large
+
+Stop celery workers with `supervisorctl stop myauth:worker` then clear the queue:
 
     redis-cli FLUSHALL
-    celery -A alliance_auth worker --purge
+    celery -A myauth worker --purge
 
 Press Control+C once.
 
-Now start celery again with [these background process commands.](../installation/auth/quickstart.md)
+Now start the worker again with `supervisorctl start myauth:worker`
 
-While debugging, it is useful to see if tasks are being executed. The easiest tool is [flower](http://flower.readthedocs.io/). Install it with this: `sudo pip install flower`, then start it with this: `celery flower --broker=amqp://guest:guest@localhost:5672//`. To view the status, navigate to your server IP, port 5555.
+### Proxy timeout when entering email address
+
+This usually indicates an issue with your email settings. Ensure these are correct and your email server/service is properly configured.

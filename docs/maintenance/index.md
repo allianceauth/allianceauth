@@ -4,7 +4,8 @@
 .. toctree::
     :maxdepth: 1
 
-    changelog
+    project
     troubleshooting
+    changelog
 
 ```

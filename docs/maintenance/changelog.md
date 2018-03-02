@@ -1,7 +1,6 @@
 # Changelog
 
-## From now on all changelogs will be included as release notes.
-https://github.com/allianceauth/allianceauth/releases
+This list includes notes for Alliance Auth versions prior to v1.13. Later released can be found at https://github.com/allianceauth/allianceauth/releases
 
 ### 547
 Oct 16
