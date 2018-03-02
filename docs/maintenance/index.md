@@ -6,6 +6,5 @@
 
     project
     troubleshooting
-    changelog
 
 ```
