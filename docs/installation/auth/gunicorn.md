@@ -61,7 +61,7 @@ Change it by adding `--workers=2` to the command.
 ##### Running with a virtual environment
 If you're running with a virtual environment, you'll need to add the path to the `command=` config line.
 
-e.g. `command=/path/to/venv/bin/gunicorn alliance_auth.wsgi`
+e.g. `command=/path/to/venv/bin/gunicorn myauth.wsgi`
 
 ### Starting via Supervisor
 
@@ -69,48 +69,6 @@ Once you have your configuration all sorted, you will need to reload your superv
 
 
 ## Configuring your webserver
-
-### NGINX
-To your server config add:
-
-```
-location / {
-    proxy_pass              http://127.0.0.1:8000;
-    proxy_read_timeout      90;
-    proxy_redirect          http://127.0.0.1:8000/ http://$host/;
-    proxy_set_header        Host $host;
-    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header        X-Real-IP $remote_addr;
-    proxy_set_header        X-Forwarded-Proto $scheme;
-}
-```
-
-Set `proxy_pass` and `proxy_redirect` to the address you set under `--bind=`. Set the second part of `proxy_redirect` to the URL you're hosting services on. Tell NGINX to reload your config, job done. Enjoy your lower memory usage and better performance!
-
-If PHP is stopping you moving to NGINX, check out php-fpm as a way to run your PHP applications.
-
-### Apache
-If you were using mod_wsgi before, make a backup of your old config first and then strip out all of the mod_wsgi config from your Apache VirtualHost first config.
-
-Your config will need something along these lines:
-```
-ProxyPreserveHost On
-<Location />
-    SSLRequireSSL
-    ProxyPass http://127.0.0.1:8000/
-    ProxyPassReverse http://127.0.0.1:8000/
-    RequestHeader set X-FORWARDED-PROTOCOL ssl
-    RequestHeader set X-FORWARDED-SSL on
-</Location>
-```
-
-Set `ProxyPass` and `ProxyPassReverse` addresses to your `--bind=` address set earlier. 
-
-You will need to enable some Apache mods. `sudo a2enmod http_proxy` should take care of the dependencies.
-
-Restart Apache and you should be done.
-
-### Other web servers
 
 Any web server capable of proxy passing should be able to sit in front of Gunicorn. Consult their documentation armed with your `--bind=` address and you should be able to find how to do it relatively easy.
 

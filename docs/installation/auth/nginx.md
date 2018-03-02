@@ -31,13 +31,24 @@ Your .htaccess files wont work. Nginx has a separate way of managing access to f
 
 Install Nginx via your preferred package manager or other method. If you need help just search, there are plenty of guides on installing Nginx out there.
 
+Nginx needs to be able to read the folder containing your auth project's static files. On Ubuntu: `chown -R nginx:nginx /var/www/myauth/static`, and on CentOS: `chown -R nginx:nginx /var/www/myauth/static`
+
 You will need to have [Gunicorn](gunicorn.md) or some other WSGI server setup for hosting Alliance Auth.
 
-Create a config file in `/etc/nginx/sites-available` call it `alliance-auth.conf` or whatever your preferred name is and copy the basic config in. Make whatever changes you feel are necessary.
+### Ubuntu
+Create a config file in `/etc/nginx/sites-available` and call it `alliance-auth.conf` or whatever your preferred name is.
 
-Create a symbolic link to enable the site `sudo ln -s /etc/nginx/sites-available/alliance-auth.conf /etc/nginx/sites-enabled/` and then reload Nginx for the config to take effect, `sudo service nginx reload` for Ubuntu.
+Create a symbolic link to enable the site `ln -s /etc/nginx/sites-available/alliance-auth.conf /etc/nginx/sites-enabled/`
+
+### CentOS
+
+Create a config file in `/etc/nginx/conf.d` and call it `alliance-auth.conf` or whatever your preferred name is.
+
 
 ### Basic config
+
+Copy this basic config into your config file. Make whatever changes you feel are necessary.
+
 
 ```
 server {
@@ -59,9 +70,11 @@ server {
 }
 ```
 
+Restart Nginx after making changes to the config files. On Ubuntu `service nginx restart` and on CentOS `systemctl restart nginx.service`.
+
 #### Adding TLS/SSL
 
-With [Let's Encrypt](https://letsencrypt.org/) offering free SSL certificates, there's no good reason to not run HTTPS anymore.
+With [Let's Encrypt](https://letsencrypt.org/) offering free SSL certificates, there's no good reason to not run HTTPS anymore. The bot can automatically configure Nginx on some operating systems. If not proceed with the manual steps below.
 
 Your config will need a few additions once you've got your certificate.
 

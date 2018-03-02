@@ -20,6 +20,8 @@ CentOS:
 
 ## Configuration
 
+Apache needs to be able to read the folder containing your auth project's static files. On Ubuntu: `chown -R www-data:www-data /var/www/myauth/static`, and on CentOS: `chown -R apache:apache /var/www/myauth/static`
+
 Apache serves sites through defined virtual hosts. These are located in `/etc/apache2/sites-available/` on Ubuntu and `/etc/httpd/conf.d/httpd.conf` on CentOS.
 
 A virtual host for auth need only proxy requests to your WSGI server (gunicorn if you followed the install guide) and serve static files. Examples can be found below. Create your config in its own file eg `myauth.conf`.

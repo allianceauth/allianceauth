@@ -129,7 +129,6 @@ Now we need to round up all the static files required to render templates. Make 
     
     mkdir -p /var/www/myauth/static
     python /home/allianceserver/myauth/manage.py collectstatic
-    chown -R www-data:www-data /var/www/myauth/static
 
 Check to ensure your settings are valid.
 
