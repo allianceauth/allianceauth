@@ -40,7 +40,7 @@ setup(
     version=allianceauth.__version__,
     author='Alliance Auth',
     author_email='adarnof@gmail.com',
-    description='Eve alliance auth for the 99 percent',
+    description='An auth system for EVE Online to help in-game organizations manage online service access.',
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
