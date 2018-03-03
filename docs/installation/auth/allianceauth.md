@@ -71,6 +71,12 @@ Alliance Auth needs a MySQL user account and database. Open an SQL shell with `m
 
 Close the SQL shell and secure your database server with the `mysql_secure_installation` command.
 
+If you're updating from v1, populate this database with a copy of the data from your v1 database.
+
+    mysqldump -u root -p v1_database_name_here | mysql -u root -p alliance_auth
+
+Note this command will prompt you for the root password twice.
+
 ## Auth Install
 
 ### User Account
