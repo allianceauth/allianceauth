@@ -115,7 +115,7 @@ Follow prompts, being sure to answer `y` when asked to allow admin privileges.
 Navigate to `discourse.example.com` and log on. Top right press the 3 lines and select `Admin`. Go to API tab and press `Generate Master API Key`.
 
 Add the following values to your auth project's settings file:
- - `DISCOURSE_URL`: `discourse.example.com` (do not add a trailing slash!)
+ - `DISCOURSE_URL`: `https://discourse.example.com` (do not add a trailing slash!)
  - `DISCOURSE_API_USERNAME`: the username of the admin account you generated the API key with
  - `DISCOURSE_API_KEY`: the key you just generated
 
