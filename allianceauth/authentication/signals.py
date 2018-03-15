@@ -119,7 +119,7 @@ def validate_main_character_token(sender, instance, *args, **kwargs):
                 instance.character_name))
         profile = UserProfile.objects.get(main_character__character_id=instance.character_id)
         if not Token.objects.filter(character_id=instance.character_id).filter(
-                user=profile.user).require_valid().exists():
+                user=profile.user).filter(refresh_token__isnull=False).exists():
             logger.info(
                 "No remaining tokens to validate {0} ownership of main character {1}. Resetting main character.".format(
                     profile.user, profile.main_character))
