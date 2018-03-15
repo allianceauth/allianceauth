@@ -3,7 +3,7 @@ import logging
 from .models import CharacterOwnership, UserProfile, get_guest_state, State
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.db.models.signals import pre_save, post_save, pre_delete, m2m_changed
+from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 from django.dispatch import receiver, Signal
 from esi.models import Token
 
@@ -104,23 +104,23 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
 @receiver(pre_delete, sender=CharacterOwnership)
 def validate_main_character(sender, instance, *args, **kwargs):
     if instance.user.profile.main_character == instance.character:
-        logger.debug("Ownership of a main character {0} has been revoked. Resetting {1} main character.".format(
+        logger.info("Ownership of a main character {0} has been revoked. Resetting {1} main character.".format(
             instance.character, instance.user))
         # clear main character as user no longer owns them
         instance.user.profile.main_character = None
         instance.user.profile.save()
 
 
-@receiver(pre_delete, sender=Token)
+@receiver(post_delete, sender=Token)
 def validate_main_character_token(sender, instance, *args, **kwargs):
     if UserProfile.objects.filter(main_character__character_id=instance.character_id).exists():
         logger.debug(
             "Token for a main character {0} is being deleted. Ensuring there are valid tokens to refresh.".format(
                 instance.character_name))
         profile = UserProfile.objects.get(main_character__character_id=instance.character_id)
-        if not Token.objects.filter(character_id=instance.character_id).filter(user=profile.user).exclude(
-                pk=instance.pk).require_valid().exists():
-            logger.debug(
+        if not Token.objects.filter(character_id=instance.character_id).filter(
+                user=profile.user).require_valid().exists():
+            logger.info(
                 "No remaining tokens to validate {0} ownership of main character {1}. Resetting main character.".format(
                     profile.user, profile.main_character))
             # clear main character as we can no longer verify ownership
