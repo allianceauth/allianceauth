@@ -1,5 +1,5 @@
 from celery import shared_task
-from allianceauth.corputils import CorpStats
+from allianceauth.corputils.models import CorpStats
 
 
 @shared_task
