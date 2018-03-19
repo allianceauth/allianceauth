@@ -327,54 +327,54 @@ class DiscordManagerTestCase(TestCase):
         # Assert
         self.assertTrue(result)
 
+    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_user_roles')
     @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
     @requests_mock.Mocker()
-    def test_update_groups(self, group_cache, m):
+    def test_update_groups(self, group_cache, user_roles, m):
         # Arrange
         groups = ['Member', 'Blue', 'SpecialGroup']
 
-        group_cache.return_value = [{'id': 111, 'name': 'Member'},
-                                    {'id': 222, 'name': 'Blue'},
-                                    {'id': 333, 'name': 'SpecialGroup'},
-                                    {'id': 444, 'name': 'NotYourGroup'}]
+        group_cache.return_value = [{'id': '111', 'name': 'Member'},
+                                    {'id': '222', 'name': 'Blue'},
+                                    {'id': '333', 'name': 'SpecialGroup'},
+                                    {'id': '444', 'name': 'NotYourGroup'}]
+        user_roles.return_value = ['444']
 
         headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         user_id = 12345
-        request_url = '{}/guilds/{}/members/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id)
+        user_request_url = '{}/guilds/{}/members/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id)
+        group_request_urls = ['{}/guilds/{}/members/{}/roles/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id, g['id']) for g in group_cache.return_value]
 
-        m.patch(request_url,
-                request_headers=headers)
+        m.patch(user_request_url, request_headers=headers)
+        [m.put(url, request_headers=headers) for url in group_request_urls[:-1]]
+        m.delete(group_request_urls[-1], request_headers=headers)
 
         # Act
         DiscordOAuthManager.update_groups(user_id, groups)
 
         # Assert
-        self.assertEqual(len(m.request_history), 1, 'Must be one HTTP call made')
-        history = json.loads(m.request_history[0].text)
-        self.assertIn('roles', history, "'The request must send JSON object with the 'roles' key")
-        self.assertIn(111, history['roles'], 'The group id 111 must be added to the request')
-        self.assertIn(222, history['roles'], 'The group id 222 must be added to the request')
-        self.assertIn(333, history['roles'], 'The group id 333 must be added to the request')
-        self.assertNotIn(444, history['roles'], 'The group id 444 must NOT be added to the request')
+        self.assertEqual(len(m.request_history), 4, 'Must be 4 HTTP calls made')
 
     @mock.patch(MODULE_PATH + '.manager.cache')
-    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
+    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_user_roles')
+    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._group_name_to_id')
     @requests_mock.Mocker()
-    def test_update_groups_backoff(self, group_cache, djcache, m):
+    def test_update_groups_backoff(self, name_to_id, user_groups, djcache, m):
         # Arrange
         groups = ['Member']
-        group_cache.return_value = [{'id': 111, 'name': 'Member'}]
+        user_groups.return_value = []
+        name_to_id.return_value = '111'
 
         headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         user_id = 12345
-        request_url = '{}/guilds/{}/members/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id)
+        request_url = '{}/guilds/{}/members/{}/roles/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id, name_to_id.return_value)
 
         djcache.get.return_value = None  # No existing backoffs in cache
 
-        m.patch(request_url,
-                request_headers=headers,
-                headers={'Retry-After': '200000'},
-                status_code=429)
+        m.put(request_url,
+              request_headers=headers,
+              headers={'Retry-After': '200000'},
+              status_code=429)
 
         # Act & Assert
         with self.assertRaises(manager.DiscordApiBackoff) as bo:
@@ -391,23 +391,25 @@ class DiscordManagerTestCase(TestCase):
         self.assertTrue(datetime.datetime.strptime(args[1], manager.cache_time_format) > datetime.datetime.now())
 
     @mock.patch(MODULE_PATH + '.manager.cache')
-    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_groups')
+    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._get_user_roles')
+    @mock.patch(MODULE_PATH + '.manager.DiscordOAuthManager._group_name_to_id')
     @requests_mock.Mocker()
-    def test_update_groups_global_backoff(self, group_cache, djcache, m):
+    def test_update_groups_global_backoff(self, name_to_id, user_groups, djcache, m):
         # Arrange
         groups = ['Member']
-        group_cache.return_value = [{'id': 111, 'name': 'Member'}]
+        user_groups.return_value = []
+        name_to_id.return_value = '111'
 
         headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         user_id = 12345
-        request_url = '{}/guilds/{}/members/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id)
+        request_url = '{}/guilds/{}/members/{}/roles/{}'.format(manager.DISCORD_URL, settings.DISCORD_GUILD_ID, user_id, name_to_id.return_value)
 
         djcache.get.return_value = None  # No existing backoffs in cache
 
-        m.patch(request_url,
-                request_headers=headers,
-                headers={'Retry-After': '200000', 'X-RateLimit-Global': 'true'},
-                status_code=429)
+        m.put(request_url,
+              request_headers=headers,
+              headers={'Retry-After': '200000', 'X-RateLimit-Global': 'true'},
+              status_code=429)
 
         # Act & Assert
         with self.assertRaises(manager.DiscordApiBackoff) as bo:

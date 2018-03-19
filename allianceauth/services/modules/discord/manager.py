@@ -32,7 +32,7 @@ SCOPES = [
     'guilds.join',
 ]
 
-GROUP_CACHE_MAX_AGE = int(getattr(settings, 'DISCORD_GROUP_CACHE_MAX_AGE', 2 * 60 * 60))  # 2 hours default
+GROUP_CACHE_MAX_AGE = getattr(settings, 'DISCORD_GROUP_CACHE_MAX_AGE', 2 * 60 * 60)  # 2 hours default
 
 
 class DiscordApiException(Exception):
@@ -302,12 +302,37 @@ class DiscordOAuthManager:
         return DiscordOAuthManager.__generate_role(name)
 
     @staticmethod
+    def _get_user(user_id):
+        custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
+        path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
+        r = requests.get(path, headers=custom_headers)
+        r.raise_for_status()
+        return r.json()
+
+    @staticmethod
+    def _get_user_roles(user_id):
+        user = DiscordOAuthManager._get_user(user_id)
+        return user['roles']
+
+    @staticmethod
+    def _modify_user_role(user_id, role_id, method):
+        custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
+        path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id) + "/roles/" + str(
+            role_id)
+        r = getattr(requests, method)(path, headers=custom_headers)
+        r.raise_for_status()
+        logger.debug("%s role %s for user %s" % (method, role_id, user_id))
+
+    @staticmethod
     @api_backoff
     def update_groups(user_id, groups):
-        custom_headers = {'content-type': 'application/json', 'authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN}
         group_ids = [DiscordOAuthManager._group_name_to_id(DiscordOAuthManager._sanitize_group_name(g)) for g in groups]
-        path = DISCORD_URL + "/guilds/" + str(settings.DISCORD_GUILD_ID) + "/members/" + str(user_id)
-        data = {'roles': group_ids}
-        r = requests.patch(path, headers=custom_headers, json=data)
-        logger.debug("Received status code %s after setting user roles" % r.status_code)
-        r.raise_for_status()
+        user_group_ids = DiscordOAuthManager._get_user_roles(user_id)
+        for g in group_ids:
+            if g not in user_group_ids:
+                DiscordOAuthManager._modify_user_role(user_id, g, 'put')
+                time.sleep(1)  # we're gonna be hammering the API here
+        for g in user_group_ids:
+            if g not in group_ids:
+                DiscordOAuthManager._modify_user_role(user_id, g, 'delete')
+                time.sleep(1)
