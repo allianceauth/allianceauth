@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from celery import shared_task
-
+from allianceauth.services.tasks import QueueOnce
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import SeatManager
@@ -34,7 +34,7 @@ class SeatTasks:
         return False
 
     @staticmethod
-    @shared_task(bind=True)
+    @shared_task(bind=True, name='seat.update_roles', base=QueueOnce)
     def update_roles(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating SeAT roles for user %s" % user)

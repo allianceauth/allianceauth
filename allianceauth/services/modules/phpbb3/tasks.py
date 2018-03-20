@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from celery import shared_task
-
+from allianceauth.services.tasks import QueueOnce
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import Phpbb3Manager
@@ -35,7 +35,7 @@ class Phpbb3Tasks:
             return False
 
     @staticmethod
-    @shared_task(bind=True, name="phpbb3.update_groups")
+    @shared_task(bind=True, name="phpbb3.update_groups", base=QueueOnce)
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating phpbb3 groups for user %s" % user)

@@ -14,6 +14,7 @@ install_requires = [
 
     'redis',
     'celery>=4.0.2',
+    'celery_once',
 
     'django>=1.11',
     'django-bootstrap-form',

@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from celery import shared_task
-
+from allianceauth.services.tasks import QueueOnce
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
 from .manager import Teamspeak3Manager
@@ -56,7 +56,7 @@ class Teamspeak3Tasks:
         logger.info("Teamspeak3 disabled")
 
     @staticmethod
-    @shared_task(bind=True, name="teamspeak3.update_groups")
+    @shared_task(bind=True, name="teamspeak3.update_groups", base=QueueOnce)
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating user %s teamspeak3 groups" % user)

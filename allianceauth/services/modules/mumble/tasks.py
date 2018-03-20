@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from celery import shared_task
-
+from allianceauth.services.tasks import QueueOnce
 from .models import MumbleUser
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class MumbleTasks:
         MumbleUser.objects.all().delete()
 
     @staticmethod
-    @shared_task(bind=True, name="mumble.update_groups")
+    @shared_task(bind=True, name="mumble.update_groups", base=QueueOnce)
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating mumble groups for user %s" % user)

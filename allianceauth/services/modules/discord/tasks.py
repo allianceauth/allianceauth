@@ -9,6 +9,7 @@ from requests.exceptions import HTTPError
 from allianceauth.services.hooks import NameFormatter
 from .manager import DiscordOAuthManager, DiscordApiBackoff
 from .models import DiscordUser
+from allianceauth.services.tasks import QueueOnce
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class DiscordTasks:
             return True
 
     @staticmethod
-    @shared_task(bind=True, name='discord.update_groups')
+    @shared_task(bind=True, name='discord.update_groups', base=QueueOnce)
     def update_groups(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord groups for user %s" % user)
@@ -99,7 +100,7 @@ class DiscordTasks:
             DiscordTasks.update_groups.delay(discord_user.user.pk)
 
     @staticmethod
-    @shared_task(bind=True, name='discord.update_nickname')
+    @shared_task(bind=True, name='discord.update_nickname', base=QueueOnce)
     def update_nickname(task_self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discord nickname for user %s" % user)

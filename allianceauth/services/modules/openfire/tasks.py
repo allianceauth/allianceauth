@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from allianceauth.notifications import notify
 from celery import shared_task
-
+from allianceauth.services.tasks import QueueOnce
 from allianceauth.services.modules.openfire.manager import OpenfireManager
 from allianceauth.services.hooks import NameFormatter
 from .models import OpenfireUser
@@ -40,7 +40,7 @@ class OpenfireTasks:
         OpenfireUser.objects.all().delete()
 
     @staticmethod
-    @shared_task(bind=True, name="openfire.update_groups")
+    @shared_task(bind=True, name="openfire.update_groups", base=QueueOnce)
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating jabber groups for user %s" % user)

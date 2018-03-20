@@ -6,6 +6,7 @@ from celery import shared_task
 
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import NameFormatter
+from allianceauth.services.tasks import QueueOnce
 from .manager import DiscourseManager
 from .models import DiscourseUser
 
@@ -40,7 +41,7 @@ class DiscourseTasks:
             return False
 
     @staticmethod
-    @shared_task(bind=True, name='discourse.update_groups')
+    @shared_task(bind=True, name='discourse.update_groups', base=QueueOnce)
     def update_groups(self, pk):
         user = User.objects.get(pk=pk)
         logger.debug("Updating discourse groups for user %s" % user)

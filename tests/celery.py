@@ -7,6 +7,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 from django.conf import settings  # noqa
 
 app = Celery('devauth')
+app.conf.ONCE = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://localhost:6379/0',
+    'default_timeout': 60 * 60
+  }
+}
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.

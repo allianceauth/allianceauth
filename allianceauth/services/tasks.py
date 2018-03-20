@@ -4,10 +4,16 @@ import redis
 from celery import shared_task
 from django.contrib.auth.models import User
 from .hooks import ServicesHook
+from celery_once import QueueOnce as BaseTask
 
 REDIS_CLIENT = redis.Redis()
 
 logger = logging.getLogger(__name__)
+
+
+class QueueOnce(BaseTask):
+    once = BaseTask.once
+    once['graceful'] = True
 
 
 # http://loose-bits.com/2010/10/distributed-task-locking-in-celery.html
