@@ -23,7 +23,7 @@ In your auth project's settings file, do the following:
     TEAMSPEAK3_PUBLIC_URL = ''
     
     CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
-        'task': 'services.modules.teamspeak3.tasks.run_ts3_group_update',
+        'task': 'allianceauth.services.modules.teamspeak3.tasks.run_ts3_group_update',
         'schedule': crontab(minute='*/30'),
     }
 
