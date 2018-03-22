@@ -1,8 +1,7 @@
 from unittest import mock
 from django.db.models.signals import pre_save, post_save, pre_delete, m2m_changed
 from allianceauth.authentication.models import UserProfile
-from allianceauth.authentication.signals import state_changed
-from allianceauth.eveonline.models import EveCharacter
+from allianceauth.authentication.signals import reassess_on_profile_save
 from .. import signals
 from ..models import AutogroupsConfig
 
@@ -14,6 +13,7 @@ def patch(target, *args, **kwargs):
 
 
 def connect_signals():
+    post_save.connect(receiver=reassess_on_profile_save, sender=UserProfile)
     pre_save.connect(receiver=signals.pre_save_config, sender=AutogroupsConfig)
     pre_delete.connect(receiver=signals.pre_delete_config, sender=AutogroupsConfig)
     post_save.connect(receiver=signals.check_groups_on_profile_update, sender=UserProfile)
@@ -21,6 +21,7 @@ def connect_signals():
 
 
 def disconnect_signals():
+    post_save.disconnect(receiver=reassess_on_profile_save, sender=UserProfile)
     pre_save.disconnect(receiver=signals.pre_save_config, sender=AutogroupsConfig)
     pre_delete.disconnect(receiver=signals.pre_delete_config, sender=AutogroupsConfig)
     post_save.disconnect(receiver=signals.check_groups_on_profile_update, sender=UserProfile)

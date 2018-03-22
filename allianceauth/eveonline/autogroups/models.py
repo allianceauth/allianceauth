@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def get_users_for_state(state: State):
     return User.objects.select_related('profile').prefetch_related('profile__main_character')\
-            .filter(profile__state__pk=state.pk)
+            .filter(profile__state_id=state.pk)
 
 
 class AutogroupsConfigManager(models.Manager):
@@ -36,6 +36,8 @@ class AutogroupsConfigManager(models.Manager):
         :param state: State to update user for
         :return:
         """
+        import traceback
+        print(traceback.print_stack())
         if state is None:
             state = user.profile.state
         for config in self.filter(states=state):

@@ -45,9 +45,7 @@ def check_groups_on_profile_update(sender, instance, created, *args, **kwargs):
     """
     Trigger check when main character or state changes.
     """
-    update_fields = kwargs.pop('update_fields', []) or []
-    if 'main_character' in update_fields or 'state' in update_fields:
-        AutogroupsConfig.objects.update_groups_for_user(instance.user)
+    AutogroupsConfig.objects.update_groups_for_user(instance.user)
 
 
 @receiver(m2m_changed, sender=AutogroupsConfig.states.through)

@@ -16,8 +16,6 @@ class AutogroupsConfigTestCase(TestCase):
         # Disconnect signals
         disconnect_signals()
 
-        self.member = AuthUtils.create_member('test user')
-
         state = AuthUtils.get_member_state()
 
         self.alliance = EveAllianceInfo.objects.create(
@@ -37,6 +35,8 @@ class AutogroupsConfigTestCase(TestCase):
 
         state.member_alliances.add(self.alliance)
         state.member_corporations.add(self.corp)
+
+        self.member = AuthUtils.create_member('test user')
 
     def tearDown(self):
         # Reconnect signals
