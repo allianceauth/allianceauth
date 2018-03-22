@@ -7,7 +7,7 @@ from hashlib import md5
 
 logger = logging.getLogger(__name__)
 
-GROUP_CACHE_MAX_AGE = int(getattr(settings, 'DISCOURSE_GROUP_CACHE_MAX_AGE', 2 * 60 * 60))  # default 2 hours
+GROUP_CACHE_MAX_AGE = getattr(settings, 'DISCOURSE_GROUP_CACHE_MAX_AGE', 2 * 60 * 60)  # default 2 hours
 
 
 class DiscourseError(Exception):
@@ -23,7 +23,7 @@ class DiscourseError(Exception):
 ENDPOINTS = {
     'groups': {
         'list': {
-            'path': "/admin/groups.json",
+            'path': "/groups/search.json",
             'method': 'get',
             'args': {
                 'required': [],
