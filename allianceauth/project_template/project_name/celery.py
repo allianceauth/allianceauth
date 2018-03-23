@@ -12,11 +12,8 @@ app = Celery('{{ project_name }}')
 # the configuration object to child processes.
 app.config_from_object('django.conf:settings')
 app.conf.ONCE = {
-  'backend': 'celery_once.backends.Redis',
-  'settings': {
-    'url': 'redis://localhost:6379/0',
-    'default_timeout': 60 * 60
-  }
+    'backend': 'allianceauth.services.tasks.DjangoBackend',
+    'settings': {}
 }
 
 # Load task modules from all registered Django app configs.
