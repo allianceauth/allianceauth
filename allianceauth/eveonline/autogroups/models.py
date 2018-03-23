@@ -36,8 +36,6 @@ class AutogroupsConfigManager(models.Manager):
         :param state: State to update user for
         :return:
         """
-        import traceback
-        print(traceback.print_stack())
         if state is None:
             state = user.profile.state
         for config in self.filter(states=state):

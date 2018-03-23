@@ -1,11 +1,11 @@
 from django.test import TestCase
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 
 from allianceauth.tests.auth_utils import AuthUtils
 
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
 
-from ..models import AutogroupsConfig, ManagedAllianceGroup
+from ..models import AutogroupsConfig
 
 from . import patch, disconnect_signals, connect_signals
 
@@ -52,8 +52,7 @@ class SignalsTestCase(TestCase):
     @patch('.models.AutogroupsConfigManager.update_groups_for_user')
     def test_check_groups_on_profile_update_state(self, update_groups_for_user):
         # Trigger signal
-        self.member.profile.state = AuthUtils.get_guest_state()
-        self.member.profile.save()
+        self.member.profile.assign_state(state=AuthUtils.get_guest_state())
 
         self.assertTrue(update_groups_for_user.called)
         self.assertEqual(update_groups_for_user.call_count, 1)
