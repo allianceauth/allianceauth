@@ -17,31 +17,25 @@ In your auth project's settings file, do the following:
 
     wget -qO- https://get.docker.io/ | sh
 
-### Get docker permissions
-
-    sudo usermod -aG docker allianceserver
-
-Logout, then back in for changes to take effect.
-
 ## Install Discourse
 
 ### Download Discourse
 
-    sudo mkdir /var/discourse
-    sudo git clone https://github.com/discourse/discourse_docker.git /var/discourse
+    mkdir /var/discourse
+    git clone https://github.com/discourse/discourse_docker.git /var/discourse
 
 ### Configure
 
     cd /var/discourse
-    sudo cp samples/standalone.yml containers/app.yml
-    sudo nano containers/app.yml
+    cp samples/standalone.yml containers/app.yml
+    nano containers/app.yml
 
 Change the following:
- - `DISCOURSE_DEVELOPER_EMAILS` should be a list of admin account email addresses separated by commas
- - `DISCOUSE_HOSTNAME` should be 127.0.0.1
- - Everything with `SMTP` depends on your mail settings. Account created through auth do not require email validation, so to ignore everything email (NOT RECOMMENDED), just change the SMTP address to something random so it'll install. Note that not setting up email means any password resets emails won't be sent, and auth cannot reset these. [There are plenty of free email services online recommended by Discourse.](https://github.com/discourse/discourse/blob/master/docs/INSTALL-email.md#recommended-email-providers-for-discourse)
+ - `DISCOURSE_DEVELOPER_EMAILS` should be a list of admin account email addresses separated by commas.
+ - `DISCOUSE_HOSTNAME` should be `discourse.example.com` or something similar.
+ - Everything with `SMTP` depends on your mail settings. [There are plenty of free email services online recommended by Discourse](https://github.com/discourse/discourse/blob/master/docs/INSTALL-email.md#recommended-email-providers-for-discourse) if you haven't set one up for auth already.
 
-To install behind apache, look for this secion:
+To install behind apache/nginx, look for this section:
 
     ...
     ## which TCP/IP ports should this container expose?
@@ -61,7 +55,7 @@ Or any other port will do, if taken. Remember this number.
 
 ### Build and launch
 
-    sudo nano /etc/default/docker
+    nano /etc/default/docker
 
 Uncomment this line:
 
@@ -69,12 +63,12 @@ Uncomment this line:
 
 Restart docker:
 
-    sudo service docker restart
+    service docker restart
 
 Now build:
 
-    sudo ./launcher bootstrap app
-    sudo ./launcher start app
+    ./launcher bootstrap app
+    ./launcher start app
 
 ## Web Server Configuration
 
@@ -103,7 +97,7 @@ A minimal nginx config might look like:
 
 ### Generate admin account
 
-From the /var/discourse folder,
+From the `/var/discourse` directory,
 
     ./launcher enter app
     rake admin:create
