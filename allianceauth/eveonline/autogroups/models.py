@@ -38,8 +38,14 @@ class AutogroupsConfigManager(models.Manager):
         """
         if state is None:
             state = user.profile.state
-        for config in self.filter(states=state):
-                config.update_group_membership_for_user(user)
+        configs = self.filter(states=state)
+        if configs:
+            [config.update_group_membership_for_user(user) for config in configs]
+        else:
+            # No config for this user's state. Remove all managed groups.
+            for config in self.all():
+                config.remove_user_from_alliance_groups(user)
+                config.remove_user_from_corp_groups(user)
 
 
 class AutogroupsConfig(models.Model):
