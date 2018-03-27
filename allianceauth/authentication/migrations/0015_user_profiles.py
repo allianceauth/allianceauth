@@ -96,6 +96,11 @@ def create_blue_group(apps, schema_editor):
         pass
 
 
+def purge_tokens(apps, schema_editor):
+    Token = apps.get_model('esi', 'Token')
+    Token.objects.filter(refresh_token__isnull=True).delete()
+
+
 def populate_ownerships(apps, schema_editor):
     Token = apps.get_model('esi', 'Token')
     CharacterOwnership = apps.get_model('authentication', 'CharacterOwnership')
@@ -221,6 +226,7 @@ class Migration(migrations.Migration):
         migrations.RunPython(create_guest_state, migrations.RunPython.noop),
         migrations.RunPython(create_member_state, create_member_group),
         migrations.RunPython(create_blue_state, create_blue_group),
+        migrations.RunPython(purge_tokens, migrations.RunPython.noop),
         migrations.RunPython(populate_ownerships, migrations.RunPython.noop),
         migrations.RunPython(create_profiles, recreate_authservicesinfo),
         migrations.RemoveField(
