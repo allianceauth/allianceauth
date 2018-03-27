@@ -44,7 +44,7 @@ def hr_application_management_view(request):
     elif request.user.has_perm('auth.human_resources') and main_char:
         if ApplicationForm.objects.filter(corp__corporation_id=main_char.corporation_id).exists():
             app_form = ApplicationForm.objects.get(corp__corporation_id=main_char.corporation_id)
-            corp_applications = Application.objects.filter(form=app_form).filter(approved=None).sorted_by('-created')
+            corp_applications = Application.objects.filter(form=app_form).filter(approved=None).order_by('-created')
             finished_corp_applications = Application.objects.filter(form=app_form).filter(
                 approved__in=[True, False]).order_by('-created')
     logger.debug("Retrieved %s personal, %s corp applications for %s" % (
