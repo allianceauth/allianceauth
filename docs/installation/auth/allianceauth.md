@@ -35,7 +35,7 @@ It's recommended to use a database service instead of sqlite. Many options are a
 
 Ubuntu:
 
-    apt-get install mariadb-server mysql-client libmysqlclient-dev
+    apt-get install mariadb-server mariadb-client libmariadbclient-dev
 
 CentOS:
 
