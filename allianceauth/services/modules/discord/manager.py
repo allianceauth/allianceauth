@@ -204,7 +204,7 @@ class DiscordOAuthManager:
                 'access_token': token,
             }
             if nickname:
-                data['nick'] = nickname
+                data['nick'] = DiscordOAuthManager._sanitize_name(nickname)
             custom_headers['authorization'] = 'Bot ' + settings.DISCORD_BOT_TOKEN
             r = requests.put(path, headers=custom_headers, json=data)
             logger.debug("Got status code %s after joining Discord server" % r.status_code)
