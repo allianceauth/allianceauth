@@ -160,6 +160,7 @@ class NameFormatter:
             'corp_id': getattr(main_char, 'corporation_id', None),
             'alliance_name': getattr(main_char, 'alliance_name', None),
             'alliance_id': getattr(main_char, 'alliance_id', None),
+            'alliance_ticker': None,
             'username': self.user.username,
         }
 
@@ -168,7 +169,9 @@ class NameFormatter:
             try:
                 format_data['alliance_ticker'] = getattr(getattr(main_char, 'alliance', None), 'alliance_ticker', None)
             except ObjectDoesNotExist:
-                format_data['alliance_ticker'] = None
+                pass
+        format_data['alliance_or_corp_name'] = format_data['alliance_name'] or format_data['corp_name']
+        format_data['alliance_or_corp_ticker'] = format_data['alliance_ticker'] or format_data['corp_ticker']
         return format_data
 
     @cached_property

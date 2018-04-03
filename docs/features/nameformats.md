@@ -53,6 +53,8 @@ The following fields are available from a users account and main character:
  - `alliance_id`
  - `alliance_name`
  - `alliance_ticker`
+ - `alliance_or_corp_name` (defaults to corp name if there is no alliance)
+ - `alliance_or_corp_ticker` (defaults to corp ticker if there is no alliance)
 
 ## Building a formatter string
 
