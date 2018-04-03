@@ -41,6 +41,11 @@ CentOS:
 
     yum install mariadb-server mariadb-devel mariadb
 
+```eval_rst
+.. note::
+   If you don't plan on running the database on the same server as auth you still need to install the libmysqlclient-dev package on Ubuntu or mariadb-devel package on CentOS.
+```
+
 ### Redis and Other Tools
 
 A few extra utilities are also required for installation of packages.
