@@ -95,20 +95,33 @@ class RegistrationView(BaseRegistrationView):
     form_class = RegistrationForm
     success_url = 'authentication:dashboard'
 
-    def dispatch(self, *args, **kwargs):
+    def get_success_url(self, user):
+        if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
+            return 'authentication:dashboard', (), {}
+        return super().get_success_url(user)
+
+    def dispatch(self, request, *args, **kwargs):
         # We're storing a key in the session to pass user information from OAuth response. Make sure it's there.
         if not self.request.session.get('registration_uid', None) or not User.objects.filter(
                 pk=self.request.session.get('registration_uid')).exists():
             messages.error(self.request, _('Registration token has expired.'))
             return redirect(settings.LOGIN_URL)
-        return super(RegistrationView, self).dispatch(*args, **kwargs)
+        if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
+            # Keep the request so the user can be automagically logged in.
+            setattr(self, 'request', request)
+        return super(RegistrationView, self).dispatch(request, *args, **kwargs)
 
     def register(self, form):
         user = User.objects.get(pk=self.request.session.get('registration_uid'))
         user.email = form.cleaned_data['email']
         user_registered.send(self.__class__, user=user, request=self.request)
-        # Go to Step 3
-        self.send_activation_email(user)
+        if getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
+            # Go to Step 3
+            self.send_activation_email(user)
+        else:
+            user.is_active = True
+            user.save()
+            login(self.request, user, 'allianceauth.authentication.backends.StateBackend')
         return user
 
     def get_activation_key(self, user):
