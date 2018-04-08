@@ -116,7 +116,7 @@ By default Corp Stats are only updated on demand. If you want to automatically r
     CELERYBEAT_SCHEDULE['update_all_corpstats'] = {
         'task': 'allianceauth.corputils.tasks.update_all_corpstats',
         'schedule': crontab(minute=0, hour="*/6"),
-    },
+    }
 
 Adjust the crontab as desired.
 
