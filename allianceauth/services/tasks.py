@@ -1,12 +1,11 @@
 import logging
 
-from celery import shared_task, Task
+from celery import shared_task
 from django.contrib.auth.models import User
 from .hooks import ServicesHook
 from celery_once import QueueOnce as BaseTask, AlreadyQueued
-from celery_once.helpers import now_unix, queue_once_key
+from celery_once.helpers import now_unix
 from django.core.cache import cache
-from inspect import getcallargs
 
 
 logger = logging.getLogger(__name__)
@@ -15,22 +14,6 @@ logger = logging.getLogger(__name__)
 class QueueOnce(BaseTask):
     once = BaseTask.once
     once['graceful'] = True
-
-    def get_key(self, args=None, kwargs=None):
-        """
-        Generate the key from the name of the task (e.g. 'tasks.example') and
-        args/kwargs.
-        """
-        restrict_to = self.once.get('keys', None)
-        args = args or {}
-        kwargs = kwargs or {}
-        call_args = getcallargs(self.run, *args, **kwargs)
-
-        if isinstance(call_args.get('self'), Task):
-            del call_args['self']
-        if isinstance(call_args.get('task_self'), Task):
-            del call_args['task_self']
-        return queue_once_key(self.name, call_args, restrict_to)
 
 
 class DjangoBackend:
