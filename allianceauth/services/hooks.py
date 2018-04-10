@@ -4,6 +4,7 @@ from django.utils.functional import cached_property
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from string import Formatter
+import re
 
 from allianceauth.hooks import get_hooks
 
@@ -164,7 +165,7 @@ class NameFormatter:
             'username': self.user.username,
         }
 
-        if main_char is not None and 'alliance_ticker' in self.string_formatter:
+        if main_char is not None and re.match('.*alliance(?:_or_corp)?_ticker', self.string_formatter):
             # Reduces db lookups
             try:
                 format_data['alliance_ticker'] = getattr(getattr(main_char, 'alliance', None), 'alliance_ticker', None)
