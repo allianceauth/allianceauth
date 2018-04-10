@@ -36,7 +36,7 @@ class TS3Proto:
 
     def connect(self, ip, port):
         try:
-            self._conn = telnetlib.Telnet(host=ip, port=port)
+            self._conn = telnetlib.Telnet(host=ip, port=port, timeout=5)
             self._connected = True
         except:
             # raise ConnectionError(ip, port)
