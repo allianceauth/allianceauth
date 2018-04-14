@@ -10,11 +10,11 @@ module_urls = [
         name='activate'),
     url(r'^deactivate/$', views.deactivate_teamspeak3,
         name='deactivate'),
-    url(r'reset_perm/$', views.reset_teamspeak3_perm,
+    url(r'^reset_perm/$', views.reset_teamspeak3_perm,
         name='reset_perm'),
 
     # Teamspeak Urls
-    url(r'verify/$', views.verify_teamspeak3, name='verify'),
+    url(r'^verify/$', views.verify_teamspeak3, name='verify'),
 ]
 
 urlpatterns = [

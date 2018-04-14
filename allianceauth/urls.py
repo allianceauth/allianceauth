@@ -26,7 +26,7 @@ urlpatterns = [
     # Authentication
     url(r'', include(allianceauth.authentication.urls)),
     url(r'^account/login/$', TemplateView.as_view(template_name='public/login.html'), name='auth_login_user'),
-    url(r'account/', include(hmac_urls)),
+    url(r'^account/', include(hmac_urls)),
 
     # Admin urls
     url(r'^admin/', admin.site.urls),
