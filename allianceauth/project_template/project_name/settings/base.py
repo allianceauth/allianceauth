@@ -166,7 +166,6 @@ CACHES = {
     }
 }
 
-SECRET_KEY = 'this is a very bad secret key you should change'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 DATABASES = {
@@ -234,6 +233,10 @@ LOGGING = {
         'django': {
             'handlers': ['log_file', 'console'],
             'level': 'ERROR',
+        },
+        'esi': {
+            'handlers': ['log_file', 'console'],
+            'level': 'DEBUG',
         },
     }
 }
