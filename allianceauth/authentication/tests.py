@@ -3,7 +3,7 @@ from unittest import mock
 from django.test import TestCase
 from django.contrib.auth.models import User
 from allianceauth.tests.auth_utils import AuthUtils
-from .models import CharacterOwnership, UserProfile, State, get_guest_state
+from .models import CharacterOwnership, UserProfile, State, get_guest_state, OwnershipRecord
 from .backends import StateBackend
 from .tasks import check_character_ownership
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
@@ -90,6 +90,7 @@ class BackendTestCase(TestCase):
             corporation_ticker='CORP',
         )
         cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
+        cls.old_user = AuthUtils.create_user('old_user', disconnect_signals=True)
         AuthUtils.disconnect_signals()
         CharacterOwnership.objects.create(user=cls.user, character=cls.main_character, owner_hash='1')
         CharacterOwnership.objects.create(user=cls.user, character=cls.alt_character, owner_hash='2')
@@ -112,6 +113,14 @@ class BackendTestCase(TestCase):
         self.assertNotEqual(user, self.user)
         self.assertEqual(user.username, 'Unclaimed_Character')
         self.assertEqual(user.profile.main_character, self.unclaimed_character)
+
+    def test_authenticate_character_record(self):
+        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
+        record = OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
+        user = StateBackend().authenticate(t)
+        self.assertEqual(user, self.old_user)
+        self.assertTrue(CharacterOwnership.objects.filter(owner_hash='4', user=self.old_user).exists())
+        self.assertTrue(user.profile.main_character)
 
     def test_iterate_username(self):
         t = Token(character_id=self.unclaimed_character.character_id,

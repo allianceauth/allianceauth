@@ -1,6 +1,6 @@
 import logging
 
-from .models import CharacterOwnership, UserProfile, get_guest_state, State
+from .models import CharacterOwnership, UserProfile, get_guest_state, State, OwnershipRecord
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
@@ -153,3 +153,15 @@ def check_state_on_character_update(sender, instance, *args, **kwargs):
     except UserProfile.DoesNotExist:
         logger.debug("Character {0} is not a main character. No state assessment required.".format(instance))
         pass
+
+
+@receiver(post_save, sender=CharacterOwnership)
+def ownership_record_creation(sender, instance, created, *args, **kwargs):
+    if created:
+        records = OwnershipRecord.objects.filter(owner_hash=instance.owner_hash).filter(character=instance.character)
+        if records.exists():
+            if records[0].user == instance.user:  # most recent record is sorted first
+                logger.debug("Already have ownership record of {0} by user {1}".format(instance.character, instance.user))
+                return
+        logger.info("Character {0} has a new owner {1}. Creating ownership record.".format(instance.character, instance.user))
+        OwnershipRecord.objects.create(user=instance.user, character=instance.character, owner_hash=instance.owner_hash)

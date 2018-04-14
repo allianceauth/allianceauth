@@ -2,7 +2,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 
-from .models import UserProfile, CharacterOwnership
+from .models import UserProfile, CharacterOwnership, OwnershipRecord
 
 
 class StateBackend(ModelBackend):
@@ -43,7 +43,18 @@ class StateBackend(ModelBackend):
                 CharacterOwnership.objects.create_by_token(token)
                 return profile.user
             except UserProfile.DoesNotExist:
-                pass
+                # now we check historical records to see if this is a returning user
+                records = OwnershipRecord.objects.filter(owner_hash=token.character_owner_hash).filter(character__character_id=token.character_id)
+                if records.exists():
+                    # we've seen this character owner before. Re-attach to their old user account
+                    user = records[0].user
+                    token.user = user
+                    co = CharacterOwnership.objects.create_by_token(token)
+                    if not user.profile.main_character:
+                        # set this as their main by default if they have none
+                        user.profile.main_character = co.character
+                        user.profile.save()
+                    return user
             return self.create_user(token)
 
     def create_user(self, token):

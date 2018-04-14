@@ -96,3 +96,16 @@ class CharacterOwnership(models.Model):
 
     def __str__(self):
         return "%s: %s" % (self.user, self.character)
+
+
+class OwnershipRecord(models.Model):
+    character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE, related_name='ownership_records')
+    owner_hash = models.CharField(max_length=28, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ownership_records')
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return "%s: %s on %s" % (self.user, self.character, self.created)

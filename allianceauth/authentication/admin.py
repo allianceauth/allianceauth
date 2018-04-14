@@ -6,7 +6,7 @@ from django.db.models import Q
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 from django.dispatch import receiver
-from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile
+from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter
 from django.forms import ModelForm
@@ -160,12 +160,23 @@ class StateAdmin(admin.ModelAdmin):
         return obj.userprofile_set.all().count()
 
 
-@admin.register(CharacterOwnership)
-class CharacterOwnershipAdmin(admin.ModelAdmin):
+class BaseOwnershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'character')
     search_fields = ('user__username', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
-    readonly_fields = ('owner_hash', 'character')
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.pk:
+            return 'owner_hash', 'character'
+        return tuple()
+
+
+@admin.register(OwnershipRecord)
+class OwnershipRecordAdmin(BaseOwnershipAdmin):
+    list_display = BaseOwnershipAdmin.list_display + ('created',)
+
+
+@admin.register(CharacterOwnership)
+class CharacterOwnershipAdmin(BaseOwnershipAdmin):
     def has_add_permission(self, request):
         return False
 
