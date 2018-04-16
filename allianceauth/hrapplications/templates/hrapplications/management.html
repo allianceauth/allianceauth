@@ -155,7 +155,7 @@
                                                 <span class="glyphicon glyphicon-eye-open"></span>
                                             </a>
                                             {% if perms.hrapplications.delete_application %}
-                                                <a href="(% url 'hrapplications:remove' app.id %}"
+                                                <a href="{% url 'hrapplications:remove' app.id %}"
                                                     class="btn btn-danger">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                 </a>
