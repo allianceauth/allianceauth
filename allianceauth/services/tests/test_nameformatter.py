@@ -33,6 +33,7 @@ class NameFormatterTestCase(TestCase):
             corporation_ticker='TIKK',
             alliance_id='3456',
             alliance_name='alliance name',
+            alliance_ticker='TIKR',
         )
         self.member.profile.main_character = self.char
         self.member.profile.save()
@@ -83,11 +84,15 @@ class NameFormatterTestCase(TestCase):
         self.assertIn('alliance_name', result)
         self.assertEqual(result['alliance_name'], self.char.alliance_name)
         self.assertIn('alliance_ticker', result)
-        self.assertEqual(result['alliance_ticker'], self.char.alliance.alliance_ticker)
+        self.assertEqual(result['alliance_ticker'], self.char.alliance_ticker)
         self.assertIn('alliance_id', result)
         self.assertEqual(result['alliance_id'], self.char.alliance_id)
         self.assertIn('username', result)
         self.assertEqual(result['username'], self.member.username)
+        self.assertIn('alliance_or_corp_name', result)
+        self.assertEqual(result['alliance_or_corp_name'], self.char.alliance_name)
+        self.assertIn('alliance_or_corp_ticker', result)
+        self.assertEqual(result['alliance_or_corp_ticker'], self.char.alliance_ticker)
 
     def test_format_name(self):
         config = NameFormatConfig.objects.create(
