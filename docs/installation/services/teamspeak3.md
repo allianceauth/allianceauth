@@ -1,7 +1,7 @@
-# Teamspeak 3
+# TeamSpeak 3
 
 ## Overview
-Teamspeak3 is the most popular VOIP program for gamers.
+TeamSpeak3 is the most popular VOIP program for gamers.
 
 But have you considered using Mumble? Not only is it free, but it has features and performance far superior to Teamspeak3.
 
@@ -12,7 +12,7 @@ Sticking with TS3? Alright, I tried.
 In your auth project's settings file, do the following:
  - Add `'allianceauth.services.modules.teamspeak3',` to your `INSTALLED_APPS` list
  - Append the following to the bottom of the settings file:
- 
+
 
     # Teamspeak3 Configuration
     TEAMSPEAK3_SERVER_IP = '127.0.0.1'
@@ -21,25 +21,25 @@ In your auth project's settings file, do the following:
     TEAMSPEAK3_SERVERQUERY_PASSWORD = ''
     TEAMSPEAK3_VIRTUAL_SERVER = 1
     TEAMSPEAK3_PUBLIC_URL = ''
-    
+
     CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
         'task': 'allianceauth.services.modules.teamspeak3.tasks.run_ts3_group_update',
         'schedule': crontab(minute='*/30'),
     }
 
 ### Download Installer
-To install we need a copy of the server. You can find the latest version from [this dl server](http://dl.4players.de/ts/releases/) (I’d recommed getting the latest stable version – find this version number from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the linux version.
+To install we need a copy of the server. You can find the latest version from [this dl server](http://dl.4players.de/ts/releases/) (I’d recommend getting the latest stable version – find this version number from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the Linux version.
 
 Download the server, replacing the link with the link you got earlier.
 
-    http://dl.4players.de/ts/releases/3.1.0/teamspeak3-server_linux_amd64-3.1.0.tar.bz2
+    http://dl.4players.de/ts/releases/3.1.1/teamspeak3-server_linux_amd64-3.1.1.tar.bz2
 
 Now we need to extract the file.
 
     tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
 
 ### Create User
-Teamspeak needs its own user.
+TeamSpeak needs its own user.
 
     sudo adduser --disabled-login teamspeak
 
@@ -50,7 +50,7 @@ Now we move the server binary somewhere more accessible and change its ownership
     sudo chown -R teamspeak:teamspeak /usr/local/teamspeak
 
 ### Startup
-Now we generate a startup script so teamspeak comes up with the server.
+Now we generate a startup script so TeamSpeak comes up with the server.
 
     sudo ln -s /usr/local/teamspeak/ts3server_startscript.sh /etc/init.d/teamspeak
     sudo update-rc.d teamspeak defaults
@@ -68,12 +68,12 @@ Edit the settings you added to your auth project's settings file earlier, enteri
  - `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from that block of text it just spat out (usually `serveradmin`)
  - `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` from that block of text it just spat out
  - `TEAMSPEAK_VIRTUAL_SERVER` is the virtual server ID of the server to be managed - it will only ever not be 1 if your server is hosted by a professional company
- - `TEAMSPEAK3_PUBLIC_URL` is the public address of your teamspeak server. Do not include any leading http:// or teamspeak://
+ - `TEAMSPEAK3_PUBLIC_URL` is the public address of your TeamSpeak server. Do not include any leading http:// or teamspeak://
 
-Once settings are entered, run migrations and restart gunicorn and celery.
+Once settings are entered, run migrations and restart Gunicorn and Celery.
 
 ### Generate User Account
-And now we can generate ourselves a user account. Navigate to the services in AllianceAuth for your user account and press the checkmark for TeamSpeak 3.
+And now we can generate ourselves a user account. Navigate to the services in Alliance Auth for your user account and press the checkmark for TeamSpeak 3.
 
 Click the URL provided to automatically connect to our server. It will prompt you to redeem the serveradmin token, enter the `token` from startup.
 

@@ -1,14 +1,10 @@
 # Service Permissions
-```eval_rst
-.. note::
-    New in 1.15
-```
 
 In the past, access to services was dictated by a list of settings in `settings.py`, granting access to each particular service for Members and/or Blues. This meant that granting access to a service was very broad and rigidly structured around these two states.
 
 ## Permissions based access
 
-Instead of granting access to services by the previous rigid structure, access to services is now granted by the built in Django permissions system. This means that service access can be more granular, allowing only certain groups, for instance Corp CEOs, or even individual user access to each enabled service.
+Instead of granting access to services by the previous rigid structure, access to services is now granted by the built in Django permissions system. This means that service access can be more granular, allowing only certain states, certain groups, for instance Corp CEOs, or even individual user access to each enabled service.
 
 ```eval_rst
 .. important::
@@ -34,4 +30,4 @@ If a user no longer has permission to access the service when this permissions c
 
 ### Disabling user accounts
 
-When you unset a user as active in the admin panel, all of that users service accounts will be immediately disabled or removed. This is due to the built in behaviour of Djangos permissions system, which will return False for all permissions if a users account is disabled, regardless of their actual permissions state.
+When you unset a user as active in the admin panel, all of that users service accounts will be immediately disabled or removed. This is due to the built in behaviour of the Django permissions system, which will return False for all permissions if a users account is disabled, regardless of their actual permissions state.

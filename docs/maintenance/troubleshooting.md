@@ -20,7 +20,7 @@ It's probably a permissions issue. Ensure your current user can write to the vir
 
 ### Failed to configure log handler
 
-Make sure the log directory is write-able by the allianceserver user: `chmown -R allianceserver:allianceserver /path/to/myauth/log/`, then restart the auth supervisor processes.
+Make sure the log directory is writeable by the allianceserver user: `chmown -R allianceserver:allianceserver /path/to/myauth/log/`, then restart the auth supervisor processes.
 
 ### Groups aren't syncing to services
 
@@ -40,3 +40,11 @@ Now start the worker again with `supervisorctl start myauth:worker`
 ### Proxy timeout when entering email address
 
 This usually indicates an issue with your email settings. Ensure these are correct and your email server/service is properly configured.
+
+### No images are available to users accessing the website
+
+This is due to a permissions mismatch, check the setup guide for your web server. Additionally ensure the user who owns /var/www/myauth/static is the same user as running your webserver, as this can be non-standard.
+
+### Unable to execute 'gunicorn myauth.wsgi' or ImportError: No module named 'myauth.wsgi'
+
+Gunicorn needs to have context for its running location, `/home/alllianceserver/myauth/gunicorn myauth.wsgi` will not work, instead `cd /home/alllianceserver/myauth` then `gunicorn myauth.wsgi` is needed to boot Gunicorn. This is handled in the Supervisor config, but this may be encountered running Gunicorn manually for testing.

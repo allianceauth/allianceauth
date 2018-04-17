@@ -1,12 +1,10 @@
 # phpBB3
 
- and run migrations before continuing with this guide to ensure the service is installed.
-
 ## Overview
-phpBB is a free php-based forum. It’s the default forum for AllianceAuth.
+phpBB is a free PHP-based forum.
 
 ## Dependencies
-PHPBB3 requires php installed in your web server. Apache has `mod_php`, NGINX requires `php-fpm`. See [the official guide](https://www.phpbb.com/community/docs/INSTALL.html) for php package requirements.
+phpBB3 requires PHP installed in your web server. Apache has `mod_php`, NGINX requires `php-fpm`. See [the official guide](https://www.phpbb.com/community/docs/INSTALL.html) for PHP package requirements.
 
 ## Prepare Your Settings
 In your auth project's settings file, do the following:
@@ -27,7 +25,7 @@ In your auth project's settings file, do the following:
 
 ## Setup
 ### Prepare the Database
-Create a database to install phpbb3 in.
+Create a database to install phpBB3 in.
 
     mysql -u root -p
     create database alliance_forum;
@@ -36,12 +34,12 @@ Create a database to install phpbb3 in.
 
 Edit your auth project's settings file and fill out the `DATABASES['phpbb3']` part.
 
-### Download Phpbb3
-phpBB is available as a zip from their website. Navigate to the website’s [downloads section](https://www.phpbb.com/downloads/) using your PC browser and copy the URL for the latest version zip.
+### Download phpbb3
+phpBB is available as a zip from their website. Navigate to the website’s [downloads section](https://www.phpbb.com/downloads/) using your PC browser and copy the URL for the latest version zip. Depending on your browser you may have a Copy Link or similar option in your right click menu.
 
 In the console, navigate to your user’s home directory: `cd ~`
 
-Now download using wget, replacing the url with the url for the package you just retrieved
+Now download using wget, replacing the URL with the URL for the package you just retrieved
 
     wget https://www.phpbb.com/files/release/phpBB-3.2.2.zip
 
@@ -55,12 +53,19 @@ Now we need to move this to our web directory. Usually `/var/www/forums`.
 
 The web server needs read/write permission to this folder
 
-    sudo chown -R www-data:www-data /var/www/forums
+Apache: `sudo chown -R www-data:www-data /var/www/forums`  
+Nginx: `sudo chown -R nginx:nginx /var/www/forums`
+
+```eval_rst
+.. tip::
+   Nginx: Some distributions use the ``www-data:www-data`` user:group instead of ``nginx:nginx``. If you run into problems with permissions try it instead. 
+..
+```
 
 ### Configuring Web Server
 You will need to configure you web server to serve PHPBB3 before proceeding with installation.
 
-A minimal apache config file might look like:
+A minimal Apache config file might look like:
 
     <VirtualHost *:80>
         ServerName forums.example.com
@@ -71,7 +76,7 @@ A minimal apache config file might look like:
         </Directory>
     </VirtualHost>
 
-A minimal nginx config file might look like:
+A minimal Nginx config file might look like:
 
     server {
         listen 80;
@@ -79,16 +84,16 @@ A minimal nginx config file might look like:
         root   /var/www/forums;
         index  index.php;
         access_log  /var/logs/forums.access.log;
-    
+
         location ~ /(config\.php|common\.php|cache|files|images/avatars/upload|includes|store) {
             deny all;
             return 403;
         }
-    
+
         location ~* \.(gif|jpe?g|png|css)$ {
             expires   30d;
         }
-    
+
         location ~ \.php$ {
             try_files $uri =404;
             fastcgi_pass   unix:/tmp/php.socket;
@@ -117,7 +122,7 @@ Under Database Settings, set the following:
 
 If you use a table prefix other than the standard `phpbb_` you need to add an additional setting to your auth project's settings file, `PHPBB3_TABLE_PREFIX = ''`, and enter the prefix.
 
-You should see `Succesful Connection` and proceed.
+You should see `Successful Connection` and proceed.
 
 Enter administrator credentials on the next page.
 
@@ -140,4 +145,4 @@ You can allow members to overwrite the portrait with a custom image if desired. 
 ![location of change avatar setting](/_static/images/installation/services/phpbb3/avatar_permissions.png)
 
 ### Prepare Auth
-Once settings have been configured, run migrations and restart gunicorn and celery.
+Once settings have been configured, run migrations and restart Gunicorn and Celery.

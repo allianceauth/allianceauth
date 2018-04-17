@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Alliance Auth'
-copyright = u'2017, Alliance Auth'
+copyright = u'2018, Alliance Auth'
 author = u'R4stl1n'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -62,7 +62,7 @@ author = u'R4stl1n'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.14'
+version = u'2.0'
 # The full version, including alpha/beta/rc tags.
 # release = u'1.14.0'
 
@@ -156,7 +156,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'AllianceAuth', u'Alliance Auth Documentation',
-     author, 'AllianceAuth', 'Alliance service auth to help large scale alliances manage services.',
+     author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
      'Miscellaneous'),
 ]
 

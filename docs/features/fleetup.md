@@ -11,7 +11,7 @@ Additional settings are required. Append the following settings to the end of yo
     FLEETUP_API_ID = ''  # The API id from http://fleet-up.com/Api/MyKeys
     FLEETUP_GROUP_ID = ''  # The id of the group you want to pull data from, see http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships
 
-Once filled out restart gunicorn and celery.
+Once filled out restart Gunicorn and Celery.
 
 ## Permissions
 

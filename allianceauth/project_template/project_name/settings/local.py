@@ -42,8 +42,9 @@ ESI_SSO_CLIENT_SECRET = ''
 ESI_SSO_CALLBACK_URL = ''
 
 # By default emails are validated before new users can log in.
-# It's recommended to use a free service like SparkPost or Mailgun to send email.
+# It's recommended to use a free service like SparkPost or Elastic Email to send email.
 # https://www.sparkpost.com/docs/integrations/django/
+# https://elasticemail.com/resources/settings/smtp-api/
 # Set the default from email to something like 'noreply@example.com'
 # Email validation can be turned off by uncommenting the line below. This can break some services.
 # REGISTRATION_VERIFY_EMAIL = False

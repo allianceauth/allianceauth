@@ -5,7 +5,7 @@
     New in 2.0
 ```
 
-Each service's username or nickname, depending on which the service supports, can be customised through the use of the Name Formatter Config provided the service supports custom formats. This config can be found in the admin panel under **Services -> Name format config**
+Each service's username or nickname, depending on which the service supports, can be customised through the use of the Name Formatter config provided the service supports custom formats. This config can be found in the admin panel under **Services -> Name format config**
 
 Currently the following services support custom name formats:
 
@@ -37,7 +37,7 @@ Currently the following services support custom name formats:
 
 ```eval_rst
 .. note::
-    It's important to note here, before we get into what you can do with a name formatter, that before the generated name is passed off to the service to create an account it will be sanitised to remove characters (the letters and numbers etc) that the service cannot support. This means that, despite what you configured, the service may display something different. It is up to you to test your formatter and understand how your format may be disrupted by a certain services sanitisation function.
+    It's important to note here, before we get into what you can do with a name formatter, that before the generated name is passed off to the service to create an account it will be sanitised to remove characters (the letters and numbers etc.) that the service cannot support. This means that, despite what you configured, the service may display something different. It is up to you to test your formatter and understand how your format may be disrupted by a certain services sanitisation function.
 ```
 
 ## Available format data
@@ -53,14 +53,14 @@ The following fields are available from a users account and main character:
  - `alliance_id`
  - `alliance_name`
  - `alliance_ticker`
- - `alliance_or_corp_name` (defaults to corp name if there is no alliance)
- - `alliance_or_corp_ticker` (defaults to corp ticker if there is no alliance)
+ - `alliance_or_corp_name` (defaults to Corporation name if there is no Alliance)
+ - `alliance_or_corp_ticker` (defaults to Corporation ticker if there is no Alliance)
 
 ## Building a formatter string
 
 The name formatter uses the advanced string formatting specified by [PEP-3101](https://www.python.org/dev/peps/pep-3101/). Anything supported by this specification is supported in a name formatter.
 
-A more digestable documentation of string formatting in Python is available on the [PyFormat](https://pyformat.info/) website.
+A more digestible documentation of string formatting in Python is available on the [PyFormat](https://pyformat.info/) website.
 
 Some examples of strings you could use:
 ```eval_rst

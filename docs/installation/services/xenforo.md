@@ -37,4 +37,4 @@ The settings you created earlier now need to be filled out.
 
 `XENFORO_API_KEY` is the API key value you set earlier.
 
-Once these are entered, run migrations and restart gunicorn and celery.
+Once these are entered, run migrations and restart Gunicorn and Celery.

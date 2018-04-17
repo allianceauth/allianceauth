@@ -10,12 +10,12 @@ Check out the full [Gunicorn docs](http://docs.gunicorn.org/en/latest/index.html
 
 ```eval_rst
 .. note::
-    If you're using a virtual environment (and I would encourage you to do so when hosting Alliance Auth), activate it now. `source /path/to/venv/bin/activate`.
+    If you're using a virtual environment, activate it now. ``source /path/to/venv/bin/activate``.
 ```
 
 Install Gunicorn using pip, `pip install gunicorn`.
 
-In your `myauth` base directory, try running `gunicorn --bind 0.0.0.0:8000 myauth.wsgi`. You should be able to browse to http://yourserver:8000 and see your Alliance Auth installation running. Images and styling will be missing, but dont worry, your web server will provide them.
+In your `myauth` base directory, try running `gunicorn --bind 0.0.0.0:8000 myauth.wsgi`. You should be able to browse to http://yourserver:8000 and see your Alliance Auth installation running. Images and styling will be missing, but don't worry, your web server will provide them.
 
 Once you validate its running, you can kill the process with Ctrl+C and continue.
 

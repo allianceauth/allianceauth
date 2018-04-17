@@ -1,6 +1,6 @@
 # Openfire
 
- Openfire is a jabber (XMPP) server.
+ Openfire is a Jabber (XMPP) server.
 
 ## Prepare Your Settings
  - Add `'allianceauth.services.modules.openfire',` to your `INSTALLED_APPS` list
@@ -18,7 +18,7 @@
     BROADCAST_SERVICE_NAME = "broadcast"
 
 ## Overview
-Openfire is a java-based xmpp server (jabber).
+Openfire is a Java-based XMPP server (Jabber).
 
 ## Dependencies
 One additional package is required - openjdk8
@@ -35,24 +35,30 @@ CentOS:
 
 ## Setup
 ### Download Installer
-Openfire is not available through repositories so we need to get a debian from the developer.
+Openfire is not available through repositories so we need to get a package from the developer.
 
-On your PC, naviage to the [Ignite Realtime downloads section](https://www.igniterealtime.org/downloads/index.jsp), and under Openfire select Linux, click on the debian file (2nd from bottom of list, ends with .deb).
+On your PC, navigate to the [Ignite Realtime downloads section](https://www.igniterealtime.org/downloads/index.jsp), and under Openfire select Linux, click on the Ubuntu: Debian package (second from bottom of list, ends with .deb) or CentOS: RPM Package (no JRE bundled, as we have installed it on the host)
 
-Retrieve the file location by copying the url from the “click here” link.
+Retrieve the file location by copying the URL from the “click here” link, depending on your browser you may have a Copy Link or similar option in your right click menu.
 
 In the console, ensure you’re in your user’s home directory: `cd ~`
 
 Now download the package. Replace the link below with the link you got earlier.
 
-    wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_4.1.1_all.deb
+    wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_4.2.3_all.deb
 
-Now install from the debian. Replace the filename with your file name (the last part of the download url is the file name)
+Now install from the package. Replace the filename with your filename (the last part of the download URL is the file name)
 
-    sudo dpkg -i openfire_4.1.1_all.deb
+Ubuntu:
+
+    sudo dpkg -i openfire_4.2.3_all.deb
+
+CentOS:
+
+    sudo yum install -y openfire-4.2.3-1.noarch.rpm
 
 ### Create Database
-Performance is best when working from a SQL database. If you installed MySQL or MariaDB alongside your auth project, go ahead and create a database for openfire:
+Performance is best when working from a SQL database. If you installed MySQL or MariaDB alongside your auth project, go ahead and create a database for Openfire:
 
     mysql -u root -p
     create database alliance_jabber;
@@ -62,7 +68,7 @@ Performance is best when working from a SQL database. If you installed MySQL or 
 ### Web Configuration
 The remainder of the setup occurs through Openfire’s web interface. Navigate to http://example.com:9090, or if you’re behind CloudFlare, go straight to your server’s IP:9090.
 
-Select your language. I sure hope it’s english if you’re reading this guide.
+Select your language. I sure hope it’s English if you’re reading this guide.
 
 Under Server Settings, set the Domain to `example.com` replacing it with your actual domain. Don’t touch the rest.
 
@@ -100,7 +106,7 @@ Select `Enabled`, and `Secret Key Auth`. Update your auth project's settings wit
 
 Navigate to the `Users/Groups` tab and select `Create New User` from the left navigation bar.
 
-Pick a username (eg `broadcast`) and password for your ping user. Enter these in your auth project's settings file as `BROADCAST_USER` and `BROADCAST_USER_PASSWORD`. Note that `BROADCAST_USER` needs to be in the format `user@example.com` matching your jabber server name. Press `Create User` to save this user.
+Pick a username (e.g. `broadcast`) and password for your ping user. Enter these in your auth project's settings file as `BROADCAST_USER` and `BROADCAST_USER_PASSWORD`. Note that `BROADCAST_USER` needs to be in the format `user@example.com` matching your jabber server name. Press `Create User` to save this user.
 
 Broadcasting requires a plugin. Navigate to the `plugins` tab, press the green plus for the `Broadcast` plugin.
 
@@ -117,7 +123,7 @@ If you have troubles getting broadcasts to work, you can try setting the optiona
 
 ### Preparing Auth
 
-Once all settings are entered, run migrations and restart gunicorn and celery.
+Once all settings are entered, run migrations and restart Gunicorn and Celery.
 
 ### Group Chat
 Channels are available which function like a chat room. Access can be controlled either by password or ACL (not unlike mumble).

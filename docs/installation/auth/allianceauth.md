@@ -2,12 +2,12 @@
 
 ```eval_rst
 .. tip::
-   If you are uncomfortable with linux permissions follow the steps below as the root user. Some commands do not behave the same when run with sudo. 
+   If you are uncomfortable with Linux permissions follow the steps below as the root user. Some commands do not behave the same when run with sudo. 
 ```
 
 ## Dependencies
 
-Alliance Auth can be installed on any operating system. Dependencies are provided below for two of the most popular server platforms, Ubuntu and CentOS. To install on your favourite flavour of linux, identify and install equivalent packages to the ones listed here.
+Alliance Auth can be installed on any operating system. Dependencies are provided below for two of the most popular server platforms, Ubuntu and CentOS. To install on your favourite flavour of Linux, identify and install equivalent packages to the ones listed here.
 
 ```eval_rst
 .. hint::
@@ -31,7 +31,7 @@ CentOS:
 
 ### Database
 
-It's recommended to use a database service instead of sqlite. Many options are available, but this guide will use MariaDB.
+It's recommended to use a database service instead of SQLite. Many options are available, but this guide will use MariaDB.
 
 Ubuntu:
 
@@ -60,7 +60,7 @@ CentOS:
 
 ```eval_rst
 .. important::
-   CentOS: Make sure redis is running before continuing. ::
+   CentOS: Make sure Redis is running before continuing. ::
    
       systemctl enable redis.service
       systemctl start redis.service
@@ -104,7 +104,7 @@ Create a Python virtual environment and put it somewhere convenient (e.g. `/home
 
 ```eval_rst
 .. warning::
-   The python3 command may not be available on all installations. Try a specific version such as python3.6 if this is the case.
+   The python3 command may not be available on all installations. Try a specific version such as ``python3.6`` if this is the case.
 ```
 
 ```eval_rst
@@ -117,14 +117,14 @@ Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activat
 
 ```eval_rst
 .. hint::
-   Each time you come to do maintenance on your Alliance Auth installation, you should activate your virtual environment first. When finished, deactivate it with the 'deactivate' command.
+   Each time you come to do maintenance on your Alliance Auth installation, you should activate your virtual environment first. When finished, deactivate it with the ``deactivate`` command.
 ```
 
 Ensure wheel is available with `pip install wheel` before continuing.
 
 ### Alliance Auth Project
 
-You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies. You should also install gunicorn with `pip install gunicorn` before proceeding.
+You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies. You should also install Gunicorn with `pip install gunicorn` before proceeding.
 
 Now you need to create the application that will run the Alliance Auth install. Ensure you are in the allianceserver home directory by issuing `cd /home/allianceserver`.
 
@@ -153,13 +153,13 @@ And finally ensure the allianceserver user has read/write permissions to this di
 
 ### Gunicorn
 
-To run the auth website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. It can be manually run with `gunicorn myauth.wsgi` or automatically run using supervisor.
+To run the auth website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. It can be manually run from within your `myauth` base directory with `gunicorn --bind 0.0.0.0 myauth.wsgi` or automatically run using Supervisor.
 
 The default configuration is good enough for most installations. Additional information is available in the [gunicorn](gunicorn.md) doc.
 
 ### Supervisor
 
-[Supervisor](http://supervisord.org/) is a process watchdog service: it makes sure other processes are started automatically and kept running. It can be used to automatically start the WSGI server and celery workers for background tasks. Installation varies by OS:
+[Supervisor](http://supervisord.org/) is a process watchdog service: it makes sure other processes are started automatically and kept running. It can be used to automatically start the WSGI server and Celery workers for background tasks. Installation varies by OS:
 
 Ubuntu:
 
@@ -171,7 +171,7 @@ CentOS:
     systemctl enable supervisord.service
     systemctl start supervisord.service
 
-Once installed it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the celery workers, celery task scheduler and gunicorn are all running.
+Once installed it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the Celery workers, Celery task scheduler and Gunicorn are all running.
 
 Ubuntu:
 
@@ -187,7 +187,7 @@ You can check the status of the processes with `supervisorctl status`. Logs from
 
 ```eval_rst
 .. note::
-   Any time the code or your settings change you'll need to restart gunicorn and celery. ::
+   Any time the code or your settings change you'll need to restart Gunicorn and Celery. ::
    
        supervisorctl restart myauth:
 ```
@@ -214,4 +214,4 @@ Some releases come with changes to settings: update your project's settings with
 
 Some releases come with new or changed models. Update your database to reflect this with `python /home/allianceserver/myauth/manage.py migrate`.
  
-Always restart celery and gunicorn after updating.
+Always restart Celery and Gunicorn after updating.

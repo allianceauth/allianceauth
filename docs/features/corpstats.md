@@ -1,6 +1,6 @@
 # Corp Stats
 
-This module is used to check the registration status of corp members and to determine character relationships, being mains or alts.
+This module is used to check the registration status of Corp members and to determine character relationships, being mains or alts.
 
 ## Installation
 
@@ -10,13 +10,13 @@ Add `'allianceauth.corputils',` to your `INSTALLED_APPS` list in your auth proje
 
 ## Creating a Corp Stats
 
-Upon initial install, nothing will be visible. For every corp, a model will have to be created before data can be viewed.
+Upon initial install, nothing will be visible. For every Corp, a model will have to be created before data can be viewed.
 
 ![nothing is visible](/_static/images/features/corpstats/blank_header.png)
 
 If you are a superuser, the add button will be immediate visible to you. If not, your user account requires the `add_corpstats` permission.
 
-Corp Stats requires an EVE SSO token to access data from the EVE Swagger Interface. Upon pressing the Add button, you will be prompted to authenticated. Please select the character who is in the corp you want data for.
+Corp Stats requires an EVE SSO token to access data from the EVE Swagger Interface. Upon pressing the Add button, you will be prompted to authenticated. Please select the character who is in the Corporation you want data for.
 
 ![authorize from the EVE site](/_static/images/features/corpstats/eve_sso_authorization.png)
 
@@ -33,7 +33,7 @@ If it fails an error message will be displayed.
 
 ![navigation bar](/_static/images/features/corpstats/navbar.png)
 
-This bar contains a dropdown menu of all available corps. If the user has the `add_corpstats` permission, a button to add a Corp Stats will be shown.
+This bar contains a dropdown menu of all available Corporations. If the user has the `add_corpstats` permission, a button to add a Corp Stats will be shown.
 
 On the right of this bar is a search field. Press enter to search. It checks all characters in all Corp Stats you have view permission to and returns search results.
 
@@ -41,7 +41,7 @@ On the right of this bar is a search field. Press enter to search. It checks all
 
 ![last update and update button](/_static/images/features/corpstats/last_update.png)
 
-An update can be performed immediately by pressing the update button. Anyone who can view the Corp Stats can update it. 
+An update can be performed immediately by pressing the update button. Anyone who can view the Corp Stats can update it.
 
 ### Character Lists
 
@@ -60,15 +60,15 @@ Each view contains a sortable and searchable table. The number of listings shown
 
 ![main list](/_static/images/features/corpstats/main_list.png)
 
-This list contains all main characters in registered in the selected corporation and their alts. Each character has a link to [zKillboard](https://zkillboard.com).
+This list contains all main characters in registered in the selected Corporation and their alts. Each character has a link to [zKillboard](https://zkillboard.com).
 
 
 #### Member List
 
 ![member list](/_static/images/features/corpstats/member_list.png)
 
-The list contains all characters in the corp. Red backgrounds means they are not registered in auth. A link to [zKillboard](https://zkillboard.com) is present for all characters.
-If registered, the character will also have a main character, main corporation, and main alliance field.
+The list contains all characters in the Corporation. Red backgrounds means they are not registered in auth. A link to [zKillboard](https://zkillboard.com) is present for all characters.
+If registered, the character will also have a main character, main Corporation, and main Alliance field.
 
 #### Unregistered List
 
@@ -80,7 +80,7 @@ This list contains all characters not registered on auth. Each character has a l
 
 ![search results](/_static/images/features/corpstats/search_view.png)
 
-This view is essentially the same as the Corp Stats page, but not specific to a single corp.
+This view is essentially the same as the Corp Stats page, but not specific to a single Corporation.
 The search query is visible in the search box.
 Characters from all Corp Stats to which the user has view access will be displayed. APIs respect permissions.
 
@@ -108,7 +108,7 @@ To use this feature, users will require some of the following:
 
 ```
 
-Users who add a Corp Stats with their token will be granted permissions to view it regardless of the above permissions. View permissions are interpreted in the "OR" sense: a user can view their corp's Corp Stats without the `view_corp_corpstats` permission if they have the `view_alliance_corpstats` permission, same idea for their state. Note that these evaluate against the user's main character.
+Users who add a Corp Stats with their token will be granted permissions to view it regardless of the above permissions. View permissions are interpreted in the "OR" sense: a user can view their Corporations's Corp Stats without the `view_corp_corpstats` permission if they have the `view_alliance_corpstats` permission, same idea for their state. Note that these evaluate against the user's main character.
 
 ## Automatic Updating
 By default Corp Stats are only updated on demand. If you want to automatically refresh on a schedule, add an entry to your project's settings file:
@@ -126,12 +126,12 @@ Adjust the crontab as desired.
 
 >Unrecognized corporation. Please ensure it is a member of the alliance or a blue.
 
-Corp Stats can only be created for corporations who have a model in the database. These only exist for tenant corps,
+Corp Stats can only be created for Corporations who have a model in the database. These only exist for tenant corps,
 corps of tenant alliances, blue corps, and members of blue alliances.
 
 >Selected corp already has a statistics module.
 
-Only one Corp Stats may exist at a time for a given corporation.
+Only one Corp Stats may exist at a time for a given Corporation.
 
 >Failed to gather corporation statistics with selected token.
 
@@ -147,7 +147,7 @@ This occurs when the SSO token is invalid, which can occur when deleted by the u
 
 >CorpStats for (corp name) cannot update with your ESI token as you have left corp.
 
-The SSO token's character is no longer in the corp which the Corp Stats is for, and therefore membership data cannot be retrieved.
+The SSO token's character is no longer in the Corporation which the Corp Stats is for, and therefore membership data cannot be retrieved.
 
 >HTTPForbidden
 

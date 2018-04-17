@@ -2,9 +2,9 @@
 
 ## Prepare Your Settings
 In your auth project's settings file, do the following:
- - Add `'allianceauth.services.modules.discourse',` to your `INSTALLED_APPS` list 
+ - Add `'allianceauth.services.modules.discourse',` to your `INSTALLED_APPS` list
  - Append the following to your local.py settings file:
- 
+
 
     # Discourse Configuration
     DISCOURSE_URL = ''
@@ -35,7 +35,7 @@ Change the following:
  - `DISCOUSE_HOSTNAME` should be `discourse.example.com` or something similar.
  - Everything with `SMTP` depends on your mail settings. [There are plenty of free email services online recommended by Discourse](https://github.com/discourse/discourse/blob/master/docs/INSTALL-email.md#recommended-email-providers-for-discourse) if you haven't set one up for auth already.
 
-To install behind apache/nginx, look for this section:
+To install behind Apache/Nginx, look for this section:
 
     ...
     ## which TCP/IP ports should this container expose?
@@ -61,7 +61,7 @@ Uncomment this line:
 
     DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
 
-Restart docker:
+Restart Docker:
 
     service docker restart
 
@@ -74,7 +74,7 @@ Now build:
 
 You will need to configure your web server to proxy requests to Discourse.
 
-A minimal apache config might look like:
+A minimal Apache config might look like:
 
     <VirtualHost *:80>
         ServerName discourse.example.com
@@ -82,7 +82,7 @@ A minimal apache config might look like:
         ProxyPassReverse / http://0.0.0.0:7890/
     </VirtualHost>
 
-A minimal nginx config might look like:
+A minimal Nginx config might look like:
 
     server {
         listen 80;
@@ -122,4 +122,4 @@ Navigate to `discourse.example.com` and log in. Back to the admin site, scroll d
 
 Save, now set `DISCOURSE_SSO_SECRET` in your auth project's settings file to the secure key you just put in Discourse.
 
-Finally run migrations and restart gunicorn and celery.
+Finally run migrations and restart Gunicorn and Celery.

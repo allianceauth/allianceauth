@@ -4,13 +4,13 @@
 In your auth project's settings file, do the following:
  - Add `'allianceauth.services.modules.mumble',` to your `INSTALLED_APPS` list
  - Append the following to your local.py settings file:
- 
+
 
     # Mumble Configuration
     MUMBLE_URL = ""
 
 ## Overview
-Mumble is a free voice chat server. While not as flashy as teamspeak, it has all the functionality and is easier to customize. And is better. I may be slightly biased.
+Mumble is a free voice chat server. While not as flashy as TeamSpeak, it has all the functionality and is easier to customize. And is better. I may be slightly biased.
 
 ## Dependencies
 The mumble server package can be retrieved from a repository we need to add, mumble/release.
@@ -35,11 +35,11 @@ REQUIRED: To enable the ICE authenticator, edit the following:
 
  - `icesecretwrite=MY_CLEVER_PASSWORD`, obviously choosing a secure password
 
-By default mumble operates on sqlite which is fine, but slower than a dedicated MySQL server. To customize the database, edit the following:
+By default mumble operates on SQLite which is fine, but slower than a dedicated MySQL server. To customize the database, edit the following:
 
  - uncomment the database line, and change it to `database=alliance_mumble`
  - `dbDriver=QMYSQL`
- - `dbUsername=allianceserver` or whatever you called the AllianceAuth MySQL user
+ - `dbUsername=allianceserver` or whatever you called the Alliance Auth MySQL user
  - `dbPassword=` that user’s password
  - `dbPort=3306`
  - `dbPrefix=murmur_`
@@ -48,7 +48,7 @@ To name your root channel, uncomment and set `registerName=` to whatever cool na
 
 Save and close the file (control + O, control + X).
 
-To get mumble superuser account credentials, run the following:
+To get Mumble superuser account credentials, run the following:
 
     sudo dpkg-reconfigure mumble-server
 
@@ -85,9 +85,9 @@ The authenticator needs to be running 24/7 to validate users on Mumble. You shou
 Note that groups will only be created on Mumble automatically when a user joins who is in the group.
 
 ## Making and Managing Channels
-ACL is really above the scope of this guide. Once AllianceAuth creates your groups, go ahead and follow one of the wonderful web guides available on how to set up channel ACL properly.
+ACL is really above the scope of this guide. Once Alliance Auth creates your groups, go ahead and follow one of the wonderful web guides available on how to set up channel ACL properly.
 
 ## Prepare Auth
 In your project's settings file, set `MUMBLE_URL` to the public address of your mumble server. Do not include any leading `http://` or `mumble://`.
 
-Run migrations and restart gunicorn and celery to complete setup.
+Run migrations and restart Gunicorn and Celery to complete setup.

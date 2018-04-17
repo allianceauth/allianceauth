@@ -2,7 +2,7 @@
 
 ## Overview
 
-In Alliance Auth v1 admins were able to define which corporations and alliances were to be considered "members" with full permissions and "blues" with restricted permissions. The state system is the replacement for these static definitions: admins can now create as many states as desired, as well as extend membership to specific characters.
+In Alliance Auth v1 admins were able to define which Corporations and Alliances were to be considered "members" with full permissions and "blues" with restricted permissions. The state system is the replacement for these static definitions: admins can now create as many states as desired, as well as extend membership to specific characters.
 
 ## Creating a State
 States are created through your installation's admin site. Upon install three states are created for you: `Member`, `Blue`, and `Guest`. New ones can be created like any other Django model by users with the appropriate permission (`authentication | state | Can add state`) or superusers.
@@ -27,10 +27,10 @@ Checking this box means this state is available to all users. There isn't much u
 This lets you select which characters the state is available to. Characters can be added by selecting the green plus icon.
 
 ### Member Corporations
-This lets you select which corporations the state is available to. Corporations can be added by selecting the green plus icon.
+This lets you select which Corporations the state is available to. Corporations can be added by selecting the green plus icon.
 
 ### Member Alliances
-This lets you select which alliances the state is available to. Alliances can be added by selecting the gree plus icon.
+This lets you select which Alliances the state is available to. Alliances can be added by selecting the green plus icon.
 
 ## Determining a User's State
 States are mutually exclusive, meaning a user can only be in one at a time.
@@ -45,5 +45,3 @@ Assigned states are visible in the `Users` section of the `Authentication` admin
 If no states are available to a user's main character, or their account has been deactivated, they are assigned to a catch-all `Guest` state. This state cannot be deleted nor can its name be changed.
 
 The `Guest` state allows permissions to be granted to users who would otherwise not get any. For example access to public services can be granted by giving the `Guest` state a service access permission.
-
- 

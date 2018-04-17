@@ -1,10 +1,5 @@
 # Permissions Auditing
 
-```eval_rst
-.. note::
-    New in 1.15
-```
-
 Access to most of Alliance Auth's features are controlled by Django's permissions system. In order to help you secure your services, Alliance Auth provides a permissions auditing tool.
 
 ## Installation

@@ -1,6 +1,6 @@
 # NGINX
 
-## Overivew
+## Overview
 
 Nginx (engine x) is a HTTP server known for its high performance, stability, simple configuration, and low resource consumption. Unlike traditional servers (i.e. Apache), Nginx doesn't rely on threads to serve requests, rather using an asynchronous event driven approach which permits predictable resource usage and performance under load.
 
@@ -12,7 +12,7 @@ You can read more about NGINX on the [NGINX wiki](https://www.nginx.com/resource
 
 If you're converting from Apache, here are some things to consider.
 
-Nginx is lightweight for a reason. It doesn't try to do everything internally and instead concentrates on just being a good HTTP server. This means that, unlike Apache, it wont automatically run PHP scripts via mod_php and doesn't have an internal WSGI server like mod_wsgi. That doesn't mean that it can't, just that it relies on external processes to run these instead. This might be good or bad depending on your outlook. It's good because it allows you to segment your applications, restarting Alliance Auth wont impact your PHP applications. On the other hand it means more config and more management of services. For some people it will be worth it, for others losing the centralised nature of Apache may not be worth it.
+Nginx is lightweight for a reason. It doesn't try to do everything internally and instead concentrates on just being a good HTTP server. This means that, unlike Apache, it won't automatically run PHP scripts via mod_php and doesn't have an internal WSGI server like mod_wsgi. That doesn't mean that it can't, just that it relies on external processes to run these instead. This might be good or bad depending on your outlook. It's good because it allows you to segment your applications, restarting Alliance Auth wont impact your PHP applications. On the other hand it means more config and more management of services. For some people it will be worth it, for others losing the centralised nature of Apache may not be worth it.
 
 ```eval_rst
 +-----------+----------------------------------------+
@@ -25,13 +25,20 @@ Nginx is lightweight for a reason. It doesn't try to do everything internally an
 
 ```
 
-Your .htaccess files wont work. Nginx has a separate way of managing access to folders via the server config. Everything you can do with htaccess files you can do with Nginx config. [Read more on the Nginx wiki](https://www.nginx.com/resources/wiki/start/topics/examples/likeapache-htaccess/)
+Your .htaccess files won't work. Nginx has a separate way of managing access to folders via the server config. Everything you can do with htaccess files you can do with Nginx config. [Read more on the Nginx wiki](https://www.nginx.com/resources/wiki/start/topics/examples/likeapache-htaccess/)
 
 ## Setting up Nginx
 
 Install Nginx via your preferred package manager or other method. If you need help just search, there are plenty of guides on installing Nginx out there.
 
-Nginx needs to be able to read the folder containing your auth project's static files. On Ubuntu: `chown -R nginx:nginx /var/www/myauth/static`, and on CentOS: `chown -R nginx:nginx /var/www/myauth/static`
+Nginx needs to be able to read the folder containing your auth project's static files. `chown -R nginx:nginx /var/www/myauth/static`.
+
+```eval_rst
+.. tip::
+   Some specific distros may use www-data:www-data instead of nginx:nginx, causing static files (images, stylesheets etc) not to appear. You can confirm what user Nginx will run under by checking either its base config file `/etc/nginx/nginx.conf` for the "user" setting, or once Nginx has started `ps aux | grep nginx`.
+   Adjust your chown commands to the correct user if needed.
+..
+```
 
 You will need to have [Gunicorn](gunicorn.md) or some other WSGI server setup for hosting Alliance Auth.
 
@@ -57,7 +64,7 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
-    location /static/ {
+    location /static {
         alias /var/www/myauth/static;
         autoindex off;
     }

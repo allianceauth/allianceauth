@@ -24,7 +24,7 @@ Apache needs to be able to read the folder containing your auth project's static
 
 Apache serves sites through defined virtual hosts. These are located in `/etc/apache2/sites-available/` on Ubuntu and `/etc/httpd/conf.d/httpd.conf` on CentOS.
 
-A virtual host for auth need only proxy requests to your WSGI server (gunicorn if you followed the install guide) and serve static files. Examples can be found below. Create your config in its own file eg `myauth.conf`.
+A virtual host for auth need only proxy requests to your WSGI server (Gunicorn if you followed the install guide) and serve static files. Examples can be found below. Create your config in its own file e.g. `myauth.conf`
 
 ### Ubuntu
 
@@ -34,7 +34,7 @@ To proxy and modify headers a few mods need to be enabled.
     a2enmod proxy_http
     a2enmod headers
 
-Create a new config file for auth eg `/etc/apache2/sites-available/myauth.conf` and fill out the virtual host configuration. To enable your config use `a2ensite myauth.conf` and then reload apache with `service apache2 reload`.
+Create a new config file for auth e.g. `/etc/apache2/sites-available/myauth.conf` and fill out the virtual host configuration. To enable your config use `a2ensite myauth.conf` and then reload apache with `service apache2 reload`.
 
 ### CentOS
 

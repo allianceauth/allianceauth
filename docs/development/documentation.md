@@ -5,7 +5,7 @@ The documentation for Alliance Auth uses [Sphinx](http://www.sphinx-doc.org/) to
  [readthedocs.org](https://readthedocs.org/).
 
 
-Documentation was migrated from the Github wiki pages and into the repository to allow documentation changes to be
+Documentation was migrated from the GitHub wiki pages and into the repository to allow documentation changes to be
 included with pull requests. This means that documentation can be guaranteed to be updated when a pull request is
 accepted rather than hoping documentation is updated afterwards or relying on maintainers to do the work. It also
 allows for documentation to be maintained at different versions more easily.
