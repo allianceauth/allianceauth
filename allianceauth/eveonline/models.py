@@ -84,9 +84,10 @@ class EveCharacter(models.Model):
     character_name = models.CharField(max_length=254, unique=True)
     corporation_id = models.CharField(max_length=254)
     corporation_name = models.CharField(max_length=254)
-    corporation_ticker = models.CharField(max_length=254)
+    corporation_ticker = models.CharField(max_length=5)
     alliance_id = models.CharField(max_length=254, blank=True, null=True, default='')
     alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
+    alliance_ticker = models.CharField(max_length=5, blank=True, null=True, default='')
 
     objects = EveCharacterManager()
     provider = EveCharacterProviderManager()
@@ -120,6 +121,7 @@ class EveCharacter(models.Model):
         self.corporation_ticker = character.corp.ticker
         self.alliance_id = character.alliance.id
         self.alliance_name = character.alliance.name
+        self.alliance_ticker = getattr(character.alliance, 'ticker', None)
         self.save()
         return self
 

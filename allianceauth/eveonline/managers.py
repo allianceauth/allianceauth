@@ -26,6 +26,7 @@ class EveCharacterManager(models.Manager):
             corporation_ticker=character.corp.ticker,
             alliance_id=character.alliance.id,
             alliance_name=character.alliance.name,
+            alliance_ticker=getattr(character.alliance, 'ticker', None),
         )
 
     def update_character(self, character_id):
