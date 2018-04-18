@@ -122,12 +122,29 @@ A minimal Nginx config might look like:
         index  app.php;
         access_log  /var/logs/market.access.log;
 
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_pass   unix:/tmp/php.socket;
-            fastcgi_index  app.php;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        # strip app.php/ prefix if it is present
+        rewrite ^/app\.php/?(.*)$ /$1 permanent;
+    
+        location / {
+            index app.php;
+            try_files $uri @rewriteapp;
+        }
+    
+        location @rewriteapp {
+            rewrite ^(.*)$ /app.php/$1 last;
+        }
+    
+        # pass the PHP scripts to FastCGI server from upstream phpfcgi
+        location ~ ^/(app|app_dev|config)\.php(/|$) {
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
             include fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS off;
+        }
+    
+        location ~ /\.ht {
+            deny all;
         }
     }
 
