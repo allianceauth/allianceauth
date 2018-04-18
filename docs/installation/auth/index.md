@@ -4,6 +4,7 @@
 .. toctree::
 
     allianceauth
+    upgradev1
     gunicorn
     nginx
     apache
