@@ -112,20 +112,10 @@ def validate_main_character(sender, instance, *args, **kwargs):
 
 
 @receiver(post_delete, sender=Token)
-def validate_main_character_token(sender, instance, *args, **kwargs):
-    if UserProfile.objects.filter(main_character__character_id=instance.character_id).exists():
-        logger.debug(
-            "Token for a main character {0} is being deleted. Ensuring there are valid tokens to refresh.".format(
-                instance.character_name))
-        profile = UserProfile.objects.get(main_character__character_id=instance.character_id)
-        if not Token.objects.filter(character_id=instance.character_id).filter(
-                user=profile.user).filter(refresh_token__isnull=False).exists():
-            logger.info(
-                "No remaining tokens to validate {0} ownership of main character {1}. Resetting main character.".format(
-                    profile.user, profile.main_character))
-            # clear main character as we can no longer verify ownership
-            profile.main_character = None
-            profile.save()
+def validate_ownership(sender, instance, *args, **kwargs):
+    if not Token.objects.filter(character_owner_hash=instance.character_owner_hash).filter(refresh_token__isnull=False).exists():
+        logger.info("No remaining tokens to validate ownership of character {0}. Revoking ownership.".format(instance.character_name))
+        CharacterOwnership.objects.filter(owner_hash=instance.character_owner_hash).delete()
 
 
 @receiver(pre_save, sender=User)
