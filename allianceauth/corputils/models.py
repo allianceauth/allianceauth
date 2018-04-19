@@ -40,9 +40,8 @@ class CorpStats(models.Model):
             c = self.token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
             assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()[
                        'corporation_id'] == int(self.corp.corporation_id)
-            members = c.Corporation.get_corporations_corporation_id_members(
+            member_ids = c.Corporation.get_corporations_corporation_id_members(
                 corporation_id=self.corp.corporation_id).result()
-            member_ids = [m['character_id'] for m in members]
 
             # requesting too many ids per call results in a HTTP400
             # the swagger spec doesn't have a maxItems count

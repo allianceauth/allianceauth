@@ -85,7 +85,7 @@ class CorpStatsUpdateTestCase(TestCase):
     @mock.patch('esi.clients.SwaggerClient')
     def test_update_add_member(self, SwaggerClient):
         SwaggerClient.from_spec.return_value.Character.get_characters_character_id.return_value.result.return_value = {'corporation_id': 2}
-        SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [{'character_id': 1}]
+        SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [1]
         SwaggerClient.from_spec.return_value.Character.get_characters_names.return_value.result.return_value = [{'character_id': 1, 'character_name': 'test character'}]
         self.corpstats.update()
         self.assertTrue(CorpMember.objects.filter(character_id='1', character_name='test character', corpstats=self.corpstats).exists())
@@ -94,7 +94,7 @@ class CorpStatsUpdateTestCase(TestCase):
     def test_update_remove_member(self, SwaggerClient):
         CorpMember.objects.create(character_id='2', character_name='old test character', corpstats=self.corpstats)
         SwaggerClient.from_spec.return_value.Character.get_characters_character_id.return_value.result.return_value = {'corporation_id': 2}
-        SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [{'character_id': 1}]
+        SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [1]
         SwaggerClient.from_spec.return_value.Character.get_characters_names.return_value.result.return_value = [{'character_id': 1, 'character_name': 'test character'}]
         self.corpstats.update()
         self.assertFalse(CorpMember.objects.filter(character_id='2', corpstats=self.corpstats).exists())

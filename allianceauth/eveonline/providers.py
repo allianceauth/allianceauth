@@ -81,7 +81,9 @@ class Alliance(Entity):
 
     @property
     def executor_corp(self):
-        return self.corp(self.executor_corp_id)
+        if self.executor_corp_id:
+            return self.corp(self.executor_corp_id)
+        return Entity(None, None)
 
 
 class Character(Entity):
@@ -150,10 +152,10 @@ class EveSwaggerProvider(EveProvider):
             corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
             model = Alliance(
                 id=alliance_id,
-                name=data['alliance_name'],
+                name=data['name'],
                 ticker=data['ticker'],
                 corp_ids=corps,
-                executor_corp_id=data['executor_corp'],
+                executor_corp_id=data['executor_corporation_id'] if 'executor_corporation_id' in data else None,
             )
             return model
         except HTTPNotFound:
@@ -164,7 +166,7 @@ class EveSwaggerProvider(EveProvider):
             data = self.client.Corporation.get_corporations_corporation_id(corporation_id=corp_id).result()
             model = Corporation(
                 id=corp_id,
-                name=data['corporation_name'],
+                name=data['name'],
                 ticker=data['ticker'],
                 ceo_id=data['ceo_id'],
                 members=data['member_count'],
@@ -177,12 +179,11 @@ class EveSwaggerProvider(EveProvider):
     def get_character(self, character_id):
         try:
             data = self.client.Character.get_characters_character_id(character_id=character_id).result()
-            alliance_id = self.adapter.get_corp(data['corporation_id']).alliance_id
             model = Character(
                 id=character_id,
                 name=data['name'],
                 corp_id=data['corporation_id'],
-                alliance_id=alliance_id,
+                alliance_id=data['alliance_id'] if 'alliance_id' in data else None,
             )
             return model
         except (HTTPNotFound, HTTPUnprocessableEntity):
