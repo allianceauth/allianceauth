@@ -9,6 +9,7 @@ from allianceauth.authentication.models import State
 class ServicesSignalsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_user('auth_member', disconnect_signals=True)
+        AuthUtils.add_main_character(self.member, 'Test', '1', '2', 'Test Corp', 'TEST')
         self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)
 
     @mock.patch('allianceauth.services.signals.transaction')
@@ -62,6 +63,18 @@ class ServicesSignalsTestCase(TestCase):
         """
         self.member.is_active = False
         self.member.save()  # Signal Trigger
+
+        self.assertTrue(disable_user.called)
+        args, kwargs = disable_user.call_args
+        self.assertEqual(self.member, args[0])
+
+    @mock.patch('allianceauth.services.signals.disable_user')
+    def test_disable_services_on_loss_of_main_character(self, disable_user):
+        """
+        Test a user set inactive has disable_member called
+        """
+        self.member.profile.main_character = None
+        self.member.profile.save()  # Signal Trigger
 
         self.assertTrue(disable_user.called)
         args, kwargs = disable_user.call_args

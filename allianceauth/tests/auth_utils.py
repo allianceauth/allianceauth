@@ -9,7 +9,7 @@ from allianceauth.eveonline.models import EveCharacter
 
 from allianceauth.services.signals import m2m_changed_group_permissions, m2m_changed_user_permissions, \
     m2m_changed_state_permissions
-from allianceauth.services.signals import m2m_changed_user_groups, pre_save_user
+from allianceauth.services.signals import m2m_changed_user_groups, disable_services_on_inactive
 
 
 class AuthUtils:
@@ -90,7 +90,7 @@ class AuthUtils:
         m2m_changed.disconnect(m2m_changed_group_permissions, sender=Group.permissions.through)
         m2m_changed.disconnect(m2m_changed_user_permissions, sender=User.user_permissions.through)
         m2m_changed.disconnect(m2m_changed_state_permissions, sender=State.permissions.through)
-        pre_save.disconnect(pre_save_user, sender=User)
+        pre_save.disconnect(disable_services_on_inactive, sender=User)
         m2m_changed.disconnect(state_member_corporations_changed, sender=State.member_corporations.through)
         m2m_changed.disconnect(state_member_characters_changed, sender=State.member_characters.through)
         m2m_changed.disconnect(state_member_alliances_changed, sender=State.member_alliances.through)
@@ -102,7 +102,7 @@ class AuthUtils:
         m2m_changed.connect(m2m_changed_group_permissions, sender=Group.permissions.through)
         m2m_changed.connect(m2m_changed_user_permissions, sender=User.user_permissions.through)
         m2m_changed.connect(m2m_changed_state_permissions, sender=State.permissions.through)
-        pre_save.connect(pre_save_user, sender=User)
+        pre_save.connect(disable_services_on_inactive, sender=User)
         m2m_changed.connect(state_member_corporations_changed, sender=State.member_corporations.through)
         m2m_changed.connect(state_member_characters_changed, sender=State.member_characters.through)
         m2m_changed.connect(state_member_alliances_changed, sender=State.member_alliances.through)

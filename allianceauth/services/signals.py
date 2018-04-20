@@ -141,7 +141,7 @@ def pre_delete_user(sender, instance, *args, **kwargs):
 
 
 @receiver(pre_save, sender=User)
-def pre_save_user(sender, instance, *args, **kwargs):
+def disable_services_on_inactive(sender, instance, *args, **kwargs):
     logger.debug("Received pre_save from %s" % instance)
     # check if user is being marked active/inactive
     if not instance.pk:
@@ -153,4 +153,18 @@ def pre_save_user(sender, instance, *args, **kwargs):
             logger.info("Disabling services for inactivation of user %s" % instance)
             disable_user(instance)
     except User.DoesNotExist:
+        pass
+
+
+@receiver(pre_save, sender=UserProfile)
+def disable_services_on_no_main(sender, instance, *args, **kwargs):
+    if not instance.pk:
+        # new model being created
+        return
+    try:
+        old_instance = UserProfile.objects.get(pk=instance.pk)
+        if old_instance.main_character and not instance.main_character:
+            logger.info("Disabling services due to loss of main character for user {0}".format(instance.user))
+            disable_user(instance.user)
+    except UserProfile.DoesNotExist:
         pass
