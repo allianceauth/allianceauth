@@ -26,7 +26,7 @@ install_requires = [
     'openfire-restapi',
     'sleekxmpp',
 
-    'adarnauth-esi>=1.4,<2.0',
+    'adarnauth-esi>=1.4.10,<2.0',
 ]
 
 testing_extras = [
