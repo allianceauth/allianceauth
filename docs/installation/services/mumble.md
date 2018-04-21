@@ -15,21 +15,21 @@ Mumble is a free voice chat server. While not as flashy as TeamSpeak, it has all
 ## Dependencies
 The mumble server package can be retrieved from a repository we need to add, mumble/release.
 
-    sudo apt-add-repository ppa:mumble/release
-    sudo apt-get update
+    apt-add-repository ppa:mumble/release
+    apt-get update
 
 Now two packages need to be installed:
 
-    sudo apt-get install python-software-properties mumble-server
+    apt-get install python-software-properties mumble-server
 
-Download the appropriate authenticator release from https://github.com/allianceauth/mumble-authenticator and install the python dependencies for it:
+Download the appropriate authenticator release from [the authenticator repository](https://github.com/allianceauth/mumble-authenticator) and install the python dependencies for it:
 
     pip install -r requirements.txt
 
 ## Configuring Mumble
 Mumble ships with a configuration file that needs customization. By default it’s located at /etc/mumble-server.ini. Open it with your favourite text editor:
 
-    sudo nano /etc/mumble-server.ini
+    nano /etc/mumble-server.ini
 
 REQUIRED: To enable the ICE authenticator, edit the following:
 
@@ -50,13 +50,13 @@ Save and close the file (control + O, control + X).
 
 To get Mumble superuser account credentials, run the following:
 
-    sudo dpkg-reconfigure mumble-server
+    dpkg-reconfigure mumble-server
 
 Set the password to something you’ll remember and write it down. This is needed to manage ACLs.
 
 Now restart the server to see the changes reflected.
 
-    sudo service mumble-server restart
+    service mumble-server restart
 
 That’s it! Your server is ready to be connected to at example.com:64738
 
@@ -83,9 +83,6 @@ Test your configuration by starting it: `python authenticator.py`
 The authenticator needs to be running 24/7 to validate users on Mumble. You should check the [supervisor docs](../auth/supervisor.md) on how to achieve this.
 
 Note that groups will only be created on Mumble automatically when a user joins who is in the group.
-
-## Making and Managing Channels
-ACL is really above the scope of this guide. Once Alliance Auth creates your groups, go ahead and follow one of the wonderful web guides available on how to set up channel ACL properly.
 
 ## Prepare Auth
 In your project's settings file, set `MUMBLE_URL` to the public address of your mumble server. Do not include any leading `http://` or `mumble://`.

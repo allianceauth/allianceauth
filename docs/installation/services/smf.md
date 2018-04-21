@@ -38,12 +38,12 @@ This needs to be unpackaged. Unzip it, replacing the file name with that of the 
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
 
-    sudo mv smf /var/www/forums
+    mv smf /var/www/forums
 
 The web server needs read/write permission to this folder
 
-Apache: `sudo chown -R www-data:www-data /var/www/forums`  
-Nginx: `sudo chown -R nginx:nginx /var/www/forums`
+Apache: `chown -R www-data:www-data /var/www/forums`  
+Nginx: `chown -R nginx:nginx /var/www/forums`
 
 ```eval_rst
 .. tip::
@@ -80,7 +80,7 @@ A minimal Nginx config might look like:
         listen 80;
         server_name  forums.example.com;
         root   /var/www/forums;
-        index  app.php;
+        index  index.php;
         access_log  /var/logs/forums.access.log;
 
         location ~ \.php$ {

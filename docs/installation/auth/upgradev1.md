@@ -60,10 +60,13 @@ If you used member/blue group names other than the standard "Member" and "Blue" 
 
 Any permissions assigned to these groups will be copied to the state replacing them. Because these groups are no longer managed they pose a security risk and so are deleted at the end of the migration automatically.
 
- 
+### Run Migrations
+
+Once you've configured any optional settings it is now safe to run the included migrations.
+
 ## Validating Upgrade
 
-Before starting the Celery workers it's a good idea to validate the states were created and assigned correctly. Any mistakes now will trigger deletion of service accounts: if celery workers aren't running these tasks aren't yet processed. States can be checked through the admin site.
+Before starting the Celery workers it's a good idea to validate the states were created and assigned correctly. Any mistakes now will trigger deletion of service accounts: if Celery workers aren't running these tasks aren't yet processed. States can be checked through the admin site.
 
 The site (and not Celery) can be started with `supervisorctl start myauth:gunicorn`. Then navigate to the admin site and log in with your v1 username and password. States and User Profiles can be found under the Authentication app.
 

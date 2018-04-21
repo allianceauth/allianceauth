@@ -41,26 +41,26 @@ Now we need to extract the file.
 ### Create User
 TeamSpeak needs its own user.
 
-    sudo adduser --disabled-login teamspeak
+    adduser --disabled-login teamspeak
 
 ### Install Binary
 Now we move the server binary somewhere more accessible and change its ownership to the new user.
 
-    sudo mv teamspeak3-server_linux_amd64 /usr/local/teamspeak
-    sudo chown -R teamspeak:teamspeak /usr/local/teamspeak
+    mv teamspeak3-server_linux_amd64 /usr/local/teamspeak
+    chown -R teamspeak:teamspeak /usr/local/teamspeak
 
 ### Startup
 Now we generate a startup script so TeamSpeak comes up with the server.
 
-    sudo ln -s /usr/local/teamspeak/ts3server_startscript.sh /etc/init.d/teamspeak
-    sudo update-rc.d teamspeak defaults
+    ln -s /usr/local/teamspeak/ts3server_startscript.sh /etc/init.d/teamspeak
+    update-rc.d teamspeak defaults
 
 Finally we start the server.
 
-    sudo service teamspeak start
+    service teamspeak start
 
 ### Update Settings
-The console will spit out a block of text. If it does not appear, it can be found with `sudo service teamspeak status`. **SAVE THIS**.
+The console will spit out a block of text. If it does not appear, it can be found with `service teamspeak status`. **SAVE THIS**.
 
 If you plan on claiming the ServerAdmin token, do so with a different TeamSpeak client profile than the one used for your auth account, or you will lose your admin status.
 

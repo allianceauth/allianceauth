@@ -2,7 +2,7 @@
 
 ```eval_rst
 .. tip::
-   If you are uncomfortable with Linux permissions follow the steps below as the root user. Some commands do not behave the same when run with sudo. 
+   If you are uncomfortable with Linux permissions follow the steps below as the root user. 
 ```
 
 ## Dependencies

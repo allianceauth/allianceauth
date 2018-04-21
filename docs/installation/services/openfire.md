@@ -17,21 +17,16 @@
     BROADCAST_USER_PASSWORD = ""
     BROADCAST_SERVICE_NAME = "broadcast"
 
-## Overview
-Openfire is a Java-based XMPP server (Jabber).
-
 ## Dependencies
-One additional package is required - openjdk8
+Openfire require a Java 8 runtime environment.
 
 Ubuntu:
 
-    sudo add-apt-repository ppa:webupd8team/java -y
-    sudo apt-get update
-    sudo apt-get install oracle-java8-installer
+    apt-get install openjdk-8-jdk
 
 CentOS:
 
-    sudo yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+    yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
 ## Setup
 ### Download Installer
@@ -51,11 +46,11 @@ Now install from the package. Replace the filename with your filename (the last 
 
 Ubuntu:
 
-    sudo dpkg -i openfire_4.2.3_all.deb
+    dpkg -i openfire_4.2.3_all.deb
 
 CentOS:
 
-    sudo yum install -y openfire-4.2.3-1.noarch.rpm
+    yum install -y openfire-4.2.3-1.noarch.rpm
 
 ### Create Database
 Performance is best when working from a SQL database. If you installed MySQL or MariaDB alongside your auth project, go ahead and create a database for Openfire:

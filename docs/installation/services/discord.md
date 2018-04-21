@@ -21,8 +21,6 @@ In your auth project's settings file, do the following:
     DISCORD_SYNC_NAMES = False
 
 ### Creating a Server
-*If you already have a Discord server, skip the creation step, but be sure to retrieve the server ID*
-
 Navigate to the [Discord site](https://discordapp.com/) and register an account, or log in if you have one already.
 
 On the left side of the screen you’ll see a circle with a plus sign. This is the button to create a new server. Go ahead and do that, naming it something obvious.
@@ -30,6 +28,11 @@ On the left side of the screen you’ll see a circle with a plus sign. This is t
 Now retrieve the server ID [following this procedure.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
 
 Update your auth project's settings file, inputting the server ID as `DISCORD_GUILD_ID`
+
+```eval_rst
+.. note::
+   If you already have a Discord server skip the creation step, but be sure to retrieve the server ID
+```
 
 ### Registering an Application
 
@@ -66,3 +69,8 @@ If you want users to have their Discord nickname changed to their in-game charac
 
 ## Managing Roles
 Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to Groups on every other service. The default permissions should be enough for members to use text and audio communications. Add more permissions to the roles as desired through the server management window.
+
+## Troubleshooting
+
+### "Unknown Error" on Discord site when activating service
+This indicates your callback URL doesn't match. Ensure the `DISCORD_CALLBACK_URL` setting exactly matches the URL entered on the Discord developers site. This includes http(s), trailing slash, etc.

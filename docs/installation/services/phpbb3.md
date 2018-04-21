@@ -34,8 +34,8 @@ Create a database to install phpBB3 in.
 
 Edit your auth project's settings file and fill out the `DATABASES['phpbb3']` part.
 
-### Download phpbb3
-phpBB is available as a zip from their website. Navigate to the website’s [downloads section](https://www.phpbb.com/downloads/) using your PC browser and copy the URL for the latest version zip. Depending on your browser you may have a Copy Link or similar option in your right click menu.
+### Download phpBB3
+phpBB3 is available as a zip from their website. Navigate to the website’s [downloads section](https://www.phpbb.com/downloads/) using your PC browser and copy the URL for the latest version zip.
 
 In the console, navigate to your user’s home directory: `cd ~`
 
@@ -49,12 +49,12 @@ This needs to be unpackaged. Unzip it, replacing the file name with that of the 
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
 
-    sudo mv phpBB3 /var/www/forums
+    mv phpBB3 /var/www/forums
 
 The web server needs read/write permission to this folder
 
-Apache: `sudo chown -R www-data:www-data /var/www/forums`  
-Nginx: `sudo chown -R nginx:nginx /var/www/forums`
+Apache: `chown -R www-data:www-data /var/www/forums`  
+Nginx: `chown -R nginx:nginx /var/www/forums`
 
 ```eval_rst
 .. tip::
@@ -133,7 +133,7 @@ phpBB will then write its own config file.
 ### Open the Forums
 Before users can see the forums, we need to remove the install directory
 
-    sudo rm -rf /var/www/forums/install
+    rm -rf /var/www/forums/install
 
 ### Enabling Avatars
 AllianceAuth sets user avatars to their character portrait when the account is created or password reset. We need to allow external URLs for avatars for them to behave properly. Navigate to the admin control panel for phpbb3, and under the `General` tab, along the left navigation bar beneath `Board Configuration`, select `Avatar Settings`. Set `Enable Remote Avatars` to `Yes` and then `Submit`.

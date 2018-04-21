@@ -30,7 +30,7 @@ Alliance Market needs a database. Create one in MySQL/MariaDB. Default name is `
 
 Install required packages to clone the repository:
 
-    sudo apt-get install mercurial meld
+    apt-get install mercurial meld
 
 Change to the web folder:
 
@@ -38,18 +38,18 @@ Change to the web folder:
 
 Now clone the repository
 
-    sudo hg clone https://bitbucket.org/krojew/evernus-alliance-market
+    hg clone https://bitbucket.org/krojew/evernus-alliance-market
 
 Make cache and log directories
 
-    sudo mkdir evernus-alliance-market/app/cache
-    sudo mkdir evernus-alliance-market/app/logs
-    sudo chmod -R 777 evernus-alliance-market/app/cache
-    sudo chmod -R 777 evernus-alliance-market/app/logs
+    mkdir evernus-alliance-market/app/cache
+    mkdir evernus-alliance-market/app/logs
+    chmod -R 777 evernus-alliance-market/app/cache
+    chmod -R 777 evernus-alliance-market/app/logs
 
 Change ownership to apache
 
-    sudo chown -R www-data:www-data evernus-alliance-market
+    chown -R www-data:www-data evernus-alliance-market
 
 Enter directory
 
@@ -61,7 +61,7 @@ Set environment variable
 
 Copy configuration
 
-    sudo cp app/config/parameters.yml.dist  app/config/parameters.yml
+    cp app/config/parameters.yml.dist  app/config/parameters.yml
 
 Edit, changing the following:
  - `database_name` to `alliance_market`
@@ -79,25 +79,25 @@ Install composer [as per these instructions.](https://getcomposer.org/download/)
 
 Update dependencies.
 
-    sudo php composer.phar update --optimize-autoloader
+    php composer.phar update --optimize-autoloader
 
 Prepare the cache:
 
-    sudo php app/console cache:clear --env=prod --no-debug
+    php app/console cache:clear --env=prod --no-debug
 
 
 Dump assets:
 
-    sudo php app/console assetic:dump --env=prod --no-debug
+    php app/console assetic:dump --env=prod --no-debug
 
 
 Create DB entries
 
-    sudo php app/console doctrine:schema:update --force
+    php app/console doctrine:schema:update --force
 
 Install SDE:
 
-    sudo php app/console evernus:update:sde
+    php app/console evernus:update:sde
 
 Configure your web server to serve alliance market.
 
@@ -150,11 +150,11 @@ A minimal Nginx config might look like:
 
 Once again, set cache permissions:
 
-    sudo chown -R www-data:www-data app/
+    chown -R www-data:www-data app/
 
 Add a user account through auth, then make it a superuser:
 
-    sudo php app/console fos:user:promote your_username --super
+    php app/console fos:user:promote your_username --super
 
 Now edit your auth project's settings file and fill in the web URL to your market as well as the database details.
 

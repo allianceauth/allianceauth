@@ -65,7 +65,7 @@ e.g. `command=/path/to/venv/bin/gunicorn myauth.wsgi`
 
 ### Starting via Supervisor
 
-Once you have your configuration all sorted, you will need to reload your supervisor config `sudo service supervisor reload` and then you can start the Gunicorn server via `sudo supervisorctl start aauth-gunicorn` (or whatever you renamed it to). You should see something like the following `aauth-gunicorn: started`. If you get some other message, you'll need to consult the Supervisor log files, usually found in `/var/log/supervisor/`.
+Once you have your configuration all sorted, you will need to reload your supervisor config `service supervisor reload` and then you can start the Gunicorn server via `supervisorctl start aauth-gunicorn` (or whatever you renamed it to). You should see something like the following `aauth-gunicorn: started`. If you get some other message, you'll need to consult the Supervisor log files, usually found in `/var/log/supervisor/`.
 
 
 ## Configuring your webserver
@@ -76,4 +76,4 @@ Any web server capable of proxy passing should be able to sit in front of Gunico
 ## Restarting Gunicorn
 In the past when you made changes you restarted the entire Apache server. This is no longer required. When you update or make configuration changes that ask you to restart Apache, instead you can just restart Gunicorn:
 
-`sudo supervisorctl restart myauth-gunicorn`, or the service name you chose for it.
+`supervisorctl restart myauth-gunicorn`, or the service name you chose for it.
