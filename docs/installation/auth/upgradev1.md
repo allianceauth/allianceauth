@@ -74,6 +74,12 @@ Once you have confirmed states are correctly configured (or adjusted them as nee
 
 It should now be safe to bring workers online (`supervisorctl start myauth:`) and invite users to use the site.
 
+## Securing User Accounts
+
+After migration users will have main characters without a method to check for character sales. After a brief period to allow your users to log in (and provide a refreshable token to use), it's a good idea to clear main characters of users who haven't yet logged in. This can be achieved with an included command: `python manage.py checkmains`
+
+A similar process can be used to ensure users who may have lost service permissions during the migration do not have active service accounts. This is done using `python manage.py validate_service_accounts`.
+
 ## Help
 
 If something goes wrong during the migration reach out for help on [Gitter](https://gitter.im/R4stl1n/allianceauth) or open an [issue](https://github.com/allianceauth/allianceauth/issues).
