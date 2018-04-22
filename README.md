@@ -23,6 +23,7 @@ Beta Testers / Bug Fixers:
 
  - [ghoti](https://github.com/ghoti/)
  - [mmolitor87](https://github.com/mmolitor87/)
+ - [TargetZ3R0](https://github.com/TargetZ3R0)
  - [kaezon](https://github.com/kaezon/)
  - [orbitroom](https://github.com/orbitroom/)
  - [tehfiend](https://github.com/tehfiend/)
