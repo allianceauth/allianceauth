@@ -39,7 +39,7 @@ Ubuntu:
 
 CentOS:
 
-    yum install mariadb-server mariadb-devel mariadb
+    yum install mariadb-server mariadb-devel mariadb-shared mariadb
 
 ```eval_rst
 .. note::
