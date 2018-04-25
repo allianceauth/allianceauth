@@ -133,21 +133,38 @@ def create_profiles(apps, schema_editor):
                     auth['n'] == 1 and EveCharacter.objects.filter(character_id=auth['main_char_id']).exists()]
 
     auths = AuthServicesInfo.objects.filter(main_char_id__in=unique_mains).select_related('user')
+
+    blue_state_name = getattr(settings, 'DEFAULT_BLUE_GROUP', 'Blue')
+    member_state_name = getattr(settings, 'DEFAULT_AUTH_GROUP', 'Member')
+
+    states = {
+        'Member': State.objects.get(name=member_state_name),
+        'Blue': State.objects.get(name=blue_state_name),
+    }
+    guest_state = State.objects.get(name='Guest')
+
     for auth in auths:
         # carry states and mains forward
-        state = State.objects.get(name=auth.state if auth.state else 'Guest')
+        state = states.get(auth.state, guest_state)
         char = EveCharacter.objects.get(character_id=auth.main_char_id)
         UserProfile.objects.create(user=auth.user, state=state, main_character=char)
     for auth in AuthServicesInfo.objects.exclude(main_char_id__in=unique_mains).select_related('user'):
         # prepare empty profiles
-        state = State.objects.get(name='Guest')
-        UserProfile.objects.create(user=auth.user, state=state)
+        UserProfile.objects.create(user=auth.user, state=guest_state)
 
 
 def recreate_authservicesinfo(apps, schema_editor):
     AuthServicesInfo = apps.get_model('authentication', 'AuthServicesInfo')
     UserProfile = apps.get_model('authentication', 'UserProfile')
     User = apps.get_model('auth', 'User')
+
+    blue_state_name = getattr(settings, 'DEFAULT_BLUE_GROUP', 'Blue')
+    member_state_name = getattr(settings, 'DEFAULT_AUTH_GROUP', 'Member')
+
+    states = {
+        member_state_name: 'Member',
+        blue_state_name: 'Blue',
+    }
 
     # recreate all missing AuthServicesInfo models
     AuthServicesInfo.objects.bulk_create([AuthServicesInfo(user_id=u.pk) for u in User.objects.all()])
@@ -159,8 +176,8 @@ def recreate_authservicesinfo(apps, schema_editor):
 
     # repopulate states we understand
     for profile in UserProfile.objects.exclude(state__name='Guest').filter(
-            state__name__in=['Member', 'Blue']).select_related('user', 'state'):
-        AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'state': profile.state.name})
+            state__name__in=[member_state_name, blue_state_name]).select_related('user', 'state'):
+        AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'state': states[profile.state.name]})
 
 
 def disable_passwords(apps, schema_editor):
