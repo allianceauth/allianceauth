@@ -103,12 +103,16 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
 
 @receiver(pre_delete, sender=CharacterOwnership)
 def validate_main_character(sender, instance, *args, **kwargs):
-    if instance.user.profile.main_character == instance.character:
-        logger.info("Ownership of a main character {0} has been revoked. Resetting {1} main character.".format(
-            instance.character, instance.user))
-        # clear main character as user no longer owns them
-        instance.user.profile.main_character = None
-        instance.user.profile.save()
+    try:
+        if instance.user.profile.main_character == instance.character:
+            logger.info("Ownership of a main character {0} has been revoked. Resetting {1} main character.".format(
+                instance.character, instance.user))
+            # clear main character as user no longer owns them
+            instance.user.profile.main_character = None
+            instance.user.profile.save()
+    except UserProfile.DoesNotExist:
+        # a user is being deleted
+        pass
 
 
 @receiver(post_delete, sender=Token)
