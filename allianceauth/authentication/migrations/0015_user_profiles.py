@@ -43,7 +43,7 @@ def create_member_group(apps, schema_editor):
     member_state_name = getattr(settings, 'DEFAULT_AUTH_GROUP', 'Member')
 
     try:
-        g = Group.objects.get(name=member_state_name)
+        g, _ = Group.objects.get_or_create(name=member_state_name)
         # move permissions back
         state = State.objects.get(name=member_state_name)
         [g.permissions.add(p.pk) for p in state.permissions.all()]
@@ -51,7 +51,7 @@ def create_member_group(apps, schema_editor):
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
             profile.user.groups.add(g.pk)
-    except (Group.DoesNotExist, State.DoesNotExist):
+    except State.DoesNotExist:
         pass
 
 
@@ -67,7 +67,7 @@ def create_blue_state(apps, schema_editor):
         # move group permissions to state
         g = Group.objects.get(name=blue_state_name)
         [s.permissions.add(p.pk) for p in g.permissions.all()]
-        g.permissions.clear()
+        g.delete()
     except Group.DoesNotExist:
         pass
 
@@ -84,7 +84,7 @@ def create_blue_group(apps, schema_editor):
     blue_state_name = getattr(settings, 'DEFAULT_BLUE_GROUP', 'Blue')
 
     try:
-        g = Group.objects.get(name=blue_state_name)
+        g, _ = Group.objects.get_or_create(name=blue_state_name)
         # move permissions back
         state = State.objects.get(name=blue_state_name)
         [g.permissions.add(p.pk) for p in state.permissions.all()]
@@ -92,7 +92,7 @@ def create_blue_group(apps, schema_editor):
         # move users back
         for profile in state.userprofile_set.all().select_related('user'):
             profile.user.groups.add(g.pk)
-    except (Group.DoesNotExist, State.DoesNotExist):
+    except State.DoesNotExist:
         pass
 
 
