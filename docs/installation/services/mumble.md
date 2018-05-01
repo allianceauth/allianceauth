@@ -34,6 +34,7 @@ Mumble ships with a configuration file that needs customization. By default itâ€
 REQUIRED: To enable the ICE authenticator, edit the following:
 
  - `icesecretwrite=MY_CLEVER_PASSWORD`, obviously choosing a secure password
+ - ensure the line containing `Ice="tcp -h 127.0.0.1 -p 6502"` is uncommented
 
 By default mumble operates on SQLite which is fine, but slower than a dedicated MySQL server. To customize the database, edit the following:
 
@@ -46,7 +47,7 @@ By default mumble operates on SQLite which is fine, but slower than a dedicated 
 
 To name your root channel, uncomment and set `registerName=` to whatever cool name you want
 
-Save and close the file (control + O, control + X).
+Save and close the file.
 
 To get Mumble superuser account credentials, run the following:
 
@@ -80,7 +81,21 @@ Test your configuration by starting it: `python authenticator.py`
 
 ## Running the Authenticator
 
-The authenticator needs to be running 24/7 to validate users on Mumble. You should check the [supervisor docs](../auth/supervisor.md) on how to achieve this.
+The authenticator needs to be running 24/7 to validate users on Mumble. This can be achieved by adding a section to your auth project's supervisor config file like the following example:
+
+```
+[program:authenticator]
+command=/path/to/venv/bin/python authenticator.py
+directory=/path/to/authenticator/directory/
+user=allianceserver
+stdout_logfile=/path/to/authenticator/directory/authenticator.log
+stderr_logfile=/path/to/authenticator/directory/authenticator.log
+autostart=true
+autorestart=true
+startsecs=10
+priority=998
+```
+
 
 Note that groups will only be created on Mumble automatically when a user joins who is in the group.
 
