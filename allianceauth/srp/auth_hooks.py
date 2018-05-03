@@ -1,12 +1,12 @@
 from allianceauth.services.hooks import MenuItemHook, UrlHook
-
+from django.utils.translation import ugettext_lazy as _
 from allianceauth import hooks
 from . import urls
 
 
 class SrpMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, 'Ship Replacement',
+        MenuItemHook.__init__(self, _('Ship Replacement'),
                               'fa fa-money fa-fw',
                               'srp:management',
                               navactive=['srp:'])

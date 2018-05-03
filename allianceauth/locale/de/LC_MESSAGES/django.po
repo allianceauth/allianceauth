@@ -1096,52 +1096,57 @@ msgid "Main Navigation"
 msgstr "Haupmenü"
 
 #: stock/templates/registered/base.html:106
-msgid " Dashboard"
-msgstr " Dashboard"
+#: stock/templates/registered/dashboard.html:5
+#: stock/templates/registered/dashboard.html:9
+msgid "Dashboard"
+msgstr "Dashboard"
 
 #: stock/templates/registered/base.html:113
-msgid " Groups"
-msgstr " Gruppen"
+#: stock/templates/registered/dashboard.html:52
+msgid "Groups"
+msgstr "Gruppen"
 
 #: stock/templates/registered/base.html:120
-msgid " Help"
-msgstr " Hilfe"
+msgid "Help"
+msgstr "Hilfe"
 
 #: stock/templates/registered/base.html:126
 msgid "Aux Navigation"
 msgstr "Zusatz Navigation"
 
 #: stock/templates/registered/base.html:131
-msgid " Services"
-msgstr " Dienste"
+msgid "Services"
+msgstr "Dienste"
 
 #: stock/templates/registered/base.html:140
-msgid " Applications"
-msgstr " Bewerbungen"
+msgid "Applications"
+msgstr "Bewerbungen"
 
 #: stock/templates/registered/base.html:148
-msgid " Corporation Stats"
-msgstr " Korporationsstatistiken"
+msgid "Corporation Stats"
+msgstr "Korporationsstatistiken"
 
 #: stock/templates/registered/base.html:156
-msgid " Group Management"
-msgstr " Gruppenverwaltung"
+#: stock/templates/registered/groupmanagementmenu.html:14
+msgid "Group Management"
+msgstr "Gruppenverwaltung"
 
 #: stock/templates/registered/base.html:174
-msgid " Fleet Operations"
-msgstr " Flottenoperationen"
+msgid "Fleet Operations"
+msgstr "Flottenoperationen"
 
 #: stock/templates/registered/base.html:181
-msgid " Structure Timers"
-msgstr " Strukturen Timer"
+#: stock/templates/registered/timermanagement.html:13
+msgid "Structure Timers"
+msgstr "Strukturen Timer"
 
 #: stock/templates/registered/base.html:188
-msgid " Fleet Activity Tracking"
-msgstr " Flottenaktivitäts-Tracking"
+msgid "Fleet Activity Tracking"
+msgstr "Flottenaktivitäts-Tracking"
 
 #: stock/templates/registered/base.html:194
-msgid " Ship Replacement"
-msgstr " Schiff’s erstattung"
+msgid "Ship Replacement"
+msgstr "Schiff’s erstattung"
 
 #: stock/templates/registered/base.html:200
 msgid "Util"
@@ -1156,7 +1161,7 @@ msgid "Change Password"
 msgstr "Passwort ändern"
 
 #: stock/templates/registered/base.html:211
-msgid " Fleet Broadcast Formatter"
+msgid "Fleet Broadcast Formatter"
 msgstr "Flottenübertragungen Formatierer "
 
 #: stock/templates/public/login.html:57
@@ -1293,11 +1298,6 @@ msgstr "Corporation: "
 msgid "Corporation Ticker: "
 msgstr "Corporation Ticker: "
 
-#: stock/templates/registered/dashboard.html:5
-#: stock/templates/registered/dashboard.html:9
-msgid "Dashboard"
-msgstr "Dashboard"
-
 #: stock/templates/registered/dashboard.html:38
 msgid "Missing main character model."
 msgstr "Hauptcharakter model fehlt"
@@ -1309,10 +1309,6 @@ msgstr "API Key hinzufügen"
 #: stock/templates/registered/dashboard.html:45
 msgid "Change Main"
 msgstr "Hauptcharakter ändern"
-
-#: stock/templates/registered/dashboard.html:52
-msgid "Groups"
-msgstr "Gruppen"
 
 #: stock/templates/registered/dashboard.html:71
 msgid "API Key requires EVE SSO verification"
@@ -1600,10 +1596,6 @@ msgstr "Keine Gruppenbeitrittsanfragen."
 #: stock/templates/registered/groupmanagement.html:76
 msgid "No group leave requests."
 msgstr "Keine Gruppenaustrittsanfragen"
-
-#: stock/templates/registered/groupmanagementmenu.html:14
-msgid "Group Management"
-msgstr "Gruppenmanagement"
 
 #: stock/templates/registered/groupmanagementmenu.html:19
 msgid "Group Requests"
@@ -2170,10 +2162,6 @@ msgstr "Server beitreten"
 #: stock/templates/registered/timermanagement.html:8
 msgid "Structure Timer Management"
 msgstr "Struktur-Timer Verwaltung"
-
-#: stock/templates/registered/timermanagement.html:13
-msgid "Structure Timers"
-msgstr "Struktur-Timer"
 
 #: stock/templates/registered/timermanagement.html:26
 msgid "Corp Timers"

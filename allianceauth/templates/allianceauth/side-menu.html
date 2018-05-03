@@ -7,12 +7,12 @@
             <li>
                 <a class="{% navactive request 'authentication:dashboard' %}"
                    href="{% url 'authentication:dashboard' %}">
-                    <i class="fa fa-dashboard fa-fw"></i>{% trans " Dashboard" %}
+                    <i class="fa fa-dashboard fa-fw"></i> {% trans "Dashboard" %}
                 </a>
             </li>
             <li>
                 <a class="{% navactive request 'groupmanagement:groups' %}" href="{% url 'groupmanagement:groups' %}">
-                    <i class="fa fa-cogs fa-fw fa-sitemap"></i>{% trans " Groups" %}
+                    <i class="fa fa-cogs fa-fw fa-sitemap"></i> {% trans "Groups" %}
                 </a>
             </li>
 
@@ -20,7 +20,7 @@
                 <li>
                     <a class="{% navactive request 'groupmanagement:management groupmanagement:membership groupmanagement:membership_list' %}"
                        href="{% url 'groupmanagement:management' %}">
-                        <i class="fa fa-lock fa-sitemap fa-fw"></i>{% trans " Group Management" %}
+                        <i class="fa fa-lock fa-sitemap fa-fw"></i> {% trans "Group Management" %}
                     </a>
                 </li>
             {% endif %}
@@ -30,7 +30,7 @@
             <li>
                 <a class="{% navactive request 'authentication:help' %}"
                    href="{% url 'authentication:help' %}">
-                    <i class="fa fa-question fa-fw"></i>{% trans " Help" %}
+                    <i class="fa fa-question fa-fw"></i> {% trans "Help" %}
                 </a>
             </li>
         </ul>

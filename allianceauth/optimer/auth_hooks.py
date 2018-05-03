@@ -1,12 +1,12 @@
 from allianceauth.services.hooks import MenuItemHook, UrlHook
-
+from django.utils.translation import ugettext_lazy as _
 from allianceauth import hooks
 from . import urls
 
 
 class OpTimerboardMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, 'Fleet Operations',
+        MenuItemHook.__init__(self, _('Fleet Operations'),
                               'fa fa-exclamation  fa-fw',
                               'optimer:view',
                               navactive=['optimer:'])

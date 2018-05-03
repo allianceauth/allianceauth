@@ -1,5 +1,5 @@
 from allianceauth.services.hooks import MenuItemHook, UrlHook
-
+from django.utils.translation import ugettext_lazy as _
 from allianceauth import hooks
 from allianceauth.corputils import urls
 
@@ -7,7 +7,7 @@ from allianceauth.corputils import urls
 class CorpStats(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
-                              'Corporation Stats',
+                              _('Corporation Stats'),
                               'fa fa-share-alt fa-fw',
                               'corputils:view',
                               navactive=['corputils:'])

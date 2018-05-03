@@ -1,5 +1,5 @@
 from allianceauth.services.hooks import MenuItemHook, UrlHook
-
+from django.utils.translation import ugettext_lazy as _
 from allianceauth import hooks
 from allianceauth.hrapplications import urls
 
@@ -7,7 +7,7 @@ from allianceauth.hrapplications import urls
 class ApplicationsMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
-                              'Applications',
+                              _('Applications'),
                               'fa fa-file-o fa-fw',
                               'hrapplications:index',
                               navactive=['hrapplications:'])
