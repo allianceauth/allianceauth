@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='xenforouser',
             options={'permissions': (('access_xenforo', 'Can access the XenForo service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

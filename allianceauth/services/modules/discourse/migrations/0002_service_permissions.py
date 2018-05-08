@@ -58,5 +58,5 @@ class Migration(migrations.Migration):
             name='discourseuser',
             options={'permissions': (('access_discourse', 'Can access the Discourse service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

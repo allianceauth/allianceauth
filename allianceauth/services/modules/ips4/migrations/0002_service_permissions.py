@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='ips4user',
             options={'permissions': (('access_ips4', 'Can access the IPS4 service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

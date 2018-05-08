@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='discorduser',
             options={'permissions': (('access_discord', 'Can access the Discord service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='marketuser',
             options={'permissions': (('access_market', 'Can access the Evernus Market service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

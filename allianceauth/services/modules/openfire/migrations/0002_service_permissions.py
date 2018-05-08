@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='openfireuser',
             options={'permissions': (('access_openfire', 'Can access the Openfire service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

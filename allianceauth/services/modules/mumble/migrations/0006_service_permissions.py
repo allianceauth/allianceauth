@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='mumbleuser',
             options={'permissions': (('access_mumble', 'Can access the Mumble service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

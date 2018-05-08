@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='phpbb3user',
             options={'permissions': (('access_phpbb3', 'Can access the phpBB3 service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

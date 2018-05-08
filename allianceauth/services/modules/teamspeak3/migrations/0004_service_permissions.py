@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='teamspeak3user',
             options={'permissions': (('access_teamspeak3', 'Can access the Teamspeak3 service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]

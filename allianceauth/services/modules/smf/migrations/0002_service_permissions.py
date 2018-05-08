@@ -57,5 +57,5 @@ class Migration(migrations.Migration):
             name='smfuser',
             options={'permissions': (('access_smf', 'Can access the SMF service'),)},
         ),
-        migrations.RunPython(migrate_service_enabled),
+        migrations.RunPython(migrate_service_enabled, migrations.RunPython.noop),
     ]
