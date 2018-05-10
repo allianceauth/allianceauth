@@ -17,7 +17,8 @@ SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sw
 
 def access_corpstats_test(user):
     return user.has_perm('corputils.view_corp_corpstats') or user.has_perm(
-        'corputils.view_alliance_corpstats') or user.has_perm('corputils.view_state_corpstats')
+        'corputils.view_alliance_corpstats') or user.has_perm('corputils.view_state_corpstats') or user.has_perm(
+        'corputils.add_corpstats')
 
 
 @login_required
@@ -62,7 +63,7 @@ def corpstats_view(request, corp_id=None):
         corpstats = get_object_or_404(CorpStats, corp=corp)
 
     # get available models
-    available = CorpStats.objects.visible_to(request.user)
+    available = CorpStats.objects.visible_to(request.user).order_by('corp__corporation_name')
 
     # ensure we can see the requested model
     if corpstats and corpstats not in available:
