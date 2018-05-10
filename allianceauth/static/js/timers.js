@@ -8,8 +8,16 @@ function getDurationString(duration) {
     if (duration.years()) {
         out += duration.years() + 'y ';
     }
+    if (duration.months()) {
+        out += duration.months() + 'm ';
+    }
     if (duration.days()) {
         out += duration.days() + 'd ';
     }
     return out + duration.hours() + "h " + duration.minutes() + "m " + duration.seconds() + "s";
+}
+
+
+function getCurrentEveTimeString() {
+    return moment().utc().format('dddd LL HH:mm:ss')
 }

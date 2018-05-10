@@ -18,7 +18,8 @@
         <div class="col-lg-12 text-center">
             <div class="label label-info text-left">
                 <b>{% trans "Current Eve Time:" %} </b>
-            </div><div class="label label-info text-left" id="current-time"></div>
+            </div>
+            <strong class="label label-info text-left" id="current-time"></strong>
         </div>
         {% if corp_timers %}
             <h4><b>{% trans "Corp Timers" %}</b></h4>
@@ -555,7 +556,7 @@
         }
 
         function updateClock() {
-            document.getElementById("current-time").innerHTML = "<b>" + moment().format('LLLL') + "</b>";
+            document.getElementById("current-time").innerHTML = getCurrentEveTimeString();
         }
     </script>
 {% endblock content %}
