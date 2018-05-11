@@ -79,13 +79,12 @@ def reset_teamspeak3_perm(request):
     logger.debug("reset_teamspeak3_perm called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
         return redirect("services:services")
-    character = request.user.profile.main_character
     logger.debug("Deleting TS3 user for user %s" % request.user)
     with Teamspeak3Manager() as ts3man:
         ts3man.delete_user(request.user.teamspeak3.uid)
 
-        logger.debug("Generating new permission key for user %s with main character %s" % (request.user, character))
-        result = ts3man.generate_new_permissionkey(request.user.teamspeak3.uid, character.character_name)
+        logger.debug("Generating new permission key for user %s" % request.user)
+        result = ts3man.generate_new_permissionkey(request.user.teamspeak3.uid, request.user, Teamspeak3Tasks.get_username(request.user))
 
     # if blank we failed
     if result[0] != "":
