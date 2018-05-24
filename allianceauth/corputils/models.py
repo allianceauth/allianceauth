@@ -12,6 +12,14 @@ from allianceauth.notifications import notify
 from allianceauth.corputils.managers import CorpStatsManager
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+"""
+Swagger spec operations:
+
+get_characters_character_id
+get_corporations_corporation_id_members
+get_characters_names
+"""
+
 
 logger = logging.getLogger(__name__)
 

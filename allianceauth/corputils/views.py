@@ -13,6 +13,11 @@ from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 from .models import CorpStats
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+"""
+Swagger spec operations:
+
+get_characters_character_id
+"""
 
 
 def access_corpstats_test(user):

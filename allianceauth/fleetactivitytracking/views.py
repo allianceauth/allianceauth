@@ -22,6 +22,16 @@ from allianceauth.eveonline.models import EveCharacter
 from allianceauth.eveonline.models import EveCorporationInfo
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+"""
+Swagger spec operations:
+
+get_characters_character_id_location
+get_characters_character_id_ship
+get_universe_systems_system_id
+get_universe_stations_station_id
+get_universe_structures_structure_id
+"""
+
 
 logger = logging.getLogger(__name__)
 
