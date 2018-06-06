@@ -1,3 +1,7 @@
+# We've Moved to [GitLab](https://gitlab.com/allianceauth/allianceauth)
+
+
+
 Alliance Auth
 ============
 
